@@ -60,7 +60,7 @@ which is usually 60 maybe 100 or something else. */
 
 static struct timeb t0;
 int usleep1 ( unsigned int microseconds );
-#indef usleep
+#undef usleep
 #define usleep(x) usleep1(x)
 
 #  endif
