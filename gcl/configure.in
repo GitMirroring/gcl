@@ -1,5 +1,5 @@
 AC_INIT
-AC_PREREQ([2.69])
+AC_PREREQ([2.68])
 AC_CONFIG_HEADERS([h/gclincl.h])
 
 VERSION=`cat majvers`.`cat minvers`
@@ -312,7 +312,11 @@ AC_RUN_IFELSE(
 case $use in
     *mingw*)
 	assert_arg_to_cflags -fno-zero-initialized-in-bss
-	assert_arg_to_cflags -mms-bitfields;;
+	assert_arg_to_cflags -mms-bitfields
+	OLD_LDFLAGS=$LDFLAGS
+	assert_arg_to_ldflags -pg
+	GPL_FLAG="-pg"
+	LDFLAGS=$OLD_LDFLAGS;;
     *gnuwin*)
 	assert_arg_to_cflags -fno-zero-initialized-in-bss
 	assert_arg_to_cflags -mms-bitfields
@@ -2181,7 +2185,7 @@ AC_CHECK_HEADERS(alloca.h)
 AC_FUNC_ALLOCA
 
 
-LDFLAGS="`echo $LDFLAGS | sed 's,gcl.script,../unixport/gcl.script,g'`"
+LDFLAGS="`echo $GPL_FLAG $LDFLAGS | sed 's,gcl.script,../unixport/gcl.script,g'`"
 AC_SUBST(LDFLAGS)
 LIBS="$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS $LIBS $TLIBS"
 AC_SUBST(LIBS)
