@@ -410,7 +410,7 @@ fasload(object faslfile) {
   struct scnhdr *sec1,*sec,*sece;
   struct syment *sy1,*sye;
   struct reloc *rel,*rele;
-  object memory, data;
+  object memory;
   FILE *fp;
   char *st1,*ste;
   int i;
