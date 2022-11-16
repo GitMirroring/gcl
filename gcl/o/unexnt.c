@@ -780,7 +780,7 @@ map_in_heap (char *filename)
     }
     
   size = get_committed_heap_size ();
-  file_base = MapViewOfFileEx (file_mapping, FILE_MAP_COPY|FILE_MAP_EXECUTE, 0,
+  file_base = MapViewOfFileEx (file_mapping, FILE_MAP_ALL_ACCESS, 0,
 			       heap_index_in_executable, size,
 			       get_heap_start ());
   if (file_base != 0) 
