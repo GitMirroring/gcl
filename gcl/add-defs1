@@ -45,8 +45,8 @@ echo $1 > machine
 ####### insert the h/machine.defs file ############
   cat h/$1.defs >> makedefs
   if [ -f makedefsafter ] ; then cat makedefsafter >> makedefs ; fi
-  if [ -f ${HOME}/local_gcl.defs ] ; then
-    cat ${HOME}/local_gcl.defs >> makedefs
+  if [ -f "${HOME}/local_gcl.defs" ] ; then
+    cat "${HOME}/local_gcl.defs" >> makedefs
   fi
 
   echo "" >> makedefs
@@ -66,8 +66,8 @@ echo $1 > machine
 # Copy the config.h over.
 
 cat h/$1.h > tmpx
-if [ -f ${HOME}/local_gcl.h ] ; then
- cat  ${HOME}/local_gcl.h >> tmpx
+if [ -f "${HOME}/local_gcl.h" ] ; then
+ cat  "${HOME}/local_gcl.h" >> tmpx
 fi
 
 if fgrep =unknown makedefs > /dev/null ;
