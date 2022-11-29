@@ -990,10 +990,10 @@ allocate_heap (void)
 #endif
 
   void *base,*ptr;
-  unsigned long inc=(1UL<<31);
+  unsigned long min=(1UL<<30),inc=min<<1;
 
-  base=probe_base(my_endbss,PAGESIZE,(unsigned long)my_endbss);
-  reserved_heap_size=probe_heap_size(base,inc+PAGESIZE,inc);
+  base=probe_base(my_endbss,min,(unsigned long)my_endbss);
+  reserved_heap_size=probe_heap_size(base,inc+min,inc);
   ptr = VirtualAlloc ((void *) base,get_reserved_heap_size (),MEM_RESERVE,PAGE_NOACCESS);
   /* printf("probe results: %lu at %p\n",reserved_heap_size,ptr); */
 
