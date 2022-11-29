@@ -937,7 +937,7 @@ unsigned long
 probe_heap_size(void *base,unsigned long try,unsigned long inc) {
   void *r;
   if (!(r=VirtualAlloc(base,try,MEM_RESERVE,PAGE_NOACCESS)))
-    return inc<2 ? try-inc : probe_heap_size(base,try-inc,inc>>1,max);
+    return inc<2 ? try-inc : probe_heap_size(base,try-inc,inc>>1);
   VirtualFree (r, 0, MEM_RELEASE);
   return probe_heap_size(base,try+inc,inc);
 }
