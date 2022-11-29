@@ -30,7 +30,7 @@ License for more details.
 void setup_stream_buffer(object);
 object make_two_way_stream(object, object);
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(__CYGWIN__)
 
 #include<windows.h>
 #include <fcntl.h>
@@ -157,9 +157,17 @@ void run_process ( char *name )
 
     
     /* Connect up the Lisp objects with the pipes. */
-    ofd = _get_osfhandle ( (int)hChildStdoutRead, _O_RDONLY | _O_TEXT );
+    ofd = _get_osfhandle ( (int)hChildStdoutRead
+#ifdef __CYGWIN__
+			   , _O_RDONLY | _O_TEXT
+#endif
+			   );
     ofp = fdopen ( ofd, "r" );
-    ifd = _get_osfhandle ( (int)hChildStdinWrite, _O_WRONLY | _O_TEXT );
+    ifd = _get_osfhandle ( (int)hChildStdinWrite
+#ifdef __CYGWIN__
+			   , _O_WRONLY | _O_TEXT
+#endif
+			   );
     ifp = fdopen ( ifd, "w" );
 
 #if 0
