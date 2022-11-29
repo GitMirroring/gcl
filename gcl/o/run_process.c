@@ -157,10 +157,10 @@ void run_process ( char *name )
 
     
     /* Connect up the Lisp objects with the pipes. */
-    ofd = _open_osfhandle ( (int)hChildStdoutRead, _O_RDONLY | _O_TEXT );
-    ofp = _fdopen ( ofd, "r" );
-    ifd = _open_osfhandle ( (int)hChildStdinWrite, _O_WRONLY | _O_TEXT );
-    ifp = _fdopen ( ifd, "w" );
+    ofd = _get_osfhandle ( (int)hChildStdoutRead, _O_RDONLY | _O_TEXT );
+    ofp = fdopen ( ofd, "r" );
+    ifd = _get_osfhandle ( (int)hChildStdinWrite, _O_WRONLY | _O_TEXT );
+    ifp = fdopen ( ifd, "w" );
 
 #if 0
     {
@@ -215,7 +215,8 @@ void PrepAndLaunchRedirectedChild (
                            NULL,
                            NULL,
                            TRUE,
-                           CREATE_NEW_CONSOLE,
+			   0,
+                           /* CREATE_NEW_CONSOLE, */
                            NULL,
                            NULL,
                            &startup_info,

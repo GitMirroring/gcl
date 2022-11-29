@@ -4,7 +4,7 @@
 
 typedef unsigned char  uc;
 typedef unsigned short us;
-typedef unsigned long  ul;
+typedef unsigned int  ul;
 
 struct filehdr {
   us f_magic;	/* magic number			*/
@@ -71,6 +71,10 @@ struct reloc {
 #define R_SECREL32    0x000B  /* Currently ignored, used only for debugging strings FIXME */
 #define R_PCRLONG     0x0014  /* 32-bit reference pc relative to the symbols virtual address */
 
+#define IMAGE_REL_AMD64_REL32  0x0004  /* 32-bit reference pc relative to the symbols virtual address */
+#define IMAGE_REL_AMD64_ADDR64 0x0001  /* The 64-bit VA of the relocation target */
+#define IMAGE_REL_AMD64_ADDR32NB 0x0003  /* The 32-bit address without an image base (RVA) */
+
 struct syment {
   union {
     char n_name[8];
@@ -115,10 +119,13 @@ add_val(ul *w,ul m,ul v) {
 }
 
 
-static void
-relocate(struct scnhdr *sec,struct reloc *rel,struct syment *sym) {
+static unsigned long long self_ibase;
+#define sym_lvalue(sym_) (!sym_->n_scnum ? self_ibase+sym_->n_value : (unsigned long long)start+sym_->n_value)
 
-  ul *where=(void *)(sec->s_paddr+rel->r.r_vaddr);
+static void
+relocate(struct scnhdr *sec,struct reloc *rel,struct syment *sym,void *start) {
+
+  void *where=start+(sec->s_paddr+rel->r.r_vaddr);
 
   switch(rel->r_type) {
 
@@ -126,14 +133,22 @@ relocate(struct scnhdr *sec,struct reloc *rel,struct syment *sym) {
   case R_SECREL32:
     break;
 
+  case IMAGE_REL_AMD64_ADDR32NB:
+    add_val(where,~0L,start+sym->n_value);
+    break;
+
+  case IMAGE_REL_AMD64_ADDR64:
+    add_val(where,~0L,sym_lvalue(sym));
+    add_val(where+1,~0L,sym_lvalue(sym)>>32);
+    break;
+
   case R_DIR32:
-    add_val(where,~0L,sym->n_value);
-    /* *where+=sym->n_value; */
+    add_val(where,~0L,sym_lvalue(sym));
     break;
 
   case R_PCRLONG:
-    store_val(where,~0L,sym->n_value-(ul)(where+1));
-    /* *where=sym->n_value-(ul)(where+1); */
+  case IMAGE_REL_AMD64_REL32:
+    add_val(where,~0L,(ul)((void *)sym_lvalue(sym)-(void *)(where+1)));
     break;
 
   default:
@@ -212,9 +227,8 @@ load_memory(struct scnhdr *sec1,struct scnhdr *sece,void *st) {
   memory->cfd.cfd_start=alloc_code_space(sz,-1UL);
 
   for (sec=sec1;sec<sece;sec++) {
-    sec->s_paddr+=(ul)memory->cfd.cfd_start;
     if (LOAD_SEC(sec))
-      memcpy((void *)sec->s_paddr,st+sec->s_scnptr,sec->s_size);
+      memcpy((void *)memory->cfd.cfd_start+sec->s_paddr,st+sec->s_scnptr,sec->s_size);
   }
 
   END_NO_INTERRUPT;
@@ -234,7 +248,8 @@ load_self_symbols() {
   struct opthdr *h;
   struct node *a;
   char *st1,*st;
-  ul ns,sl,jj;
+  ul ns,sl;
+  unsigned long jj;
 
   massert(f=fopen(kcl_self,"r"));
   massert(v1=get_mmap(f,&ve));
@@ -245,7 +260,7 @@ load_self_symbols() {
   fhp=v+4;
   h=(void *)(fhp+1);
   massert(h->h_magic==0x10b || h->h_magic==0x20b);
-  massert(h->h_magic==0x10b || !h->h_dbase); /*We cannot handle a 64bit load address*/
+  self_ibase=(((unsigned long)h->h_ibase)<<32);
 
   sec1=(void *)(fhp+1)+fhp->f_opthdr;
   sece=sec1+fhp->f_nscns;
@@ -280,7 +295,7 @@ load_self_symbols() {
     NM(sym,st1,s,strcpy(st,s));
     
     sec=sec1+sym->n_scnum-1;
-    jj=sym->n_value+sec->s_vaddr+h->h_ibase;
+    jj=self_ibase+sym->n_value+sec->s_vaddr+h->h_dbase;
     
 #ifdef FIX_ADDRESS
     FIX_ADDRESS(jj);
@@ -305,7 +320,7 @@ load_self_symbols() {
     NM(sym,st1,s,strcpy(st,s));
 
     sec=sec1+sym->n_scnum-1;
-    jj=sym->n_value+sec->s_vaddr+h->h_ibase;
+    jj=self_ibase+sym->n_value+sec->s_vaddr+h->h_dbase;
 
 #ifdef FIX_ADDRESS
     FIX_ADDRESS(jj);
@@ -438,7 +453,7 @@ fasload(object faslfile) {
   for (sec=sec1;sec<sece;sec++)
     if (sec->s_flags&0xe0)
       for (rel=st+sec->s_relptr,rele=rel+(sec->s_flags&0x1000000 ? rel->r.r_count : sec->s_nreloc);rel<rele;rel++)
-	relocate(sec,rel,sy1+rel->r_symndx);
+	relocate(sec,rel,sy1+rel->r_symndx,memory->cfd.cfd_start);
   
   fseek(fp,(void *)ste-st,0);
   while ((i = getc(fp)) == 0);
