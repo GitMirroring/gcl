@@ -32,8 +32,8 @@ echo $1 > machine
   rm -f makedefs
   cp makedefc makedefs
   if [ -d ${PWD}/unixport ] ; 
-   then  echo "GCLDIR=${PWD}" >> makedefs ;
-   else echo "GCLDIR=`pwd`" >> makedefs ;
+   then  echo "GCLDIR=\"${PWD}\"" >> makedefs ;
+   else echo "GCLDIR=\"`pwd`\"" >> makedefs ;
   fi
   echo "SHELL=/bin/sh" >> makedefs
   echo "MACHINE=$1"  >> makedefs

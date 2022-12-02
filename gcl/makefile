@@ -141,7 +141,7 @@ command:
 	rm -f bin/gcl xbin/gcl
 	MGCLDIR=`echo $(GCLDIR) | sed -e 'sX^\([a-z]\):X/\1Xg'` ; \
 	GCLDIR=`echo $(GCLDIR)` ; \
-	$(MAKE) install-command "INSTALL_LIB_DIR=$$GCLDIR" "prefix=$$GCLDIR" "BINDIR=$$MGCLDIR/$(PORTDIR)"
+	$(MAKE) install-command "INSTALL_LIB_DIR=\"$$GCLDIR\"" "prefix=\"$$GCLDIR\"" "BINDIR=\"$$MGCLDIR/$(PORTDIR)\""
 	(cd xbin ; cp ../bin/gcl .)
 
 #	GCLDIR=`echo $(GCLDIR) | sed -e 'sX^/cygdrive/\([a-z]\)X\1!Xg' -e 'sX^//\([a-z]\)X\1!Xg'` ; \
@@ -154,9 +154,9 @@ LISP_LIB=cmpnew/gcl_collectfn.o cmpnew/gcl_collectfn.lsp xgcl-2/package.lisp pcl
 install-command:
 	rm -f $(DESTDIR)$(prefix)/bin/gcl
 	(echo '#!/bin/sh' ; \
-	echo exec $(BINDIR)/$(FLISP)$(EXE) \\ ; \
-	echo '   -dir' $(INSTALL_LIB_DIR)/unixport/ \\ ; \
-	echo '   -libdir' $(INSTALL_LIB_DIR)/ \\ ; \
+	echo exec "\"$(BINDIR)/$(FLISP)$(EXE)\"" \\ ; \
+	echo '   -dir' "\"$(INSTALL_LIB_DIR)/unixport/\"" \\ ; \
+	echo '   -libdir' "\"$(INSTALL_LIB_DIR)/\"" \\ ; \
 	echo '   -eval '\''(setq si::*allow-gzipped-file* t)'\' \\ ;\
 	! [ -d "$(TK_CONFIG_PREFIX)" ] || echo '   -eval '\''(setq si::*tk-library* '\"$(TK_LIBRARY)\"')'\' \\;\
 	echo '     '\"\$$@\" ) > $(DESTDIR)$(prefix)/bin/gcl;

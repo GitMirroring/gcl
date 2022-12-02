@@ -14,7 +14,7 @@ CMPDIR	= ../cmpnew
 XDIR	= ../xgcl-2
 CLCSDIR = ../clcs
 PCLDIR  = ../pcl
-PORTDIR = $(shell pwd)
+PORTDIR = "$(shell pwd)"
 
 LD_FLAGS:=$(LDFLAGS)
 ifneq ($(FIRST_FILE),)

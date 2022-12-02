@@ -22,8 +22,8 @@ echo $1 > machine
   echo "# constructed by ${USER} using: $0 $1 $2 $3 $4 $5" >> makdefs
 
   if [ -d ${PWD}/unixport ] ; 
-   then  echo "GCLDIR=${PWD}" >> makedefs ;
-   else echo "GCLDIR=`pwd`" >> makedefs ;
+   then  echo "GCLDIR=\"${PWD}\"" >> makedefs ;
+   else echo "GCLDIR=\"`pwd`\"" >> makedefs ;
   fi
   echo "SHELL=/bin/sh" >> makedefs
   echo "MACHINE=$1"  >> makedefs

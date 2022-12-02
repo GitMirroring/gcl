@@ -483,7 +483,7 @@ Cannot compile ~a.~%"
 	  (t (setq dir ".")))
     (setq na  (namestring
 	       (make-pathname :name name :type (pathname-type(first args)))))
-   (format nil  "~a ~a -I~a ~a ~a -c ~a -o ~a ~a"
+   (format nil  "~a ~a -I\"~a\" ~a ~a -c \"~a\" -o \"~a\" ~a"
 	   (concatenate 'string
 			(if *prof-p* (remove-flag "-fomit-frame-pointer" *cc*) *cc*)
 			#+large-memory-model(if *large-memory-model-p* " -mcmodel=large " "")
