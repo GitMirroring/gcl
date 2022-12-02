@@ -231,7 +231,7 @@ DEFUN_NEW("FNSTSW",object,fSfnstsw,SI,0,0,NONE,II,OO,OO,OO,(void),"") {
 DEFUN_NEW("STMXCSR",object,fSstmxcsr,SI,0,0,NONE,II,OO,OO,OO,(void),"") {
   volatile unsigned int t=0;
   ASM ("stmxcsr %0" :: "m" (t));
-  RETURN1((object)t);
+  RETURN1((object)(long)t);
 }
 
 #endif

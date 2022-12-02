@@ -158,9 +158,9 @@ void run_process ( char *name )
 
     
     /* Connect up the Lisp objects with the pipes. */
-    ofd = _get_osfhandle ( (int)hChildStdoutRead);
+    ofd = _get_osfhandle ( (long)hChildStdoutRead);
     ofp = fdopen ( ofd, "r" );
-    ifd = _get_osfhandle ( (int)hChildStdinWrite);
+    ifd = _get_osfhandle ( (long)hChildStdinWrite);
     ifp = fdopen ( ifd, "w" );
 
 #if 0
