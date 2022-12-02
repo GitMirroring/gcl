@@ -41,7 +41,7 @@ extern DBEGIN_TY _dbegin;
 
 #define HAVE_SIGACTION
 /* a noop */
-#define SA_ONSTACK 0
+/* #define SA_ONSTACK 0 */
 
 #define brk(x) printf("not doing break\n");
 #include <stdarg.h>     
