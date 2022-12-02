@@ -4660,6 +4660,9 @@ case $use in
 	assert_arg_to_cflags -fno-zero-initialized-in-bss
 	assert_arg_to_cflags -mms-bitfields
         assert_arg_to_ldflags -Wl,--stack,8000000
+	for i in git.tag h/comprefs.h add-defs add-defs1 xbin/move-if-changed xbin/append;  do
+	    cat $i | sed 's,\r,,g' >tmp && mv tmp $i && chmod +x $i;
+	done
 	OLD_LDFLAGS=$LDFLAGS
 	assert_arg_to_ldflags -pg
 	GPL_FLAG="-pg"
