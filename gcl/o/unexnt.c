@@ -796,7 +796,7 @@ map_in_heap (char *filename)
   CloseHandle (file_mapping);
 
   if (VirtualAlloc (get_heap_start (), get_committed_heap_size (),
-		    MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE) == NULL)
+		    MEM_COMMIT, PAGE_EXECUTE_READWRITE) == NULL)
     {
       i = GetLastError ();
       do_gcl_abort();
@@ -925,12 +925,12 @@ get_data_end (void)
 }
 
 void *
-probe_base(void *base,unsigned long try,unsigned long inc) {
+probe_base(void *base,unsigned long try,unsigned long inc,unsigned long c) {
   void *r;
   if (!(r=VirtualAlloc(base,try,MEM_RESERVE,PAGE_NOACCESS)))
-    return probe_base(base+inc,try,inc);
+    return probe_base(base+inc,try,inc,c+1);
   VirtualFree (r, 0, MEM_RELEASE);
-  return inc<2 ? base : probe_base(base-inc,try,inc>>1);
+  return !c || inc<2 ? base : probe_base(base-inc,try,inc>>1,c+1);
 }
 
 unsigned long
@@ -982,13 +982,14 @@ allocate_heap (void)
      still a pretty decent arena to play in!  */
 
   void *base,*ptr;
-  unsigned long min=(1UL<<30),inc=min<<1;
+  unsigned long min=PAGESIZE,inc=(1UL<<31);
 
 #if defined(__CYGWIN__)
-  base=probe_base(my_endbss,min,(unsigned long)my_endbss);
+  ptr=my_endbss;
 #else
-  base=(void *)0x20000000;
+  ptr=(void *)0x5000000;
 #endif
+  base=probe_base(ptr,min,(unsigned long)my_endbss,0);
   reserved_heap_size=probe_heap_size(base,inc+min,inc);
   ptr = VirtualAlloc ((void *) base,get_reserved_heap_size (),MEM_RESERVE,PAGE_NOACCESS);
   /* printf("probe results: %lu at %p\n",reserved_heap_size,ptr); */
@@ -1094,8 +1095,8 @@ recreate_heap (char *executable_path) {
   /* First reserve the upper part of our heap.  (We reserve first
      because there have been problems in the past where doing the
      mapping first has loaded DLLs into the VA space of our heap.)  */
-  tmp = VirtualAlloc ((void *) get_heap_end (),
-		      get_reserved_heap_size () - get_committed_heap_size (),
+  tmp = VirtualAlloc ((void *) get_heap_start (),
+		      get_reserved_heap_size (),
 		      MEM_RESERVE,
 		      PAGE_NOACCESS);
   if (!tmp)
