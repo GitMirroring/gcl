@@ -119,13 +119,13 @@ add_val(ul *w,ul m,ul v) {
 }
 
 
-static unsigned long long self_ibase;
-#define sym_lvalue(sym_) (!sym_->n_scnum ? self_ibase+sym_->n_value : (unsigned long long)start+sym_->n_value)
+static unsigned long self_ibase;
+#define sym_lvalue(sym_) (!sym_->n_scnum ? self_ibase+sym_->n_value : (unsigned long)start+sym_->n_value)
 
 static void
 relocate(struct scnhdr *sec,struct reloc *rel,struct syment *sym,void *start) {
 
-  void *where=start+(sec->s_paddr+rel->r.r_vaddr);
+  ul *where=start+(sec->s_paddr+rel->r.r_vaddr);
 
   switch(rel->r_type) {
 
@@ -133,15 +133,14 @@ relocate(struct scnhdr *sec,struct reloc *rel,struct syment *sym,void *start) {
   case R_SECREL32:
     break;
 
-  case IMAGE_REL_AMD64_ADDR32NB:
-    add_val(where,~0L,start+sym->n_value);
-    break;
-
   case IMAGE_REL_AMD64_ADDR64:
     add_val(where,~0L,sym_lvalue(sym));
+#if SIZEOF_LONG == 8
     add_val(where+1,~0L,sym_lvalue(sym)>>32);
+#endif
     break;
 
+  case IMAGE_REL_AMD64_ADDR32NB:
   case R_DIR32:
     add_val(where,~0L,sym_lvalue(sym));
     break;
@@ -176,11 +175,11 @@ find_init_address(struct syment *sym,struct syment *sye,ul *ptr,char *st1) {
 }    
 
 static ul
-get_sym_value(const char *name) {
+get_sym_svalue(const char *name) {
 
   struct node *answ;
 
-  return (answ=find_sym_ptable(name)) ? answ->address :
+  return (answ=find_sym_ptable(name)) ? answ->address-self_ibase :
     ({massert(!emsg("Unrelocated non-local symbol: %s\n",name));0;});
 
 }
@@ -197,7 +196,7 @@ relocate_symbols(struct syment *sym,struct syment *sye,struct scnhdr *sec1,char 
 
     else if (!sym->n_scnum) {
 
-      NM(sym,st1,s,value=get_sym_value(s));
+      NM(sym,st1,s,value=get_sym_svalue(s));
 
       sym->n_value=value;
 
@@ -260,7 +259,11 @@ load_self_symbols() {
   fhp=v+4;
   h=(void *)(fhp+1);
   massert(h->h_magic==0x10b || h->h_magic==0x20b);
-  self_ibase=(((unsigned long)h->h_ibase)<<32);
+  self_ibase=h->h_ibase;
+#if SIZEOF_LONG == 8
+  if (h->h_magic==0x20b)
+    self_ibase=(self_ibase<<32)+h->h_dbase;
+#endif
 
   sec1=(void *)(fhp+1)+fhp->f_opthdr;
   sece=sec1+fhp->f_nscns;
@@ -295,7 +298,7 @@ load_self_symbols() {
     NM(sym,st1,s,strcpy(st,s));
     
     sec=sec1+sym->n_scnum-1;
-    jj=self_ibase+sym->n_value+sec->s_vaddr+h->h_dbase;
+    jj=self_ibase+sym->n_value+sec->s_vaddr;
     
 #ifdef FIX_ADDRESS
     FIX_ADDRESS(jj);
@@ -320,7 +323,7 @@ load_self_symbols() {
     NM(sym,st1,s,strcpy(st,s));
 
     sec=sec1+sym->n_scnum-1;
-    jj=self_ibase+sym->n_value+sec->s_vaddr+h->h_dbase;
+    jj=self_ibase+sym->n_value+sec->s_vaddr;
 
 #ifdef FIX_ADDRESS
     FIX_ADDRESS(jj);
