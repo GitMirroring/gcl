@@ -141,6 +141,9 @@ relocate(struct scnhdr *sec,struct reloc *rel,struct syment *sym,void *start) {
     break;
 
   case IMAGE_REL_AMD64_ADDR32NB:
+    add_val(where,~0L,sym->n_value);
+    break;
+
   case R_DIR32:
     add_val(where,~0L,sym_lvalue(sym));
     break;
