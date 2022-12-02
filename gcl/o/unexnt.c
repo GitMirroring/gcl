@@ -981,18 +981,14 @@ allocate_heap (void)
      the region below the 256MB line for our malloc arena - 229MB is
      still a pretty decent arena to play in!  */
 
-#if defined(__CYGWIN__)
-#define PROBE_BASE NULL
-#elif defined(__MINGW32__)
-#define PROBE_BASE (void *)0x20000000
-#else
-#error Need PROBE_BASE
-#endif
-
   void *base,*ptr;
   unsigned long min=(1UL<<30),inc=min<<1;
 
+#if defined(__CYGWIN__)
   base=probe_base(my_endbss,min,(unsigned long)my_endbss);
+#else
+  base=(void *)0x20000000;
+#endif
   reserved_heap_size=probe_heap_size(base,inc+min,inc);
   ptr = VirtualAlloc ((void *) base,get_reserved_heap_size (),MEM_RESERVE,PAGE_NOACCESS);
   /* printf("probe results: %lu at %p\n",reserved_heap_size,ptr); */
