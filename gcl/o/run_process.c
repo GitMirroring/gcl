@@ -34,6 +34,7 @@ object make_two_way_stream(object, object);
 
 #include<windows.h>
 #include <fcntl.h>
+#include <io.h>
 #define PIPE_BUFFER_SIZE 2048
 
 void DisplayError ( char *pszAPI );
@@ -157,17 +158,9 @@ void run_process ( char *name )
 
     
     /* Connect up the Lisp objects with the pipes. */
-    ofd = _get_osfhandle ( (int)hChildStdoutRead
-#ifdef __CYGWIN__
-			   , _O_RDONLY | _O_TEXT
-#endif
-			   );
+    ofd = _get_osfhandle ( (int)hChildStdoutRead);
     ofp = fdopen ( ofd, "r" );
-    ifd = _get_osfhandle ( (int)hChildStdinWrite
-#ifdef __CYGWIN__
-			   , _O_WRONLY | _O_TEXT
-#endif
-			   );
+    ifd = _get_osfhandle ( (int)hChildStdinWrite);
     ifp = fdopen ( ifd, "w" );
 
 #if 0
