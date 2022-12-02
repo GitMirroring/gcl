@@ -78,10 +78,7 @@ vsystem(const char *command) {
 #include <tchar.h>
 #include <time.h>
 #include <windows.h>
-
-#ifdef __CYGWIN__
 #include <sys/cygwin.h>
-#endif
 
 int
 vsystem(const char *command) {
@@ -91,23 +88,13 @@ vsystem(const char *command) {
   unsigned int e;
   char *cmd=NULL,*r;
   
-  if (!strpbrk(command,"\"'$<>")) {
-    
-#ifdef __CYGWIN__
-    massert((r=strpbrk(command," \n\t"))-command<sizeof(FN2));
-    memcpy(FN2,command,r-command);
-    FN2[r-command]=0;
-    cygwin_conv_path(CCP_POSIX_TO_WIN_A,FN2,FN3,sizeof(FN3));
-    massert(snprintf(FN1,sizeof(FN1),"%s %s",FN3,r)>=0);
-    command=FN1;
-#endif
-    
-  } else {
-    
-    massert(snprintf(FN1,sizeof(FN1),"cmd /c %s",command)>=0);
-    command=FN1;
-    
-  }
+  massert((r=strpbrk(command," \n\t"))-command<sizeof(FN2));
+  memcpy(FN2,command,r-command);
+  FN2[r-command]=0;
+  cygwin_conv_path(CCP_POSIX_TO_WIN_A,FN2,FN3,sizeof(FN3));
+  massert(snprintf(FN1,sizeof(FN1),"%s %s",FN3,r)>=0);
+  command=FN1;
+
 
   s.cb=sizeof(s);  
   massert(CreateProcess(cmd,(void *)command,NULL,NULL,FALSE,0,NULL,NULL,&s,&p));
