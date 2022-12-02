@@ -164,9 +164,11 @@ find_init_address(struct syment *sym,struct syment *sye,ul *ptr,char *st1) {
 
   for(;sym<sye;sym++) {
 
-    if (*ptr==0 && sym->n_scnum == 1 && sym->n_value)
-      if (!strncmp(sym->n.n.n_zeroes ? sym->n.n_name : st1+sym->n.n.n_offset,"_init_",6))
+    if (*ptr==0 && sym->n_scnum == 1 && sym->n_value) {
+      char *s=sym->n.n.n_zeroes ? sym->n.n_name : st1+sym->n.n.n_offset;
+      if (!strncmp(s,"init_",5) || !strncmp(s,"_init_",6))
 	*ptr=sym->n_value;
+    }
 
     sym += (sym)->n_numaux;
 
