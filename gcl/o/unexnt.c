@@ -286,7 +286,7 @@ unexec (char *new_name, char *old_name, void *start_data, void *start_bss,
   if (!open_input_file (&in_file, in_filename))
     {
       printf ("Failed to open %s (%u)...bailing.\n",
-	      in_filename, GetLastError ());
+	      in_filename, (unsigned)GetLastError ());
       do_gcl_abort();
     }
 
@@ -307,7 +307,7 @@ unexec (char *new_name, char *old_name, void *start_data, void *start_bss,
   if (!open_output_file (&out_file, out_filename, size))
     {
       printf ("Failed to open %s (%u)...bailing.\n",
-	      out_filename, GetLastError ());
+	      out_filename, (unsigned)GetLastError ());
       do_gcl_abort();
     }
 
@@ -551,7 +551,7 @@ get_section_info (file_data *p_infile)
   if (nt_header->Signature != IMAGE_NT_SIGNATURE) 
     {
       printf ("Invalid IMAGE_NT_SIGNATURE 0x%x in %s...bailing.\n",
-	      nt_header->Signature, p_infile->name);
+	      (int)nt_header->Signature, p_infile->name);
     }
 
   /* Flip through the sections for .data and .bss ...  */
