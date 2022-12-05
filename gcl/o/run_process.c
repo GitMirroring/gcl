@@ -66,6 +66,11 @@ void run_process ( char *name )
     CHAR chBuf[60] = "button .hello\npack .hello\n\0";
      /*CHAR chBuf[60] = "button .hello\n\0"; */
 #endif
+
+#if defined (__CYGWIN__)
+    FEerror("RUN-PROCESS not supported on cygwin do to the absense of _open_osfhandle or equivalent",0);
+    return;
+#endif
     
     /* Set up the security attributes struct. */
     sec_att.nLength= sizeof(SECURITY_ATTRIBUTES);
@@ -158,10 +163,10 @@ void run_process ( char *name )
 
     
     /* Connect up the Lisp objects with the pipes. */
-    ofd = _get_osfhandle ( (long)hChildStdoutRead);
-    ofp = fdopen ( ofd, "r" );
-    ifd = _get_osfhandle ( (long)hChildStdinWrite);
-    ifp = fdopen ( ifd, "w" );
+    ofd = _open_osfhandle ( (int)hChildStdoutRead, _O_RDONLY | _O_TEXT );
+    ofp = _fdopen ( ofd, "r" );
+    ifd = _open_osfhandle ( (int)hChildStdinWrite, _O_RDONLY | _O_TEXT );
+    ifp = _fdopen ( ifd, "w" );
 
 #if 0
     {
