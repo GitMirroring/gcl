@@ -283,7 +283,7 @@ void siLrun_process()
       if ( i != 0 ) {
         strcat ( cmdline, " ");
       }
-      strcat ( cmdline,  vs_base[i]->st.st_self );
+      strncat ( cmdline,  vs_base[i]->st.st_self,vs_base[i]->st.st_fillp );
       emsg("siLrun_process: cmdline=%s\n", cmdline );
       argc++;
     }
