@@ -162,11 +162,13 @@ void run_process ( char *name )
 #endif
 
     
+#if !defined (__CYGWIN__)
     /* Connect up the Lisp objects with the pipes. */
     ofd = _open_osfhandle ( (int)hChildStdoutRead, _O_RDONLY | _O_TEXT );
     ofp = _fdopen ( ofd, "r" );
     ifd = _open_osfhandle ( (int)hChildStdinWrite, _O_RDONLY | _O_TEXT );
     ifp = _fdopen ( ifd, "w" );
+#endif
 
 #if 0
     {
