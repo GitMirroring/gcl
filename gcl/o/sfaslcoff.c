@@ -218,21 +218,36 @@ load_memory(struct scnhdr *sec1,struct scnhdr *sece,void *st) {
 
   object memory;
   struct scnhdr *sec;
-  ul sz;
+  ul sz,a,ma;
 
   BEGIN_NO_INTERRUPT;
 
-  for (sec=sec1,sz=0;sec<sece;sz+=sec->s_size,sec++)
-    if (ALLOC_SEC(sec))
+  for (sec=sec1,ma=sz=0;sec<sece;sec++)
+    if (ALLOC_SEC(sec)) {
+
+      a=1<<(((sec->s_flags>>20)&0xf)-1);
+      massert(a<=8192);
+      ma=ma ? ma : a;
+      sz=(sz+a-1)&~(a-l);
       sec->s_paddr=sz;
+      sz+=sec->s_size;
+
+    }
+
+  ma=ma>sizeof(struct contblock) ? ma-1 : 0;
+  sz+=ma;
 
   memory=new_cfdata();
   memory->cfd.cfd_size=sz;
   memory->cfd.cfd_start=alloc_code_space(sz,-1UL);
 
+  a=(((unsigned long)memory->cfd.cfd_start+ma)&~ma)-((unsigned long)memory->cfd.cfd_start);
   for (sec=sec1;sec<sece;sec++) {
-    if (LOAD_SEC(sec))
-      memcpy((void *)memory->cfd.cfd_start+sec->s_paddr,st+sec->s_scnptr,sec->s_size);
+    if (ALLOC_SEC(sec)) {
+      sec->s_paddr+=a;
+      if (LOAD_SEC(sec))
+	memcpy((void *)memory->cfd.cfd_start+sec->s_paddr,st+sec->s_scnptr,sec->s_size);
+    }
   }
 
   END_NO_INTERRUPT;
