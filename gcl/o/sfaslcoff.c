@@ -228,7 +228,7 @@ load_memory(struct scnhdr *sec1,struct scnhdr *sece,void *st) {
       a=1<<(((sec->s_flags>>20)&0xf)-1);
       massert(a<=8192);
       ma=ma ? ma : a;
-      sz=(sz+a-1)&~(a-l);
+      sz=(sz+a-1)&~(a-1);
       sec->s_paddr=sz;
       sz+=sec->s_size;
 
