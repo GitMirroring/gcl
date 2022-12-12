@@ -513,14 +513,14 @@ Cannot compile ~a.~%"
 			 na na na))	
 			    
 	     #+(or winnt bsd) ""; "-w"
-	     #-(or aix3 bsd winnt irix3) " 2> /dev/null ")
+	     #-(or aix3 bsd winnt irix3) "");" 2> /dev/null "
 		  
 		 
 	   )
    )
   )
 
-#+winnt (defun prep-win-path-acc ( s acc)
+#+(or cygwin winnt) (defun prep-win-path-acc ( s acc)
   (let ((pos (search "\~" s)))
     (if pos 
 	(let ((start (subseq s 0 (1+ pos)))
@@ -534,7 +534,7 @@ Cannot compile ~a.~%"
      nil
      #+vax "~a ~@[~*-O ~]-S -I. -w ~a ; as -J -W -o ~A ~A"
      #+(or system-v e15 dgux sgi ) "~a ~@[~*-O ~]-c -I. ~a 2> /dev/null"
-     #+winnt (prep-win-path-acc (compiler-command c-pathname o-pathname) "")
+     #+(or cygwin winnt) (prep-win-path-acc (compiler-command c-pathname o-pathname) "")
      #-(or vax system-v e15 dgux sgi) (compiler-command c-pathname o-pathname)
      *cc*
      (if (or (= *speed* 2) (= *speed* 3)) t nil)
