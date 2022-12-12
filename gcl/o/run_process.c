@@ -30,10 +30,11 @@ License for more details.
 void setup_stream_buffer(object);
 object make_two_way_stream(object, object);
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(__CYGWIN__)
 
 #include<windows.h>
 #include <fcntl.h>
+#include <io.h>
 #define PIPE_BUFFER_SIZE 2048
 
 void DisplayError ( char *pszAPI );
@@ -64,6 +65,11 @@ void run_process ( char *name )
     /*CHAR chBuf[1024] = "puts $env(PATH)\n\0";*/
     CHAR chBuf[60] = "button .hello\npack .hello\n\0";
      /*CHAR chBuf[60] = "button .hello\n\0"; */
+#endif
+
+#if defined (__CYGWIN__)
+    FEerror("RUN-PROCESS not supported on cygwin do to the absense of _open_osfhandle or equivalent",0);
+    return;
 #endif
     
     /* Set up the security attributes struct. */
@@ -156,11 +162,13 @@ void run_process ( char *name )
 #endif
 
     
+#if !defined (__CYGWIN__)
     /* Connect up the Lisp objects with the pipes. */
     ofd = _open_osfhandle ( (int)hChildStdoutRead, _O_RDONLY | _O_TEXT );
     ofp = _fdopen ( ofd, "r" );
-    ifd = _open_osfhandle ( (int)hChildStdinWrite, _O_WRONLY | _O_TEXT );
+    ifd = _open_osfhandle ( (int)hChildStdinWrite, _O_RDONLY | _O_TEXT );
     ifp = _fdopen ( ifd, "w" );
+#endif
 
 #if 0
     {
@@ -215,7 +223,8 @@ void PrepAndLaunchRedirectedChild (
                            NULL,
                            NULL,
                            TRUE,
-                           CREATE_NEW_CONSOLE,
+			   0,
+                           /* CREATE_NEW_CONSOLE, */
                            NULL,
                            NULL,
                            &startup_info,
@@ -276,7 +285,7 @@ void siLrun_process()
       if ( i != 0 ) {
         strcat ( cmdline, " ");
       }
-      strcat ( cmdline,  vs_base[i]->st.st_self );
+      strncat ( cmdline,  vs_base[i]->st.st_self,vs_base[i]->st.st_fillp );
       emsg("siLrun_process: cmdline=%s\n", cmdline );
       argc++;
     }
