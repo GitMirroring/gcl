@@ -3046,7 +3046,7 @@ case $canonical in
     powerpc-*-darwin*) use=powerpc-macosx;;
     *86*darwin*) use=386-macosx;;
     i*mingw*|i*msys*) use=mingw;;
-    i*cygwin*)
+    *cygwin*)
         if $CC -v 2>&1 | fgrep ming > /dev/null ;
         then use=mingw
         else use=gnuwin95
@@ -4648,11 +4648,19 @@ fi
 case $use in
     *mingw*)
 	assert_arg_to_cflags -fno-zero-initialized-in-bss
-	assert_arg_to_cflags -mms-bitfields;;
+	assert_arg_to_cflags -mms-bitfields
+	OLD_LDFLAGS=$LDFLAGS
+	assert_arg_to_ldflags -pg
+	GPL_FLAG="-pg"
+	LDFLAGS=$OLD_LDFLAGS;;
     *gnuwin*)
 	assert_arg_to_cflags -fno-zero-initialized-in-bss
 	assert_arg_to_cflags -mms-bitfields
-        assert_arg_to_ldflags -Wl,--stack,8000000;;
+        assert_arg_to_ldflags -Wl,--stack,8000000
+	OLD_LDFLAGS=$LDFLAGS
+	assert_arg_to_ldflags -pg
+	GPL_FLAG="-pg"
+	LDFLAGS=$OLD_LDFLAGS;;
     386-macosx)
 #	assert_arg_to_cflags -Wno-error=implicit-function-declaration
 	add_arg_to_cflags -Wno-incomplete-setjmp-declaration
@@ -9779,7 +9787,7 @@ fi
 
 
 
-LDFLAGS="`echo $LDFLAGS | sed 's,gcl.script,../unixport/gcl.script,g'`"
+LDFLAGS="`echo $GPL_FLAG $LDFLAGS | sed 's,gcl.script,../unixport/gcl.script,g'`"
 
 LIBS="$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS $LIBS $TLIBS"
 
