@@ -944,19 +944,10 @@ vsystem(const char *command) {
   long unsigned int e;
   char *cmd=NULL,*r;
 
-  if (!strpbrk(command,"\"'$<>")) {
-
-    cmd=FN1;
-    massert((r=strpbrk(command," \n\t"))-command<sizeof(FN1));
-    memcpy(FN1,command,r-command);
-    FN1[r-command]=0;
-
-  } else {
-
-    massert(snprintf(FN1,sizeof(FN1),"cmd /c %s",command)>=0);
-    command=FN1;
-
-  }
+  /* cmd=FN1; */
+  massert((r=strpbrk(command," \n\t"))-command<sizeof(FN1));
+  memcpy(FN1,command,r-command);
+  FN1[r-command]=0;
 
   massert(CreateProcess(cmd,(void *)command,NULL,NULL,FALSE,NORMAL_PRIORITY_CLASS|CREATE_NO_WINDOW,NULL,NULL,&s,&p));
   massert(!WaitForSingleObject(p.hProcess,INFINITE));
