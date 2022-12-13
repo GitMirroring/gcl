@@ -568,7 +568,7 @@ close_stream(object strm)  {
   case smm_io:
   case smm_probe:
     deallocate_stream_buffer(strm);
-    if (pipe_designator_p(strm->sm.sm_object1)) {
+    if (pipe_designator_p(strm->sm.sm_object1))
       pclose(strm->sm.sm_fp);
     else
       fclose(strm->sm.sm_fp);
