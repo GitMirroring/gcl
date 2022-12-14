@@ -214,7 +214,7 @@ relocate_symbols(struct syment *sym,struct syment *sye,struct scnhdr *sec1,char 
 }
 
 static object
-load_memory(struct scnhdr *sec1,struct scnhdr *sece,void *st) {
+load_memory(struct scnhdr *sec1,struct scnhdr *sece,void *st,ul *init_address) {
 
   object memory;
   struct scnhdr *sec;
@@ -242,6 +242,7 @@ load_memory(struct scnhdr *sec1,struct scnhdr *sece,void *st) {
   memory->cfd.cfd_start=alloc_code_space(sz,-1UL);
 
   a=(((unsigned long)memory->cfd.cfd_start+ma)&~ma)-((unsigned long)memory->cfd.cfd_start);
+  *init_address+=a;
   for (sec=sec1;sec<sece;sec++) {
     if (ALLOC_SEC(sec)) {
       sec->s_paddr+=a;
@@ -469,7 +470,7 @@ fasload(object faslfile) {
 
   find_init_address(sy1,sye,&init_address,st1);
 	
-  memory=load_memory(sec1,sece,st);
+  memory=load_memory(sec1,sece,st,&init_address);
 
   relocate_symbols(sy1,sye,sec1,st1);  
 	
