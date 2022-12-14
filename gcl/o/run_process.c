@@ -21,6 +21,13 @@ License for more details.
 #define IN_RUN_PROCESS
 #include "include.h"
 
+#if defined(__CYGWIN__)
+#include <tchar.h>
+#include <time.h>
+#include <windows.h>
+#include <sys/cygwin.h>
+#endif
+
 #ifdef HAVE_SYS_SOCKIO_H
 #include <sys/sockio.h>
 #endif
@@ -67,11 +74,6 @@ void run_process ( char *name )
      /*CHAR chBuf[60] = "button .hello\n\0"; */
 #endif
 
-#if defined (__CYGWIN__)
-    FEerror("RUN-PROCESS not supported on cygwin do to the absense of _open_osfhandle or equivalent",0);
-    return;
-#endif
-    
     /* Set up the security attributes struct. */
     sec_att.nLength= sizeof(SECURITY_ATTRIBUTES);
     sec_att.lpSecurityDescriptor = NULL;
@@ -133,6 +135,18 @@ void run_process ( char *name )
     if ( ! CloseHandle(hChildStdoutReadTmp ) ) DisplayError ( "CloseHandle: Temporary output read" );
     if ( ! CloseHandle(hChildStdinWriteTmp ) ) DisplayError ( "CloseHandle: Temporary input write" );
 
+#if defined(__CYGWIN__)
+    {
+      char *r;
+      massert((r=strpbrk(name," \n\t"))-name<sizeof(FN2));
+      memcpy(FN2,name,r-name);
+      FN2[r-name]=0;
+      cygwin_conv_path(CCP_POSIX_TO_WIN_A,FN2,FN3,sizeof(FN3));
+      massert(snprintf(FN1,sizeof(FN1),"%s %s",FN3,r)>=0);
+      name=FN1;
+    }
+#endif
+
     PrepAndLaunchRedirectedChild ( hChildStdoutWrite,
 				   hChildStdinRead,
 				   hChildStderrWrite,
@@ -166,8 +180,23 @@ void run_process ( char *name )
     /* Connect up the Lisp objects with the pipes. */
     ofd = _open_osfhandle ( (int)hChildStdoutRead, _O_RDONLY | _O_TEXT );
     ofp = _fdopen ( ofd, "r" );
-    ifd = _open_osfhandle ( (int)hChildStdinWrite, _O_RDONLY | _O_TEXT );
+    ifd = _open_osfhandle ( (int)hChildStdinWrite, _O_WRONLY | _O_TEXT );
     ifp = _fdopen ( ifd, "w" );
+#else
+    {
+      extern int cygwin_attach_handle_to_fd(char *,int,HANDLE,mode_t,DWORD);
+      static int rpn;
+
+      massert(snprintf(FN1,sizeof(FN1),"run_process_stdin_%d",rpn)>0);
+      ofd=cygwin_attach_handle_to_fd(FN1,-1,hChildStdoutRead,0,GENERIC_READ);
+      ofp=fdopen(ofd,"r");
+      massert(snprintf(FN1,sizeof(FN1),"run_process_stdout_%d",rpn)>0);
+      ifd=cygwin_attach_handle_to_fd(FN1,-1,hChildStdinWrite,0,GENERIC_WRITE);
+      ifp=fdopen(ifd,"w");
+      rpn++;
+
+    }
+
 #endif
 
 #if 0
