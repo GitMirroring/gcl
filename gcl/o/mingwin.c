@@ -949,7 +949,7 @@ vsystem(const char *command) {
   memcpy(FN1,command,r-command);
   FN1[r-command]=0;
 
-  massert(CreateProcess(cmd,(void *)command,NULL,NULL,FALSE,NORMAL_PRIORITY_CLASS|CREATE_NO_WINDOW,NULL,NULL,&s,&p));
+  massert(CreateProcess(cmd,(void *)command,NULL,NULL,FALSE,0/* NORMAL_PRIORITY_CLASS|CREATE_NO_WINDOW */,NULL,NULL,&s,&p));
   massert(!WaitForSingleObject(p.hProcess,INFINITE));
   massert(GetExitCodeProcess(p.hProcess,&e));
   massert(CloseHandle(p.hProcess));
