@@ -135,18 +135,6 @@ void run_process ( char *name )
     if ( ! CloseHandle(hChildStdoutReadTmp ) ) DisplayError ( "CloseHandle: Temporary output read" );
     if ( ! CloseHandle(hChildStdinWriteTmp ) ) DisplayError ( "CloseHandle: Temporary input write" );
 
-#if defined(__CYGWIN__)
-    {
-      char *r;
-      massert((r=strpbrk(name," \n\t"))-name<sizeof(FN2));
-      memcpy(FN2,name,r-name);
-      FN2[r-name]=0;
-      cygwin_conv_path(CCP_POSIX_TO_WIN_A,FN2,FN3,sizeof(FN3));
-      massert(snprintf(FN1,sizeof(FN1),"%s %s",FN3,r)>=0);
-      name=FN1;
-    }
-#endif
-
     PrepAndLaunchRedirectedChild ( hChildStdoutWrite,
 				   hChildStdinRead,
 				   hChildStderrWrite,
@@ -253,7 +241,6 @@ void PrepAndLaunchRedirectedChild (
                            NULL,
                            TRUE,
 			   0,
-                           /* CREATE_NEW_CONSOLE, */
                            NULL,
                            NULL,
                            &startup_info,
@@ -294,33 +281,34 @@ void DisplayError(char *pszAPI)
     FEerror ( "RUN-PROCESS encountered problems.", 0 );
 }
 
-void siLrun_process()
-{
-    char cmdline[20480];
-    int i, nargs;
-    int old = signals_allowed;
-    int argc = 0;
+void
+siLrun_process() {
 
-    nargs = vs_top - vs_base;
-    for ( i = 0; i < nargs; i++ ) {
-      check_type_string ( &vs_base[i] );
-    }
+  int i, j;
+  int old = signals_allowed;
 
-    cmdline[0]='\0';
-    for ( i = 0; i < nargs; i++ ) {
-      if ( strlen ( cmdline ) + vs_base[i]->st.st_fillp + 2 > 20480 ) {
-	FEerror ( "RUN-PROCESS command more than 20480 characters long.", 0 );
-      }
-      if ( i != 0 ) {
-        strcat ( cmdline, " ");
-      }
-      strncat ( cmdline,  vs_base[i]->st.st_self,vs_base[i]->st.st_fillp );
-      emsg("siLrun_process: cmdline=%s\n", cmdline );
-      argc++;
-    }
-    signals_allowed = sig_at_read;
-    run_process ( cmdline );
-    signals_allowed = old;
+  if (vs_top-vs_base!=2)
+    FEwrong_no_args("RUN-PROCESS requires two arguments",make_fixnum(vs_top-vs_base));
+  check_type_string(&vs_base[0]);
+
+  massert(snprintf(FN1,sizeof(FN1),"%.*s%n",vs_base[0]->st.st_fillp,vs_base[0]->st.st_self,&i)>=0);
+
+#if defined(__CYGWIN__)
+    cygwin_conv_path(CCP_POSIX_TO_WIN_A,FN1,FN2,sizeof(FN2));
+    massert(snprintf(FN1,sizeof(FN1),"%s%n",FN2,&i)>=0);
+#endif
+
+  x=vs_base[1];
+  for (;x!=Cnil;x=x->c.c_cdr,i+=j) {
+    check_type_list(&x);
+    check_type_string(&x->c.c_car);
+    massert(snprintf(FN1+i,sizeof(FN1)-i," %.*s %n",x->c.c_car->st.st_fillp,x->c.c_car->st.st_self,&j)>=0);
+  }
+
+  signals_allowed = sig_at_read;
+  run_process(FN1);
+  signals_allowed = old;
+
 }
 
 void
