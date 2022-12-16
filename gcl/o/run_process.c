@@ -286,6 +286,7 @@ siLrun_process() {
 
   int i, j;
   int old = signals_allowed;
+  object x;
 
   if (vs_top-vs_base!=2)
     FEwrong_no_args("RUN-PROCESS requires two arguments",make_fixnum(vs_top-vs_base));
