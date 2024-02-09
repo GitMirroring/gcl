@@ -661,7 +661,7 @@ if test "$enable_dynsysgmp" != "no" ; then
 		      TLIBS="$TLIBS -lgmp"
 		      echo "#include \"gmp.h\"" >foo.c
 		      echo "int main() {return 0;}" >>foo.c
-		      MP_INCLUDE=`cpp foo.c | $AWK '/(\/|\\\\)gmp.h/ {if (!i) print $3;i=1}' | tr -d '"'`
+		      MP_INCLUDE=`$CC -E foo.c | $AWK '/(\/|\\\\)gmp.h/ {if (!i) print $3;i=1}' | tr -d '"'`
 		      rm -f foo.c])])])
 
     if test "$MP_INCLUDE" = "" ; then
