@@ -1899,6 +1899,14 @@ DEFUN("WRITE-INT",object,fSwrite_int,SI,2,2,NONE,OO,OO,OO,OO,(object x,object st
   RETURN1(x);
   
 }
+#ifdef STATIC_FUNCTION_POINTERS
+object
+fSwrite_int(object x,object y) {
+  return FFN(fSwrite_int)(x,y);
+}
+#endif
+
+
 
 DEFUN("PPRINT-MISER-STYLE",object,fSpprint_miser_style,SI,1,1,NONE,OO,OO,OO,OO,(object strm),"") {
 
@@ -2002,6 +2010,13 @@ DEFUN("WRITE-INT1",object,fSwrite_int1,SI,5,5,NONE,OO,OO,OO,OO,
   RETURN1(Cnil);
 
 }
+#ifdef STATIC_FUNCTION_POINTERS
+object
+fSwrite_int1(object a,object b,object c,object d,object e) {
+  return FFN(fSwrite_int1)(a,b,c,d,e);
+}
+#endif
+
 
 @(defun write (x
 	       &key ((:stream strm) Cnil)

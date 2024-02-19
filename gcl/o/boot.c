@@ -191,7 +191,7 @@ DEFUN("SUBSETP",object,fLsubsetp,LISP,2,2,NONE,OO,OO,OO,OO,(object x,object y),"
   if (!listp(y))/*FIXME checktype*/
     TYPE_ERROR(y,sLlist);
   for (;consp(x);x=x->c.c_cdr)
-    if (FFN(fLmember(x->c.c_car,y))==Cnil)
+    if (FFN(fLmember)(x->c.c_car,y)==Cnil)
       RETURN1(Cnil);
 
   RETURN1(Ct);

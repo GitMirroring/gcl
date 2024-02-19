@@ -855,7 +855,12 @@ DEFUNM("APPLY",object,fLapply,LISP,1,MAX_ARGS,NONE,OO,OO,OO,OO,(object fun,...),
   return res;
 
 }
-	
+
+object
+apply_format_function(object x,object y,object z,object a,object b,object c) {
+  return FFN(fLapply)(x,y,z,a,b,c);
+}
+
 
 DEFUNM("EVAL",object,fLeval,LISP,1,1,NONE,OO,OO,OO,OO,(object x0),"") {
 
@@ -980,7 +985,7 @@ DEFUN("FSET-IN",object,fSfset_in,SI,3,3,NONE,OO,OO,OO,OO,(object sym,object src,
 #ifdef STATIC_FUNCTION_POINTERS
 object
 fSfset_in(object sym,object src,object name) {
-  RETURN1(FFN(fSfset_in)(sym,src,object name));
+  RETURN1(FFN(fSfset_in)(sym,src,name));
 }
 #endif
 

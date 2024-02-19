@@ -1603,3 +1603,9 @@ fresh_synonym_stream_to_terminal_io(void);
 
 void
 set_array_elttype(object,enum aelttype);
+
+object
+apply_format_function(object,object,object,object,object,object);
+
+object
+fSstring_match2(object,object);

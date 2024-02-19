@@ -591,20 +591,23 @@ void
 gcl_init_big(void)
 {
   gcl_init_big1();
-  big_gcprotect=alloc_object(t_bignum);
+  big_gcprotect=alloc_object(t_bignum);/*FIXME*/
   MP_SELF(big_gcprotect)=0;
   MP_ALLOCATED(big_gcprotect)=0;
-  big_fixnum1=new_bignum();
-  big_fixnum2=new_bignum();
-  big_fixnum3=new_bignum();
-  big_fixnum4=new_bignum();
-  big_fixnum5=new_bignum();
-  enter_mark_origin(&big_fixnum1);
-  enter_mark_origin(&big_fixnum2);
-  enter_mark_origin(&big_fixnum3);
-  enter_mark_origin(&big_fixnum4);
-  enter_mark_origin(&big_fixnum5);
   enter_mark_origin(&big_gcprotect);
+
+#define mjoin(a_,b_) a_ ## b_
+#define Mjoin(a_,b_) mjoin(a_,b_)
+#define init_big_fixnum(a_) {			\
+    Mjoin(big_fixnum,a_)=new_bignum();		\
+    mpz_set_si(MP(Mjoin(big_fixnum,a_)),0);	\
+    enter_mark_origin(&Mjoin(big_fixnum,a_));	\
+  }
+  init_big_fixnum(1);
+  init_big_fixnum(2);
+  init_big_fixnum(3);
+  init_big_fixnum(4);
+  init_big_fixnum(5);
   sSPminus_most_negative_fixnumP=make_si_constant("+MINUS-MOST-NEGATIVE-FIXNUM+",fixnum_add(MOST_POSITIVE_FIX,1));
 
 }

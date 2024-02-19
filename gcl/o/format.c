@@ -2195,7 +2195,7 @@ fmt_function(bool colon, bool atsign) {
   z=fmt_advance();
 
   VFUN_NARGS=6;
-  fLapply(x,fmt_stream,z,colon ? Ct : Cnil,atsign ? Ct : Cnil,y);
+  apply_format_function(x,fmt_stream,z,colon ? Ct : Cnil,atsign ? Ct : Cnil,y);
 
 }
 
@@ -2705,8 +2705,8 @@ fmt_pp_string(object control) {
   if (logical_block_regexp==OBJNULL)
     logical_block_regexp=fScompile_regexp(make_simple_string("~@?:@?>|~[:@]?[:@]?_|~[0-9]*:?[Ii]|~[0-9]+,[0-9]+[:@]?[:@]?[Tt]|~[:@]?[:@]?[Ww]"));
   VFUN_NARGS=2;
-  just=(fixnum)fSstring_match(justification_regexp,control);
-  pp=(fixnum)fSstring_match(logical_block_regexp,control);
+  just=(fixnum)fSstring_match2(justification_regexp,control);
+  pp=(fixnum)fSstring_match2(logical_block_regexp,control);
   if (just>=0 && pp>=0)
     fmt_error("Mixed justification syntax");
 

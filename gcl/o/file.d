@@ -650,8 +650,8 @@ DEFUN("INTERACTIVE-STREAM-P",object,fLinteractive_stream_p,LISP,1,1,NONE,OO,OO,O
 }
 #ifdef STATIC_FUNCTION_POINTERS
 object
-fLinteractive_stream_p(object x,fixnum y,fixnum z) {
-  return FFN(fLinteractive_stream_p)(x,y,z);
+fLinteractive_stream_p(object x) {
+  return FFN(fLinteractive_stream_p)(x);
 }
 #endif
 

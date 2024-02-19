@@ -91,7 +91,12 @@ DEFUN("COMPILE-REGEXP",object,fScompile_regexp,SI,1,1,NONE,OO,OO,OO,OO,(object p
   RETURN1(res);
 
 }
-
+#ifdef STATIC_FUNCTION_POINTERS
+object
+fScompile_regexp(object x) {
+  return FFN(fScompile_regexp)(x);
+}
+#endif
 
 DEFUN("STRING-MATCH",object,fSstring_match,SI,2,4,NONE,IO,OO,OO,OO,
 	  (object pattern,object string,...),
@@ -188,4 +193,8 @@ be over written.   \
 
    }
 
+}
+object
+fSstring_match2(object x,object y) {
+  return FFN(fSstring_match)(x,y);
 }
