@@ -292,8 +292,12 @@ travel_push(object x,fixnum lev,fixnum len) {
 
     case t_vector:
     case t_array:
+    case t_string:
+    case t_bitvector:
     case t_simple_vector:
     case t_simple_array:
+    case t_simple_string:
+    case t_simple_bitvector:
 
       mark(x);
       if (dga && (enum aelttype)x->a.a_elttype==aet_object)
@@ -1430,6 +1434,8 @@ write_object(object x,int level) {
 
 	case t_simple_string:
 	case t_string:
+	  if (PRINTcircle)
+	    if (write_sharp_eq(x,FALSE)==DONE) return;
 	  if (!PRINTescape) {
 		  for (i = 0;  i < VLEN(x);  i++)
 		    write_ch((uchar)x->st.st_self[i]);
@@ -1447,6 +1453,8 @@ write_object(object x,int level) {
 
 	case t_bitvector:
 	case t_simple_bitvector:
+	  if (PRINTcircle)
+	    if (write_sharp_eq(x,FALSE)==DONE) return;
 		if (!PRINTarray) {
 		        write_unreadable_str(x,"#<bit-vector ");
 			write_addr(x);
