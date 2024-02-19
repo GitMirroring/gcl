@@ -260,6 +260,7 @@
 (export '(blocked-body-name parse-body-header blla va-pop))
 
 (defun parse-body-header (x &optional doc decl ctps &aux (a (car x)))
+  (declare (proper-list x));FIXME
   (cond 
    ((unless (or doc ctps) (and (stringp a) (cdr x))) (parse-body-header (cdr x) a decl ctps))
    ((unless ctps (when (consp a) (eq (car a) 'declare)))  (parse-body-header (cdr x) doc (cons a decl) ctps))

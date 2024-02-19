@@ -41,7 +41,7 @@
     (mapc (lambda (x &aux (s (car x)) (cmp-sig (cdr x))(act-sig (car (sym-plist s))))
 	    (unless (eq sym s)
 	      (when act-sig
-		(unless (eq cmp-sig act-sig)
+		(unless (eq cmp-sig act-sig);Can be sig= if we don't hash
 		  (return-from needs-recompile (list (list sym s cmp-sig act-sig))))))) callees)
     nil))
 

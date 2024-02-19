@@ -72,7 +72,7 @@
 
 (defmacro maybe-to-wn-stack (&rest body)
   (let ((cf (sgen "MTWSCF"))(sri (sgen "MTWSSRI")))
-  `(if (and (boundp '*warning-note-stack*) (not *note-keys*))
+  `(if (and (boundp '*warning-note-stack*) (not *note-keys*));FIXME
        (let ((,cf *current-form*)(,sri *src-inline-recursion*)) 
 	 (push (lambda nil
 		 (let ((*current-form* ,cf)

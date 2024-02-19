@@ -88,7 +88,7 @@
     (unless (stringp condition)
       (do nil ((not *handler-clusters*))
 	(dolist (handler (pop *handler-clusters*))
-	  (when (typep condition (car handler))
+	  (when (typep condition (car handler));FIXME, might string-match condition w handler in non-ansi here.
 	    (funcall (cdr handler) condition)))))
     nil))
 
@@ -126,7 +126,7 @@
 (defun coerce-to-string (datum args) 
   (cond ((stringp datum)
 	 (if args 
-	     (let ((*print-pretty* nil)
+	     (let ((*print-pretty* nil)(*print-readably* nil)
 		   (*print-level* *debug-print-level*)
 		   (*print-length* *debug-print-level*)
 		   (*print-case* :upcase))
