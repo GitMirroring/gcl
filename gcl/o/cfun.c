@@ -86,6 +86,7 @@ DEFUN("DLSYM",object,fSdlsym,SI,2,2,NONE,OI,OO,OO,OO,(fixnum h,object name),"") 
   ad=dlsym(h ? (void *)h : RTLD_DEFAULT,name->st.st_self);
   ad=ad ? ad : dlsym(RTLD_DEFAULT,name->st.st_self);
   ad=ad<data_start ? dlsym(RTLD_NEXT,name->st.st_self) : ad;
+  name->st.st_self[VLEN(name)]=ch;
   if (ad<data_start)
     FEerror("dlsym lookup failure on ~s: ~s",2,name,make_simple_string(dlerror()));
   RETURN1(make_fixnum((fixnum)ad));
