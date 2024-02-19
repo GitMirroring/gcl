@@ -22,17 +22,6 @@
 (defun t-to-nil (x) (unless (eq x t) x))
 (setf (get 't-to-nil 'cmp-inline) t)
 
-
-
-(defun real-rep (x)
-  (case x (integer 1) (ratio 1/2) (short-float 1.0s0) (long-float 1.0)))
-
-(defun complex-rep (x)
-  (let* ((s (symbolp x))
-	 (r (real-rep (if s x (car x))))
-	 (i (real-rep (if s x (cadr x)))))
-    (complex r i)))
-
 (let ((f (car (resolve-type `(or (array nil) ,@(mapcar 'car +r+))))))
   (unless (eq t f)
     (print (list "Representative types ill-defined" f))))
