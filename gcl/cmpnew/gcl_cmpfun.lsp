@@ -250,27 +250,29 @@
 (defun equalp-is-eq-tp (x)
   (eq-subtp x #tequalp-is-eq-tp))
 
-(defun do-eq-et-al (fn args);FIXME  pass through function inlining
-  (let* ((tf (cadr (test-to-tf fn)))
-	 (info (make-info :type #tboolean))
-	 (nargs (c1args args info))
-	 (t1 (info-type (cadar nargs)))
-	 (t2 (info-type (cadadr nargs)))
-	 (a1 (atomic-tp t1))
-	 (a2 (atomic-tp t2))
-	 (nfn (if (when tf (or (funcall tf t1) (funcall tf t2))) 'eq fn)))
-    (unless (and t1 t2) (setf (info-type info) nil))
-    (cond ((not (type-and t1 t2))
+
+(defun do-eq-et-al (fn args &aux (info (make-info :type #tboolean)));FIXME  pass through function inlining
+  (let* ((nargs (c1args args info))
+	 (t1 (info-type (cadar nargs)))(t2 (info-type (cadadr nargs)))
+	 (a1 (atomic-tp t1))(a2 (atomic-tp t2))
+	 (nfn (ecase fn
+		(eq fn)
+		(eql (let ((tp #teql-is-eq-tp)) (if (or (type<= t1 tp)(type<= t2 tp)) 'eq fn)))
+		(equal (let ((tp #tequal-is-eq-tp)) (if (or (type<= t1 tp)(type<= t2 tp)) 'eq fn)))
+		(equalp (let ((tp #tequalp-is-eq-tp)) (if (or (type<= t1 tp)(type<= t2 tp)) 'eq fn)))))
+	 (nfn (if (when (member nfn '(equal equalp))
+		    (or (type<= t1 #tnumber) (type<= t2 #tnumber)))
+		  'eql nfn)))
+    (cond ((when (and t1 t2 (member nfn '(eq eql))) (not (type-and t1 t2)))
 	   (c1progn (append args (list nil)) (nconc nargs (list (c1nil)))))
-	  ((and a1 a2 (case nfn (eq (eql-is-eq (car a1)))(eql t)))
+	  ((and a1 a2 (case nfn (eq (or (eql-is-eq (car a1)) (eql-is-eq (car a2))))(eql t)))
 	   (let ((q (eql (car a1) (car a2))))
 	     (c1progn (append args (list q)) (nconc nargs (list (if q (c1t) (c1nil)))))))
-	  ((let ((x (get-vbind (car nargs)))(y (get-vbind (cadr nargs))))
-	     (when (or (when x (eq x y)) (and (symbolp (car args)) (eq (car args) (cadr args))))
-	       (c1t))))
-	  (`(call-global ,info
-	     ,(if (when tf (or (funcall tf t1) (funcall tf t2))) 'eq fn)
-	     ,nargs)))))
+	  ((when (and t1 t2)
+	     (let ((x (get-vbind (car nargs)))(y (get-vbind (cadr nargs))))
+	       (when (or (when x (eq x y)) (and (symbolp (car args)) (eq (car args) (cadr args))))
+		 (c1t)))))
+	  (t (unless (and t1 t2) (setf (info-type info) nil)) `(call-global ,info ,nfn ,nargs)))))
 
 	   
 (dolist (l `(eq eql equal equalp))
