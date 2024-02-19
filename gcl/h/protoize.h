@@ -1449,7 +1449,7 @@ void init_shared_memory(void);
 
 void * object_to_pointer(object);
 
-void * alloca(size_t);
+void * alloca(unsigned long);
 
 object make_dcomplex(dcomplex);
 
