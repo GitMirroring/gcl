@@ -745,14 +745,12 @@ edit_double(int n,double d,int *sp,char *s,int *ep,int dp) {
   int i;
   
   if (!ISFINITE(d)) {
-    if (sSAprint_nansA->s.s_dbind !=Cnil) {
+    if (1 /* sSAprint_nansA->s.s_dbind !=Cnil */) {
       sprintf(s, "%e",d);
       *sp=2;
       return;
     }
-    else
-      FEerror("Can't print a non-number.",0);}
-  else
+  } else
     sprintf(b, "%*.*e",FPRC+8,FPRC,d);
   if (b[FPRC+3] != 'e') {
     sprintf(b, "%*.*e",FPRC+7,FPRC,d);
@@ -790,6 +788,13 @@ edit_double(int n,double d,int *sp,char *s,int *ep,int dp) {
 }
 
 static void
+write_unreadable_str(object x,char *str) {
+  if (PRINTreadably)
+    PRINT_NOT_READABLE(x,"No readable print representation.");
+  write_str(str);
+}
+
+static void
 write_double(d, e, shortp)
 double d;
 int e;
@@ -804,7 +809,7 @@ bool shortp;
 	if (shortp)
 	  n = 10;
 	edit_double(n, d, &sign, buff, &exp, !shortp);
-	if (sign==2) {write_str("#<");
+	if (sign==2) {write_unreadable_str(make_longfloat(d),"#<");
 		      write_str(buff);
 		      write_ch('>');
 		      return;
@@ -1094,13 +1099,6 @@ write_level(void) {
 
 
 static void
-write_unreadable_str(object x,char *str) {
-  if (PRINTreadably)
-    PRINT_NOT_READABLE(x,"No readable print representation.");
-  write_str(str);
-}
-
-static void
 write_object(object x,int level) {
 
 	object r, y;
@@ -1301,6 +1299,7 @@ write_object(object x,int level) {
 	    break;
 	  }
 	case t_array:
+	case t_simple_array:
 	{
 		int subscripts[ARRAY_RANK_LIMIT];
 		int n, m;
@@ -1310,7 +1309,8 @@ write_object(object x,int level) {
 			write_addr(x);
 			write_str(">");
 			break;
-		}
+		} else if (x->v.v_elttype!=aet_object)
+		  write_unreadable_str(x,"");
 		if (PRINTcircle)
 		  if (write_sharp_eq(x,FALSE)==DONE) return;
 		if (PRINTlevel >= 0 && level >= PRINTlevel) {
@@ -1384,14 +1384,15 @@ write_object(object x,int level) {
 		break;
 	}
 
-	case t_simple_vector:
 	case t_vector:
+	case t_simple_vector:
 		if (!PRINTarray) {
 		        write_unreadable_str(x,"#<vector ");
 			write_addr(x);
 			write_str(">");
 			break;
-		}
+		} else if (x->v.v_elttype!=aet_object)
+		  write_unreadable_str(x,"");
 		if (PRINTcircle)
 		  if (write_sharp_eq(x,FALSE)==DONE) return;
 		if (PRINTlevel >= 0 && level >= PRINTlevel) {

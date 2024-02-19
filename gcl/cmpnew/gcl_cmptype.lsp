@@ -986,10 +986,23 @@
 	((short-float long-float) (member-if (lambda (x) (or (isinf x) (isnan x))) (cdr u)))
 	(otherwise (si::si-classp u))))
 
-(defun export-type (type)
-  (if (unprintable-individualsp (cmp-unnorm-tp type))
-      (bump-tp type)
-    type))
+(defun kingdoms-with-unprintable-individuals (tp)
+  (labels ((f (x)
+	     (typecase x
+	       (float (or (isnan x) (isinf x)))
+	       ((or string bit-vector number random-state character symbol pathname) nil)
+	       (cons (or (f (car x)) (f (cdr x))))
+	       ((array t) (some (lambda (x) (f x)) x));FIXME #'f
+	       ;FIXME assumes structure elements are printable
+	       (structure (si::s-data-print-function (c-structure-def x)))
+	       (t t))))
+    (when (consp tp)
+      (if (cmpt tp)
+	  (mapcan 'kingdoms-with-unprintable-individuals (cdr tp))
+	  (mapcan (lambda (x)
+		    (when (member-if (lambda (x) (f x)) (cdr x));FIXME #'f
+		      (list (car x))))
+		  (caaddr tp))))))
 
 (defun unique-sigs (sig) (si::uniq-list sig))
 
@@ -998,6 +1011,9 @@
   (let ((x (member tp y :test 'type<= :key 'car)))
     (when x
       (or (tsrch tp (cdar x)) (caar x)))))
+(defun export-type (type)
+  (let ((x (kingdoms-with-unprintable-individuals type)))
+    (if x (type-or1 type (cmp-norm-tp (cons 'or x))) type)))
 
 (defun bump-tp (tp)
   (cond ((eq tp '*) tp)

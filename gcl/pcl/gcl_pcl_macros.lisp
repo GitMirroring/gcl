@@ -320,9 +320,9 @@
 ;;; Similar to printing-random-object in the lisp machine but much simpler
 ;;; and machine independent.
 (defmacro printing-random-thing ((thing stream) &body body)
-  #+cmu17
+  #+(or cmu17 gcl)
   `(print-unreadable-object (,thing ,stream :identity t) ,@body)
-  #-cmu17
+  #-(or cmu17 gcl)
   (once-only (thing stream)
     `(progn
        #+cmu

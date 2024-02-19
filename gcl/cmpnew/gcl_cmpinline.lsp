@@ -40,11 +40,11 @@
 	    `(si::|#,| name-to-sd ',x))))
 
 (defun s-print (n x a s)
-  (princ "#<" s)
-  (princ n s)
-  (princ " " s)
-  (princ x s)
-  (format s " ~x>" a))
+  (print-unreadable-object (x s)
+    (princ n s)
+    (princ " " s)
+    (princ x s)
+    (format s " ~x" a)))
 
 (defstruct (info (:print-function (lambda (x s i) (s-print 'info (info-type x) (si::address x) s)))
 		 (:copier old-copy-info))
