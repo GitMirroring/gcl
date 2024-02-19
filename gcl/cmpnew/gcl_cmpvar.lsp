@@ -300,9 +300,6 @@
 	(unless (or (info-ref-clb i) (info-ref-ccb i))
 	  t)))))
 
-(defstruct (binding (:print-function (lambda (x s i) (s-print 'binding (binding-repeatable x) (si::address x) s))))
-  form
-  repeatable)
 
 (defun new-bind (&optional form)
   (make-binding :form form :repeatable (repeatable-binding-p form)))

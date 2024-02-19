@@ -406,9 +406,9 @@
 (defun get-byte-stream-nchars (s)
   (let* ((tp (stream-element-type s))(ctp (cmp-norm-tp tp)))
     (labels ((ts (i) (when (<= i 32)
-		       (if (type<= ctp (cmp-norm-tp `(unsigned-byte ,(* i char-length))))
+		       (if (tp<= ctp (cmp-norm-tp `(unsigned-byte ,(* i char-length))))
 			   i (ts (1+ i))))))
-      (cond ((type<= ctp #tcharacter) 1)
+      (cond ((tp<= ctp #tcharacter) 1)
 	    ((ts 0))
 	    (1)))))
 

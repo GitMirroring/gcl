@@ -445,21 +445,16 @@
 
 (defvar *alien-declarations* nil)
 
-(defvar *uniq-list* (gcl-make-hash-table 'equal))
-
-(defun uniq-list (list) (or (gethash list *uniq-list*) (setf (gethash list *uniq-list*) list)))
-
 (defun normalize-function-plist (plist)
-  (setf (car plist) (uniq-list (car plist))
-	(cadr plist) (mapcar (lambda (x)
-			       (uniq-list (cons (car x) (uniq-list (cdr x)))))
+  (setf (car plist) (uniq-sig (car plist))
+	(cadr plist) (mapcar (lambda (x) (cons (car x) (uniq-sig (cdr x))))
 			     (cadr plist)))
   plist)
 
 (defvar *function-plists* nil);rely on defvar not resetting to nil on loading this file compiled
 
 (defun make-function-plist (&rest args)
-  (cond ((and (fboundp 'cmp-norm-tp) (fboundp 'typep))
+  (cond ((and (fboundp 'cmp-norm-tp) (fboundp 'typep) (fboundp 'uniq-sig))
 	 (mapc 'normalize-function-plist *function-plists*)
 	 (unintern '*function-plists*)
 	 (defun make-function-plist (&rest args) (normalize-function-plist args))
@@ -508,7 +503,7 @@
   (unless (or (eq tp '*) (eq tp t))
     (mapc (lambda (x)
 	    (check-type x symbol)
-	    (assert (setq tp (type-and tp (get x 'cmp-type t))))
+	    (assert (setq tp (tp-and tp (get x 'cmp-type t))))
 	    (putprop x tp 'cmp-type)) l)));sch-global, improper-list
 
 (defun readable-sig (sig)
@@ -517,11 +512,6 @@
 (defun type= (t1 t2)
   (when (type>= t1 t2)
     (type>= t2 t1)))
-
-(defun sig= (s1 s2)
-  (when (eql (length (car s1)) (length (car s2)))
-    (unless (notevery 'type= (car s1) (car s2))
-      (type= (cadr s1) (cadr s2)))))
 
 ;FIXME, implement these in place of returns-exactly, etc.
 (defun ftype-to-sig (ftype &aux (a (pop ftype))(d (car ftype)))
@@ -540,8 +530,8 @@
 
 (defun proclaim-ftype (ftype var-list
 		       &aux  (sig (ftype-to-sig (cdr ftype)))
-			 (sig (uniq-list (list (mapcar 'norm-possibly-unkown-type (car sig))
-					       (norm-possibly-unkown-type (cadr sig))))))
+			 (sig (uniq-sig (list (mapcar 'norm-possibly-unkown-type (car sig))
+					      (norm-possibly-unkown-type (cadr sig))))))
   (declare (optimize (safety 2)))
   (mapc (lambda (x &aux (c (car (call x))))
 	  (cond (c (unless (sig= c sig)

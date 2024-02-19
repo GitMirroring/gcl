@@ -64,7 +64,7 @@
 					  (lambda (rs i) (,w rs i nil nil))
 					  (lambda (v rs i) (,w rs i t v)))))))))
 		  (lreduce (lambda (y x &aux (sz (caddr x))(fn (fifth x))(z (assoc sz y))(tp (cmp-norm-tp `(array ,(car x)))))
-			     (cond (z (setf (cadr z) (type-or1 (cadr z) tp) (caddr z) fn) y)
+			     (cond (z (setf (cadr z) (tp-or (cadr z) tp) (caddr z) fn) y)
 				   ((cons (list sz tp fn) y))))
 			   si::*array-type-info* :initial-value nil)))))
 (declaim (inline set-array))
@@ -387,7 +387,7 @@
 (setf (get 'array-dims 'type-propagator) 'array-dims-propagator)
 
 (defun applicable-array-infos (x k)
-  (when (type>= #tarray x)
+  (when (tp>= #tarray x)
     (cmp-norm-tp
      (cons 'member
 	   (mapcar k
@@ -415,10 +415,10 @@
 (defun array-rank-propagator (f x)
   (declare (ignore f))
   (cond
-    ((type>= #tvector x) #t(member 1))
+    ((tp>= #tvector x) #t(member 1))
     ((let ((d (atomic-tp-array-rank x)))
       (when d (object-tp d))))
-    ((type>= #tarray x) #trnkind)))
+    ((tp>= #tarray x) #trnkind)))
 (setf (get 'c-array-rank 'type-propagator) 'array-rank-propagator)
 
 (defun array-dim-propagator (f t1 &aux (d (atomic-tp-array-dimensions t1)))

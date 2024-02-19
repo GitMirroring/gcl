@@ -180,10 +180,10 @@
 
 (defun make-complex-propagator (f t1 t2 t3 &aux (i -1))
   (declare (ignore f))
-  (reduce 'type-or1
+  (reduce 'tp-or
 	  (mapcan (lambda (x)
-		    (when (type-and t1 (object-tp (incf i)))
-		      (list (cmp-norm-tp `(complex* ,(cmp-unnorm-tp (type-and t2 (cadr x))) ,(cmp-unnorm-tp (type-and t3 (caddr x))))))))
+		    (when (tp-and t1 (object-tp (incf i)))
+		      (list (cmp-norm-tp `(complex* ,(cmp-unnorm-tp (tp-and t2 (cadr x))) ,(cmp-unnorm-tp (tp-and t3 (caddr x))))))))
 		  +make-complex-alist+)
 	  :initial-value nil))
 (setf (get 'make-complex 'type-propagator) 'make-complex-propagator)

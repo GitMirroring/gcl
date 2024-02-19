@@ -32,7 +32,7 @@
 		 ',(mapcar (lambda (x) (cons (cmp-norm-tp (car x)) (cdr x)))
 			   `((null . null) (cons . cons) (list . list)
 			     ,@(mapcar (lambda (x) `((vector ,x) . ,x)) +array-types+)))
-		 :test 'type<=))
+		 :test 'tp<=))
       (equal #tvector (if (listp x) (car x) x))))
 (setf (get 'make-sequence-element-type 'type-propagator) 'compiler::expand-type-propagator)
 
@@ -46,7 +46,7 @@
       (if (assoc-if-not (lambda (x) (or (eq x 'proper-cons) (eq x 'improper-cons))) (car x))
 	  (cons 0 y) y))))
 
-(defun cons-tp-lengths (tp &aux (tp (type-and #tcons tp)))
+(defun cons-tp-lengths (tp &aux (tp (tp-and #tcons tp)))
   (when (consp tp)
     (let ((x (lremove-duplicates (ntp-cons-lengths (caddr tp)))))
       (unless (member '* x)
@@ -62,14 +62,14 @@
 		 (nunion (fx (cdr x)) y)))
 	     (car x) :initial-value nil)))
 
-(defun vector-tp-lengths (tp &aux (tp (type-and #tvector tp)))
+(defun vector-tp-lengths (tp &aux (tp (tp-and #tvector tp)))
   (when (consp tp)
     (let ((x (lremove-duplicates (ntp-vector-lengths (caddr tp)))))
       (unless (member '* x) x))))
 
 (defun sequence-tp-lengths (type &aux (tp (cmp-norm-tp type)))
   #+pre-gcl(when (eq type 'string) (return-from sequence-tp-lengths nil))
-  (if (type<= tp #tlist)
+  (if (tp<= tp #tlist)
       (cons-tp-lengths tp)
       (vector-tp-lengths tp)))
 (setf (get 'sequence-tp-lengths 'type-propagator) 'compiler::expand-type-propagator)
@@ -78,7 +78,7 @@
 
 (defun sequence-tp-nonsimple-p (type)
   #-pre-gcl(when (eq type 'string) (return-from sequence-tp-nonsimple-p nil))
-  (type<= (cmp-norm-tp type) #tnon-simple-array))
+  (tp<= (cmp-norm-tp type) #tnon-simple-array))
 (setf (get 'sequence-tp-nonsimple-p 'type-propagator) 'compiler::expand-type-propagator)
 
 #.`(defun make-sequence (type size &key initial-element)

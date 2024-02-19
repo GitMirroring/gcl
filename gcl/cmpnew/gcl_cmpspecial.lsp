@@ -250,12 +250,13 @@
   (find-special-var l 'is-fun-var))
 
 (defun export-sig (sig)
-  (unique-sigs `((,@(mapcar 'export-type (car sig))) ,(export-type (cadr sig)))))
+  (uniq-sig `((,@(mapcar 'export-type (car sig))) ,(export-type (cadr sig)))))
 
 (defun mbt (tp &aux (atp (atomic-tp tp)))
   (if (and atp (consp (car atp)))
-      (if (cdar atp) #tcons #tproper-cons)
+      (if (typep (car atp) 'proper-cons) #tproper-cons #tcons)
     tp))
+
 
 ;; (defun mbt (tp &aux (atp (atomic-tp tp)))
 ;;   (cond (*compiler-new-safety* (if (single-type-p tp) #tt #t*))

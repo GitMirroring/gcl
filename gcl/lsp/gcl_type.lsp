@@ -3,7 +3,8 @@
 
 (export '(cmp-norm-tp tp-p
 	  cmp-unnorm-tp
-	  type-and type-or1 type>= type<= tp-not tp-and tp-or
+;	  type-and type-or1 type>= type<=
+	  tp-not tp-and tp-or tp<= tp>= tp= uniq-tp tsrch uniq-sig
 	  atomic-tp tp-bnds object-tp
 	  cmpt t-to-nil returs-exactly funcallable-symbol-function
 	  infer-tp cnum creal long
@@ -514,6 +515,15 @@
 
 (defun tp>= (t1 t2) (tp<= t2 t1))
 
+(defun tp= (t1 t2);(when (tp<= t1 t2) (tp<= t2 t1)))
+  (cond ((or (if t1 (eq t1 t) t) (if t2 (eq t2 t) t)) (eq t1 t2))
+	((and (atom t1) (atom t2)) (btp-equal t1 t2))
+	((or (atom t1) (atom t2)) nil)
+	((and (btp-equal (car t1) (car t2))
+	      (btp-equal (cadr t1) (cadr t2))
+	      (ntp-subtp (caddr t1) (caddr t2))
+	      (ntp-subtp (caddr t2) (caddr t1))))))
+
 (defun tp-p (x)
   (or (null x) (eq x t) (bit-vector-p x)
       (when (listp x)
@@ -574,53 +584,10 @@
 		 ((not returns-exactly values) (cons (car x) (mapcar 'cmp-unnorm-tp (cdr x)))))))
 	(x)))
 
-(defun null-list (x) (when (plusp x) (make-list x :initial-element #tnull)))
 
-(defun type-and (x y)
-  (cond ((eq x '*) y)
-	((eq y '*) x)
-	((and (cmpt x) (cmpt y))
-	 (let ((lx (length x))(ly (length y)))
-	   (cons (if (when (eql lx ly)
-		       (when (eq (car x) (car y))
-			 (eq (car x) 'returns-exactly)))
-		     'returns-exactly 'values)
-		 (mapcar 'type-and
-			 (append (cdr x) (null-list (- ly lx)))
-			 (append (cdr y) (null-list (- lx ly)))))))
-	((cmpt x) (type-and (or (cadr x) #tnull) y))
-	((cmpt y) (type-and x (or (cadr y) #tnull)))
-	((tp-and x y))))
 
-(defun type-or1 (x y)
-  (cond ((eq x '*) x)
-	((eq y '*) y)
-	((and (cmpt x) (cmpt y))
-	 (let ((lx (length x))(ly (length y)))
-	   (cons (if (when (eql lx ly)
-		    (when (eq (car x) (car y))
-		      (eq (car x) 'returns-exactly)))
-		  'returns-exactly 'values)
-		 (mapcar 'type-or1
-			 (append (cdr x) (null-list (- ly lx)))
-			 (append (cdr y) (null-list (- lx ly)))))))
-	((cmpt x) (type-or1 x `(returns-exactly ,y)))
-	((cmpt y) (type-or1 `(returns-exactly ,x) y))
-	((tp-or x y))))
 
-(defun type<= (x y)
-  (cond ((eq y '*))
-	((eq x '*) nil)
-	((and (cmpt x) (cmpt y))
-	 (do ((x (cdr x) (cdr x))(y (cdr y) (cdr y)))
-	     ((and (not x) (not y)) t)
-	     (unless (type<= (if x (car x) #tnull) (if y (car y) #tnull))
-	       (return nil))))
-	((cmpt x) (type<= x `(returns-exactly ,y)));FIXME
-	((cmpt y) (type<= `(returns-exactly ,x) y))
-	((tp<= x y))))
 
-(defun type>= (x y) (type<= y x))
 
 
 
@@ -656,7 +623,7 @@
   (lremove-duplicates (mapcar (lambda (x) (cdr (assoc (cadr x) rl))) a)))
 
 (defun ints-tps (a rl)
-  (lreduce (lambda (y x) (if (member (cdr x) a) (type-or1 y (car x)) y)) rl :initial-value nil))
+  (lreduce (lambda (y x) (if (member (cdr x) a) (tp-or y (car x)) y)) rl :initial-value nil))
 
 
 (eval-when
@@ -675,7 +642,7 @@
 		      (unless (tp<= q (cdr y))
 			`((,x ,(car y)
 			      ,(cond ((tp<= (car y) x) (car y))
-				     ((let ((x (type-and (car y) x)))
+				     ((let ((x (tp-and (car y) x)))
 					(when (decidable-type-p x)
 					  x)))
 				     (x))))))
@@ -788,10 +755,45 @@
 			    (lreduce (lambda (y x)
 				      (if (member-if (lambda (z) (member (car x) (cdr z))) y) y (cons x y)))
 				    (list-merge-sort
-				     (mapcar (lambda (z) (cons z (lremove z (lremove-if-not (lambda (x) (type>= z x)) y)))) y)
+				     (mapcar (lambda (z) (cons z (lremove z (lremove-if-not (lambda (x) (tp>= z x)) y)))) y)
 				     #'> #'length)
 				    :initial-value nil))
 		    #'> #'cons-count))))
     (cdr (group-useful-types t (mapcan (lambda (x &aux (x (cdr x)))
 					 (when x (unless (eq x t) (list x))))
 				       +useful-types-alist+)))))
+
+
+(defun tsrch (tp &optional (y *useful-type-tree*))
+  (let ((x (member tp y :test 'tp<= :key 'car)))
+    (when x
+      (or (tsrch tp (cdar x)) (caar x)))))
+
+(defvar *uniq-tp* (make-hash-table :test 'eq))
+
+(defun uniq-tp (tp)
+  (when tp
+    (or (eq tp t)
+	(let ((x (or (tsrch tp) t)))
+	  (if (tp<= x tp) x
+	      (let ((y (gethash x *uniq-tp*)))
+		(car (or (member tp y :test 'tp=)
+			 (setf (gethash x *uniq-tp*) (cons tp y))))))))))
+
+(defvar *uniq-sig* (make-hash-table :test 'equal))
+
+(defun uniq-sig (sig)
+  (let ((x (list (mapcar (lambda (x) (if (eq x '*) x (uniq-tp x))) (car sig))
+		 (cond ((cmpt (cadr sig)) (cons (caadr sig) (mapcar 'uniq-tp (cdadr sig))))
+		       ((eq (cadr sig) '*) (cadr sig))
+		       ((uniq-tp (cadr sig)))))))
+    (or (gethash x *uniq-sig*) (setf (gethash x *uniq-sig*) x))))
+
+(defun sig= (s1 s2)
+  (labels ((s= (l1 l2)
+	     (and (eql (length l1) (length l2))
+		  (every (lambda (x y) (if (or (symbolp x) (symbolp y)) (eq x y) (tp= x y))) l1 l2))))
+    (and (s= (car s1) (car s2))
+	 (if (or (cmpt (cadr s1)) (cmpt (cadr s2)))
+	     (and (cmpt (cadr s1)) (cmpt (cadr s2)) (s= (cadr s1) (cadr s2)))
+	     (s= (cdr s1) (cdr s2))))))

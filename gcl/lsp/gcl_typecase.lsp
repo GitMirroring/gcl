@@ -66,8 +66,8 @@
 
 (defun complex-part-types (z)
   (lreduce (lambda (y x)
-	     (if (type-and z (pop x))
-		 (mapcar 'type-or1 x y)
+	     (if (tp-and z (pop x))
+		 (mapcar 'tp-or x y)
 	       y))
 	   *complex-part-types* :initial-value (list nil nil)))
 
@@ -78,7 +78,7 @@
 	  (`(when ,x ,y)))))
 
 (defun msubt (o tp y &aux
-		(tp (let ((x (cmp-norm-tp tp))) (or (type>= x y) (when (type-and x y) tp))))
+		(tp (let ((x (cmp-norm-tp tp))) (or (tp>= x y) (when (tp-and x y) tp))))
 		(otp (normalize-type tp));FIXME normalize, eg structure
                 (lp (listp otp))(ctp (if lp (car otp) otp))(tp (when lp (cdr otp))))
   (case ctp
@@ -88,7 +88,7 @@
 	(member (if (cdr tp) `(member ,o ',tp) `(eql ,o ',(car tp))))
 	((t nil) ctp)
 	(otherwise
-	 (if (type>= (case ctp ((proper-cons improper-cons) #tcons) (otherwise (cmp-norm-tp ctp))) y) ;FIXME
+	 (if (tp>= (case ctp ((proper-cons improper-cons) #tcons) (otherwise (cmp-norm-tp ctp))) y) ;FIXME
              (ecase ctp
 		    (#.+range-types+ (mibb o tp))
 		    (complex* (let* ((x (complex-part-types y))
@@ -105,8 +105,8 @@
 		     (and-form
 		      (and-form (simple-type-case `(car ,o) (car tp)) (simple-type-case `(cdr ,o) (cadr tp)))
 		      (if (eq ctp 'proper-cons)
-			  (or (type>= #tproper-list (cmp-norm-tp (cadr tp))) `(not (improper-consp ,o)))
-			(or (type>= #t(not proper-list) (cmp-norm-tp (cadr tp))) `(improper-consp ,o))))))
+			  (or (tp>= #tproper-list (cmp-norm-tp (cadr tp))) `(not (improper-consp ,o)))
+			(or (tp>= #t(not proper-list) (cmp-norm-tp (cadr tp))) `(improper-consp ,o))))))
 	   (progn (break) (simple-type-case o otp))))));;undecidable aggregation support
 
 
@@ -116,14 +116,14 @@
     `((t ,(?-add 'progn z)))))
 
 
-(defun branch1 (x tpsff f o &aux (y (lreduce 'type-or1 (car x) :initial-value nil)))
+(defun branch1 (x tpsff f o &aux (y (lreduce 'tp-or (car x) :initial-value nil)))
   (let* ((z (mapcan (lambda (x) (branch tpsff x f y)) (cdr x)))
 	 (s (lremove nil (mapcar 'cdr (cdr x))))
-	 (z (if s (nconc z `((t ,(mkinfm f (tp-not (lreduce 'type-or1 s :initial-value nil)) (cdar o))))) z)))
+	 (z (if s (nconc z `((t ,(mkinfm f (tp-not (lreduce 'tp-or s :initial-value nil)) (cdar o))))) z)))
     (cons 'cond z)))
 
 (defun mkinfm (f tp z &aux (z (?-add 'progn z)))
-  (if (type>= tp #tt) z `(infer-tp ,f ,tp ,z)))
+  (if (tp>= tp #tt) z `(infer-tp ,f ,tp ,z)))
 
 (define-compiler-macro typecase (&whole w x &rest ff)
   (let* ((bind (unless (symbolp x) (list (list (gensym) x))));FIXME sgen?
@@ -132,7 +132,7 @@
 	 (ff (if o (ldiff-nf ff o) ff))
 	 (o (list (cons t (cdar o))))
 	 (tps (mapcar 'cmp-norm-tp (mapcar 'car ff)))
-	 (z nil) (tps (mapcar (lambda (x) (prog1 (type-and x (tp-not z)) (setq z (type-or1 x z)))) tps))
+	 (z nil) (tps (mapcar (lambda (x) (prog1 (tp-and x (tp-not z)) (setq z (tp-or x z)))) tps))
 	 (tpsff (mapcan (lambda (x y) (when x (list (cons x y)))) tps ff))
 	 (oth (unless (eq z t) (mkinfm f (tp-not z) (cdar o))))
 	 (nb (>= (+ (length tpsff) (if oth 1 0)) 2))
@@ -152,7 +152,7 @@
 (defun branches (f tpsff fnl o c)
   (mapcar (lambda (x)
 	    `(,(lremove-duplicates (mapcar (lambda (x) (cdr (assoc x fnl))) (car x)))
-	      ,(mkinfm f (lreduce 'type-or1 (car x) :initial-value nil) (list (branch1 x tpsff f o)))))
+	      ,(mkinfm f (lreduce 'tp-or (car x) :initial-value nil) (list (branch1 x tpsff f o)))))
 	  c))
 
 
@@ -171,7 +171,7 @@
 (eval-when
  (compile eval)
  (defun mtp8b (tpi &aux (rl (cdr (assoc 'tp8 +rs+)))
-		   (tp (lreduce 'type-or1
+		   (tp (lreduce 'tp-or
 				(mapcar 'car
 					(lremove-if-not
 					 (lambda (x) (eql tpi (cdr x)))
@@ -182,7 +182,7 @@
      (infer-tp
       y ,tp
       ,(let ((x (caar (member-if
-		       (lambda (x &aux (z (assoc (cmp-norm-tp (cdr x)) rl :test 'type<=)))
+		       (lambda (x &aux (z (assoc (cmp-norm-tp (cdr x)) rl :test 'tp<=)))
 			 (eql tpi (cdr z)))
 		       '((:fixnum . (and fixnum (not immfix)))
 			 (:float . short-float)
@@ -190,11 +190,11 @@
 			 (:fcomplex . fcomplex)
 			 (:dcomplex . dcomplex))))))
 	 (if x `(,(intern (string-upcase (strcat "C-" x "-=="))) x y)
-	   (cond ((type<= tp (cmp-norm-tp 'bignum)) `(eql 0 (mpz_cmp x y)))
-		 ((type<= tp (cmp-norm-tp 'ratio))
+	   (cond ((tp<= tp (cmp-norm-tp 'bignum)) `(eql 0 (mpz_cmp x y)))
+		 ((tp<= tp (cmp-norm-tp 'ratio))
 		  `(and (eql (numerator x) (numerator y))
 			(eql (denominator x) (denominator y))))
-		 ((type<= tp (cmp-norm-tp '(complex rational)))
+		 ((tp<= tp (cmp-norm-tp '(complex rational)))
 		  `(and (eql (realpart x) (realpart y))
 			(eql (imagpart x) (imagpart y))))
 		 ((error "Unknown tp")))))))))

@@ -22,6 +22,92 @@
 
 (in-package :compiler)
 
+(defstruct (binding (:print-function (lambda (x s i) (s-print 'binding (binding-repeatable x) (si::address x) s))))
+  form
+  repeatable)
+
+(defun naltp (tp &aux (catp (car (atomic-tp tp))))
+  (labels ((g (x) (when (binding-p x) (return-from naltp catp)))
+	   (f (x) (if (consp x) (or (g (car x)) (f (cdr x))) (g x))))
+    (f catp)))
+
+(defun explode-nalt (tp)
+  (labels ((g (x)
+	     (if (binding-p x)
+		 (if (binding-form x) (cmp-unnorm-tp (info-type (cadr (binding-form x)))) t)
+		 `(member ,x)))
+	   (f (x) (if (consp x) `(cons ,(g (car x)) ,(f (cdr x))) (g x))))
+  (cmp-norm-tp (f tp))))
+
+(defun cons-type-p (ktp tp)
+  (let ((a (type-and ktp tp)))
+    (when (consp a)
+      (member-if #'identity (cdr (caar (third a))) :key 'car))))
+
+(defun needs-explode (t1 t2 &aux (n (naltp t1)))
+  (when (and n (cons-type-p (if (typep n 'proper-cons) #tproper-cons #tsi::improper-cons) t2))
+    n))
+
+
+(defun ctp-and (t1 t2 &aux n)
+  (cond ((setq n (needs-explode t1 t2)) (when (tp-and (explode-nalt n) t2) t1))
+	((setq n (needs-explode t2 t1)) (when (tp-and (explode-nalt n) t1) t2))
+	((tp-and t1 t2))))
+
+(defun ctp<= (t1 t2 &aux n)
+  (cond ((setq n (needs-explode t1 t2)) (when (tp-and (explode-nalt n) t2) t));hash
+	((tp<= t1 t2))))
+
+(defun null-list (x) (when (plusp x) (make-list x :initial-element #tnull)))
+
+(defun type-and (x y)
+  (cond ((eq x '*) y)
+	((eq y '*) x)
+	((and (cmpt x) (cmpt y))
+	 (let ((lx (length x))(ly (length y)))
+	   (cons (if (when (eql lx ly)
+		       (when (eq (car x) (car y))
+			 (eq (car x) 'returns-exactly)))
+		     'returns-exactly 'values)
+		 (mapcar 'type-and
+			 (append (cdr x) (null-list (- ly lx)))
+			 (append (cdr y) (null-list (- lx ly)))))))
+	((cmpt x) (type-and (or (cadr x) #tnull) y))
+	((cmpt y) (type-and x (or (cadr y) #tnull)))
+	((ctp-and x y))))
+
+(defun type-or1 (x y)
+  (cond ((eq x '*) x)
+	((eq y '*) y)
+	((and (cmpt x) (cmpt y))
+	 (let ((lx (length x))(ly (length y)))
+	   (cons (if (when (eql lx ly)
+		    (when (eq (car x) (car y))
+		      (eq (car x) 'returns-exactly)))
+		  'returns-exactly 'values)
+		 (mapcar 'type-or1
+			 (append (cdr x) (null-list (- ly lx)))
+			 (append (cdr y) (null-list (- lx ly)))))))
+	((cmpt x) (type-or1 x `(returns-exactly ,y)))
+	((cmpt y) (type-or1 `(returns-exactly ,x) y))
+	((tp-or x y))))
+
+(defun type<= (x y)
+  (cond ((eq y '*))
+	((eq x '*) nil)
+	((and (cmpt x) (cmpt y))
+	 (do ((x (cdr x) (cdr x))(y (cdr y) (cdr y)))
+	     ((and (not x) (not y)) t)
+	     (unless (type<= (if x (car x) #tnull) (if y (car y) #tnull))
+	       (return nil))))
+	((cmpt x) (type<= x `(returns-exactly ,y)));FIXME
+	((cmpt y) (type<= `(returns-exactly ,x) y))
+	((ctp<= x y))))
+
+(defun type>= (x y) (type<= y x))
+
+(defun type= (x y) (when (type<= y x) (type<= x y)))
+
 
 (defun get-sym (args)
   (intern (apply 'concatenate 'string (mapcar 'string args))))
@@ -1004,13 +1090,7 @@
 		      (list (car x))))
 		  (caaddr tp))))))
 
-(defun unique-sigs (sig) (si::uniq-list sig))
 
-
-(defun tsrch (tp &optional (y *useful-type-tree*))
-  (let ((x (member tp y :test 'type<= :key 'car)))
-    (when x
-      (or (tsrch tp (cdar x)) (caar x)))))
 (defun export-type (type)
   (let ((x (kingdoms-with-unprintable-individuals type)))
     (if x (type-or1 type (cmp-norm-tp (cons 'or x))) type)))
