@@ -622,7 +622,7 @@ set_displaced_body_ptr(object from_array) {
 
     enum aelttype typ =Iarray_element_type(from_array);
     object dest_array=displaced->c.c_car;
-    int offset=fix(displaced->c.c_cdr);
+    int offset=fix(Scdr(displaced));
 
     if (typ == aet_bit) {
       if (Iarray_element_type(dest_array)==aet_bit)
