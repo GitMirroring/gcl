@@ -229,15 +229,13 @@ clean_link_array(object *ar, object *ar_end) {
 
 DEFVAR("*FAST-LINK-WARNINGS*",sSAfast_link_warningsA,SI,Cnil,"");
 
-typedef struct {
-  ufixnum ma:6;
-  ufixnum xa:6;
-  ufixnum nv:5;
-  ufixnum vv:1;
-  ufixnum va:1;
-  ufixnum pu:1;
-  ufixnum nf:1;
-} fw;
+#include "pbits.h"
+
+#ifdef WORDS_BIGENDIAN
+typedef struct {ufixnum pad:LM(21),nf:1,pu:1,va:1,vv:1,nv:5,xa:6,ma:6;} fw;
+#else
+typedef struct {ufixnum ma:6,xa:6,nv:5,vv:1,va:1,pu:1,nf:1,pad:LM(21);} fw;
+#endif
 
 typedef union {
   ufixnum i;

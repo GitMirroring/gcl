@@ -8,21 +8,23 @@ typedef unsigned long   ufixnum;
 
 #ifndef WORDS_BIGENDIAN
 
-#define FRSTWRD(t_,a_...) ufixnum    e:1,m:1,f:1,    t_:5,t:5,st:3, ##a_
-#define FIRSTWORD         ufixnum    e:1,m:1,f:1,    tt:5,t:5,st:3,w:LM(16)
-#define FSTPWORD          ufixnum  emf:3,            tp:10,   st:3,w:LM(16)
-#define MARKWORD          ufixnum    e:1,   mf:2,    tt:5,t:5,x:LM(13)
-#define SGCMWORD          ufixnum    e:1,mf:2,       tt:5,t:5,x:LM(13)
-#define TYPEWORD          ufixnum  emf:3,            tt:5,t:5,x:LM(13)
+/* high bit must be clear to distinguish from high immediate fixnum*/
+#define FRSTWRD(t_,b_,a_...) ufixnum    e:1,m:1,f:1,    t_:5,t:5,st:3,a_,b_
+#define FIRSTWORD            ufixnum    e:1,m:1,f:1,    tt:5,t:5,st:3,w:LM(16)
+#define FSTPWORD             ufixnum  emf:3,            tp:10,   st:3,w:LM(16)
+#define MARKWORD             ufixnum    e:1,   mf:2,    tt:5,t:5,x:LM(13)
+#define SGCMWORD             ufixnum    e:1,mf:2,       tt:5,t:5,x:LM(13)
+#define TYPEWORD             ufixnum  emf:3,            tt:5,t:5,x:LM(13)
 
 #else
 
-#define FRSTWRD(t_,a_...) ufixnum ##a_,    st:3,t:5,t_:5,    f:1,m:1,e:1
-#define FIRSTWORD         ufixnum w:LM(16),st:3,t:5,tt:5,    f:1,m:1,e:1
-#define FSTPWORD          ufixnum w:LM(16),st:3,tp:10,             emf:3
-#define MARKWORD          ufixnum x:LM(13),     t:5,tt:5,       mf:2,e:1
-#define SGCMWORD          ufixnum x:LM(13),     t:5,tt:5,       mf:2,e:1
-#define TYPEWORD          ufixnum x:LM(13),     t:5,tt:5,          emf:3
+/* high bit must be clear to distinguish from high immediate fixnum*/
+#define FRSTWRD(t_,b_,a_...) ufixnum b_,a_,   st:3,t:5,t_:5,    f:1,m:1,e:1
+#define FIRSTWORD            ufixnum w:LM(16),st:3,t:5,tt:5,    f:1,m:1,e:1
+#define FSTPWORD             ufixnum w:LM(16),st:3,tp:10,             emf:3
+#define MARKWORD             ufixnum x:LM(13),     t:5,tt:5,       mf:2,e:1
+#define SGCMWORD             ufixnum x:LM(13),     t:5,tt:5,       mf:2,e:1
+#define TYPEWORD             ufixnum x:LM(13),     t:5,tt:5,          emf:3
 
 #endif
 
@@ -232,12 +234,13 @@ struct hashtable {           /*  hash table header  */
 #if SIZEOF_LONG == 8
 #define ARRAYWORD(b_,c_)						\
   FRSTWRD(J(b_,J(c_,elttype)),						\
+	  pd:LM(62),							\
 	  J(b_,J(c_,hasfillp)):1,					\
 	  J(b_,J(c_,adjustable)):1,					\
 	  J(b_,J(c_,writable)):1,					\
 	  J(b_,J(c_,offset)):3,						\
-	  J(b_,J(c_,eltsize)):4,					\
-	  J(b_,J(c_,eltmode)):4,					\
+	  J(b_,J(c_,eltsize)):3,					\
+	  J(b_,J(c_,eltmode)):3,					\
 	  J(b_,J(c_,rank)):ARRAY_RANK_BITS,				\
 	  J(b_,J(c_,dim)):ARRAY_DIMENSION_BITS)
 
@@ -249,18 +252,19 @@ struct hashtable {           /*  hash table header  */
 
 #define ARRAYWORD(b_,c_)						\
   FRSTWRD(J(b_,J(c_,elttype)),						\
+	  pad:LM(31),							\
 	  J(b_,J(c_,hasfillp)):1,					\
 	  J(b_,J(c_,adjustable)):1,					\
 	  J(b_,J(c_,writable)):1,					\
 	  J(b_,J(c_,offset)):3,						\
-	  J(b_,J(c_,eltsize)):4,					\
+	  J(b_,J(c_,eltsize)):3,					\
 	  J(b_,J(c_,rank)):ARRAY_RANK_BITS)
 
 #define atem(a_,b_,c_)					\
   ARRAYWORD(b_,c_);					\
   a_       *J(b_,J(c_,self));				\
   ufixnum   J(b_,J(c_,dim)):ARRAY_DIMENSION_BITS;	\
-  ufixnum   J(b_,J(c_,eltmode)):4
+  ufixnum   J(b_,J(c_,eltmode)):3
 
 #endif
 
@@ -440,14 +444,16 @@ struct pathname {
 struct function {
 
   FRSTWRD(tt,
+#if SIZEOF_LONG == 8
+	  fw:LM(34),
 	  fun_minarg:6,    /* required arguments */
 	  fun_maxarg:6,    /* maximum arguments */
-#if SIZEOF_LONG == 8
 	  fun_neval:5,     /* maximum extra values set */
-	  fun_vv:1,        /* variable number of values */
-	  fw:LM(34)
+	  fun_vv:1         /* variable number of values */
 #else
-	  fw:LM(28)
+	  fw:LM(28),
+	  fun_minarg:6,    /* required arguments */
+	  fun_maxarg:6     /* maximum arguments */
 #endif
 	  );
 
@@ -468,8 +474,8 @@ struct function {
 struct cfdata {
 
   FRSTWRD(tt,
-	  cfd_prof:1,       /* profiling */
-	  cfw:LM(17)
+	  cfw:LM(17),
+	  cfd_prof:1       /* profiling */
 	  );
 
   char   *cfd_start;             /* beginning of contblock for fun */

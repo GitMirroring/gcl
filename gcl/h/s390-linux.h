@@ -1,4 +1,4 @@
-n#include "linux.h"
+#include "linux.h"
 
 #ifdef IN_GBC
 #undef MPROTECT_ACTION_FLAGS
