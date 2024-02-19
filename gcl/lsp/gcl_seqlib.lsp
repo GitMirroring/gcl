@@ -116,11 +116,12 @@
       (remove-loop (if from-end (1- end) start) (when l (or r s)))
       (unless from-end (collect indl inds indp)))
     (unless (cdr inds) (return-from remove seq))
-    (cond (l (let (w r rp)
-	       (dolist (ind inds r)
-		 (declare (proper-list ind));FIXME
-		 (do ((q (if w (cdr w) seq) (cdr q))) ((eq q (or ind q)) (unless ind (collect q r rp)) (setq w ind))
-		   (collect (cons (car q) nil) r rp)))))
+    (cond ((listp seq)
+	   (let (w r rp)
+	     (dolist (ind inds r)
+	       (declare (proper-list ind));FIXME
+	       (do ((q (if w (cdr w) seq) (cdr q))) ((eq q (or ind q)) (unless ind (collect q r rp)) (setq w ind))
+		 (collect (cons (car q) nil) r rp)))))
 	  ((let* ((q (make-array (- lsa (1- (length inds))) :element-type (array-element-type s))))
 	     (do* ((inds inds (cdr inds))(n -1 nn)(nn (car inds) (car inds))(k 0 (1+ k)))((not inds) q)
 	       (declare (seqind nn k));FIXME
@@ -138,11 +139,12 @@
       (delete-loop (if from-end (1- end) start) (when l (or r s)))
       (unless from-end (collect indl inds indp)))
     (unless (cdr inds) (return-from delete seq))
-    (cond (l (let (w r rp)
-	       (dolist (ind inds r)
-		 (declare (proper-list ind));FIXME
-		 (do ((q (if w (cdr w) seq) (cdr q))) ((eq q (or ind q)) (unless ind (collect q r rp)) (setq w ind))
-		   (collect q r rp)))))
+    (cond ((listp seq)
+	   (let (w r rp)
+	     (dolist (ind inds r)
+	       (declare (proper-list ind));FIXME
+	       (do ((q (if w (cdr w) seq) (cdr q))) ((eq q (or ind q)) (unless ind (collect q r rp)) (setq w ind))
+		 (collect q r rp)))))
 	  ((let* ((lq (- lsa (1- (length inds))))
 		  (q (if (array-has-fill-pointer-p seq) seq (make-array lq :element-type (array-element-type s)))))
 	     (do* ((inds inds (cdr inds))(n -1 nn)(nn (car inds) (car inds))(k 0 (1+ k)))((not inds) (when (eq seq q) (setf (fill-pointer q) lq)) q)
@@ -172,11 +174,12 @@
       (substitute-loop (if from-end (1- end) start) (when l (or r s)))
       (unless from-end (collect indl inds indp)))
     (unless (cdr inds) (return-from substitute seq))
-    (cond (l (let (w r rp)
-	       (dolist (ind inds r)
-		 (declare (proper-list ind));FIXME
-		 (do ((q (if w (cdr w) seq) (cdr q))) ((eq q (or ind q)) (collect (if ind (cons new nil) q) r rp) (setq w ind))
-		   (collect (cons (car q) nil) r rp)))))
+    (cond ((listp seq)
+	   (let (w r rp)
+	     (dolist (ind inds r)
+	       (declare (proper-list ind));FIXME
+	       (do ((q (if w (cdr w) seq) (cdr q))) ((eq q (or ind q)) (collect (if ind (cons new nil) q) r rp) (setq w ind))
+		 (collect (cons (car q) nil) r rp)))))
 	  ((let* ((q (make-array lsa :element-type (array-element-type s))))
 	     (do* ((inds inds (cdr inds))(n -1 nn)(nn (car inds) (car inds)))((not inds) q)
 	       (declare (seqind nn));FIXME

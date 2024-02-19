@@ -49,13 +49,12 @@
 
 (defun ldiff-nf-with-last (l tl &aux r rp)
   (declare (optimize (safety 1)))
-  (check-type l list)
+  (check-type l proper-list)
   (labels ((srch (x)
-	     (cond ((eq x tl) (values r rp))
-		   ((atom x) (when rp (rplacd rp x)) (values (or r x) rp))
-		   (t (let ((tmp (cons (car x) nil)))
-			(setq rp (if rp (cdr (rplacd rp tmp)) (setq r tmp)))
-			(srch (cdr x)))))))
+	     (if (eq x tl) (values r rp)
+		 (let ((tmp (cons (car x) nil)))
+		   (setq rp (if rp (cdr (rplacd rp tmp)) (setq r tmp)))
+		   (srch (cdr x))))))
     (if tl (srch l) (values l nil))))
 (setf (get 'ldiff-nf-with-last 'cmp-inline) t)
 
@@ -294,6 +293,7 @@
       '(lremove lremove-if lremove-if-not lremove-duplicates lreduce))
 
 (defun lremove (q l &key (key #'identity) (test #'eql) &aux r rp (p l))
+  (declare (proper-list l));FIXME
   (mapl (lambda (x)
 		(when (funcall test q (funcall key (car x)))
 		  (let ((y (ldiff-nf p x)))

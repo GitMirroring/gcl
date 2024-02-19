@@ -152,7 +152,7 @@
 	((when (eq x ax) (member-if 'listp x))
 	 (nconc (ar~ (substitute-if '* 'listp x)) (disu x)))
 	((eq x ax) (nconc (ar~ (cons 'rank (length x))) (onot x)))
-	((listp x) (nconc (ar~ (array-dimensions (car x))) x))
+	((listp x) (nconc (ar~ (array-dimensions (car x))) x));FIXME
 	((nconc (ar~ (array-dimensions x)) `((,x))))))
 
 (defun ar-ld (type &aux (s (eq (car type) 'simple-array)))
@@ -406,7 +406,7 @@
 (defun orthog-to-and-not (x c)
   (cond
    ((eq x t) (list c))
-   ((listp x) (nconc (std-car (car x) c) x))
+   ((listp x) (nconc (std-car (car x) c) x));FIXME
    ((s-class-p x) (gen-get-included x))
    (`((member ,x)))))
 

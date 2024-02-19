@@ -141,7 +141,7 @@
 	    (setf (var-type v) (car x));FIXME do-setq-tp ?
 	    (push-vbinds v (cadr x)))
 	  x))
-  (when z x))
+  (when z x));FIXME return type
 
 (defun pt (y x) (or (tst y (with-restore-vars (catch y (prog1 (cons y (pr x)) (keep-vars))))) (pt y x)))
 
@@ -202,7 +202,7 @@
   (let* ((body (mapcar (lambda (x) (if (or (symbolp x) (integerp x)) (make-tag :name x) x)) body))
 	 (tags (remove-if-not 'tag-p body))
 	 (body (let* ((*tags* (append tags *tags*))
-		      (*ft* (nconc (mapcar 'list tags) *ft*))
+		      (*ft* (nconc (mapcar 'list tags) *ft*));FIXME
 		      (*ttl-tags* (nttl-tags body)))
 		  (pr body)))
 	 (body (mapc (lambda (x) (unless (tag-p x) (ref-tags x tags))) body))

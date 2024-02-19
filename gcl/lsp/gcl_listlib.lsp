@@ -217,13 +217,13 @@
   (maplist (lambda (x &aux (e (car x))) (if (consp e) (cons (car e) (cdr e)) e)) l))
 
 
-(defun nconc (&rest l &aux r rp)
-  (declare (dynamic-extent l))
-  (mapl (lambda (l &aux (it (car l)))
-	  (if rp (rplacd rp it) (setq r it))
-	  (when (and (cdr l) (consp it)) (setq rp (last it)))) l)
-  r)
 	
+(defun nconc (&rest l)
+  (declare (optimize (safety 1))(dynamic-extent l))
+  (if (cdr l)
+      (let ((x (pop l))(y (apply 'nconc l)))
+	(etypecase x (cons (rplacd (last x) y) x)(null y)))
+      (car l)))
 
 (defun nreconc (list tail &aux r)
   (declare (optimize (safety 1)))
@@ -265,13 +265,17 @@
 	    ((setq st (cons tr st) cs (cons g cs) tr (car tr))))))
 
 
-(defun append (&rest l &aux r rp)
-  (declare (dynamic-extent l))
-  (mapl (lambda (x &aux (y (car x)))
-	  (declare (optimize (safety 2)))
-	  (if (cdr x)
-	      (mapc (lambda (x) (collect r rp (cons x nil))) y)
-	    (collect r rp y))) l) r)
+(defun append (&rest l)
+  (declare (optimize (safety 1))(dynamic-extent l))
+  (if (cdr l)
+      (let ((x (pop l))(y (apply 'append l)))
+	(check-type x proper-list)
+	(if (typep y 'proper-list)
+	    (let (r rp) (mapc (lambda (x) (collect r rp (cons x nil))) x) (when rp (rplacd rp y)) (or r y))
+	    (labels ((f (x) (if x (cons (car x) (f (cdr x))) y))) (f x))))
+      (car l)))
+
+
 
 (defun revappend (list tail)
   (declare (optimize (safety 1)))

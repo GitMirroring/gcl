@@ -247,7 +247,7 @@
 			   (vl (third fmla))
 			   (i (cond ((type>= #tnull tp) (cons nil (fourth fmla)));FIXME nil tp
 				    ((type>= #t(not null) tp) (cons (fourth fmla) nil)))))
-		      (nconc (when i (mapcar (lambda (x) (cons x i)) vl)) (fmla-infer-tp (fifth fmla)))))
+		      (nconc (when i (mapcar (lambda (x) (cons x i)) vl)) (fmla-infer-tp (fifth fmla)))));FIXME
 	  (if (apply 'fmla-if (cddr fmla)))
 	  (var (when (llvar-p (car (third fmla)))
 		 (list (cons (car (third fmla)) (cons #t(not null) #tnull)))))

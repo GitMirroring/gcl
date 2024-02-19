@@ -1533,7 +1533,7 @@
 ;;   (if ce e l))
 
 (defun mod-env (e l)
-  (setq *lexical-env-mask* (nconc (remove-if (lambda (x) (or (symbolp x) (is-fun-var x))) (ldiff l e)) *lexical-env-mask*))
+  (setq *lexical-env-mask* (nconc (remove-if (lambda (x) (or (symbolp x) (is-fun-var x))) (ldiff l e)) *lexical-env-mask*));FIXME
   l)
 
 
