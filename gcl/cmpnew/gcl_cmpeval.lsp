@@ -1670,7 +1670,7 @@
 
     (mapc (lambda (x) (setf (info-type (cadr x)) (coerce-to-one-value (info-type (cadr x))))) nargs)
 
-    (unless (or last (local-fun-p fn) (eq fn (cadr *current-form*)));FIXME
+    (unless (or last (local-fun-p fn) (eq fn (when (consp *current-form*) (cadr *current-form*))));FIXME
       (when (do (p ;n
 		 (a at (if (eq (car a) '*) a (cdr a)))
 		 (r args (cdr r))
