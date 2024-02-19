@@ -5,11 +5,12 @@
 (In-package :SYSTEM)
 (import 'sloop::sloop)
 
-(defmacro f (op &rest args)
+(eval-when (compile eval)
+  (defmacro f (op &rest args)
     `(the fixnum (,op ,@ (mapcar #'(lambda (x) `(the fixnum ,x)) args) )))
 
-(defmacro fb (op &rest args)
-    `(,op ,@ (mapcar #'(lambda (x) `(the fixnum ,x)) args) ))
+  (defmacro fb (op &rest args)
+    `(,op ,@ (mapcar #'(lambda (x) `(the fixnum ,x)) args))))
 
 
 ;;; Some debugging features:
