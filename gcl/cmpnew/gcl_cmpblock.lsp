@@ -129,18 +129,19 @@
     (ref-blks body (list blk))
     (when (or (blk-ref-ccb blk) (blk-ref-clb blk))
       (set-volatile info))
-    (mapc (lambda (x &aux (y x)(v (pop x))(tp (pop x))(st (pop x))(m (car x))
-		       (tp (type-and tp (var-dt v))));FIXME, unnecessary?
-	    (unless (and (si::type= tp (var-type v))
-			 (subsetp st (var-store v)) (subsetp (var-store v) st)
-			 (if m (equal m tp) t))
+    (when (info-type info)
+      (mapc (lambda (x &aux (y x)(v (pop x))(tp (pop x))(st (pop x))(m (car x))
+			 (tp (type-and tp (var-dt v))));FIXME, unnecessary?
+	      (unless (and (type= tp (var-type v))
+			   (subsetp st (var-store v)) (subsetp (var-store v) st)
+			   (if m (equal m tp) t))
 		(keyed-cmpnote (list (var-name v) 'block-set)
 			       "Altering ~s at end of block ~s:~%   type from ~s to ~s,~%   store from ~s to ~s"
 			       v (blk-name blk) (cmp-unnorm-tp (var-type v)) (cmp-unnorm-tp tp)
 			       (var-store v) st)
 		(do-setq-tp v '(blk-set) tp)
 		(push-vbinds v st)))
-	  (blk-var blk))
+	    (blk-var blk)))
     (cond ((or (blk-ref-ccb blk) (blk-ref-clb blk) (blk-ref blk))(list 'block info blk body))
 	  (body))))
 
