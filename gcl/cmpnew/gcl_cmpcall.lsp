@@ -517,10 +517,10 @@
 		 (write-to-string (argsizes args type 0));FIXME
 		 ",(void **)(void *)&Lnk" num "," (new-proclaimed-argd args type)
 		 ",first,ap);va_end(ap);return V1;}")
-	   (wt "(){va_list dummy;" d "V1=(" d ")call_proc_new(" (vv-str name) "," (if clp "1" "0") ","
+	   (wt "(){" d "V1=(" d ")call_proc_new_nval(" (vv-str name) "," (if clp "1" "0") ","
 	       (write-to-string (argsizes args type 0));FIXME
 	       ",(void **)(void *)&Lnk" num "," (new-proclaimed-argd args type)
-	       ",0,dummy);return V1;}")))))
+	       ",0);return V1;}")))))
     (setq name (function-string name))
     (if (find #\/ name) (setq name (remove #\/ name)))
     (wt " /* " name " */")))

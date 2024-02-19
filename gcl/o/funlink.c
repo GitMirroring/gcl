@@ -435,6 +435,15 @@ call_proc_new(object sym,ufixnum clp,ufixnum vld,void **link,ufixnum argd,object
   }
 
 }
+object
+call_proc_new_nval(object sym,ufixnum clp,ufixnum vld,void **link,ufixnum argd,object first,...) {
+  object x;
+  va_list b;
+  va_start(b,first);
+  x=call_proc_new(sym,clp,vld,link,argd,first,b);
+  va_end(b);
+  return x;
+}
 
 object
 call_proc_cs1(object fun,...) {
