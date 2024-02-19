@@ -964,7 +964,7 @@
 	 (clp (pop fd))
 	 (ap  (cadr fd))
 	 (sig (car (fun-call fun)))
-	 (sig (list (mapcar  (lambda (x) (link-rt x nil)) (car sig)) (link-rt (cadr sig) nil)))
+	 (sig (list (mapcar  (lambda (x) (link-rt x t)) (car sig)) (link-rt (cadr sig) t)))
 	 (mv (not (single-type-p (cadr sig))))
 	 (nm (c-function-name "L" (fun-cfun fun) (fun-name fun)))
 	 (clp (when clp (ccb-vs-str (fun-ref-ccb fun))))
