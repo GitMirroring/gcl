@@ -264,7 +264,8 @@ struct hashtable {           /*  hash table header  */
   ARRAYWORD(b_,c_);					\
   a_       *J(b_,J(c_,self));				\
   ufixnum   J(b_,J(c_,dim)):ARRAY_DIMENSION_BITS;	\
-  ufixnum   J(b_,J(c_,eltmode)):3
+  ufixnum   J(b_,J(c_,eltmode)):3;			\
+  ufixnum   pad1:LM(31)
 
 #endif
 
