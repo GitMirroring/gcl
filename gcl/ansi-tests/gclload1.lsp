@@ -3,10 +3,13 @@
 
 #+cmu (setq ext:*gc-verbose* nil)
 
-#+gcl (setq compiler:*suppress-compiler-notes* t
-            compiler:*suppress-compiler-warnings* t
-            compiler:*compile-verbose* nil
-            compiler:*compile-print* nil)
+#+gcl(setq si::*code-block-reserve*
+	   (or si::*code-block-reserve*
+	       (make-array 30000000 :element-type 'character :static t))
+	   compiler:*suppress-compiler-notes* t
+           compiler:*suppress-compiler-warnings* t
+           compiler:*compile-verbose* nil
+           compiler:*compile-print* nil)
 
 #+lispworks (setq compiler::*compiler-warnings* nil)
 #+lispworks (make-echo-stream *standard-input* *standard-output*)
