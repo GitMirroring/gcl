@@ -596,7 +596,7 @@ DEFUN("OPEN-FASD",object,fSopen_fasd,SI
   if(direction==sKinput)
     {str=coerce_stream(stream,0);
     if (tabl==Cnil)
-      tabl=alloc_simple_vector(0,aet_object);
+      tabl=alloc_simple_vector(0);
     else
       check_type(tabl,t_simple_vector);}
   if(direction==sKoutput)
@@ -605,7 +605,7 @@ DEFUN("OPEN-FASD",object,fSopen_fasd,SI
     else
       check_type(tabl,t_hashtable);}
   massert(str==stream);
-  result=alloc_simple_vector(sizeof(struct fasd)/sizeof(object),aet_object);
+  result=alloc_simple_vector(sizeof(struct fasd)/sizeof(object));
   array_allocself(result,1,Cnil);
   {struct fasd *fd= (struct fasd *)result->sv.sv_self;
   fd->table=tabl;
