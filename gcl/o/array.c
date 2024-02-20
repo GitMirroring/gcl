@@ -936,6 +936,7 @@ array_allocself(object x, int staticp, object dflt)
 		break;
 	case aet_bit:
 	  n=ceil(n,BV_ALLOC);
+	  n++;/*allow for arrays displaced to end BV_ALLOC access*/
 	  SET_BV_OFFSET(x,0);
 	case aet_fix:
 	case aet_nnfix:
