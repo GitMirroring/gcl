@@ -57,9 +57,13 @@ License for more details.
 #define ALLOC_SEC(sec) (sec->sh_flags&SHF_ALLOC && (sec->sh_type==SHT_PROGBITS || sec->sh_type==SHT_NOBITS))
 #define LOAD_SEC(sec) (sec->sh_flags&SHF_ALLOC &&  sec->sh_type==SHT_PROGBITS)
 #define LOAD_SYM(sym,st1) (sym->st_value && (EXT_SYM(sym,st1)||LOCAL_SYM(sym)))
-#define EXT_SYM(sym,st1) (ELF_ST_BIND(sym->st_info)==STB_GLOBAL||ELF_ST_BIND(sym->st_info)==STB_WEAK||LOAD_SYM_BY_NAME(sym,st1))
 #define LOCAL_SYM(sym) ELF_ST_BIND(sym->st_info)==STB_LOCAL
-#define LOAD_SYM_BY_NAME(sym,st1) !strncmp(st1+sym->st_name,"__muldc3",8)||!strncmp(st1+sym->st_name,"__divdc3",8)
+#define EXT_SYM(sym,st1) (ELF_ST_BIND(sym->st_info)==STB_GLOBAL||	\
+			  ELF_ST_BIND(sym->st_info)==STB_WEAK||		\
+			  GCC_SYM(sym,st1))
+#define GCC_SYM(sym,st1) (ELF_ST_BIND(sym->st_info)==STB_LOCAL &&	\
+			  ELF_ST_TYPE(sym->st_info)==STT_FUNC &&	\
+			  st1[sym->st_name]=='_')
 
 #define MASK(n) (~(~0ULL << (n)))
 
