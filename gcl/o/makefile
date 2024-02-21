@@ -48,6 +48,9 @@ gprof.ini: gprof.c grab_defs
 prelink.o: prelink.c $(DECL)
 	$(CC) -c $(filter-out -pg,$(CFLAGS)) -fPIE $(DEFS) $*.c $(AUX_INFO)
 
+unixtime.o: unixtime.c $(DECL)
+	$(CC) -c -D_FILE_OFFSET_BITS=64 -D_TIME_BITS=64 $(CFLAGS) $(DEFS) $< $(AUX_INFO)
+
 %.o: %.c $(DECL)
 	$(CC) -c $(CFLAGS) $(DEFS) $*.c $(AUX_INFO) 
 
