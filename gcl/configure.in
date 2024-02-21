@@ -1458,10 +1458,26 @@ if test "$use" != "386-gnu" ; then #hurd can push .data below C stack, but sbrk(
 	AC_MSG_RESULT(got it)
 
 	AC_MSG_CHECKING([output_arch])
-	output_arch=`cat gcl.script |grep OUTPUT_ARCH|head -n 1|sed 's,.*(\(.*\)).*,\1,1'|cut -f1 -d:`;
+	output_arch=`cat gcl.script |grep OUTPUT_ARCH|head -n 1|sed 's,.*(\(.*\)).*,\1:,1'|cut -f1 -d:|tr '-' '_'`;
 	if test "$output_arch" != "" ; then
 	    AC_DEFINE_UNQUOTED(OUTPUT_ARCH,bfd_arch_${output_arch},[bfd output arch])
      	    AC_MSG_RESULT([bfd_arch_${output_arch}])
+	else
+     	    AC_MSG_RESULT([not found])
+	fi
+	AC_MSG_CHECKING([output_mach])
+	output_mach=`cat gcl.script |grep OUTPUT_ARCH|head -n 1|sed 's,.*(\(.*\)).*,\1:,1'|cut -f2 -d:|tr '-' '_'`;
+dnl     FIXME
+	defaulted=""
+        if test "$output_mach" = "" ; then
+		if test "$output_arch" = "i386" ; then
+		   output_mach="i386_i386";
+		   defaulted="(defaulted)"
+		fi
+	fi
+	if test "$output_mach" != "" ; then
+	    AC_DEFINE_UNQUOTED(OUTPUT_MACH,bfd_mach_${output_mach},[bfd output mach])
+     	    AC_MSG_RESULT([$defaulted bfd_mach_${output_mach}])
 	else
      	    AC_MSG_RESULT([not found])
 	fi

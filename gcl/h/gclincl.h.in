@@ -333,6 +333,9 @@
 /* bfd output arch */
 #undef OUTPUT_ARCH
 
+/* bfd output mach */
+#undef OUTPUT_MACH
+
 /* Define to the address where bug reports for this package should be sent. */
 #undef PACKAGE_BUGREPORT
 

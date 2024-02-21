@@ -1322,6 +1322,9 @@ DEFUN("DISASSEMBLE-INSTRUCTION",object,fSdisassemble_instruction,SI,1,1,NONE,OI,
       s(&i, stdout,(fprintf_ftype) my_fprintf,my_fprintf_styled);
       i.read_memory_func=my_read;
       i.print_address_func=my_pa;
+#if defined(OUTPUT_MACH)
+      i.mach=OUTPUT_MACH;
+#endif
       if ((s=dlsym(v,"disassembler"))) {
 	disassembler_ftype disasm=(disassembler_ftype)(ufixnum)s(OUTPUT_ARCH,false,0,NULL);/*bfd_mach_x86_64*/
 	bp=b;
