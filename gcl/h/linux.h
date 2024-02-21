@@ -182,7 +182,18 @@ do { int c = 0; \
 
 #else
 
-#define FPE_CODE(i_,v_) make_fixnum((fixnum)SF(i_)->si_code)
+#define FPE_TCODE(x_) \
+  {ufixnum _x=(x_),_y=0;			\
+   switch(_x) {					\
+   case FPE_FLTINV: _y=FE_INVALID;break;	\
+   case FPE_FLTDIV: _y=FE_DIVBYZERO;break;	\
+   case FPE_FLTOVF: _y=FE_OVERFLOW;break;	\
+   case FPE_FLTUND: _y=FE_UNDERFLOW;break;	\
+   case FPE_FLTRES: _y=FE_INEXACT;break;	\
+   }						\
+   _y;						\
+  }
+#define FPE_CODE(i_,v_) make_fixnum(FPE_TCODE((fixnum)SF(i_)->si_code))
 #define FPE_ADDR(i_,v_) make_fixnum((fixnum)SF(i_)->si_addr)
 #define FPE_CTXT(v_) Cnil
 
