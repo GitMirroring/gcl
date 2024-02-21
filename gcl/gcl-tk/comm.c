@@ -268,7 +268,7 @@ DEFUN("CLEAR-CONNECTION",object,fSclear_connection,SI,1,1,NONE,II,OO,OO,OO,(fixn
   
   char buffer[0x1000];
   int n=0;
-  while (fix(FFN(fScheck_fd_for_input)(fd,0)))
+  while ((fixnum)(FFN(fScheck_fd_for_input)(fd,0)))
     n+=read(fd,buffer,sizeof(buffer));
   
   return (object)(fixnum)n;
