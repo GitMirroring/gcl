@@ -332,7 +332,7 @@
 	     (c1progn (append args (list r)) (nconc nargs (list (if r (c1t) (c1nil)))))))
 	  ((let ((x (get-vbind (car nargs)))(y (get-vbind (cadr nargs))))
 	     (when (or (when x (eq x y)) (and (symbolp (car args)) (eq (car args) (cadr args))))
-	       (if (member fn '(= >= <=)) (c1t) (c1nil)))))
+	       (if (member fn '(= >= <=)) (c1t) (c1nil)))));FIXME nan
 	  ((list 'call-global info fn nargs)))))
 
 (dolist (l `(>= > < <= = /=))
