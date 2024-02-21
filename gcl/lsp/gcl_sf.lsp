@@ -3,6 +3,11 @@
 
 (defun strcat (&rest r) (declare (dynamic-extent r)) (nstring-downcase (apply 'string-concatenate r)))
 
+ #.`(defun end-shft (s &optional (sz 1)(b fixnum-length))
+      (declare (ignorable sz b))
+      ,(if (member :clx-little-endian *features*) 's '(- b s sz)))
+ (si::putprop 'end-shft t 'si::cmp-inline)
+
 (eval-when
  (eval compile) 
   
@@ -123,11 +128,6 @@
 		(declare (optimize (safety 1)))
 		,@(unless (eq tp t) `((check-type x ,tp))),@(when ytp `((check-type y ,ytp)))
 	       ,@body)))
-
- #.`(defun end-shft (s &optional (sz 1)(b fixnum-length))
-      (declare (ignorable sz b))
-      ,(if (member :clx-little-endian *features*) 's '(- b s sz)))
- (si::putprop 'end-shft t 'si::cmp-inline)
 
  (defun gbe (f tp o s sz b a &aux (s (end-shft s sz b)))
    `((the ,tp ,(m& (m>> `(,f ,a ,o nil nil) s) (when (< (+ s sz) b) (mm (1- (ash 1 sz))))))))
