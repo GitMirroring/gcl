@@ -537,7 +537,6 @@ EXTER char *alloca_val;
 #define ON_STACK_CONS(x,y) (ALLOCA_CONS_ALIGN(1), on_stack_cons(x,y)) 
 
 
-object make_si_sfun();
 
 /*FIXME -- this is an effort to minimize uninitialized garbage in the
   stack.  THe only comprehensive solution appears to be to wipe the
@@ -622,8 +621,6 @@ object make_si_sfun();
 
 
 
-object funcall_cfun(void(*)(),int,...);
-object clear_compiler_properties();
 EXTER object sSlambda_block_expanded;
 
 # ifdef __GNUC__ 
@@ -654,7 +651,6 @@ EXTER object sSlambda_block_expanded;
     do{ if(signals_allowed ==0) /* should not get here*/gcl_abort(); \
    raise_pending_signals(sig_safe)}while(0)
 
-void raise_pending_signals();
 
 EXTER unsigned plong signals_allowed, signals_pending;
 

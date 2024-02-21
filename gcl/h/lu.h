@@ -266,7 +266,7 @@ struct hashtable {           /*  hash table header  */
   ufixnum   J(b_,J(c_,dim)):ARRAY_DIMENSION_BITS;	\
   ufixnum   J(b_,J(c_,eltmode)):3;			\
   ufixnum   pad1:LM(31)
-
+/*FIXME SPAD*/
 #endif
 
 #define dimstempl(b_,c_)			\

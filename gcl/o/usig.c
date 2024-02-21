@@ -48,6 +48,9 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 extern char signals_handled[];
 
 void
+main_signal_handler(int,siginfo_t,void *);
+
+void
 gcl_signal(int signo, void (*handler) (/* ??? */))
 {
   char *p = signals_handled;

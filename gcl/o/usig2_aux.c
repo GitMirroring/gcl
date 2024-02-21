@@ -16,8 +16,6 @@ XS(endp_temp);
 XSI(eval1);
 XSI(line_length);
 XSI(in_list_flag);
-XS(kf);
-XS(tf);
 XSI(left_trim);
 XSI(right_trim);
 XS(lex_env);
@@ -30,7 +28,6 @@ XSI(preserving_whitespace_flag);
 XS(sharing_table);
 XSI(string_sign);
 XSI(string_boundary);
-XS(car_or_cdr);
 XS(casefun);
 XS(tmp_alloc);
 #ifndef GMP 

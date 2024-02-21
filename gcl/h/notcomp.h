@@ -8,7 +8,6 @@
 #define	CHAR_CODE_LIMIT	256	
 #define	READ_TABLE_SIZE CHAR_CODE_LIMIT
 
-void enter_mark_origin() ;
 
 EXTER int *cs_org;     
 EXTER int GBC_enable;
@@ -18,9 +17,7 @@ EXTER object sSAnotify_gbcA;
 
 /* symbols which are not needed in compiled lisp code */
 EXTER int interrupt_flag,interrupt_enable;
-void install_default_signals();
 /* void sigint(),sigalrm(); */
-void segmentation_catcher();
 
 
 EXTER int gc_enabled, saving_system;
@@ -29,7 +26,6 @@ EXTER object lisp_package,user_package;
 EXTER char *core_end;
 EXTER int catch_fatal;
 EXTER long real_maxpage;
-char *getenv();
 EXTER char *this_lisp;
 
 EXTER char stdin_buf[],stdout_buf[];
@@ -154,8 +150,6 @@ STATD ret FFN(fname) args
 #endif /* NO_DEFUN */
 
 
-object  type_name();
-object fSincorret_type();
 
 
 #define TYPE_OF(x) type_of(x)
@@ -170,7 +164,6 @@ TS_MEMBER(t0,TS(t1)|TS(t2)|TS(t3)...)
 
 #define ASSURE_TYPE(val,t) if (type_of(val)!=t) TYPE_ERROR(val,type_name(t))
 
-object IisArray();
 
 /* array to which X is has its body displaced */
 #define DISPLACED_TO(x) Mcar(ADISP(x))
@@ -207,16 +200,12 @@ EXTER int eval1 ;
 EXTER bool in_list_flag;
 EXTER object test_function;
 EXTER object item_compared;
-bool (*tf)();
 EXTER object key_function;
-object (*kf)();
-object (*car_or_cdr)();
 
 
 /* string.d */
 EXTER  bool left_trim;
 EXTER bool right_trim;
-int  (*casefun)();
 
 
 /* on most machines this will test in one instruction
@@ -238,10 +227,7 @@ EXTER object sSXB;
 
 #define	inheap(pp)	((char *)(pp) < heap_end)
 
-char *lisp_copy_to_null_terminated();
 
-int
-gcl_init_cmp_anon(void);
 
 #undef SAFE_READ
 #undef SAFE_FREAD
