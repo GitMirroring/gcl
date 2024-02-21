@@ -232,7 +232,11 @@ equal1(register object x, register object y) {
 	  if (x->bv.bv_self[i]!=y->bv.bv_self[i])
 	    return(FALSE);
 	if (VLEN(x)%BV_BITS) {
+#ifdef WORDS_BIGENDIAN
+	  ufixnum m=(~0L<<(BV_BITS-(VLEN(x)%BV_BITS)));
+#else
 	  ufixnum m=(~(~0L<<(VLEN(x)%BV_BITS)));
+#endif
 	  if ((x->bv.bv_self[i]&m)!=(y->bv.bv_self[i]&m))
 	    return(FALSE);
 	}

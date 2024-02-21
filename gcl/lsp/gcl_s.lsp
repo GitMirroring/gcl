@@ -2,7 +2,7 @@
 (in-package :s)
 
 (export '(lisp-type defdlfun +ks+ +fl+ strcat adjustable-vector adjustable-array matrix))
-(si::import-internal 'si::(\| & ^ ~ c+ c* << >> object double
+(si::import-internal 'si::(\| & ^ ~ c+ c* << >> object double end-shft
 			   c-object-== c-fixnum-== c-float-== c-double-== c-fcomplex-== c-dcomplex-== fcomplex dcomplex
 			   string-concatenate lit seqind seqbnd fixnum-length char-length cref address nani short int
 			   cnum unsigned-char unsigned-short unsigned-int

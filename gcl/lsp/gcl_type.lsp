@@ -235,7 +235,7 @@
       (unless (zerop y)
 	(let* ((l (1- (integer-length y)))(l (if (minusp y) (1+ l) l)))
 	  (if (unless n (eql y (<< 1 l)))
-	      (setq n (+ (* i fixnum-length) l))
+	      (setq n (+ (* i fixnum-length) (end-shft l)))
 	    (return nil)))))))
 
 (defun atomic-tp (tp)

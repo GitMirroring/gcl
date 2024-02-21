@@ -328,7 +328,11 @@ extern bool writable_malloc;
 /* #define BV_ALLOC (BV_BITS*SIZEOF_LONG) */
 #define BV_BITS (CHAR_SIZE*SIZEOF_LONG)
 #define BV_ALLOC BV_BITS
+#ifdef WORDS_BIGENDIAN
+#define BV_BIT(i) (1L<<(BV_BITS-1-((i)%BV_BITS)))
+#else
 #define BV_BIT(i) (1L<<((i)%BV_BITS))
+#endif
 #define BITREF(x,i) ({ufixnum _i=(i);(BV_BIT(_i)&(x->bv.bv_self[_i/BV_BITS])) ? 1 : 0;})
 #define SET_BITREF(x,i)   ({ufixnum _i=(i);(x->bv.bv_self[_i/BV_BITS]) |= BV_BIT(_i);})
 #define CLEAR_BITREF(x,i) ({ufixnum _i=(i);(x->bv.bv_self[_i/BV_BITS]) &= ~BV_BIT(_i);})

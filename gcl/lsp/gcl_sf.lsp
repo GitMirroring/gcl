@@ -124,10 +124,14 @@
 		,@(unless (eq tp t) `((check-type x ,tp))),@(when ytp `((check-type y ,ytp)))
 	       ,@body)))
 
- (defun ends (s sz b) (if (member :clx-little-endian *features*) s (- b s sz)))
- (defun gbe (f tp o s sz b a &aux (s (ends s sz b)))
+ #.`(defun end-shft (s &optional (sz 1)(b fixnum-length))
+      (declare (ignorable sz b))
+      ,(if (member :clx-little-endian *features*) 's '(- b s sz)))
+ (si::putprop 'end-shft t 'si::cmp-inline)
+
+ (defun gbe (f tp o s sz b a &aux (s (end-shft s sz b)))
    `((the ,tp ,(m& (m>> `(,f ,a ,o nil nil) s) (when (< (+ s sz) b) (mm (1- (ash 1 sz))))))))
- (defun sbe (f    o s sz b a &aux (s (ends s sz b)))
+ (defun sbe (f    o s sz b a &aux (s (end-shft s sz b)))
    `((,f ,a ,o t ,(m\| (m<< 'y s) (when (< sz b) `(& (,f ,a ,o nil nil) ,(~ (mm (ash (1- (ash 1 sz)) s))))))) y))
  
  (defun fnk (k) (intern (string-concatenate "*" (string k))))

@@ -1,11 +1,22 @@
 ;; Copyright (C) 2024 Camm Maguire
 (in-package :si)
 
-(defun mask (nbits)
+(defun mask (nbits &optional (off 0))
   (if (eql nbits fixnum-length)
       -1
-      (~ (<< -1 nbits))))
+      (<< (~ (<< -1 nbits)) (end-shft off nbits))))
 (setf (get 'mask 'compiler::cmp-inline) t)
+
+(defun b<< (x y)
+#+clx-little-endian (<< x y)
+#-clx-little-endian (>> x y))
+(setf (get 'b<< 'compiler::cmp-inline) t)
+
+(defun b>> (x y)
+#+clx-little-endian (>> x y)
+#-clx-little-endian (<< x y))
+(setf (get 'b>> 'compiler::cmp-inline) t)
+
 
 (defun merge-word (x y m) (\| (& x m) (& y (~ m))))
 (setf (get 'merge-word 'compiler::cmp-inline) t)
@@ -25,12 +36,12 @@
   (cond ((zerop od) (bit-array-fixnum a i n))
 	((plusp od)
 	 (merge-word
-	  (>> (bit-array-fixnum a i n) od)
-	  (<< (bit-array-fixnum a (1+ i) n) (- fixnum-length od))
+	  (b>> (bit-array-fixnum a i n) od)
+	  (b<< (bit-array-fixnum a (1+ i) n) (- fixnum-length od))
 	  (mask (- fixnum-length od))))
 	((merge-word
-	  (>> (bit-array-fixnum a (1- i) n) (+ fixnum-length od))
-	  (<< (bit-array-fixnum a i n) (- od))
+	  (b>> (bit-array-fixnum a (1- i) n) (+ fixnum-length od))
+	  (b<< (bit-array-fixnum a i n) (- od))
 	  (mask (- od))))))
 (setf (get 'gw 'compiler::cmp-inline) t)
 
@@ -60,7 +71,7 @@
 	  (merge-word
 	   (funcall fn (gw ba1 i n1 o1) (gw ba2 i n2 o2)) 
 	   (bit-array-fixnum rba i n3)
-	   (<< (mask (min y (- fixnum-length o3))) o3)))
+	   (mask (min y (- fixnum-length o3)) o3)))
 	 (incf i))
        
        (do nil ((>= i nw))

@@ -132,7 +132,7 @@
   (let* ((off (+ index (array-offset array)))
 	 (ind (>> off #.(1- (integer-length fixnum-length))))
 	 (word (*fixnum (c-array-self array) ind nil nil))
-	 (shft (& off #.(1- fixnum-length))))
+	 (shft (end-shft (& off #.(1- fixnum-length)))))
     (& (>> word shft) 1)))
 (declaim (inline 0-byte-array-self))
 
@@ -144,7 +144,7 @@
   (let* ((off (+ index (array-offset array)))
 	 (ind (>> off #.(1- (integer-length fixnum-length))))
 	 (word (*fixnum (c-array-self array) ind nil nil))
-	 (shft (& off #.(1- fixnum-length)))
+	 (shft (end-shft (& off #.(1- fixnum-length))))
 	 (val (<< 1 shft)))
     (*fixnum (c-array-self array) ind t (if (zerop bit) (& word (~ val)) (\| word val)))
     bit))
