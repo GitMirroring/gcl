@@ -20,7 +20,7 @@
   (declare (optimize (safety 1))(ignore element-type))
   (make-string-output-stream-int))
 
-(defconstant +r+ `((immfix 1)
+(defconstant +r+ `(,@(when (plusp most-positive-immfix) `((immfix 1)))
 		   (bfix  most-positive-fixnum)
 		   (bignum (1+ most-positive-fixnum))
 		   (ratio 1/2)

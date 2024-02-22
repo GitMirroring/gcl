@@ -445,7 +445,7 @@
 (deftype non-negative-immfix nil
   `(non-negative-byte ,(1+ (integer-length most-positive-immfix))))
 (deftype immfix nil
-  `(signed-byte #.(1+ (integer-length most-positive-immfix))));FIXME check null
+  #.(when (plusp most-positive-immfix) `'(signed-byte ,(1+ (integer-length most-positive-immfix)))));FIXME check null
 (deftype fixnum nil
   `(signed-byte #.(1+ (integer-length most-positive-fixnum))))
 (deftype bfix nil
