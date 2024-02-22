@@ -771,12 +771,10 @@
 (defvar *in-co1carcdr* nil);FIXME
 
 (defun co1carcdr (f x)
-  (unless *in-co1carcdr*
-    (let ((*in-co1carcdr* t))
-      (let* ((tp (car (atomic-tp (info-type (cadr (with-restore-vars (c1arg (car x))))))))
-	     (tp (when (consp tp) (funcall f tp)))
-	     (tp (get-var tp)))
-	(when tp (c1var tp))))))
+  (let* ((tp (car (atomic-tp (info-type (cadr (with-restore-vars (c1arg (car x))))))))
+	 (tp (when (consp tp) (funcall f tp)))
+	 (tp (get-var tp)))
+    (when tp (c1var tp))))
 
 (setf (get 'car 'co1) 'co1carcdr)
 (setf (get 'cdr 'co1) 'co1carcdr)
