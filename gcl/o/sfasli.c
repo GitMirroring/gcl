@@ -95,14 +95,15 @@ build_symbol_table_bfd(void) {
 #endif /* special_rsym */
 
 static void *min_text;
-extern char etext/* ,edata,end */;
+extern void *data_start;
+/* extern char etext,edata,end,_data_start_; */
 
 int
 is_text_addr(void *p) {
   extern int initializing_boot;
-  if (!min_text) return 1;/*FIXME build_symbol_table before initlisp*/
+  /* if (!min_text) return 1;/\*FIXME build_symbol_table before initlisp*\/ */
   if (initializing_boot) return 1;/*FIXME*/
-  return p>=min_text && p<(void *)&etext ? 1 : 0;
+  return p>=min_text && p<data_start && !is_bigger_fixnum(p) ? 1 : 0;
 }
 
 LFD(build_symbol_table)(void) {
