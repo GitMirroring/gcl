@@ -100,7 +100,7 @@ extern char etext/* ,edata,end */;
 int
 is_text_addr(void *p) {
   extern int initializing_boot;
-  if (!min_text && !max_text) return 1;/*FIXME build_symbol_table before initlisp*/
+  if (!min_text) return 1;/*FIXME build_symbol_table before initlisp*/
   if (initializing_boot) return 1;/*FIXME*/
   return p>=min_text && p<(void *)&etext ? 1 : 0;
 }
