@@ -87,7 +87,11 @@ DEFUN("INIT-FUNCTION",object,fSinit_function,SI,7,7,NONE,OO,OO,OI,II, \
   d=data!=Cnil ? data : m;
   i=sSPinit;
   i=i ? i->s.s_dbind : i;
-  s=i && i!=OBJNULL && !get_pageinfo(addr) && type_of(addr)==t_fixnum ? i->v.v_self[fix(addr)] : addr;
+  s=i && i!=OBJNULL &&						\
+    (NULL_OR_ON_C_STACK(addr) ?					\
+     (is_imm_fixnum(addr) || is_bigger_fixnum(addr)) :		\
+     !get_pageinfo(addr)) &&					\
+    type_of(addr)==t_fixnum ? i->v.v_self[fix(addr)] : addr;
   z=type_of(sc)==t_cons && sc->c.c_car==sSmacro; /*FIXME limited no. of args.*/
   sc=z ? sc->c.c_cdr : sc;
   sc=type_of(sc)==t_function ? sc->fun.fun_plist : sc;

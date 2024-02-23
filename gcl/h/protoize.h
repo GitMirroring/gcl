@@ -1666,3 +1666,4 @@ object Iapply_fun_n2(object,int,int,...);
 object Ifuncall_n(object,int,...);
 object funcall_cfun(void(*)(),int,...);
 int gcl_init_cmp_anon(void);
+int is_bigger_fixnum(void *);
