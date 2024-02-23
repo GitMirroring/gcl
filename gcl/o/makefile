@@ -78,7 +78,7 @@ new_init.c: ${INI_FILES}
 	echo 'void NewInit(void){' >> $@
 	cat ${INI_FILES} >> $@
 	echo '}' >> $@
-	! cat $@ | awk -F, '/DEFUN/ {print $2}' | grep -v object || (rm $@ && false)
+	! cat $@ | awk -F, '/DEFUN/ {print $$1,$$2}' | grep -v object || (rm $@ && false)
 
 ifneq ($(NIFLAGS),)
 new_init.o: new_init.c $(DECL)
