@@ -87,10 +87,10 @@ DEFUN("INIT-FUNCTION",object,fSinit_function,SI,7,7,NONE,OO,OO,OI,II, \
   d=data!=Cnil ? data : m;
   i=sSPinit;
   i=i ? i->s.s_dbind : i;
-  if (is_text_addr(addr)||get_pageinfo(addr))
+  if (is_text_addr(addr)||get_pageinfo(addr)||!i||i==OBJNULL)
     s=addr;
   else {
-    massert(i && i!=OBJNULL && type_of(addr)==t_fixnum);
+    massert(type_of(addr)==t_fixnum);
     s=i->v.v_self[fix(addr)];
   }
   z=type_of(sc)==t_cons && sc->c.c_car==sSmacro; /*FIXME limited no. of args.*/
