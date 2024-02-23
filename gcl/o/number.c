@@ -57,6 +57,7 @@ object small_fixnum ( int i ) {
 #endif
 
 
+/*FIXME, make these immutable and of type immfix*/
 #define BIGGER_FIXNUM_RANGE
 
 #ifdef BIGGER_FIXNUM_RANGE
