@@ -69,7 +69,7 @@ DEFUN("GPROF-ADDRESSES",object,fSgprof_addresses,SI,0,0,NONE,OO,OO,OO,OO,(void),
   if (max<min)
     min=max;
 
-  if (!mintext) {
+  if (!mintext) {/*FIXME min_text*/
 
     mintext=data_start;
 

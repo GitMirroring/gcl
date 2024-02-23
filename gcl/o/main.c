@@ -419,6 +419,8 @@ dir_name_length(const char *s) {
   return m;
 }
 
+int initializing_boot=0;
+
 void
 init_boot(void) {
 
@@ -435,7 +437,9 @@ init_boot(void) {
     printf("%s\n",dlerror());
   if (!(q=dlsym(v,"gcl_init_boot")))
     printf("%s\n",dlerror());
+  initializing_boot=1;
   ((void (*)())q)();
+  initializing_boot=0;
   sSAoptimize_maximum_pagesA->s.s_dbind=omp;
 
 }

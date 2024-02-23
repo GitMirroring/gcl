@@ -94,7 +94,17 @@ build_symbol_table_bfd(void) {
 
 #endif /* special_rsym */
 
-LFD(build_symbol_table)(void) { 
+static void *min_text,*max_text;
+
+int
+is_text_addr(void *p) {
+  extern int initializing_boot;
+  if (!min_text && !max_text) return 1;/*FIXME build_symbol_table before initlisp*/
+  if (initializing_boot) return 1;/*FIXME*/
+  return p>=min_text && p<=max_text ? 1 : 0;
+}
+
+LFD(build_symbol_table)(void) {
 
   printf("Building symbol table for %s ..\n",kcl_self);fflush(stdout);
 
@@ -109,6 +119,21 @@ LFD(build_symbol_table)(void) {
   build_symbol_table_bfd();
 
 #endif
+
+  {
+    fixnum i;
+    extern void *data_start;
+
+    min_text=data_start;
+    max_text=NULL;
+    for (i=0;i<c_table.alloc_length;i++) {
+      void *p=(void *)c_table.ptable[i].address;
+      if (p>=data_start)
+	continue;
+      min_text=p<min_text ? p : min_text;
+      max_text=p>max_text ? p : max_text;
+    }
+  }
 
 }
 

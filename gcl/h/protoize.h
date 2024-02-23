@@ -1667,3 +1667,4 @@ object Ifuncall_n(object,int,...);
 object funcall_cfun(void(*)(),int,...);
 int gcl_init_cmp_anon(void);
 int is_bigger_fixnum(void *);
+int is_text_addr(void *);
