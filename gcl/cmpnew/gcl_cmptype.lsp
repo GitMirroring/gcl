@@ -768,8 +768,6 @@
 	(#tcons)))
 (si::putprop 'cons 'cons-propagator 'type-propagator)
 
-(defvar *in-co1carcdr* nil);FIXME
-
 (defun co1carcdr (f x)
   (let* ((tp (car (atomic-tp (info-type (cadr (with-restore-vars (c1arg (car x))))))))
 	 (tp (when (consp tp) (funcall f tp)))
