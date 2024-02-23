@@ -570,7 +570,7 @@ StdinProc(clientData, mask)
 	  dfprintf(stderr, "Error !!! Unknown command %d\n"
 		   , msg->type);
 	}
-      fNotDone = fix(fScheck_dsfd_for_input(dsfd,0));
+      fNotDone = fScheck_dsfd_for_input(dsfd,0);
       
       if (fNotDone > 0)
 	{

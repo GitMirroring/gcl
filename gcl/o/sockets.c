@@ -530,10 +530,10 @@ and positioning the ouput/input to start at START and end at END")
   return strm;
 }
 
-DEFUN("CHECK-STATE-INPUT",object,fScheck_state_input,SI,2,2,NONE,OO,IO,OO,OO,(object osfd,fixnum timeout),
+DEFUN("CHECK-STATE-INPUT",object,fScheck_state_input,SI,2,2,NONE,IO,IO,OO,OO,(object osfd,fixnum timeout),
       "") 
 {
-  return fScheck_dsfd_for_input(OBJ_TO_CONNECTION_STATE(osfd),timeout);
+  return (object)fScheck_dsfd_for_input(OBJ_TO_CONNECTION_STATE(osfd),timeout);
 
 }
 
