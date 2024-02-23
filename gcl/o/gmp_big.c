@@ -97,6 +97,14 @@ object big_fixnum5;
 void
 gcl_init_big1(void) {
     mp_set_memory_functions( gcl_gmp_alloc,gcl_gmp_realloc,gcl_gmp_free);
+    jmp_gmp=0;
+
+#if __GNU_MP_VERSION > 4 || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR >= 2)
+    Mersenne_Twister_Generator_Noseed.b=__gmp_randget_mt;
+    Mersenne_Twister_Generator_Noseed.c=__gmp_randclear_mt;
+    Mersenne_Twister_Generator_Noseed.d=__gmp_randiset_mt;
+#endif
+
 }
 
 #else
