@@ -392,8 +392,8 @@ object x;
   return(h);
 }}
 
-DEFUN_NEW("PACK-HASH",fixnum,fSpack_hash,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {
-  RETURN1(pack_hash(x));
+DEFUN_NEW("PACK-HASH",object,fSpack_hash,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {
+  RETURN1((object)(fixnum)pack_hash(x));
 }
 
 DEFUN_NEW("SET-SYMBOL-HPACK",object,fSset_symbol_hpack,SI,2,2,NONE,OO,OO,OO,OO,(object p,object s),"") {
@@ -407,9 +407,9 @@ DEFUN_NEW("SET-SYMBOL-HPACK",object,fSset_symbol_hpack,SI,2,2,NONE,OO,OO,OO,OO,(
 /*   RETURN1(x->p.p_internal[i]); */
 /* } */
 
-DEFUN_NEW("PACKAGE-INTERNAL_SIZE",fixnum,fSpackage_internal_size,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {
+DEFUN_NEW("PACKAGE-INTERNAL_SIZE",object,fSpackage_internal_size,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {
   check_type_package(&x);
-  RETURN1(x->p.p_internal_size);
+  RETURN1((object)(fixnum)x->p.p_internal_size);
 }
 
 /* DEFUN_NEW("PACKAGE-EXTERNAL",object,fSpackage_external,SI,2,2,NONE,OO,IO,OO,OO,(object x,fixnum i),"") { */
@@ -417,9 +417,9 @@ DEFUN_NEW("PACKAGE-INTERNAL_SIZE",fixnum,fSpackage_internal_size,SI,1,1,NONE,IO,
 /*   RETURN1(x->p.p_external[i]); */
 /* } */
 
-DEFUN_NEW("PACKAGE-EXTERNAL_SIZE",fixnum,fSpackage_external_size,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {
+DEFUN_NEW("PACKAGE-EXTERNAL_SIZE",object,fSpackage_external_size,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {
   check_type_package(&x);
-  RETURN1(x->p.p_external_size);
+  RETURN1((object)(fixnum)x->p.p_external_size);
 }
 
 /*
