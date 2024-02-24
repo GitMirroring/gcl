@@ -60,10 +60,15 @@ License for more details.
 #define LOCAL_SYM(sym) ELF_ST_BIND(sym->st_info)==STB_LOCAL
 #define EXT_SYM(sym,st1) (ELF_ST_BIND(sym->st_info)==STB_GLOBAL||	\
 			  ELF_ST_BIND(sym->st_info)==STB_WEAK||		\
-			  GCC_SYM(sym,st1))
+			  GCC_SYM(sym,st1)||				\
+			  PSPEC_SYM(sym,st1))
+/*e.g. arm soft float functions*/
 #define GCC_SYM(sym,st1) (ELF_ST_BIND(sym->st_info)==STB_LOCAL &&	\
 			  ELF_ST_TYPE(sym->st_info)==STT_FUNC &&	\
 			  st1[sym->st_name]=='_')
+/*e.g. parisc millicode*/
+#define PSPEC_SYM(sym,st1) (ELF_ST_BIND(sym->st_info)==STB_LOCAL &&	\
+			    ELF_ST_TYPE(sym->st_info)>=STT_LOPROC)
 
 #define MASK(n) (~(~0ULL << (n)))
 
