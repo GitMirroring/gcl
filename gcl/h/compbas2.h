@@ -31,7 +31,7 @@ typedef dcomplex c128;
 typedef object o32;
 
 typedef union {int8_t i;uint8_t u;n8 n;} u8;
-typedef union {int16_t i;uint16_t u;n16 n;} u16;
+typedef union {int16_t i;uint16_t u;n16 n;}  __attribute__((__packed__)) u16;
 typedef union {
   int32_t i;
 #if SIZEOF_LONG!=4
@@ -40,15 +40,15 @@ typedef union {
 #else
   object o;
 #endif
-  float f;} u32;
+  float f;}  __attribute__((__packed__)) u32;
 typedef union {
 #if SIZEOF_LONG!=4
   int64_t i;
   object o;
 #endif
   double f;
-  fcomplex c;} u64;
-typedef union {dcomplex c;} u128;
+  fcomplex c;}  __attribute__((__packed__)) u64;
+typedef union {dcomplex c;}  __attribute__((__packed__)) u128;
 
 #define U8_DEFINED
 #endif
