@@ -216,7 +216,7 @@ struct hashtable {           /*  hash table header  */
   ufixnum       ht_size:LM(4);      /*  hash table size  */
   uhfixnum      ht_test:2;          /*  key test function, of enum httest  */
   uhfixnum      ht_pad3:HM(2);      /*  unused */
-  hfixnum       ht_pad4;            /*  unused */
+  uhfixnum      ht_pad4;            /*  unused */
   ufixnum       ht_pad5:4;          /*  unused */
   ufixnum       ht_max_ent:LM(4);   /*  max entries */
   htent         ht_cache;           /*  gethash cache */
