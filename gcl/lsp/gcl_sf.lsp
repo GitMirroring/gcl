@@ -140,16 +140,19 @@
  (defun mnn (r z f) (intern (nstring-upcase (string-concatenate r z "-" f))))
  
  (defun mn (z p f &aux (f (strcat f))) (list (mnn "C-" z f) (mnn "C-SET-" z f)))
+
+ (defconstant +unaligned-access+ nil)
  
- (defun afn2 (z p c sz y &aux (b (sb c sz))(k (gk b y))(f (fnk k))(rtp (mtpp k y))(tp (btp z))(nl (mn z p (cadr y))))
+ (defun afn2 (z p c sz y &aux (b (sb c sz))(u (gu b y))(k (gk b y u))(f (fnk k))(rtp (mtpp k y))(tp (btp z))(nl (mn z p (cadr y))))
    (multiple-value-bind
        (o s)
        (truncate c b)
      (multiple-value-bind
 	 (bo s)
-	 (truncate s 8)
+	 (if +unaligned-access+ (truncate s 8) (values 0 s))
+       (when (> (+ s sz) b) (sferr "bit field overflow" s sz b z p y))
        (let ((a (m+ `(address x) bo)))
-	 (list (afn (pop nl) tp (gbe f rtp o s sz b a))
+	 (list (afn (pop nl) tp (gbe f rtp o s sz b a u))
 	       (afn (car nl) tp (sbe f o s sz b a) rtp))))))
  
  (defun nmf (x y &aux (p (strcat (cadr x) "_"))(f (strcat (cadr y)))(s (string= p (subseq f 0 (min (length f) (length p))))))
