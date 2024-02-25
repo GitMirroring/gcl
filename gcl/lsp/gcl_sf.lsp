@@ -106,9 +106,10 @@
  (defun mm (m) (if (zerop (logand (ash 1 (1- fixnum-length)) m)) m (- m (ash 1 fixnum-length))))
  (defun m+ (a o) (if (zerop o) a `(c+ ,a ,o)))
  
- 
- (defun gk (b y &aux (k (car y))(u (when (consp k) (eq (cdr k) '|unsigned|)))(k (if (consp k) (car k) k)))
-   (cond ((< b (ks k)) (or (caar (member-if #'(lambda (x) (and (eql (bz (cadr x)) b) (eql (caddr x) (if u 1 0)))) +ks+)) (baboon)))
+ (defun gu (b k &aux (k (car k))) (when(< b fixnum-length) (when (consp k) (eq (cdr k) '|unsigned|))));no unsigned access for fixnum length
+
+ (defun gk (b y u &aux (k (car y))(k (if (consp k) (car k) k)))
+   (cond ((or u (< b (ks k))) (or (caar (member-if #'(lambda (x) (and (eql (bz (cadr x)) b) (eql (caddr x) (if u 1 0)))) +ks+)) (sferr "key mismatch" b y k u)))
 	 ((car (assoc k +ks+)))
 	 ((keywordp k) :object)
 	 (:fixnum)))
@@ -129,8 +130,8 @@
 		,@(unless (eq tp t) `((check-type x ,tp))),@(when ytp `((check-type y ,ytp)))
 	       ,@body)))
 
- (defun gbe (f tp o s sz b a &aux (s (end-shft s sz b)))
-   `((the ,tp ,(m& (m>> `(,f ,a ,o nil nil) s) (when (< (+ s sz) b) (mm (1- (ash 1 sz))))))))
+ (defun gbe (f tp o s sz b a u &aux (s (end-shft s sz b)))
+   `((the ,tp ,(m& (m>> `(,f ,a ,o nil nil) s) (when (< (+ (if u s 0) sz) b) (mm (1- (ash 1 sz))))))));cannot downshift signed without mask
  (defun sbe (f    o s sz b a &aux (s (end-shft s sz b)))
    `((,f ,a ,o t ,(m\| (m<< 'y s) (when (< sz b) `(& (,f ,a ,o nil nil) ,(~ (mm (ash (1- (ash 1 sz)) s))))))) y))
  
