@@ -232,17 +232,33 @@ struct hashtable {           /*  hash table header  */
 #define ARRAY_RANK_LIMIT (1UL<<ARRAY_RANK_BITS)
 
 #if SIZEOF_LONG == 8
+#ifdef WORDS_BIGENDIAN
 #define ARRAYWORD(b_,c_)						\
   FRSTWRD(J(b_,J(c_,elttype)),						\
-	  pd:LM(62),							\
+	  pd:LM(63),							\
+	  J(b_,J(c_,eltmode)):3,					\
+          J(b_,J(c_,dim)):ARRAY_DIMENSION_BITS,				\
 	  J(b_,J(c_,hasfillp)):1,					\
-	  J(b_,J(c_,adjustable)):1,					\
 	  J(b_,J(c_,writable)):1,					\
+	  J(b_,J(c_,rank)):ARRAY_RANK_BITS,				\
+	  pd1:1,							\
+	  J(b_,J(c_,adjustable)):1,					\
+	  J(b_,J(c_,offset)):3,						\
+	  J(b_,J(c_,eltsize)):3)
+#else
+#define ARRAYWORD(b_,c_)						\
+  FRSTWRD(J(b_,J(c_,elttype)),						\
+	  pd:LM(63),							\
+	  J(b_,J(c_,hasfillp)):1,					\
+	  J(b_,J(c_,writable)):1,					\
+	  J(b_,J(c_,rank)):ARRAY_RANK_BITS,				\
+	  pd1:1,							\
+	  J(b_,J(c_,adjustable)):1,					\
 	  J(b_,J(c_,offset)):3,						\
 	  J(b_,J(c_,eltsize)):3,					\
 	  J(b_,J(c_,eltmode)):3,					\
-	  J(b_,J(c_,rank)):ARRAY_RANK_BITS,				\
 	  J(b_,J(c_,dim)):ARRAY_DIMENSION_BITS)
+#endif
 
 #define atem(a_,b_,c_)				\
   ARRAYWORD(b_,c_);				\
@@ -446,9 +462,10 @@ struct function {
 
   FRSTWRD(tt,
 #if SIZEOF_LONG == 8
-	  fw:LM(34),
+	  fw:LM(38),
 	  fun_minarg:6,    /* required arguments */
 	  fun_maxarg:6,    /* maximum arguments */
+	  pd:4,
 	  fun_neval:5,     /* maximum extra values set */
 	  fun_vv:1         /* variable number of values */
 #else
