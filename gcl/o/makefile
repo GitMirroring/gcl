@@ -35,7 +35,9 @@ all:  $(OBJECTS) #$(GPROF)
 gprof_objs: $(addprefix ../gprof/,$(OBJECTS))
 
 boot.o: boot.c $(DECL) boot.h #FIXME clean, include file changes
-	$(CC) -c $(CFLAGS) $(DEFS) -fPIC $*.c $(AUX_INFO) 
+	$(CC) -c $(CFLAGS) $(DEFS) -fPIC $*.c $(AUX_INFO)
+	! cat $< | awk -F, '/DEFUN/ {print $$1,$$2}' | grep -v object || (rm $@ && false)
+
 
 gprof.o: gprof.c $(DECL)
 	[ "$(GPROF)" = "" ] || $(CC) -c $(filter-out -fomit-frame-pointer,$(CFLAGS)) $(DEFS) -pg $*.c $(AUX_INFO)

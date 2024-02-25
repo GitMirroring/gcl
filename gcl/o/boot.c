@@ -2,15 +2,15 @@
 #include "include.h"
 
 
-DEFUN("TP0",fixnum,fStp0,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {return tp0(x);}
-DEFUN("TP1",fixnum,fStp1,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {return tp1(x);}
-DEFUN("TP2",fixnum,fStp2,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {return tp2(x);}
-DEFUN("TP3",fixnum,fStp3,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {return tp3(x);}
-DEFUN("TP4",fixnum,fStp4,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {return tp4(x);}
-DEFUN("TP5",fixnum,fStp5,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {return tp5(x);}
-DEFUN("TP6",fixnum,fStp6,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {return tp6(x);}
-DEFUN("TP7",fixnum,fStp7,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {return tp7(x);}
-DEFUN("TP8",fixnum,fStp8,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {return tp8(x);}
+DEFUN("TP0",object,fStp0,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {return (object)(fixnum)tp0(x);}
+DEFUN("TP1",object,fStp1,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {return (object)(fixnum)tp1(x);}
+DEFUN("TP2",object,fStp2,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {return (object)(fixnum)tp2(x);}
+DEFUN("TP3",object,fStp3,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {return (object)(fixnum)tp3(x);}
+DEFUN("TP4",object,fStp4,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {return (object)(fixnum)tp4(x);}
+DEFUN("TP5",object,fStp5,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {return (object)(fixnum)tp5(x);}
+DEFUN("TP6",object,fStp6,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {return (object)(fixnum)tp6(x);}
+DEFUN("TP7",object,fStp7,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {return (object)(fixnum)tp7(x);}
+DEFUN("TP8",object,fStp8,SI,1,1,NONE,IO,OO,OO,OO,(object x),"") {return (object)(fixnum)tp8(x);}
 
 DEFUN("C-OBJECT-==",object,fSc_object_eq,SI,2,2,NONE,OO,OO,OO,OO,(object x,object y),"") {
   RETURN1(x==y?Ct:Cnil);
@@ -43,26 +43,26 @@ DEFUN("C-DCOMPLEX-==",object,fSc_dcomplex_eq,SI,2,2,NONE,OO,OO,OO,OO,(object x,o
   RETURN1(lfc(x)==lfc(y)?Ct:Cnil);
 }
 
-DEFUN("C+",fixnum,fScp,SI,2,2,NONE,II,IO,OO,OO,(fixnum x,fixnum y),"") {
-  RETURN1(x+y);
+DEFUN("C+",object,fScp,SI,2,2,NONE,II,IO,OO,OO,(fixnum x,fixnum y),"") {
+  RETURN1((object)(x+y));
 }
-DEFUN("&",fixnum,fSand,SI,2,2,NONE,II,IO,OO,OO,(fixnum x,fixnum y),"") {
-  RETURN1(x&y);
+DEFUN("&",object,fSand,SI,2,2,NONE,II,IO,OO,OO,(fixnum x,fixnum y),"") {
+  RETURN1((object)(x&y));
 }
-DEFUN("|",fixnum,fSor,SI,2,2,NONE,II,IO,OO,OO,(fixnum x,fixnum y),"") {
-  RETURN1(x|y);
+DEFUN("|",object,fSor,SI,2,2,NONE,II,IO,OO,OO,(fixnum x,fixnum y),"") {
+  RETURN1((object)(x|y));
 }
-DEFUN("^",fixnum,fSxor,SI,2,2,NONE,II,IO,OO,OO,(fixnum x,fixnum y),"") {
-  RETURN1(x^y);
+DEFUN("^",object,fSxor,SI,2,2,NONE,II,IO,OO,OO,(fixnum x,fixnum y),"") {
+  RETURN1((object)(x^y));
 }
-DEFUN("~",fixnum,fSnot,SI,1,1,NONE,II,OO,OO,OO,(fixnum x),"") {
-  RETURN1(~x);
+DEFUN("~",object,fSnot,SI,1,1,NONE,II,OO,OO,OO,(fixnum x),"") {
+  RETURN1((object)~x);
 }
-DEFUN("<<",fixnum,fSlshft,SI,2,2,NONE,II,IO,OO,OO,(fixnum x,fixnum y),"") {
-  RETURN1(x<<y);
+DEFUN("<<",object,fSlshft,SI,2,2,NONE,II,IO,OO,OO,(fixnum x,fixnum y),"") {
+  RETURN1((object)(x<<y));
 }
-DEFUN(">>",fixnum,fSrshft,SI,2,2,NONE,II,IO,OO,OO,(fixnum x,fixnum y),"") {
-  RETURN1(x>>y);
+DEFUN(">>",object,fSrshft,SI,2,2,NONE,II,IO,OO,OO,(fixnum x,fixnum y),"") {
+  RETURN1((object)(x>>y));
 }
 
 static inline bool
