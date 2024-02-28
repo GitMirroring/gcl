@@ -1036,7 +1036,7 @@
   (declare (ignore f))
   (reduce 'type-or1
 	  (mapcar (lambda (x) (super-range 'atanh-pole (type-and t1 x)))
-		  '(#tcomplex #t(real * (-1)) #t(real (-1) (1)) #t(real (1))))
+		  `(,#tcomplex ,#t(real * (-1)) ,#t(real (-1) (1)) ,#t(real (1))))
 	  :initial-value nil))
 (si::putprop 'atanh 'atanh-propagator 'type-propagator)
 
