@@ -1466,7 +1466,7 @@ if test "$use" != "386-gnu" ; then #hurd can push .data below C stack, but sbrk(
      	    AC_MSG_RESULT([not found])
 	fi
 	AC_MSG_CHECKING([output_mach])
-	output_mach=`cat gcl.script |grep OUTPUT_ARCH|head -n 1|sed 's,.*(\(.*\)).*,\1:,1'|cut -f2 -d:|tr '-' '_'`;
+	output_mach=`cat gcl.script |grep OUTPUT_ARCH|head -n 1|sed 's,.*(\(.*\)).*,\1:,1'|cut -f2 -d:|tr '-' '_'|tr -d '.'`;
 dnl     FIXME
 	defaulted=""
         if test "$output_mach" = "" ; then
