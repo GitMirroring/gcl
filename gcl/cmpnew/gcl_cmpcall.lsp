@@ -489,10 +489,6 @@
 ;; 		      *inline-functions*))))))
 
 
-(defun declaration-type (type) 
-  (if (or (equal type "") (equal type "long "))
-      "object "
-    type))
 
 ;;make a function which will be called hopefully only once,
 ;;and will establish the link.
