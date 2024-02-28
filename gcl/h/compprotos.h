@@ -97,3 +97,5 @@ object Icall_gen_error_handler_noreturn(object,object,object,object,ufixnum,...)
 object file_stream(object);
 fixnum fixnum_expt(fixnum, fixnum);
 int gcl_puts(const char *);
+int setjmp();
+int _setjmp();
