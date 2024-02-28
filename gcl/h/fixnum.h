@@ -9,7 +9,7 @@
 #define    unmark_imm_fixnum(a_)        ((a_)=((object)((fixnum)(a_)-(LOW_IM_FIX<<1))))
 #define        is_imm_fixnum(a_)        ((fixnum)(a_)<(fixnum)OBJNULL)
 #define is_unmrkd_imm_fixnum(a_)        ((fixnum)(a_)<LOW_IM_FIX)
-#define is_marked_imm_fixnum(a_)       p (is_imm_fixnum(a_)*!is_unmrkd_imm_fixnum(a_))
+#define is_marked_imm_fixnum(a_)        (is_imm_fixnum(a_)*!is_unmrkd_imm_fixnum(a_))
 #define           is_imm_fix(a_)        INT_IN_BITS(a_,LOW_SHFT-1)
 #elif defined (IM_FIX_BASE) && defined(IM_FIX_LIM)
 #define      make_imm_fixnum(a_)        ((object)((a_)+(IM_FIX_BASE+(IM_FIX_LIM>>1))))
