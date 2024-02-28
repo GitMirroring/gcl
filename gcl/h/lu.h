@@ -235,7 +235,7 @@ struct hashtable {           /*  hash table header  */
 #ifdef WORDS_BIGENDIAN
 #define ARRAYWORD(b_,c_)						\
   FRSTWRD(J(b_,J(c_,elttype)),						\
-	  pd:LM(63),							\
+	  pd2:LM(63),							\
 	  J(b_,J(c_,eltmode)):3,					\
           J(b_,J(c_,dim)):ARRAY_DIMENSION_BITS,				\
 	  J(b_,J(c_,hasfillp)):1,					\
@@ -248,7 +248,7 @@ struct hashtable {           /*  hash table header  */
 #else
 #define ARRAYWORD(b_,c_)						\
   FRSTWRD(J(b_,J(c_,elttype)),						\
-	  pd:LM(63),							\
+	  pd2:LM(63),							\
 	  J(b_,J(c_,hasfillp)):1,					\
 	  J(b_,J(c_,writable)):1,					\
 	  J(b_,J(c_,rank)):ARRAY_RANK_BITS,				\
