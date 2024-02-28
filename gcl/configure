@@ -5636,6 +5636,10 @@ case $use in
 	assert_arg_to_ldflags -pg
 	GPL_FLAG="-pg"
 	LDFLAGS=$OLD_LDFLAGS;;
+    386-linux)
+	if ! add_arg_to_cflags -msse2 || ! add_arg_to_cflags -mfpmath=sse ; then
+	   add_arg_to_cflags -ffloat-store;
+        fi;;
     386-macosx)
 #	assert_arg_to_cflags -Wno-error=implicit-function-declaration
 	add_arg_to_cflags -Wno-incomplete-setjmp-declaration
