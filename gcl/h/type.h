@@ -80,7 +80,6 @@ enum type {
 #define TYPEWORD_TYPE_P(y_) (y_!=t_cons)
 #endif
 
-/*Note preserve sgc flag here                                         VVV*/
 #define set_type_of(x,y) ({object _x=(object)(x);enum type _y=(y);_x->d.f=0;\
     if (TYPEWORD_TYPE_P(_y)) {_x->d.e=1;_x->d.t=_y;_x->fw|=(fixnum)OBJNULL;}})
 
