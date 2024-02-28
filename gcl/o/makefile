@@ -56,6 +56,9 @@ unixtime.o: unixtime.c $(DECL)
 %.o: %.c $(DECL)
 	$(CC) -c $(CFLAGS) $(DEFS) $*.c $(AUX_INFO) 
 
+../gprof/unixtime.o: unixtime.c $(DECL)
+	$(CC) -DGCL_GPROF -c -D_FILE_OFFSET_BITS=64 -D_TIME_BITS=64 $(filter-out -fomit-frame-pointer,$(CFLAGS)) $(DEFS) $< $(AUX_INFO)
+
 ../gprof/%.o: %.c $(DECL)
 	$(CC) -DGCL_GPROF -c $(filter-out -fomit-frame-pointer,$(CFLAGS)) $(DEFS) -pg $*.c $(AUX_INFO) -o $@
 
