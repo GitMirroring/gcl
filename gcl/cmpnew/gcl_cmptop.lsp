@@ -233,7 +233,7 @@
 
 (defun declaration-type (type)
   (cond ((equal type "") "void")
-	((equal type "long ") "object ")
+	((or (equal type "long ") (equal type "fixnum ")) "object ")
 	(t type)))
 
 (defvar *vaddress-list*)   ;; hold addresses of C functions, and other data
@@ -1887,7 +1887,7 @@
 		    ("")))
 	(bdsu (if *bds-used* " for (;bds_top>old_bds_top;) bds_unwind1;" ""))
 	(frsu (if *frame-used* " for (;frs_top>old_frs_top;) frs_pop();" "")))
-    (wt-h "#define VMRV" cm "(a_,b_)" vstu bdsu frsu " return(a_);")
+    (wt-h "#define VMRV" cm "(a_,b_)" vstu bdsu frsu " return((" (declaration-type (rep-type return-type)) ")a_);")
     (wt-h "#define VMR" cm "(a_) VMRV" cm "(a_,0);")))
 
 

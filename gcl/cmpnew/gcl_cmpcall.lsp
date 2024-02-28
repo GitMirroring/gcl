@@ -415,9 +415,9 @@
 ;;     x))
 
 (defun g (fname n sig &optional apnarg (clp t)
-		&aux (cname (format nil "/* ~a */(*LnkLI~d)" (function-string fname) n))
-		(fnstr (ms (vv-str fname) "->s.s_gfdef"))
-		(clp (when clp fnstr)))
+	  &aux (cname (format nil "/* ~a */(~a)(*LnkLI~d)" (function-string fname) (rep-type (cadr sig)) n))
+	    (fnstr (ms (vv-str fname) "->s.s_gfdef"))
+	    (clp (when clp fnstr)))
   (g1 fnstr cname sig apnarg clp))
 
 ;; (defun g (fname n sig &optional apnarg (clp t)
