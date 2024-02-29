@@ -70,7 +70,7 @@ License for more details.
 #define PSPEC_SYM(sym,st1) (ELF_ST_BIND(sym->st_info)==STB_LOCAL &&	\
 			    ELF_ST_TYPE(sym->st_info)>=STT_LOPROC)
 
-#define MASK(n) (~(~0ULL << (n)))
+#define MASK(n) ((ul)(~(~0ULL << (n))))
 
 
 
