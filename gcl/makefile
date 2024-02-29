@@ -100,12 +100,12 @@ $(PORTDIR)/saved_pre_gcl: $(HDIR)cmpinclude.h
 	touch $< $@
 
 $(PORTDIR)/saved_gcl0: $(PORTDIR)/saved_pre_gcl $(HDIR)cmpinclude.h
-#       This safety 3 image allocates a lot of relblock garbage for closures
-	cd $(@D) && echo '(time (load "boot.lisp"))' | GCL_GC_PAGE_MIN=0.25 GCL_GC_PAGE_MAX=0.5 ../$<
+	cd $(@D) && echo '(time (load "boot.lisp"))' | ../$<
 	cd $(@D) && $(MAKE) saved_gcl && mv saved_gcl $(@F)
 
 $(PORTDIR)/saved_gcl1: $(PORTDIR)/saved_gcl0 $(HDIR)cmpinclude.h
-	cd $(@D) && echo '(time (load "boot.lisp"))' | ./$(<F)
+#       This safety 3 image allocates a lot of relblock garbage for closures
+	cd $(@D) && echo '(time (load "boot.lisp"))' | GCL_GC_PAGE_MIN=0.25 GCL_GC_PAGE_MAX=0.5 ./$(<F)
 	cd $(@D) && $(MAKE) saved_gcl && mv saved_gcl $(@F)
 
 $(PORTDIR)/saved_gcl2: $(PORTDIR)/saved_gcl1 $(HDIR)cmpinclude.h
