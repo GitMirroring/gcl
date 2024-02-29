@@ -35,7 +35,7 @@ object sSterminal_interrupt;
 void
 assert_error(const char *a,unsigned l,const char *f,const char *n) {
 
-  if (!raw_image && core_end && core_end==sbrk(0))
+  if (!raw_image && core_end && core_end==sbrk(0) && errno!=ENOMEM)
     FEerror("The assertion ~a on line ~a of ~a in function ~a failed: ~a",5,
 	    make_simple_string(a),make_fixnum(l),
 	    make_simple_string(f),make_simple_string(n),make_simple_string(strerror(errno)));
