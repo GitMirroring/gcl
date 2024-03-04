@@ -415,15 +415,15 @@
 	((and (consp x) (eq (car x) 'the)) (second x))
 	(t t)))
 
-(defun co1schar (f args)
-  (declare (ignore f))
-  (and (listp (car args)) (not *safe-compile*)
-	(cdr args)
-	(eq (caar args) 'symbol-name)
-	(c1expr `(aref (the string ,(second (car args)))
-			,(second args)))))
+;; (defun co1schar (f args)
+;;   (declare (ignore f))
+;;   (and (listp (car args)) (not *safe-compile*)
+;; 	(cdr args)
+;; 	(eq (caar args) 'symbol-name)
+;; 	(c1expr `(aref (the string ,(second (car args)))
+;; 			,(second args)))))
 
-(si::putprop 'schar 'co1schar 'co1)
+;; (si::putprop 'schar 'co1schar 'co1)
 
 (si::putprop 'cons 'co1cons 'co1)
 ;; turn repetitious cons's into a list*
