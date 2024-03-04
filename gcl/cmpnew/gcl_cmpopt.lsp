@@ -968,8 +968,8 @@
    (get 'svref 'inline-unsafe))
 
 ;;SYMBOL-NAME
- (push '((t) string #.(flags ans rfa)"symbol_name(#0)")
-   (get 'symbol-name 'inline-always))
+ ;; (push '((t) string #.(flags ans rfa)"symbol_name(#0)")
+ ;;   (get 'symbol-name 'inline-always))
 
 ;;SYMBOL-VALUE
 (push '((t) t #.(flags) "((#0)->s.s_dbind)")
