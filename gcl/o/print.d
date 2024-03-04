@@ -1012,9 +1012,10 @@ static int
 needs_escape (object x) {
 
   fixnum i,all_dots=1;
+  unsigned char ch;
 
   for (i=0;i<VLEN(x);i++)
-    switch(x->st.st_self[i]) {
+    switch((ch=x->st.st_self[i])) {
     case ' ':
     case '#':
     case '(':
@@ -1031,6 +1032,8 @@ needs_escape (object x) {
       break;
     default:
       all_dots=0;
+      if (Vreadtable->s.s_dbind->rt.rt_self[ch].rte_chattrib!=cat_constituent)
+	return 1;
       break;
     }
 
