@@ -113,7 +113,7 @@
 
 (defbltin clzl)
 (defbltin ctzl)
-;(defbltin popcountl)
+(defbltin popcountl)
 (defbltin parityl)
 (defbltin ffsl)
 
@@ -146,10 +146,10 @@
       (mpz_sizeinbase (if (minusp x) (lognot x) x) 2)))
   
 (defun logcount (x)
-  (declare (optimize (safety 1)))
+  (declare (optimize (safety 1))(inline popcountl))
   (check-type x integer)
   (if (typep x 'fixnum)
-      (popcount (if (< x 0) (lognot x) x))
+      (popcountl (if (< x 0) (lognot x) x))
     (mpz_popcount  (if (< x 0) (lognot x) x))))
   
 (defun logbitp (y x)
