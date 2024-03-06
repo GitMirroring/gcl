@@ -135,6 +135,7 @@
   (int                   wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"              "make_fixnum"        "int32_t ")
   (non-negative-fixnum   wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"              "make_fixnum"        "fixnum ")
   (fixnum                wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"              "make_fixnum"        "fixnum ")
+  (long                  wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"              "make_fixnum"        "fixnum ")
   (short-float           wt-short-float-loc return-short-float inline-short-float "sf"               "make_shortfloat"    "float ")
   (long-float            wt-long-float-loc  return-long-float  inline-long-float  "lf"               "make_longfloat"     "double ")
   (creal                 nil                nil                nil                ""                 ""                   "")

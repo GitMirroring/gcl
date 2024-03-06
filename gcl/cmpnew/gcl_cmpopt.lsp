@@ -1286,4 +1286,4 @@
  (s :keyword)
  (let ((z (get s 'lisp-type :opaque)))
    (unless (eq z :opaque)
-     (setf (get s 'cmp-lisp-type) (cadr (assoc (get s 'lisp-type) *c-types*))))))
+     (setf (get s 'cmp-lisp-type) (or (cadr (assoc (get s 'lisp-type) *c-types*)) (baboon))))))
