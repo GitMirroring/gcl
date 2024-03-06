@@ -1,3 +1,11 @@
+gcl (2.6.14-7) unstable; urgency=medium
+
+  * Version_2_6_15pre6
+  * Bug fix: "recent libc6-dev change causes XDR support to be dropped",
+    thanks to Aurelien Jarno (Closes: #1065208).
+
+ -- Camm Maguire <camm@debian.org>  Wed, 06 Mar 2024 09:30:02 -0500
+
 gcl (2.6.14-6) unstable; urgency=medium
 
   * Version_2_6_15pre5
