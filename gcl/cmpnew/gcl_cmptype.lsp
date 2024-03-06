@@ -115,31 +115,34 @@
 
 (defvar *c-types* (mapcar (lambda (x &aux (y (pop x)))
 			    (list* y (cmp-norm-tp y) x))
-`((nil                   nil                nil                nil                ""          ""                "object ")
-  (null                  nil                nil                inline-cond        ""          ""                "object ")
-  (true                  nil                nil                inline-cond        ""          ""                "object ")
-  (boolean               nil                nil                inline-cond        ""          ""                "object ")
-  (character             wt-character-loc   nil                inline-character   "char_code" "code_char"       "int8_t ")
-  (bit                   wt-char-loc        return-char        inline-char        "fix"       "make_fixnum"     "int8_t ")
-  (non-negative-char     wt-char-loc        return-char        inline-char        "fix"       "make_fixnum"     "int8_t ")
-  (unsigned-char         wt-char-loc        return-char        inline-char        "fix"       "make_fixnum"     "uint8_t ")
-  (signed-char           wt-char-loc        return-char        inline-char        "fix"       "make_fixnum"     "int8_t ")
-  (char                  wt-char-loc        return-char        inline-char        "fix"       "make_fixnum"     "int8_t ")
-  (non-negative-short    wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"       "make_fixnum"     "int16_t ")
-  (unsigned-short        wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"       "make_fixnum"     "int16_t ")
-  (signed-short          wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"       "make_fixnum"     "uint16_t ")
-  (non-negative-int      wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"       "make_fixnum"     "int32_t ")
-  (unsigned-int          wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"       "make_fixnum"     "int32_t ")
-  (signed-int            wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"       "make_fixnum"     "uint32_t ")
-  (non-negative-fixnum   wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"       "make_fixnum"     "fixnum ")
-  (fixnum                wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"       "make_fixnum"     "fixnum ")
-  (short-float           wt-short-float-loc return-short-float inline-short-float "sf"        "make_shortfloat" "float ")
-  (long-float            wt-long-float-loc  return-long-float  inline-long-float  "lf"        "make_longfloat"  "double ") 
-  (creal                 nil                nil                nil                ""          ""                "")
-  (fcomplex              wt-fcomplex-loc    return-fcomplex    inline-fcomplex    "sfc"       "make_fcomplex"   "fcomplex ")
-  (dcomplex              wt-dcomplex-loc    return-dcomplex    inline-dcomplex    "lfc"       "make_dcomplex"   "dcomplex ")
-  (cnum                  nil                nil                nil                ""          ""                "")
-  (t                     wt-loc             return-object      inline             ""          ""                "object "))))
+`((nil                   nil                nil                nil                ""                 ""                   "object ")
+  (null                  nil                nil                inline-cond        ""                 ""                   "object ")
+  (true                  nil                nil                inline-cond        ""                 ""                   "object ")
+  (boolean               nil                nil                inline-cond        ""                 ""                   "object ")
+  (character             wt-character-loc   nil                inline-character   "char_code"        "code_char"          "int8_t ")
+  (bit                   wt-char-loc        return-char        inline-char        "fix"              "make_fixnum"        "int8_t ")
+  (non-negative-char     wt-char-loc        return-char        inline-char        "fix"              "make_fixnum"        "int8_t ")
+  (unsigned-char         wt-char-loc        return-char        inline-char        "fix"              "make_fixnum"        "uint8_t ")
+  (signed-char           wt-char-loc        return-char        inline-char        "fix"              "make_fixnum"        "int8_t ")
+  (char                  wt-char-loc        return-char        inline-char        "fix"              "make_fixnum"        "int8_t ")
+  (non-negative-short    wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"              "make_fixnum"        "int16_t ")
+  (unsigned-short        wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"              "make_fixnum"        "uint16_t ")
+  (signed-short          wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"              "make_fixnum"        "int16_t ")
+  (short                 wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"              "make_fixnum"        "int16_t ")
+  (non-negative-int      wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"              "make_fixnum"        "int32_t ")
+  (unsigned-int          wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"              "make_fixnum"        "uint32_t ")
+  (signed-int            wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"              "make_fixnum"        "int32_t ")
+  (int                   wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"              "make_fixnum"        "int32_t ")
+  (non-negative-fixnum   wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"              "make_fixnum"        "fixnum ")
+  (fixnum                wt-fixnum-loc      return-fixnum      inline-fixnum      "fix"              "make_fixnum"        "fixnum ")
+  (short-float           wt-short-float-loc return-short-float inline-short-float "sf"               "make_shortfloat"    "float ")
+  (long-float            wt-long-float-loc  return-long-float  inline-long-float  "lf"               "make_longfloat"     "double ")
+  (creal                 nil                nil                nil                ""                 ""                   "")
+  (fcomplex              wt-fcomplex-loc    return-fcomplex    inline-fcomplex    "sfc"              "make_fcomplex"      "fcomplex ")
+  (dcomplex              wt-dcomplex-loc    return-dcomplex    inline-dcomplex    "lfc"              "make_dcomplex"      "dcomplex ")
+  (cnum                  nil                nil                nil                ""                 ""                   "")
+  (string                wt-string-loc      return-string      inline-string      "object_to_string" "make_simple_string" "char *")
+  (t                     wt-loc             return-object      inline             ""                 ""                   "object "))))
 
 
 (defconstant +c-global-arg-types-syms+   `(fixnum)) ;FIXME (long-float short-float) later
@@ -150,7 +153,7 @@
 (defvar +value-types+
   (mapcar (lambda (x)
 	    (cons (cadr (assoc x *c-types*)) (get-sym `(,x "-VALUE"))))
-	  (cons 'character +c-local-var-types-syms+)))
+	  (list* 'character +c-local-var-types-syms+)))
 
 
 (defconstant +return-alist+
@@ -164,7 +167,7 @@
     ,@(mapcar (lambda (x)
 		(cons (cadr (assoc x *c-types*))
 		      (get-sym `("WT-" ,x "-LOC"))))
-	      +c-local-var-types-syms+)))
+	      (cons 'string +c-local-var-types-syms+))))
 
 (defconstant +inline-types-alist+
   `(,@(mapcar (lambda (x)
@@ -173,7 +176,7 @@
 			    ((t) 'inline)
 			    (boolean 'inline-cond)
 			    (otherwise (get-sym `("INLINE-" ,x))))))
-	      (list* 'boolean t +c-local-var-types-syms+))))
+	      (list* 'boolean t 'string +c-local-var-types-syms+))))
 
 (defconstant +c-global-arg-types+
   (mapcar (lambda (x) (cadr (assoc x *c-types*))) +c-global-arg-types-syms+))
@@ -188,14 +191,14 @@
   (nconc
    (mapcar (lambda (x &aux (z (assoc x *c-types*)))
 	     (cons (cadr z) (seventh z)))
-	   '(char fixnum character short-float long-float fcomplex dcomplex))
+	   (list* 'character 'string +c-local-var-types-syms+))
    `((object . ""))))
 
 (defconstant +to-c-var-alist+
   (nconc
    (mapcar (lambda (x &aux (z (assoc x *c-types*)))
 	     (cons (cadr z) (sixth z)))
-	   '(char fixnum character short-float long-float fcomplex dcomplex))
+	   (list* 'character 'string +c-local-var-types-syms+))
    `((object . ""))))
 
 (defconstant +c-type-string-alist+
@@ -213,10 +216,13 @@
   (nconc
    (mapcar (lambda (x &aux (z (assoc x *c-types*)))
 	     (cons (cadr z) (eighth z)))
-	   `(nil char fixnum long-float short-float fcomplex dcomplex))
+	   (list* nil +c-local-var-types-syms+))
    `((object . "object "))))
 
-
+(defconstant +defentry-c-rep-alist+
+  (mapcar (lambda (x &aux (z (assoc x *c-types*)))
+	    (cons (cadr z) (eighth z)))
+	  '(char signed-int short-float long-float string t)))
 
 (defconstant +cmp-type-alist+
   (mapcar (lambda (x) (cons (cmp-norm-tp (car x)) (cdr x))) +type-alist+))

@@ -90,8 +90,10 @@
 (si:putprop 'cadr 'wt-cadr 'wt-loc)
 (si:putprop 'vs-base 'wt-vs-base 'wt-loc)
 (si:putprop 'fixnum-value 'wt-fixnum-value 'wt-loc)
+(si:putprop 'string-value 'wt-string-value 'wt-loc)
 (si:putprop 'vs-address 'wt-vs-address 'wt-loc)
 (si:putprop 'fixnum-loc 'wt-fixnum-loc 'wt-loc)
+(si:putprop 'string-loc 'wt-string-loc 'wt-loc)
 (si:putprop 'integer-loc 'wt-integer-loc 'wt-loc)
 (si:putprop 'character-value 'wt-character-value 'wt-loc)
 (si:putprop 'character-loc 'wt-character-loc 'wt-loc)
@@ -322,7 +324,31 @@
 (defun wt-fixnum-value (vv fixnum-value)
   (if vv (wt (vv-str vv))
     (wt "make_fixnum(" fixnum-value ")")))
-        
+
+(let ((fk (kind-tp 'string)))
+  (defun wt-string-loc (loc)
+    (cond ((and (consp loc)
+		(eq (car loc) 'var)
+		(eq (var-kind (cadr loc)) fk))
+           (wt "V" (var-loc (cadr loc))))
+          ((and (consp loc) (eq (car loc) 'INLINE-STRING))
+           (wt-inline-loc (caddr loc) (cadddr loc)))
+          ((and (consp loc) (eq (car loc) 'string-value))
+           (wt (caddr loc)))
+          (t (wt "object_to_string(" loc ")")))))
+
+(let ((fk (kind-tp 'string)))
+  (defun string-loc-p (loc);FIXME check all these unneeded
+    (and (consp loc)
+	 (or (and (eq (car loc) 'var)
+                  (eq (var-kind (cadr loc)) fk))
+             (eq (car loc) 'INLINE-STRING)
+             (eq (car loc) 'string-value)))))
+
+(defun wt-string-value (vv string-value);FIXME check unneeded
+       (declare (ignore string-value))
+       (wt (vv-str vv)))
+
 (defun wt-vs-address (v i)
   (wt "(fixnum)(" v "+" i ")"))
 

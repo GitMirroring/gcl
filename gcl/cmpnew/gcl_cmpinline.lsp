@@ -990,6 +990,7 @@
 (si:putprop 'inline 'wt-inline 'wt-loc)
 (si:putprop 'inline-cond 'wt-inline-cond 'wt-loc)
 (si:putprop 'inline-fixnum 'wt-inline-fixnum 'wt-loc)
+(si:putprop 'inline-string 'wt-inline-string 'wt-loc)
 (si:putprop 'inline-integer 'wt-inline-integer 'wt-loc)
 (si:putprop 'inline-character 'wt-inline-character 'wt-loc)
 (si:putprop 'inline-char 'wt-inline-char 'wt-loc)
@@ -1075,6 +1076,11 @@
 (defun wt-inline (flags fun locs)
   (declare (ignore flags))
   (wt-inline-loc fun locs))
+
+(defun wt-inline-string (flags fun locs)
+  (declare (ignore flags))
+  (when (zerop *space*) (wt "CMP"))
+  (wt "make_simple_string(") (wt-inline-loc fun locs) (wt ")"))
 
 (defun wt-inline-cond (flags fun locs)
   (declare (ignore flags))

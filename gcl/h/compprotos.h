@@ -99,3 +99,4 @@ fixnum fixnum_expt(fixnum, fixnum);
 int gcl_puts(const char *);
 int setjmp();
 int _setjmp();
+char *object_to_string(object);
