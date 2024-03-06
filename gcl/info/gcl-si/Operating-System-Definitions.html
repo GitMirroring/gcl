@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<!-- Created by GNU Texinfo 6.7, http://www.gnu.org/software/texinfo/ -->
+<!-- Created by GNU Texinfo 6.8, https://www.gnu.org/software/texinfo/ -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>Operating System Definitions (GCL SI Manual)</title>
@@ -10,19 +10,20 @@
 <meta name="resource-type" content="document">
 <meta name="distribution" content="global">
 <meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
 <link href="index.html" rel="start" title="Top">
 <link href="Function-and-Variable-Index.html" rel="index" title="Function and Variable Index">
-<link href="Function-and-Variable-Index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
 <link href="Operating-System.html" rel="up" title="Operating System">
-<link href="Structures.html" rel="next" title="Structures">
 <link href="Command-Line.html" rel="prev" title="Command Line">
 <style type="text/css">
 <!--
+a.copiable-anchor {visibility: hidden; text-decoration: none; line-height: 0em}
 a.summary-letter {text-decoration: none}
 blockquote.indentedblock {margin-right: 0em}
 div.display {margin-left: 3.2em}
 div.example {margin-left: 3.2em}
-div.lisp {margin-left: 3.2em}
 kbd {font-style: oblique}
 pre.display {font-family: inherit}
 pre.format {font-family: inherit}
@@ -31,6 +32,7 @@ pre.menu-preformatted {font-family: serif}
 span.nolinebreak {white-space: nowrap}
 span.roman {font-family: initial; font-weight: normal}
 span.sansserif {font-family: sans-serif; font-weight: normal}
+span:hover a.copiable-anchor {visibility: visible}
 ul.no-bullet {list-style: none}
 -->
 </style>
@@ -39,15 +41,16 @@ ul.no-bullet {list-style: none}
 </head>
 
 <body lang="en">
-<span id="Operating-System-Definitions"></span><div class="header">
+<div class="section" id="Operating-System-Definitions">
+<div class="header">
 <p>
-Previous: <a href="Command-Line.html" accesskey="p" rel="prev">Command Line</a>, Up: <a href="Operating-System.html" accesskey="u" rel="up">Operating System</a> &nbsp; [<a href="Function-and-Variable-Index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
+Previous: <a href="Command-Line.html" accesskey="p" rel="prev">Command Line</a>, Up: <a href="Operating-System.html" accesskey="u" rel="up">Operating System</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
 </div>
 <hr>
 <span id="Operating-System-Definitions-1"></span><h3 class="section">9.2 Operating System Definitions</h3>
 
-<dl>
-<dt id="index-GET_002dDECODED_002dTIME">Function: <strong>GET-DECODED-TIME</strong> <em>()</em></dt>
+<dl class="def">
+<dt id="index-GET_002dDECODED_002dTIME"><span class="category">Function: </span><span><strong>GET-DECODED-TIME</strong> <em>()</em><a href='#index-GET_002dDECODED_002dTIME' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the current time in decoded time format.  Returns nine values: second,
@@ -57,8 +60,8 @@ time-zone.
 
 </dd></dl>
 
-<dl>
-<dt id="index-HOST_002dNAMESTRING">Function: <strong>HOST-NAMESTRING</strong> <em>(pathname)</em></dt>
+<dl class="def">
+<dt id="index-HOST_002dNAMESTRING"><span class="category">Function: </span><span><strong>HOST-NAMESTRING</strong> <em>(pathname)</em><a href='#index-HOST_002dNAMESTRING' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the host part of PATHNAME as a string.
@@ -66,8 +69,8 @@ time-zone.
 
 </dd></dl>
 
-<dl>
-<dt id="index-RENAME_002dFILE">Function: <strong>RENAME-FILE</strong> <em>(file new-name)</em></dt>
+<dl class="def">
+<dt id="index-RENAME_002dFILE"><span class="category">Function: </span><span><strong>RENAME-FILE</strong> <em>(file new-name)</em><a href='#index-RENAME_002dFILE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Renames the file FILE to NEW-NAME.  FILE may be a string, a pathname, or
@@ -76,8 +79,8 @@ a stream.
 
 </dd></dl>
 
-<dl>
-<dt id="index-FILE_002dAUTHOR">Function: <strong>FILE-AUTHOR</strong> <em>(file)</em></dt>
+<dl class="def">
+<dt id="index-FILE_002dAUTHOR"><span class="category">Function: </span><span><strong>FILE-AUTHOR</strong> <em>(file)</em><a href='#index-FILE_002dAUTHOR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the author name of the specified file, as a string.
@@ -86,8 +89,8 @@ FILE may be a string or a stream
 
 </dd></dl>
 
-<dl>
-<dt id="index-PATHNAME_002dHOST">Function: <strong>PATHNAME-HOST</strong> <em>(pathname)</em></dt>
+<dl class="def">
+<dt id="index-PATHNAME_002dHOST"><span class="category">Function: </span><span><strong>PATHNAME-HOST</strong> <em>(pathname)</em><a href='#index-PATHNAME_002dHOST' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the host slot of PATHNAME.
@@ -95,8 +98,8 @@ FILE may be a string or a stream
 
 </dd></dl>
 
-<dl>
-<dt id="index-FILE_002dPOSITION">Function: <strong>FILE-POSITION</strong> <em>(file-stream &amp;optional position)</em></dt>
+<dl class="def">
+<dt id="index-FILE_002dPOSITION"><span class="category">Function: </span><span><strong>FILE-POSITION</strong> <em>(file-stream &amp;optional position)</em><a href='#index-FILE_002dPOSITION' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Sets the file pointer of the specified file to POSITION, if POSITION is given.
@@ -105,8 +108,8 @@ Otherwise, returns the current file position of the specified file.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DECODE_002dUNIVERSAL_002dTIME">Function: <strong>DECODE-UNIVERSAL-TIME</strong> <em>(universal-time &amp;optional (timezone -9))</em></dt>
+<dl class="def">
+<dt id="index-DECODE_002dUNIVERSAL_002dTIME"><span class="category">Function: </span><span><strong>DECODE-UNIVERSAL-TIME</strong> <em>(universal-time &amp;optional (timezone -9))</em><a href='#index-DECODE_002dUNIVERSAL_002dTIME' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Converts UNIVERSAL-TIME into a decoded time at the TIMEZONE.
@@ -117,8 +120,8 @@ TIMEZONE in GCL defaults to 6, the time zone of Austin, Texas.
 
 </dd></dl>
 
-<dl>
-<dt id="index-USER_002dHOMEDIR_002dPATHNAME">Function: <strong>USER-HOMEDIR-PATHNAME</strong> <em>(&amp;optional host)</em></dt>
+<dl class="def">
+<dt id="index-USER_002dHOMEDIR_002dPATHNAME"><span class="category">Function: </span><span><strong>USER-HOMEDIR-PATHNAME</strong> <em>(&amp;optional host)</em><a href='#index-USER_002dHOMEDIR_002dPATHNAME' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the home directory of the logged in user as a pathname.  HOST
@@ -128,16 +131,16 @@ is ignored.
 </dd></dl>
 
 
-<dl>
-<dt id="index-_002aMODULES_002a">Variable: <strong>*MODULES*</strong></dt>
+<dl class="def">
+<dt id="index-_002aMODULES_002a"><span class="category">Variable: </span><span><strong>*MODULES*</strong><a href='#index-_002aMODULES_002a' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 A list of names of the modules that have been loaded into GCL.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-SHORT_002dSITE_002dNAME">Function: <strong>SHORT-SITE-NAME</strong> <em>()</em></dt>
+<dl class="def">
+<dt id="index-SHORT_002dSITE_002dNAME"><span class="category">Function: </span><span><strong>SHORT-SITE-NAME</strong> <em>()</em><a href='#index-SHORT_002dSITE_002dNAME' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns a string that identifies the physical location of the current GCL.
@@ -145,8 +148,8 @@ A list of names of the modules that have been loaded into GCL.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DIRECTORY">Function: <strong>DIRECTORY</strong> <em>(name)</em></dt>
+<dl class="def">
+<dt id="index-DIRECTORY"><span class="category">Function: </span><span><strong>DIRECTORY</strong> <em>(name)</em><a href='#index-DIRECTORY' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns a list of files that match NAME.  NAME may be a string, a pathname,
@@ -155,8 +158,8 @@ or a file stream.
 
 </dd></dl>
 
-<dl>
-<dt id="index-SOFTWARE_002dVERSION">Function: <strong>SOFTWARE-VERSION</strong> <em>()</em></dt>
+<dl class="def">
+<dt id="index-SOFTWARE_002dVERSION"><span class="category">Function: </span><span><strong>SOFTWARE-VERSION</strong> <em>()</em><a href='#index-SOFTWARE_002dVERSION' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns a string that identifies the software version of the software
@@ -165,16 +168,16 @@ under which GCL is currently running.
 
 </dd></dl>
 
-<dl>
-<dt id="index-INTERNAL_002dTIME_002dUNITS_002dPER_002dSECOND">Constant: <strong>INTERNAL-TIME-UNITS-PER-SECOND</strong></dt>
+<dl class="def">
+<dt id="index-INTERNAL_002dTIME_002dUNITS_002dPER_002dSECOND"><span class="category">Constant: </span><span><strong>INTERNAL-TIME-UNITS-PER-SECOND</strong><a href='#index-INTERNAL_002dTIME_002dUNITS_002dPER_002dSECOND' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The number of internal time units that fit into a second.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-ENOUGH_002dNAMESTRING">Function: <strong>ENOUGH-NAMESTRING</strong> <em>(pathname &amp;optional (defaults *default-pathname-defaults*))</em></dt>
+<dl class="def">
+<dt id="index-ENOUGH_002dNAMESTRING"><span class="category">Function: </span><span><strong>ENOUGH-NAMESTRING</strong> <em>(pathname &amp;optional (defaults *default-pathname-defaults*))</em><a href='#index-ENOUGH_002dNAMESTRING' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns a string which uniquely identifies PATHNAME with respect to
@@ -183,8 +186,8 @@ DEFAULTS.
 
 </dd></dl>
 
-<dl>
-<dt id="index-REQUIRE">Function: <strong>REQUIRE</strong> <em>(module-name &amp;optional (pathname))</em></dt>
+<dl class="def">
+<dt id="index-REQUIRE"><span class="category">Function: </span><span><strong>REQUIRE</strong> <em>(module-name &amp;optional (pathname))</em><a href='#index-REQUIRE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>If the specified module is not present, then loads the appropriate file(s).
@@ -193,8 +196,8 @@ PATHNAME may be a single pathname or it may be a list of pathnames.
 
 </dd></dl>
 
-<dl>
-<dt id="index-ENCODE_002dUNIVERSAL_002dTIME">Function: <strong>ENCODE-UNIVERSAL-TIME</strong> <em>(second minute hour date month year &amp;optional (timezone ))</em></dt>
+<dl class="def">
+<dt id="index-ENCODE_002dUNIVERSAL_002dTIME"><span class="category">Function: </span><span><strong>ENCODE-UNIVERSAL-TIME</strong> <em>(second minute hour date month year &amp;optional (timezone ))</em><a href='#index-ENCODE_002dUNIVERSAL_002dTIME' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Does the inverse operation of DECODE-UNIVERSAL-TIME.
@@ -202,8 +205,8 @@ PATHNAME may be a single pathname or it may be a list of pathnames.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LISP_002dIMPLEMENTATION_002dVERSION">Function: <strong>LISP-IMPLEMENTATION-VERSION</strong> <em>()</em></dt>
+<dl class="def">
+<dt id="index-LISP_002dIMPLEMENTATION_002dVERSION"><span class="category">Function: </span><span><strong>LISP-IMPLEMENTATION-VERSION</strong> <em>()</em><a href='#index-LISP_002dIMPLEMENTATION_002dVERSION' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns a string that tells you when the current GCL implementation is
@@ -212,8 +215,8 @@ brought up.
 
 </dd></dl>
 
-<dl>
-<dt id="index-MACHINE_002dINSTANCE">Function: <strong>MACHINE-INSTANCE</strong> <em>()</em></dt>
+<dl class="def">
+<dt id="index-MACHINE_002dINSTANCE"><span class="category">Function: </span><span><strong>MACHINE-INSTANCE</strong> <em>()</em><a href='#index-MACHINE_002dINSTANCE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns a string that identifies the machine instance of the machine
@@ -222,8 +225,8 @@ on which GCL is currently running.
 
 </dd></dl>
 
-<dl>
-<dt id="index-ROOM">Function: <strong>ROOM</strong> <em>(&amp;optional (x t))</em></dt>
+<dl class="def">
+<dt id="index-ROOM"><span class="category">Function: </span><span><strong>ROOM</strong> <em>(&amp;optional (x t))</em><a href='#index-ROOM' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Displays information about storage allocation in the following format.
@@ -257,8 +260,8 @@ if the number is zero.  The optional X is ignored.
 
 </dd></dl>
 
-<dl>
-<dt id="index-GET_002dUNIVERSAL_002dTIME">Function: <strong>GET-UNIVERSAL-TIME</strong> <em>()</em></dt>
+<dl class="def">
+<dt id="index-GET_002dUNIVERSAL_002dTIME"><span class="category">Function: </span><span><strong>GET-UNIVERSAL-TIME</strong> <em>()</em><a href='#index-GET_002dUNIVERSAL_002dTIME' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the current time as a single integer in universal time format.
@@ -266,8 +269,8 @@ if the number is zero.  The optional X is ignored.
 
 </dd></dl>
 
-<dl>
-<dt id="index-GET_002dINTERNAL_002dRUN_002dTIME">Function: <strong>GET-INTERNAL-RUN-TIME</strong> <em>()</em></dt>
+<dl class="def">
+<dt id="index-GET_002dINTERNAL_002dRUN_002dTIME"><span class="category">Function: </span><span><strong>GET-INTERNAL-RUN-TIME</strong> <em>()</em><a href='#index-GET_002dINTERNAL_002dRUN_002dTIME' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the run time in the internal time format.  This is useful for
@@ -277,16 +280,16 @@ containing CPU usage of child processes is returned.
 
 </dd></dl>
 
-<dl>
-<dt id="index-_002aDEFAULT_002dPATHNAME_002dDEFAULTS_002a">Variable: <strong>*DEFAULT-PATHNAME-DEFAULTS*</strong></dt>
+<dl class="def">
+<dt id="index-_002aDEFAULT_002dPATHNAME_002dDEFAULTS_002a"><span class="category">Variable: </span><span><strong>*DEFAULT-PATHNAME-DEFAULTS*</strong><a href='#index-_002aDEFAULT_002dPATHNAME_002dDEFAULTS_002a' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The default pathname-defaults pathname.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-LONG_002dSITE_002dNAME">Function: <strong>LONG-SITE-NAME</strong> <em>()</em></dt>
+<dl class="def">
+<dt id="index-LONG_002dSITE_002dNAME"><span class="category">Function: </span><span><strong>LONG-SITE-NAME</strong> <em>()</em><a href='#index-LONG_002dSITE_002dNAME' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns a string that identifies the physical location of the current GCL.
@@ -294,16 +297,16 @@ The default pathname-defaults pathname.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DELETE_002dFILE">Function: <strong>DELETE-FILE</strong> <em>(file)</em></dt>
+<dl class="def">
+<dt id="index-DELETE_002dFILE"><span class="category">Function: </span><span><strong>DELETE-FILE</strong> <em>(file)</em><a href='#index-DELETE_002dFILE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
  Deletes FILE.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-GET_002dINTERNAL_002dREAL_002dTIME">Function: <strong>GET-INTERNAL-REAL-TIME</strong> <em>()</em></dt>
+<dl class="def">
+<dt id="index-GET_002dINTERNAL_002dREAL_002dTIME"><span class="category">Function: </span><span><strong>GET-INTERNAL-REAL-TIME</strong> <em>()</em><a href='#index-GET_002dINTERNAL_002dREAL_002dTIME' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the real time in the internal time format.  This is useful for
@@ -312,8 +315,8 @@ finding elapsed time.
 
 </dd></dl>
 
-<dl>
-<dt id="index-MACHINE_002dTYPE">Function: <strong>MACHINE-TYPE</strong> <em>()</em></dt>
+<dl class="def">
+<dt id="index-MACHINE_002dTYPE"><span class="category">Function: </span><span><strong>MACHINE-TYPE</strong> <em>()</em><a href='#index-MACHINE_002dTYPE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns a string that identifies the machine type of the machine
@@ -322,8 +325,8 @@ on which GCL is currently running.
 
 </dd></dl>
 
-<dl>
-<dt id="index-TIME">Macro: <strong>TIME</strong></dt>
+<dl class="def">
+<dt id="index-TIME"><span class="category">Macro: </span><span><strong>TIME</strong><a href='#index-TIME' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -336,8 +339,8 @@ on which GCL is currently running.
 
 </dd></dl>
 
-<dl>
-<dt id="index-SOFTWARE_002dTYPE">Function: <strong>SOFTWARE-TYPE</strong> <em>()</em></dt>
+<dl class="def">
+<dt id="index-SOFTWARE_002dTYPE"><span class="category">Function: </span><span><strong>SOFTWARE-TYPE</strong> <em>()</em><a href='#index-SOFTWARE_002dTYPE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns a string that identifies the software type of the software
@@ -346,8 +349,8 @@ under which GCL is currently running.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LISP_002dIMPLEMENTATION_002dTYPE">Function: <strong>LISP-IMPLEMENTATION-TYPE</strong> <em>()</em></dt>
+<dl class="def">
+<dt id="index-LISP_002dIMPLEMENTATION_002dTYPE"><span class="category">Function: </span><span><strong>LISP-IMPLEMENTATION-TYPE</strong> <em>()</em><a href='#index-LISP_002dIMPLEMENTATION_002dTYPE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns a string that tells you that you are using a version of GCL.
@@ -355,8 +358,8 @@ under which GCL is currently running.
 
 </dd></dl>
 
-<dl>
-<dt id="index-SLEEP">Function: <strong>SLEEP</strong> <em>(n)</em></dt>
+<dl class="def">
+<dt id="index-SLEEP"><span class="category">Function: </span><span><strong>SLEEP</strong> <em>(n)</em><a href='#index-SLEEP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>This function causes execution to be suspended for N seconds.  N may
@@ -365,8 +368,8 @@ be any non-negative, non-complex number.
 
 </dd></dl>
 
-<dl>
-<dt id="index-BREAK_002dON_002dFLOATING_002dPOINT_002dEXCEPTIONS">Function: <strong>BREAK-ON-FLOATING-POINT-EXCEPTIONS</strong> <em>(&amp;key division-by-zero</em></dt>
+<dl class="def">
+<dt id="index-BREAK_002dON_002dFLOATING_002dPOINT_002dEXCEPTIONS"><span class="category">Function: </span><span><strong>BREAK-ON-FLOATING-POINT-EXCEPTIONS</strong> <em>(&amp;key division-by-zero</em><a href='#index-BREAK_002dON_002dFLOATING_002dPOINT_002dEXCEPTIONS' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>floating-point-invalid-operation
                                                 floating-point-overflow
                                                 floating-point-underflow
@@ -395,10 +398,11 @@ in gcl_fpe.lsp.
 </dd></dl>
 
 
+</div>
 <hr>
 <div class="header">
 <p>
-Previous: <a href="Command-Line.html" accesskey="p" rel="prev">Command Line</a>, Up: <a href="Operating-System.html" accesskey="u" rel="up">Operating System</a> &nbsp; [<a href="Function-and-Variable-Index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
+Previous: <a href="Command-Line.html">Command Line</a>, Up: <a href="Operating-System.html">Operating System</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
 </div>
 
 

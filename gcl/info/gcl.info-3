@@ -1,4 +1,4 @@
-This is gcl.info, produced by makeinfo version 6.7 from gcl.texi.
+This is gcl.info, produced by makeinfo version 6.8 from gcl.texi.
 
 This is a Texinfo GNU Common Lisp Manual based on the draft ANSI
 standard for Common Lisp.
@@ -2803,7 +2803,8 @@ x--an object.
 Description::
 .............
 
-The value of eql is true of two objects, x and y, in the folowing cases:
+The value of eql is true of two objects, x and y, in the following
+cases:
 
 1.
      If x and y are eq.

@@ -1,4 +1,4 @@
-This is gcl.info, produced by makeinfo version 6.7 from gcl.texi.
+This is gcl.info, produced by makeinfo version 6.8 from gcl.texi.
 
 This is a Texinfo GNU Common Lisp Manual based on the draft ANSI
 standard for Common Lisp.
@@ -909,7 +909,7 @@ alphabetic
      character.  For details, see *note Constituent Characters:: and
      *note Reader Algorithm::.  b.  adj.  (of a character) being a
      character that has syntax type constituent in the current readtable
-     and that has the constituent trait alphabetic_{2a}. 	See
+     and that has the constituent trait alphabetic_{2a}.  See
      Figure~2-8.
 
 alphanumeric
@@ -1231,7 +1231,7 @@ captured initialization form
 
 car
      n.  1.  a.  (of a cons) the component of a cons corresponding to
-     the first argument to cons; the other component is the cdr. 	"The
+     the first argument to cons; the other component is the cdr.  "The
      function rplaca modifies the car of a cons."  b.  (of a list) the
      first element of the list, or nil if the list is the empty list.
      2.  the object that is held in the car_1.  "The function car
@@ -1263,7 +1263,7 @@ cddr
 cdr
      pronounced 'ku ,de r , n.  1.  a.  (of a cons) the component of a
      cons corresponding to the second argument to cons; the other
-     component is the car. 	"The function rplacd modifies the cdr of a
+     component is the car.  "The function rplacd modifies the cdr of a
      cons."  b.  (of a list L_1) either the list L_2 that contains the
      elements of L_1 that follow after the first, or else nil if L_1 is
      the empty list.  2.  the object that is held in the cdr_1.  "The
@@ -2210,11 +2210,11 @@ external file format designator
      n.  a designator for an external file format; that is, an object
      that denotes an external file format and that is one of: the symbol
      :default (denoting an implementation-dependent default external
-     file format that can accomodate at least the base characters), some
-     other object defined by the implementation to be an external file
-     format designator (denoting an implementation-defined external file
-     format), or some other object defined by the implementation to be
-     an external file format (denoting itself).
+     file format that can accommodate at least the base characters),
+     some other object defined by the implementation to be an external
+     file format designator (denoting an implementation-defined external
+     file format), or some other object defined by the implementation to
+     be an external file format (denoting itself).
 
 external symbol
      n.  (of a package) a symbol that is part of the 'external
@@ -3255,7 +3255,7 @@ normalized
 
 null
      adj., n.  1.  adj.  a.  (of a list) having no elements: empty.  See
-     empty list.  b.  (of a string) having a length of zero. 	(It is
+     empty list.  b.  (of a string) having a length of zero.  (It is
      common, both within this document and in observed spoken behavior,
      to refer to an empty string by an apparent definite reference, as
      in "the null string" even though no attempt is made to intern_2
@@ -4637,7 +4637,7 @@ valid fill pointer
      and less than or equal to the array total size of the array.
 
      [Editorial Note by KMP: The "valid pathname xxx" definitions were
-     taken from text found in make-pathname, but look wrong to me. 	I'll
+     taken from text found in make-pathname, but look wrong to me.  I'll
      fix them later.]
 
 valid logical pathname host

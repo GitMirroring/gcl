@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<!-- Created by GNU Texinfo 6.7, http://www.gnu.org/software/texinfo/ -->
+<!-- Created by GNU Texinfo 6.8, https://www.gnu.org/software/texinfo/ -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>GCL Specific (GCL SI Manual)</title>
@@ -10,19 +10,21 @@
 <meta name="resource-type" content="document">
 <meta name="distribution" content="global">
 <meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
 <link href="index.html" rel="start" title="Top">
 <link href="Function-and-Variable-Index.html" rel="index" title="Function and Variable Index">
-<link href="Function-and-Variable-Index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
 <link href="index.html" rel="up" title="Top">
-<link href="Bignums.html" rel="next" title="Bignums">
+<link href="C-Interface.html" rel="next" title="C Interface">
 <link href="Type.html" rel="prev" title="Type">
 <style type="text/css">
 <!--
+a.copiable-anchor {visibility: hidden; text-decoration: none; line-height: 0em}
 a.summary-letter {text-decoration: none}
 blockquote.indentedblock {margin-right: 0em}
 div.display {margin-left: 3.2em}
 div.example {margin-left: 3.2em}
-div.lisp {margin-left: 3.2em}
 kbd {font-style: oblique}
 pre.display {font-family: inherit}
 pre.format {font-family: inherit}
@@ -31,6 +33,7 @@ pre.menu-preformatted {font-family: serif}
 span.nolinebreak {white-space: nowrap}
 span.roman {font-family: initial; font-weight: normal}
 span.sansserif {font-family: sans-serif; font-weight: normal}
+span:hover a.copiable-anchor {visibility: visible}
 ul.no-bullet {list-style: none}
 -->
 </style>
@@ -39,15 +42,16 @@ ul.no-bullet {list-style: none}
 </head>
 
 <body lang="en">
-<span id="GCL-Specific"></span><div class="header">
+<div class="chapter" id="GCL-Specific">
+<div class="header">
 <p>
-Next: <a href="C-Interface.html" accesskey="n" rel="next">C Interface</a>, Previous: <a href="Type.html" accesskey="p" rel="prev">Type</a>, Up: <a href="index.html" accesskey="u" rel="up">Top</a> &nbsp; [<a href="Function-and-Variable-Index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
+Next: <a href="C-Interface.html" accesskey="n" rel="next">C Interface</a>, Previous: <a href="Type.html" accesskey="p" rel="prev">Type</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
 </div>
 <hr>
 <span id="GCL-Specific-1"></span><h2 class="chapter">15 GCL Specific</h2>
 
-<dl>
-<dt id="index-SYSTEM">Function: <strong>SYSTEM</strong> <em>(string)</em></dt>
+<dl class="def">
+<dt id="index-SYSTEM"><span class="category">Function: </span><span><strong>SYSTEM</strong> <em>(string)</em><a href='#index-SYSTEM' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>GCL specific: Executes a Shell command as if STRING is an input to the
@@ -58,8 +62,8 @@ exit status and any possible terminating signal respectively.
 
 </dd></dl>
 
-<dl>
-<dt id="index-_002aTMP_002dDIR_002a">Variable: <strong>*TMP-DIR*</strong></dt>
+<dl class="def">
+<dt id="index-_002aTMP_002dDIR_002a"><span class="category">Variable: </span><span><strong>*TMP-DIR*</strong><a href='#index-_002aTMP_002dDIR_002a' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:COMPILER
 GCL specific: Directory in which temporary &ldquo;gazonk&rdquo; files used by the
 compiler are to be created.
@@ -67,8 +71,8 @@ compiler are to be created.
 
 </dd></dl>
 
-<dl>
-<dt id="index-_002aIGNORE_002dMAXIMUM_002dPAGES_002a">Variable: <strong>*IGNORE-MAXIMUM-PAGES*</strong></dt>
+<dl class="def">
+<dt id="index-_002aIGNORE_002dMAXIMUM_002dPAGES_002a"><span class="category">Variable: </span><span><strong>*IGNORE-MAXIMUM-PAGES*</strong><a href='#index-_002aIGNORE_002dMAXIMUM_002dPAGES_002a' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:SI
 GCL specific: Tells the GCL memory manager whether (non-NIL) or not (NIL) it
 should expand memory whenever the maximum allocatable pages have been used
@@ -77,8 +81,8 @@ up.
 
 </dd></dl>
 
-<dl>
-<dt id="index-_002aOPTIMIZE_002dMAXIMUM_002dPAGES_002a">Variable: <strong>*OPTIMIZE-MAXIMUM-PAGES*</strong></dt>
+<dl class="def">
+<dt id="index-_002aOPTIMIZE_002dMAXIMUM_002dPAGES_002a"><span class="category">Variable: </span><span><strong>*OPTIMIZE-MAXIMUM-PAGES*</strong><a href='#index-_002aOPTIMIZE_002dMAXIMUM_002dPAGES_002a' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:SI
 </p>
 <p>GCL specific: Tells the GCL memory manager whether to attempt to
@@ -89,8 +93,8 @@ to T.  Set to NIL if you care more about memory usage than runtime.
 
 </dd></dl>
 
-<dl>
-<dt id="index-MACHINE_002dVERSION">Function: <strong>MACHINE-VERSION</strong> <em>()</em></dt>
+<dl class="def">
+<dt id="index-MACHINE_002dVERSION"><span class="category">Function: </span><span><strong>MACHINE-VERSION</strong> <em>()</em><a href='#index-MACHINE_002dVERSION' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns a string that identifies the machine version of the machine
@@ -99,8 +103,8 @@ on which GCL is currently running.
 
 </dd></dl>
 
-<dl>
-<dt id="index-BY">Function: <strong>BY</strong> <em>()</em></dt>
+<dl class="def">
+<dt id="index-BY"><span class="category">Function: </span><span><strong>BY</strong> <em>()</em><a href='#index-BY' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>GCL specific: Exits from GCL.
@@ -108,8 +112,8 @@ on which GCL is currently running.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DEFCFUN">Macro: <strong>DEFCFUN</strong></dt>
+<dl class="def">
+<dt id="index-DEFCFUN"><span class="category">Macro: </span><span><strong>DEFCFUN</strong><a href='#index-DEFCFUN' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -178,8 +182,8 @@ C-type:
 
 </dd></dl>
 
-<dl>
-<dt id="index-CLINES">Macro: <strong>CLINES</strong></dt>
+<dl class="def">
+<dt id="index-CLINES"><span class="category">Macro: </span><span><strong>CLINES</strong><a href='#index-CLINES' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -193,8 +197,8 @@ language code.  The interpreter ignores this form.
 
 </dd></dl>
 
-<dl>
-<dt id="index-ALLOCATE">Function: <strong>ALLOCATE</strong> <em>(type number &amp;optional (really-allocate nil))</em></dt>
+<dl class="def">
+<dt id="index-ALLOCATE"><span class="category">Function: </span><span><strong>ALLOCATE</strong> <em>(type number &amp;optional (really-allocate nil))</em><a href='#index-ALLOCATE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>GCL specific: Sets the maximum number of pages for the type class of the
@@ -205,8 +209,8 @@ immediately.
 
 </dd></dl>
 
-<dl>
-<dt id="index-GBC">Function: <strong>GBC</strong> <em>(x)</em></dt>
+<dl class="def">
+<dt id="index-GBC"><span class="category">Function: </span><span><strong>GBC</strong> <em>(x)</em><a href='#index-GBC' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>GCL specific: Invokes the garbage collector (GC) with the collection level
@@ -216,8 +220,8 @@ the argument causes GC to collect everything.
 
 </dd></dl>
 
-<dl>
-<dt id="index-SAVE">Function: <strong>SAVE</strong> <em>(pathname)</em></dt>
+<dl class="def">
+<dt id="index-SAVE"><span class="category">Function: </span><span><strong>SAVE</strong> <em>(pathname)</em><a href='#index-SAVE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>GCL specific: Saves the current GCL core image into a program file specified
@@ -228,8 +232,8 @@ currently loaded .o files.
 </p>
 </dd></dl>
 
-<dl>
-<dt id="index-HELP_002a">Function: <strong>HELP*</strong> <em>(string &amp;optional (package 'lisp))</em></dt>
+<dl class="def">
+<dt id="index-HELP_002a"><span class="category">Function: </span><span><strong>HELP*</strong> <em>(string &amp;optional (package 'lisp))</em><a href='#index-HELP_002a' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>GCL specific: Prints the documentation associated with those symbols in the
@@ -240,8 +244,8 @@ is NIL, then all packages are searched.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DEFLA">Macro: <strong>DEFLA</strong></dt>
+<dl class="def">
+<dt id="index-DEFLA"><span class="category">Macro: </span><span><strong>DEFLA</strong><a href='#index-DEFLA' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -255,8 +259,8 @@ equivalent to DEFUN, but the compiler ignores this form.
 
 </dd></dl>
 
-<dl>
-<dt id="index-PROCLAMATION">Function: <strong>PROCLAMATION</strong> <em>(decl-spec)</em></dt>
+<dl class="def">
+<dt id="index-PROCLAMATION"><span class="category">Function: </span><span><strong>PROCLAMATION</strong> <em>(decl-spec)</em><a href='#index-PROCLAMATION' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>GCL specific: Returns T if the specified declaration is globally in effect;
@@ -265,8 +269,8 @@ NIL otherwise.  See the doc of DECLARE for possible DECL-SPECs.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DEFENTRY">Macro: <strong>DEFENTRY</strong></dt>
+<dl class="def">
+<dt id="index-DEFENTRY"><span class="category">Macro: </span><span><strong>DEFENTRY</strong><a href='#index-DEFENTRY' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -326,8 +330,8 @@ If the C function may allocate storage, then you should pass a copy:
 
 
 </dd></dl>
-<dl>
-<dt id="index-COPY_002dARRAY_002dPORTION">Function: <strong>COPY-ARRAY-PORTION</strong> <em>(x,y,i1,i2,n1)</em></dt>
+<dl class="def">
+<dt id="index-COPY_002dARRAY_002dPORTION"><span class="category">Function: </span><span><strong>COPY-ARRAY-PORTION</strong> <em>(x,y,i1,i2,n1)</em><a href='#index-COPY_002dARRAY_002dPORTION' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:SI
 Copy elements from X to Y starting at X[i1] to Y[i2] and doing N1
 elements if N1 is supplied otherwise, doing the length of X - I1
@@ -335,8 +339,8 @@ elements.  If the types of the arrays are not the same, this has
 implementation dependent results.
 </p></dd></dl>
 
-<dl>
-<dt id="index-BYE">Function: <strong>BYE</strong> <em>( &amp;optional (exit-status 0))</em></dt>
+<dl class="def">
+<dt id="index-BYE"><span class="category">Function: </span><span><strong>BYE</strong> <em>( &amp;optional (exit-status 0))</em><a href='#index-BYE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>GCL specific: Exits from GCL with exit-status.
@@ -344,8 +348,8 @@ implementation dependent results.
 
 </dd></dl>
 
-<dl>
-<dt id="index-USE_002dFAST_002dLINKS">Function: <strong>USE-FAST-LINKS</strong> <em>(turn-on)</em></dt>
+<dl class="def">
+<dt id="index-USE_002dFAST_002dLINKS"><span class="category">Function: </span><span><strong>USE-FAST-LINKS</strong> <em>(turn-on)</em><a href='#index-USE_002dFAST_002dLINKS' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>GCL specific: If TURN-ON is not nil, the fast link mechanism is enabled,
@@ -357,15 +361,15 @@ off.
 
 </dd></dl>
 
-<table class="menu" border="0" cellspacing="0">
-<tr><td align="left" valign="top">&bull; <a href="Bignums.html" accesskey="1">Bignums</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
-</td></tr>
-</table>
 
+<ul class="section-toc">
+<li><a href="Bignums.html" accesskey="1">Bignums</a></li>
+</ul>
+</div>
 <hr>
 <div class="header">
 <p>
-Next: <a href="C-Interface.html" accesskey="n" rel="next">C Interface</a>, Previous: <a href="Type.html" accesskey="p" rel="prev">Type</a>, Up: <a href="index.html" accesskey="u" rel="up">Top</a> &nbsp; [<a href="Function-and-Variable-Index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
+Next: <a href="C-Interface.html">C Interface</a>, Previous: <a href="Type.html">Type</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
 </div>
 
 

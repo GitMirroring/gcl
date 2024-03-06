@@ -1,4 +1,4 @@
-This is gcl.info, produced by makeinfo version 6.7 from gcl.texi.
+This is gcl.info, produced by makeinfo version 6.8 from gcl.texi.
 
 This is a Texinfo GNU Common Lisp Manual based on the draft ANSI
 standard for Common Lisp.
@@ -5152,7 +5152,7 @@ evaluated.
      taking different parameters.
 
      [Reviewer Note by Barmar: What about (:constructor) and
-     (:constructor nil). 	Should we worry about it?]
+     (:constructor nil).  Should we worry about it?]
 
      defstruct creates the default-named keyword constructor function
      only if no explicit :constructor options are specified, or if the
@@ -5474,7 +5474,7 @@ evaluated.
           a stream to print to.
 
      -
-          an integer indicating the current depth. 	The magnitude of
+          an integer indicating the current depth.  The magnitude of
           this integer may vary between implementations; however, it can
           reliably be compared against *print-level* to determine
           whether depth abbreviation is appropriate.
@@ -6471,7 +6471,7 @@ File: gcl.info,  Node: Associating a Restart with a Condition,  Prev: Restart Te
 
 A restart can be "associated with" a condition explicitly by
 with-condition-restarts, or implicitly by restart-case.  Such an
-assocation has dynamic extent.
+association has dynamic extent.
 
    A single restart may be associated with several conditions at the
 same time.  A single condition may have several associated restarts at
@@ -7886,7 +7886,7 @@ handling are the only program-visible differences between break and
 cerror.
 
    The user interface aspects of break and cerror are permitted to vary
-more widely, in order to accomodate the interface needs of the
+more widely, in order to accommodate the interface needs of the
 implementation.  For example, it is permissible for a Lisp
 read-eval-print loop to be entered by break rather than the conventional
 debugger.

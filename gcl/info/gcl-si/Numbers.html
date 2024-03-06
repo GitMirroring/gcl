@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<!-- Created by GNU Texinfo 6.7, http://www.gnu.org/software/texinfo/ -->
+<!-- Created by GNU Texinfo 6.8, https://www.gnu.org/software/texinfo/ -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>Numbers (GCL SI Manual)</title>
@@ -10,19 +10,21 @@
 <meta name="resource-type" content="document">
 <meta name="distribution" content="global">
 <meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
 <link href="index.html" rel="start" title="Top">
 <link href="Function-and-Variable-Index.html" rel="index" title="Function and Variable Index">
-<link href="Function-and-Variable-Index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
 <link href="index.html" rel="up" title="Top">
 <link href="Sequences-and-Arrays-and-Hash-Tables.html" rel="next" title="Sequences and Arrays and Hash Tables">
 <link href="index.html" rel="prev" title="Top">
 <style type="text/css">
 <!--
+a.copiable-anchor {visibility: hidden; text-decoration: none; line-height: 0em}
 a.summary-letter {text-decoration: none}
 blockquote.indentedblock {margin-right: 0em}
 div.display {margin-left: 3.2em}
 div.example {margin-left: 3.2em}
-div.lisp {margin-left: 3.2em}
 kbd {font-style: oblique}
 pre.display {font-family: inherit}
 pre.format {font-family: inherit}
@@ -31,6 +33,7 @@ pre.menu-preformatted {font-family: serif}
 span.nolinebreak {white-space: nowrap}
 span.roman {font-family: initial; font-weight: normal}
 span.sansserif {font-family: sans-serif; font-weight: normal}
+span:hover a.copiable-anchor {visibility: visible}
 ul.no-bullet {list-style: none}
 -->
 </style>
@@ -39,16 +42,17 @@ ul.no-bullet {list-style: none}
 </head>
 
 <body lang="en">
-<span id="Numbers"></span><div class="header">
+<div class="chapter" id="Numbers">
+<div class="header">
 <p>
-Next: <a href="Sequences-and-Arrays-and-Hash-Tables.html" accesskey="n" rel="next">Sequences and Arrays and Hash Tables</a>, Previous: <a href="index.html" accesskey="p" rel="prev">Top</a>, Up: <a href="index.html" accesskey="u" rel="up">Top</a> &nbsp; [<a href="Function-and-Variable-Index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
+Next: <a href="Sequences-and-Arrays-and-Hash-Tables.html" accesskey="n" rel="next">Sequences and Arrays and Hash Tables</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
 </div>
 <hr>
 <span id="Numbers-1"></span><h2 class="chapter">1 Numbers</h2>
 
 
-<dl>
-<dt id="index-SIGNUM">Function: <strong>SIGNUM</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-SIGNUM"><span class="category">Function: </span><span><strong>SIGNUM</strong> <em>(number)</em><a href='#index-SIGNUM' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>If NUMBER is zero, returns NUMBER; else returns (/ NUMBER (ABS NUMBER)).
@@ -56,8 +60,8 @@ Next: <a href="Sequences-and-Arrays-and-Hash-Tables.html" accesskey="n" rel="nex
 
 </dd></dl>
 
-<dl>
-<dt id="index-LOGNOT">Function: <strong>LOGNOT</strong> <em>(integer)</em></dt>
+<dl class="def">
+<dt id="index-LOGNOT"><span class="category">Function: </span><span><strong>LOGNOT</strong> <em>(integer)</em><a href='#index-LOGNOT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the bit-wise logical NOT of INTEGER.
@@ -65,16 +69,16 @@ Next: <a href="Sequences-and-Arrays-and-Hash-Tables.html" accesskey="n" rel="nex
 
 </dd></dl>
 
-<dl>
-<dt id="index-MOST_002dPOSITIVE_002dSHORT_002dFLOAT">Constant: <strong>MOST-POSITIVE-SHORT-FLOAT</strong></dt>
+<dl class="def">
+<dt id="index-MOST_002dPOSITIVE_002dSHORT_002dFLOAT"><span class="category">Constant: </span><span><strong>MOST-POSITIVE-SHORT-FLOAT</strong><a href='#index-MOST_002dPOSITIVE_002dSHORT_002dFLOAT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The short-float closest in value to positive infinity.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-INTEGER_002dDECODE_002dFLOAT">Function: <strong>INTEGER-DECODE-FLOAT</strong> <em>(float)</em></dt>
+<dl class="def">
+<dt id="index-INTEGER_002dDECODE_002dFLOAT"><span class="category">Function: </span><span><strong>INTEGER-DECODE-FLOAT</strong> <em>(float)</em><a href='#index-INTEGER_002dDECODE_002dFLOAT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns, as three values, the integer interpretation of significand F,
@@ -87,8 +91,8 @@ the exponent E, and the sign S of the given float, so that
 
 </dd></dl>
 
-<dl>
-<dt id="index-MINUSP">Function: <strong>MINUSP</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-MINUSP"><span class="category">Function: </span><span><strong>MINUSP</strong> <em>(number)</em><a href='#index-MINUSP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if NUMBER &lt; 0; NIL otherwise.
@@ -96,8 +100,8 @@ the exponent E, and the sign S of the given float, so that
 
 </dd></dl>
 
-<dl>
-<dt id="index-LOGORC1">Function: <strong>LOGORC1</strong> <em>(integer1 integer2)</em></dt>
+<dl class="def">
+<dt id="index-LOGORC1"><span class="category">Function: </span><span><strong>LOGORC1</strong> <em>(integer1 integer2)</em><a href='#index-LOGORC1' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the logical OR of (LOGNOT INTEGER1) and INTEGER2.
@@ -105,32 +109,32 @@ the exponent E, and the sign S of the given float, so that
 
 </dd></dl>
 
-<dl>
-<dt id="index-MOST_002dNEGATIVE_002dSINGLE_002dFLOAT">Constant: <strong>MOST-NEGATIVE-SINGLE-FLOAT</strong></dt>
+<dl class="def">
+<dt id="index-MOST_002dNEGATIVE_002dSINGLE_002dFLOAT"><span class="category">Constant: </span><span><strong>MOST-NEGATIVE-SINGLE-FLOAT</strong><a href='#index-MOST_002dNEGATIVE_002dSINGLE_002dFLOAT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Same as MOST-NEGATIVE-LONG-FLOAT.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-BOOLE_002dC1">Constant: <strong>BOOLE-C1</strong></dt>
+<dl class="def">
+<dt id="index-BOOLE_002dC1"><span class="category">Constant: </span><span><strong>BOOLE-C1</strong><a href='#index-BOOLE_002dC1' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Makes BOOLE return the complement of INTEGER1.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-LEAST_002dPOSITIVE_002dSHORT_002dFLOAT">Constant: <strong>LEAST-POSITIVE-SHORT-FLOAT</strong></dt>
+<dl class="def">
+<dt id="index-LEAST_002dPOSITIVE_002dSHORT_002dFLOAT"><span class="category">Constant: </span><span><strong>LEAST-POSITIVE-SHORT-FLOAT</strong><a href='#index-LEAST_002dPOSITIVE_002dSHORT_002dFLOAT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The positive short-float closest in value to zero.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-BIT_002dNAND">Function: <strong>BIT-NAND</strong> <em>(bit-array1 bit-array2 &amp;optional (result-bit-array nil))</em></dt>
+<dl class="def">
+<dt id="index-BIT_002dNAND"><span class="category">Function: </span><span><strong>BIT-NAND</strong> <em>(bit-array1 bit-array2 &amp;optional (result-bit-array nil))</em><a href='#index-BIT_002dNAND' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Performs a bit-wise logical NAND  on the elements of BIT-ARRAY1 and
@@ -140,8 +144,8 @@ BIT-ARRAY1 if RESULT-BIT-ARRAY is T, or into RESULT-BIT-ARRAY otherwise.
 </p>
 </dd></dl>
 
-<dl>
-<dt id="index-INT_002dCHAR">Function: <strong>INT-CHAR</strong> <em>(integer)</em></dt>
+<dl class="def">
+<dt id="index-INT_002dCHAR"><span class="category">Function: </span><span><strong>INT-CHAR</strong> <em>(integer)</em><a href='#index-INT_002dCHAR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Performs the inverse of CHAR-INT.  Equivalent to CODE-CHAR in GCL.
@@ -149,8 +153,8 @@ BIT-ARRAY1 if RESULT-BIT-ARRAY is T, or into RESULT-BIT-ARRAY otherwise.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002dINT">Function: <strong>CHAR-INT</strong> <em>(char)</em></dt>
+<dl class="def">
+<dt id="index-CHAR_002dINT"><span class="category">Function: </span><span><strong>CHAR-INT</strong> <em>(char)</em><a href='#index-CHAR_002dINT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the font, bits, and code attributes as a single non-negative integer.
@@ -159,16 +163,16 @@ Equivalent to CHAR-CODE in GCL.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LEAST_002dNEGATIVE_002dSINGLE_002dFLOAT">Constant: <strong>LEAST-NEGATIVE-SINGLE-FLOAT</strong></dt>
+<dl class="def">
+<dt id="index-LEAST_002dNEGATIVE_002dSINGLE_002dFLOAT"><span class="category">Constant: </span><span><strong>LEAST-NEGATIVE-SINGLE-FLOAT</strong><a href='#index-LEAST_002dNEGATIVE_002dSINGLE_002dFLOAT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Same as LEAST-NEGATIVE-LONG-FLOAT.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-_002f_003d">Function: <strong>/=</strong> <em>(number &amp;rest more-numbers)</em></dt>
+<dl class="def">
+<dt id="index-_002f_003d"><span class="category">Function: </span><span><strong>/=</strong> <em>(number &amp;rest more-numbers)</em><a href='#index-_002f_003d' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if no two of its arguments are numerically equal; NIL otherwise.
@@ -176,8 +180,8 @@ Same as LEAST-NEGATIVE-LONG-FLOAT.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LDB_002dTEST">Function: <strong>LDB-TEST</strong> <em>(bytespec integer)</em></dt>
+<dl class="def">
+<dt id="index-LDB_002dTEST"><span class="category">Function: </span><span><strong>LDB-TEST</strong> <em>(bytespec integer)</em><a href='#index-LDB_002dTEST' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if at least one of the bits in the specified bytes of INTEGER is 1;
@@ -186,16 +190,16 @@ NIL otherwise.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002dCODE_002dLIMIT">Constant: <strong>CHAR-CODE-LIMIT</strong></dt>
+<dl class="def">
+<dt id="index-CHAR_002dCODE_002dLIMIT"><span class="category">Constant: </span><span><strong>CHAR-CODE-LIMIT</strong><a href='#index-CHAR_002dCODE_002dLIMIT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The upper exclusive bound on values produced by CHAR-CODE.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-RATIONAL">Function: <strong>RATIONAL</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-RATIONAL"><span class="category">Function: </span><span><strong>RATIONAL</strong> <em>(number)</em><a href='#index-RATIONAL' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Converts NUMBER into rational accurately and returns it.
@@ -203,8 +207,8 @@ The upper exclusive bound on values produced by CHAR-CODE.
 
 </dd></dl>
 
-<dl>
-<dt id="index-PI">Constant: <strong>PI</strong></dt>
+<dl class="def">
+<dt id="index-PI"><span class="category">Constant: </span><span><strong>PI</strong><a href='#index-PI' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The floating-point number that is appropriately equal to the ratio of the
 circumference of the circle to the diameter.
@@ -212,8 +216,8 @@ circumference of the circle to the diameter.
 
 </dd></dl>
 
-<dl>
-<dt id="index-SIN">Function: <strong>SIN</strong> <em>(radians)</em></dt>
+<dl class="def">
+<dt id="index-SIN"><span class="category">Function: </span><span><strong>SIN</strong> <em>(radians)</em><a href='#index-SIN' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the sine of RADIANS.
@@ -221,16 +225,16 @@ circumference of the circle to the diameter.
 
 </dd></dl>
 
-<dl>
-<dt id="index-BOOLE_002dORC2">Constant: <strong>BOOLE-ORC2</strong></dt>
+<dl class="def">
+<dt id="index-BOOLE_002dORC2"><span class="category">Constant: </span><span><strong>BOOLE-ORC2</strong><a href='#index-BOOLE_002dORC2' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Makes BOOLE return LOGORC2 of INTEGER1 and INTEGER2.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-NUMERATOR">Function: <strong>NUMERATOR</strong> <em>(rational)</em></dt>
+<dl class="def">
+<dt id="index-NUMERATOR"><span class="category">Function: </span><span><strong>NUMERATOR</strong> <em>(rational)</em><a href='#index-NUMERATOR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns as an integer the numerator of the given rational number.
@@ -238,8 +242,8 @@ Makes BOOLE return LOGORC2 of INTEGER1 and INTEGER2.
 
 </dd></dl>
 
-<dl>
-<dt id="index-MASK_002dFIELD">Function: <strong>MASK-FIELD</strong> <em>(bytespec integer)</em></dt>
+<dl class="def">
+<dt id="index-MASK_002dFIELD"><span class="category">Function: </span><span><strong>MASK-FIELD</strong> <em>(bytespec integer)</em><a href='#index-MASK_002dFIELD' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Extracts the specified byte from INTEGER.
@@ -247,8 +251,8 @@ Makes BOOLE return LOGORC2 of INTEGER1 and INTEGER2.
 
 </dd></dl>
 
-<dl>
-<dt id="index-INCF">Special Form: <strong>INCF</strong></dt>
+<dl class="def">
+<dt id="index-INCF"><span class="category">Special Form: </span><span><strong>INCF</strong><a href='#index-INCF' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -262,8 +266,8 @@ in PLACE.
 
 </dd></dl>
 
-<dl>
-<dt id="index-SINH">Function: <strong>SINH</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-SINH"><span class="category">Function: </span><span><strong>SINH</strong> <em>(number)</em><a href='#index-SINH' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the hyperbolic sine of NUMBER.
@@ -271,8 +275,8 @@ in PLACE.
 
 </dd></dl>
 
-<dl>
-<dt id="index-PHASE">Function: <strong>PHASE</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-PHASE"><span class="category">Function: </span><span><strong>PHASE</strong> <em>(number)</em><a href='#index-PHASE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the angle part of the polar representation of a complex number.
@@ -281,8 +285,8 @@ For non-complex numbers, this is 0.
 
 </dd></dl>
 
-<dl>
-<dt id="index-BOOLE">Function: <strong>BOOLE</strong> <em>(op integer1 integer2)</em></dt>
+<dl class="def">
+<dt id="index-BOOLE"><span class="category">Function: </span><span><strong>BOOLE</strong> <em>(op integer1 integer2)</em><a href='#index-BOOLE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns an integer produced by performing the logical operation specified by
@@ -297,8 +301,8 @@ See the variable docs of these constants for their operations.
 
 </dd></dl>
 
-<dl>
-<dt id="index-SHORT_002dFLOAT_002dEPSILON">Constant: <strong>SHORT-FLOAT-EPSILON</strong></dt>
+<dl class="def">
+<dt id="index-SHORT_002dFLOAT_002dEPSILON"><span class="category">Constant: </span><span><strong>SHORT-FLOAT-EPSILON</strong><a href='#index-SHORT_002dFLOAT_002dEPSILON' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The smallest positive short-float that satisfies
 	(not (= (float 1 e) (+ (float 1 e) e))).
@@ -306,8 +310,8 @@ The smallest positive short-float that satisfies
 
 </dd></dl>
 
-<dl>
-<dt id="index-LOGORC2">Function: <strong>LOGORC2</strong> <em>(integer1 integer2)</em></dt>
+<dl class="def">
+<dt id="index-LOGORC2"><span class="category">Function: </span><span><strong>LOGORC2</strong> <em>(integer1 integer2)</em><a href='#index-LOGORC2' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the logical OR of INTEGER1 and (LOGNOT INTEGER2).
@@ -315,16 +319,16 @@ The smallest positive short-float that satisfies
 
 </dd></dl>
 
-<dl>
-<dt id="index-BOOLE_002dC2">Constant: <strong>BOOLE-C2</strong></dt>
+<dl class="def">
+<dt id="index-BOOLE_002dC2"><span class="category">Constant: </span><span><strong>BOOLE-C2</strong><a href='#index-BOOLE_002dC2' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Makes BOOLE return the complement of INTEGER2.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-REALPART">Function: <strong>REALPART</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-REALPART"><span class="category">Function: </span><span><strong>REALPART</strong> <em>(number)</em><a href='#index-REALPART' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Extracts the real part of NUMBER.
@@ -333,24 +337,24 @@ Makes BOOLE return the complement of INTEGER2.
 </dd></dl>
 
 
-<dl>
-<dt id="index-BOOLE_002dCLR">Constant: <strong>BOOLE-CLR</strong></dt>
+<dl class="def">
+<dt id="index-BOOLE_002dCLR"><span class="category">Constant: </span><span><strong>BOOLE-CLR</strong><a href='#index-BOOLE_002dCLR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Makes BOOLE return 0.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-BOOLE_002dIOR">Constant: <strong>BOOLE-IOR</strong></dt>
+<dl class="def">
+<dt id="index-BOOLE_002dIOR"><span class="category">Constant: </span><span><strong>BOOLE-IOR</strong><a href='#index-BOOLE_002dIOR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Makes BOOLE return LOGIOR of INTEGER1 and INTEGER2.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-FTRUNCATE">Function: <strong>FTRUNCATE</strong> <em>(number &amp;optional (divisor 1))</em></dt>
+<dl class="def">
+<dt id="index-FTRUNCATE"><span class="category">Function: </span><span><strong>FTRUNCATE</strong> <em>(number &amp;optional (divisor 1))</em><a href='#index-FTRUNCATE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Values: (quotient remainder)
@@ -359,8 +363,8 @@ Same as TRUNCATE, but returns first value as a float.
 
 </dd></dl>
 
-<dl>
-<dt id="index-EQL">Function: <strong>EQL</strong> <em>(x y)</em></dt>
+<dl class="def">
+<dt id="index-EQL"><span class="category">Function: </span><span><strong>EQL</strong> <em>(x y)</em><a href='#index-EQL' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if X and Y are EQ, or if they are numbers of the same type with
@@ -370,8 +374,8 @@ character.  Returns NIL otherwise.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LOG">Function: <strong>LOG</strong> <em>(number &amp;optional base)</em></dt>
+<dl class="def">
+<dt id="index-LOG"><span class="category">Function: </span><span><strong>LOG</strong> <em>(number &amp;optional base)</em><a href='#index-LOG' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the logarithm of NUMBER in the base BASE.  BASE defaults to the base
@@ -380,16 +384,16 @@ of natural logarithms.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DOUBLE_002dFLOAT_002dNEGATIVE_002dEPSILON">Constant: <strong>DOUBLE-FLOAT-NEGATIVE-EPSILON</strong></dt>
+<dl class="def">
+<dt id="index-DOUBLE_002dFLOAT_002dNEGATIVE_002dEPSILON"><span class="category">Constant: </span><span><strong>DOUBLE-FLOAT-NEGATIVE-EPSILON</strong><a href='#index-DOUBLE_002dFLOAT_002dNEGATIVE_002dEPSILON' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Same as LONG-FLOAT-NEGATIVE-EPSILON.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-LOGIOR">Function: <strong>LOGIOR</strong> <em>(&amp;rest integers)</em></dt>
+<dl class="def">
+<dt id="index-LOGIOR"><span class="category">Function: </span><span><strong>LOGIOR</strong> <em>(&amp;rest integers)</em><a href='#index-LOGIOR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the bit-wise INCLUSIVE OR of its arguments.
@@ -397,16 +401,16 @@ Same as LONG-FLOAT-NEGATIVE-EPSILON.
 
 </dd></dl>
 
-<dl>
-<dt id="index-MOST_002dNEGATIVE_002dDOUBLE_002dFLOAT">Constant: <strong>MOST-NEGATIVE-DOUBLE-FLOAT</strong></dt>
+<dl class="def">
+<dt id="index-MOST_002dNEGATIVE_002dDOUBLE_002dFLOAT"><span class="category">Constant: </span><span><strong>MOST-NEGATIVE-DOUBLE-FLOAT</strong><a href='#index-MOST_002dNEGATIVE_002dDOUBLE_002dFLOAT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Same as MOST-NEGATIVE-LONG-FLOAT.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-_002f">Function: <strong>/</strong> <em>(number &amp;rest more-numbers)</em></dt>
+<dl class="def">
+<dt id="index-_002f"><span class="category">Function: </span><span><strong>/</strong> <em>(number &amp;rest more-numbers)</em><a href='#index-_002f' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Divides the first NUMBER by each of the subsequent NUMBERS.
@@ -415,16 +419,16 @@ With one arg, returns the reciprocal of the number.
 
 </dd></dl>
 
-<dl>
-<dt id="index-_002aRANDOM_002dSTATE_002a">Variable: <strong>*RANDOM-STATE*</strong></dt>
+<dl class="def">
+<dt id="index-_002aRANDOM_002dSTATE_002a"><span class="category">Variable: </span><span><strong>*RANDOM-STATE*</strong><a href='#index-_002aRANDOM_002dSTATE_002a' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The default random-state object used by RAMDOM.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-1_002b">Function: <strong>1+</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-1_002b"><span class="category">Function: </span><span><strong>1+</strong> <em>(number)</em><a href='#index-1_002b' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns NUMBER + 1.
@@ -432,16 +436,16 @@ The default random-state object used by RAMDOM.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LEAST_002dNEGATIVE_002dDOUBLE_002dFLOAT">Constant: <strong>LEAST-NEGATIVE-DOUBLE-FLOAT</strong></dt>
+<dl class="def">
+<dt id="index-LEAST_002dNEGATIVE_002dDOUBLE_002dFLOAT"><span class="category">Constant: </span><span><strong>LEAST-NEGATIVE-DOUBLE-FLOAT</strong><a href='#index-LEAST_002dNEGATIVE_002dDOUBLE_002dFLOAT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Same as LEAST-NEGATIVE-LONG-FLOAT.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-FCEILING">Function: <strong>FCEILING</strong> <em>(number &amp;optional (divisor 1))</em></dt>
+<dl class="def">
+<dt id="index-FCEILING"><span class="category">Function: </span><span><strong>FCEILING</strong> <em>(number &amp;optional (divisor 1))</em><a href='#index-FCEILING' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Same as CEILING, but returns a float as the first value.
@@ -449,16 +453,16 @@ Same as LEAST-NEGATIVE-LONG-FLOAT.
 
 </dd></dl>
 
-<dl>
-<dt id="index-MOST_002dPOSITIVE_002dFIXNUM">Constant: <strong>MOST-POSITIVE-FIXNUM</strong></dt>
+<dl class="def">
+<dt id="index-MOST_002dPOSITIVE_002dFIXNUM"><span class="category">Constant: </span><span><strong>MOST-POSITIVE-FIXNUM</strong><a href='#index-MOST_002dPOSITIVE_002dFIXNUM' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The fixnum closest in value to positive infinity.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-BIT_002dANDC1">Function: <strong>BIT-ANDC1</strong> <em>(bit-array1 bit-array2 &amp;optional (result-bit-array nil))</em></dt>
+<dl class="def">
+<dt id="index-BIT_002dANDC1"><span class="category">Function: </span><span><strong>BIT-ANDC1</strong> <em>(bit-array1 bit-array2 &amp;optional (result-bit-array nil))</em><a href='#index-BIT_002dANDC1' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Performs a bit-wise logical ANDC1 on the elements of BIT-ARRAY1 and
@@ -469,8 +473,8 @@ BIT-ARRAY1 if RESULT-BIT-ARRAY is T, or into RESULT-BIT-ARRAY otherwise.
 
 </dd></dl>
 
-<dl>
-<dt id="index-TAN">Function: <strong>TAN</strong> <em>(radians)</em></dt>
+<dl class="def">
+<dt id="index-TAN"><span class="category">Function: </span><span><strong>TAN</strong> <em>(radians)</em><a href='#index-TAN' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the tangent of RADIANS.
@@ -478,16 +482,16 @@ BIT-ARRAY1 if RESULT-BIT-ARRAY is T, or into RESULT-BIT-ARRAY otherwise.
 
 </dd></dl>
 
-<dl>
-<dt id="index-BOOLE_002dNAND">Constant: <strong>BOOLE-NAND</strong></dt>
+<dl class="def">
+<dt id="index-BOOLE_002dNAND"><span class="category">Constant: </span><span><strong>BOOLE-NAND</strong><a href='#index-BOOLE_002dNAND' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Makes BOOLE return LOGNAND of INTEGER1 and INTEGER2.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-TANH">Function: <strong>TANH</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-TANH"><span class="category">Function: </span><span><strong>TANH</strong> <em>(number)</em><a href='#index-TANH' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the hyperbolic tangent of NUMBER.
@@ -495,8 +499,8 @@ Makes BOOLE return LOGNAND of INTEGER1 and INTEGER2.
 
 </dd></dl>
 
-<dl>
-<dt id="index-ASIN">Function: <strong>ASIN</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-ASIN"><span class="category">Function: </span><span><strong>ASIN</strong> <em>(number)</em><a href='#index-ASIN' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the arc sine of NUMBER.
@@ -504,8 +508,8 @@ Makes BOOLE return LOGNAND of INTEGER1 and INTEGER2.
 
 </dd></dl>
 
-<dl>
-<dt id="index-BYTE">Function: <strong>BYTE</strong> <em>(size position)</em></dt>
+<dl class="def">
+<dt id="index-BYTE"><span class="category">Function: </span><span><strong>BYTE</strong> <em>(size position)</em><a href='#index-BYTE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns a byte specifier.  In GCL, a byte specifier is represented by
@@ -514,8 +518,8 @@ a dotted pair (&lt;size&gt; . &lt;position&gt;).
 
 </dd></dl>
 
-<dl>
-<dt id="index-ASINH">Function: <strong>ASINH</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-ASINH"><span class="category">Function: </span><span><strong>ASINH</strong> <em>(number)</em><a href='#index-ASINH' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the hyperbolic arc sine of NUMBER.
@@ -523,16 +527,16 @@ a dotted pair (&lt;size&gt; . &lt;position&gt;).
 
 </dd></dl>
 
-<dl>
-<dt id="index-MOST_002dPOSITIVE_002dLONG_002dFLOAT">Constant: <strong>MOST-POSITIVE-LONG-FLOAT</strong></dt>
+<dl class="def">
+<dt id="index-MOST_002dPOSITIVE_002dLONG_002dFLOAT"><span class="category">Constant: </span><span><strong>MOST-POSITIVE-LONG-FLOAT</strong><a href='#index-MOST_002dPOSITIVE_002dLONG_002dFLOAT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The long-float closest in value to positive infinity.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-SHIFTF">Macro: <strong>SHIFTF</strong></dt>
+<dl class="def">
+<dt id="index-SHIFTF"><span class="category">Macro: </span><span><strong>SHIFTF</strong><a href='#index-SHIFTF' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -547,16 +551,16 @@ form.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LEAST_002dPOSITIVE_002dLONG_002dFLOAT">Constant: <strong>LEAST-POSITIVE-LONG-FLOAT</strong></dt>
+<dl class="def">
+<dt id="index-LEAST_002dPOSITIVE_002dLONG_002dFLOAT"><span class="category">Constant: </span><span><strong>LEAST-POSITIVE-LONG-FLOAT</strong><a href='#index-LEAST_002dPOSITIVE_002dLONG_002dFLOAT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The positive long-float closest in value to zero.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-DEPOSIT_002dFIELD">Function: <strong>DEPOSIT-FIELD</strong> <em>(newbyte bytespec integer)</em></dt>
+<dl class="def">
+<dt id="index-DEPOSIT_002dFIELD"><span class="category">Function: </span><span><strong>DEPOSIT-FIELD</strong> <em>(newbyte bytespec integer)</em><a href='#index-DEPOSIT_002dFIELD' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns an integer computed by replacing the specified byte of INTEGER with
@@ -565,8 +569,8 @@ the specified byte of NEWBYTE.
 
 </dd></dl>
 
-<dl>
-<dt id="index-BIT_002dAND">Function: <strong>BIT-AND</strong> <em>(bit-array1 bit-array2 &amp;optional (result-bit-array nil))</em></dt>
+<dl class="def">
+<dt id="index-BIT_002dAND"><span class="category">Function: </span><span><strong>BIT-AND</strong> <em>(bit-array1 bit-array2 &amp;optional (result-bit-array nil))</em><a href='#index-BIT_002dAND' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Performs a bit-wise logical AND on the elements of BIT-ARRAY1 and BIT-ARRAY2.
@@ -576,8 +580,8 @@ BIT-ARRAY1 if RESULT-BIT-ARRAY is T, or into RESULT-BIT-ARRAY otherwise.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LOGNAND">Function: <strong>LOGNAND</strong> <em>(integer1 integer2)</em></dt>
+<dl class="def">
+<dt id="index-LOGNAND"><span class="category">Function: </span><span><strong>LOGNAND</strong> <em>(integer1 integer2)</em><a href='#index-LOGNAND' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the complement of the logical AND of INTEGER1 and INTEGER2.
@@ -585,8 +589,8 @@ BIT-ARRAY1 if RESULT-BIT-ARRAY is T, or into RESULT-BIT-ARRAY otherwise.
 
 </dd></dl>
 
-<dl>
-<dt id="index-BYTE_002dPOSITION">Function: <strong>BYTE-POSITION</strong> <em>(bytespec)</em></dt>
+<dl class="def">
+<dt id="index-BYTE_002dPOSITION"><span class="category">Function: </span><span><strong>BYTE-POSITION</strong> <em>(bytespec)</em><a href='#index-BYTE_002dPOSITION' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the position part (in GCL, the cdr part) of the byte specifier.
@@ -594,8 +598,8 @@ BIT-ARRAY1 if RESULT-BIT-ARRAY is T, or into RESULT-BIT-ARRAY otherwise.
 
 </dd></dl>
 
-<dl>
-<dt id="index-ROTATEF">Macro: <strong>ROTATEF</strong></dt>
+<dl class="def">
+<dt id="index-ROTATEF"><span class="category">Macro: </span><span><strong>ROTATEF</strong><a href='#index-ROTATEF' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -610,8 +614,8 @@ Returns NIL always.
 
 </dd></dl>
 
-<dl>
-<dt id="index-BIT_002dANDC2">Function: <strong>BIT-ANDC2</strong> <em>(bit-array1 bit-array2 &amp;optional (result-bit-array nil))</em></dt>
+<dl class="def">
+<dt id="index-BIT_002dANDC2"><span class="category">Function: </span><span><strong>BIT-ANDC2</strong> <em>(bit-array1 bit-array2 &amp;optional (result-bit-array nil))</em><a href='#index-BIT_002dANDC2' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Performs a bit-wise logical ANDC2 on the elements of BIT-ARRAY1 and
@@ -622,8 +626,8 @@ BIT-ARRAY1 if RESULT-BIT-ARRAY is T, or into RESULT-BIT-ARRAY otherwise.
 
 </dd></dl>
 
-<dl>
-<dt id="index-TRUNCATE">Function: <strong>TRUNCATE</strong> <em>(number &amp;optional (divisor 1))</em></dt>
+<dl class="def">
+<dt id="index-TRUNCATE"><span class="category">Function: </span><span><strong>TRUNCATE</strong> <em>(number &amp;optional (divisor 1))</em><a href='#index-TRUNCATE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Values: (quotient remainder)
@@ -633,24 +637,24 @@ value is the remainder.
 
 </dd></dl>
 
-<dl>
-<dt id="index-BOOLE_002dEQV">Constant: <strong>BOOLE-EQV</strong></dt>
+<dl class="def">
+<dt id="index-BOOLE_002dEQV"><span class="category">Constant: </span><span><strong>BOOLE-EQV</strong><a href='#index-BOOLE_002dEQV' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Makes BOOLE return LOGEQV of INTEGER1 and INTEGER2.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-BOOLE_002dSET">Constant: <strong>BOOLE-SET</strong></dt>
+<dl class="def">
+<dt id="index-BOOLE_002dSET"><span class="category">Constant: </span><span><strong>BOOLE-SET</strong><a href='#index-BOOLE_002dSET' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Makes BOOLE return -1.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-LDB">Function: <strong>LDB</strong> <em>(bytespec integer)</em></dt>
+<dl class="def">
+<dt id="index-LDB"><span class="category">Function: </span><span><strong>LDB</strong> <em>(bytespec integer)</em><a href='#index-LDB' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Extracts and right-justifies the specified byte of INTEGER, and returns the
@@ -659,8 +663,8 @@ result.
 
 </dd></dl>
 
-<dl>
-<dt id="index-BYTE_002dSIZE">Function: <strong>BYTE-SIZE</strong> <em>(bytespec)</em></dt>
+<dl class="def">
+<dt id="index-BYTE_002dSIZE"><span class="category">Function: </span><span><strong>BYTE-SIZE</strong> <em>(bytespec)</em><a href='#index-BYTE_002dSIZE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the size part (in GCL, the car part) of the byte specifier.
@@ -668,8 +672,8 @@ result.
 
 </dd></dl>
 
-<dl>
-<dt id="index-SHORT_002dFLOAT_002dNEGATIVE_002dEPSILON">Constant: <strong>SHORT-FLOAT-NEGATIVE-EPSILON</strong></dt>
+<dl class="def">
+<dt id="index-SHORT_002dFLOAT_002dNEGATIVE_002dEPSILON"><span class="category">Constant: </span><span><strong>SHORT-FLOAT-NEGATIVE-EPSILON</strong><a href='#index-SHORT_002dFLOAT_002dNEGATIVE_002dEPSILON' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The smallest positive short-float that satisfies
 	(not (= (float 1 e) (- (float 1 e) e))).
@@ -677,8 +681,8 @@ The smallest positive short-float that satisfies
 
 </dd></dl>
 
-<dl>
-<dt id="index-REM">Function: <strong>REM</strong> <em>(number divisor)</em></dt>
+<dl class="def">
+<dt id="index-REM"><span class="category">Function: </span><span><strong>REM</strong> <em>(number divisor)</em><a href='#index-REM' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the second value of (TRUNCATE NUMBER DIVISOR).
@@ -686,8 +690,8 @@ The smallest positive short-float that satisfies
 
 </dd></dl>
 
-<dl>
-<dt id="index-MIN">Function: <strong>MIN</strong> <em>(number &amp;rest more-numbers)</em></dt>
+<dl class="def">
+<dt id="index-MIN"><span class="category">Function: </span><span><strong>MIN</strong> <em>(number &amp;rest more-numbers)</em><a href='#index-MIN' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the least of its arguments.
@@ -695,8 +699,8 @@ The smallest positive short-float that satisfies
 
 </dd></dl>
 
-<dl>
-<dt id="index-EXP">Function: <strong>EXP</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-EXP"><span class="category">Function: </span><span><strong>EXP</strong> <em>(number)</em><a href='#index-EXP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Calculates e raised to the power NUMBER, where e is the base of natural
@@ -705,8 +709,8 @@ logarithms.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DECODE_002dFLOAT">Function: <strong>DECODE-FLOAT</strong> <em>(float)</em></dt>
+<dl class="def">
+<dt id="index-DECODE_002dFLOAT"><span class="category">Function: </span><span><strong>DECODE-FLOAT</strong> <em>(float)</em><a href='#index-DECODE_002dFLOAT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns, as three values, the significand F, the exponent E, and the sign S
@@ -721,8 +725,8 @@ is an integer.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LONG_002dFLOAT_002dEPSILON">Constant: <strong>LONG-FLOAT-EPSILON</strong></dt>
+<dl class="def">
+<dt id="index-LONG_002dFLOAT_002dEPSILON"><span class="category">Constant: </span><span><strong>LONG-FLOAT-EPSILON</strong><a href='#index-LONG_002dFLOAT_002dEPSILON' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The smallest positive long-float that satisfies
 	(not (= (float 1 e) (+ (float 1 e) e))).
@@ -730,8 +734,8 @@ The smallest positive long-float that satisfies
 
 </dd></dl>
 
-<dl>
-<dt id="index-FROUND">Function: <strong>FROUND</strong> <em>(number &amp;optional (divisor 1))</em></dt>
+<dl class="def">
+<dt id="index-FROUND"><span class="category">Function: </span><span><strong>FROUND</strong> <em>(number &amp;optional (divisor 1))</em><a href='#index-FROUND' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Same as ROUND, but returns first value as a float.
@@ -739,8 +743,8 @@ The smallest positive long-float that satisfies
 
 </dd></dl>
 
-<dl>
-<dt id="index-LOGEQV">Function: <strong>LOGEQV</strong> <em>(&amp;rest integers)</em></dt>
+<dl class="def">
+<dt id="index-LOGEQV"><span class="category">Function: </span><span><strong>LOGEQV</strong> <em>(&amp;rest integers)</em><a href='#index-LOGEQV' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the bit-wise EQUIVALENCE of its arguments.
@@ -748,16 +752,16 @@ The smallest positive long-float that satisfies
 
 </dd></dl>
 
-<dl>
-<dt id="index-MOST_002dNEGATIVE_002dSHORT_002dFLOAT">Constant: <strong>MOST-NEGATIVE-SHORT-FLOAT</strong></dt>
+<dl class="def">
+<dt id="index-MOST_002dNEGATIVE_002dSHORT_002dFLOAT"><span class="category">Constant: </span><span><strong>MOST-NEGATIVE-SHORT-FLOAT</strong><a href='#index-MOST_002dNEGATIVE_002dSHORT_002dFLOAT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The short-float closest in value to negative infinity.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-BIT_002dNOR">Function: <strong>BIT-NOR</strong> <em>(bit-array1 bit-array2 &amp;optional (result-bit-array nil))</em></dt>
+<dl class="def">
+<dt id="index-BIT_002dNOR"><span class="category">Function: </span><span><strong>BIT-NOR</strong> <em>(bit-array1 bit-array2 &amp;optional (result-bit-array nil))</em><a href='#index-BIT_002dNOR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Performs a bit-wise logical NOR  on the elements of BIT-ARRAY1 and BIT-ARRAY2.
@@ -767,8 +771,8 @@ BIT-ARRAY1 if RESULT-BIT-ARRAY is T, or into RESULT-BIT-ARRAY otherwise.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CEILING">Function: <strong>CEILING</strong> <em>(number &amp;optional (divisor 1))</em></dt>
+<dl class="def">
+<dt id="index-CEILING"><span class="category">Function: </span><span><strong>CEILING</strong> <em>(number &amp;optional (divisor 1))</em><a href='#index-CEILING' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the smallest integer not less than or NUMBER/DIVISOR.  Returns the
@@ -777,16 +781,16 @@ remainder as the second value.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LEAST_002dNEGATIVE_002dSHORT_002dFLOAT">Constant: <strong>LEAST-NEGATIVE-SHORT-FLOAT</strong></dt>
+<dl class="def">
+<dt id="index-LEAST_002dNEGATIVE_002dSHORT_002dFLOAT"><span class="category">Constant: </span><span><strong>LEAST-NEGATIVE-SHORT-FLOAT</strong><a href='#index-LEAST_002dNEGATIVE_002dSHORT_002dFLOAT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The negative short-float closest in value to zero.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-1_002d">Function: <strong>1-</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-1_002d"><span class="category">Function: </span><span><strong>1-</strong> <em>(number)</em><a href='#index-1_002d' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns NUMBER - 1.
@@ -794,8 +798,8 @@ The negative short-float closest in value to zero.
 
 </dd></dl>
 
-<dl>
-<dt id="index-_003c_003d">Function: <strong>&lt;=</strong> <em>(number &amp;rest more-numbers)</em></dt>
+<dl class="def">
+<dt id="index-_003c_003d"><span class="category">Function: </span><span><strong>&lt;=</strong> <em>(number &amp;rest more-numbers)</em><a href='#index-_003c_003d' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if arguments are in strictly non-decreasing order; NIL otherwise.
@@ -803,8 +807,8 @@ The negative short-float closest in value to zero.
 
 </dd></dl>
 
-<dl>
-<dt id="index-IMAGPART">Function: <strong>IMAGPART</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-IMAGPART"><span class="category">Function: </span><span><strong>IMAGPART</strong> <em>(number)</em><a href='#index-IMAGPART' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Extracts the imaginary part of NUMBER.
@@ -812,8 +816,8 @@ The negative short-float closest in value to zero.
 
 </dd></dl>
 
-<dl>
-<dt id="index-INTEGERP">Function: <strong>INTEGERP</strong> <em>(x)</em></dt>
+<dl class="def">
+<dt id="index-INTEGERP"><span class="category">Function: </span><span><strong>INTEGERP</strong> <em>(x)</em><a href='#index-INTEGERP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if X is an integer (fixnum or bignum); NIL otherwise.
@@ -821,8 +825,8 @@ The negative short-float closest in value to zero.
 
 </dd></dl>
 
-<dl>
-<dt id="index-ASH">Function: <strong>ASH</strong> <em>(integer count)</em></dt>
+<dl class="def">
+<dt id="index-ASH"><span class="category">Function: </span><span><strong>ASH</strong> <em>(integer count)</em><a href='#index-ASH' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Shifts INTEGER left by COUNT places.  Shifts right if COUNT is negative.
@@ -830,8 +834,8 @@ The negative short-float closest in value to zero.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LCM">Function: <strong>LCM</strong> <em>(integer &amp;rest more-integers)</em></dt>
+<dl class="def">
+<dt id="index-LCM"><span class="category">Function: </span><span><strong>LCM</strong> <em>(integer &amp;rest more-integers)</em><a href='#index-LCM' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the least common multiple of the arguments.
@@ -839,8 +843,8 @@ The negative short-float closest in value to zero.
 
 </dd></dl>
 
-<dl>
-<dt id="index-COS">Function: <strong>COS</strong> <em>(radians)</em></dt>
+<dl class="def">
+<dt id="index-COS"><span class="category">Function: </span><span><strong>COS</strong> <em>(radians)</em><a href='#index-COS' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the cosine of RADIANS.
@@ -848,8 +852,8 @@ The negative short-float closest in value to zero.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DECF">Special Form: <strong>DECF</strong></dt>
+<dl class="def">
+<dt id="index-DECF"><span class="category">Special Form: </span><span><strong>DECF</strong><a href='#index-DECF' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -863,8 +867,8 @@ PLACE.
 
 </dd></dl>
 
-<dl>
-<dt id="index-ATAN">Function: <strong>ATAN</strong> <em>(x &amp;optional (y 1))</em></dt>
+<dl class="def">
+<dt id="index-ATAN"><span class="category">Function: </span><span><strong>ATAN</strong> <em>(x &amp;optional (y 1))</em><a href='#index-ATAN' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
  Returns the arc tangent of
 X/Y.
@@ -872,16 +876,16 @@ X/Y.
 
 </dd></dl>
 
-<dl>
-<dt id="index-BOOLE_002dANDC1">Constant: <strong>BOOLE-ANDC1</strong></dt>
+<dl class="def">
+<dt id="index-BOOLE_002dANDC1"><span class="category">Constant: </span><span><strong>BOOLE-ANDC1</strong><a href='#index-BOOLE_002dANDC1' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Makes BOOLE return LOGANDC1 of INTEGER1 and INTEGER2.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-COSH">Function: <strong>COSH</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-COSH"><span class="category">Function: </span><span><strong>COSH</strong> <em>(number)</em><a href='#index-COSH' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
  Returns the hyperbolic cosine of
 NUMBER.
@@ -889,8 +893,8 @@ NUMBER.
 
 </dd></dl>
 
-<dl>
-<dt id="index-FLOAT_002dRADIX">Function: <strong>FLOAT-RADIX</strong> <em>(float)</em></dt>
+<dl class="def">
+<dt id="index-FLOAT_002dRADIX"><span class="category">Function: </span><span><strong>FLOAT-RADIX</strong> <em>(float)</em><a href='#index-FLOAT_002dRADIX' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the representation radix (or base) of the floating-point
@@ -899,8 +903,8 @@ number.
 
 </dd></dl>
 
-<dl>
-<dt id="index-ATANH">Function: <strong>ATANH</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-ATANH"><span class="category">Function: </span><span><strong>ATANH</strong> <em>(number)</em><a href='#index-ATANH' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the hyperbolic arc tangent of NUMBER.
@@ -908,8 +912,8 @@ number.
 
 </dd></dl>
 
-<dl>
-<dt id="index-EVENP">Function: <strong>EVENP</strong> <em>(integer)</em></dt>
+<dl class="def">
+<dt id="index-EVENP"><span class="category">Function: </span><span><strong>EVENP</strong> <em>(integer)</em><a href='#index-EVENP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
  Returns T
 if INTEGER is even.  Returns NIL if INTEGER is odd.
@@ -917,8 +921,8 @@ if INTEGER is even.  Returns NIL if INTEGER is odd.
 
 </dd></dl>
 
-<dl>
-<dt id="index-ZEROP">Function: <strong>ZEROP</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-ZEROP"><span class="category">Function: </span><span><strong>ZEROP</strong> <em>(number)</em><a href='#index-ZEROP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
  Returns T if NUMBER = 0; NIL
 otherwise.
@@ -926,8 +930,8 @@ otherwise.
 
 </dd></dl>
 
-<dl>
-<dt id="index-FLOATP">Function: <strong>FLOATP</strong> <em>(x)</em></dt>
+<dl class="def">
+<dt id="index-FLOATP"><span class="category">Function: </span><span><strong>FLOATP</strong> <em>(x)</em><a href='#index-FLOATP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if X is a floating-point number; NIL otherwise.
@@ -935,8 +939,8 @@ otherwise.
 
 </dd></dl>
 
-<dl>
-<dt id="index-SXHASH">Function: <strong>SXHASH</strong> <em>(object)</em></dt>
+<dl class="def">
+<dt id="index-SXHASH"><span class="category">Function: </span><span><strong>SXHASH</strong> <em>(object)</em><a href='#index-SXHASH' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Computes a hash code for OBJECT and returns it as an integer.
@@ -944,24 +948,24 @@ otherwise.
 
 </dd></dl>
 
-<dl>
-<dt id="index-BOOLE_002d1">Constant: <strong>BOOLE-1</strong></dt>
+<dl class="def">
+<dt id="index-BOOLE_002d1"><span class="category">Constant: </span><span><strong>BOOLE-1</strong><a href='#index-BOOLE_002d1' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Makes BOOLE return INTEGER1.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-MOST_002dPOSITIVE_002dSINGLE_002dFLOAT">Constant: <strong>MOST-POSITIVE-SINGLE-FLOAT</strong></dt>
+<dl class="def">
+<dt id="index-MOST_002dPOSITIVE_002dSINGLE_002dFLOAT"><span class="category">Constant: </span><span><strong>MOST-POSITIVE-SINGLE-FLOAT</strong><a href='#index-MOST_002dPOSITIVE_002dSINGLE_002dFLOAT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Same as MOST-POSITIVE-LONG-FLOAT.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-LOGANDC1">Function: <strong>LOGANDC1</strong> <em>(integer1 integer2)</em></dt>
+<dl class="def">
+<dt id="index-LOGANDC1"><span class="category">Function: </span><span><strong>LOGANDC1</strong> <em>(integer1 integer2)</em><a href='#index-LOGANDC1' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the logical AND of (LOGNOT INTEGER1) and INTEGER2.
@@ -969,16 +973,16 @@ Same as MOST-POSITIVE-LONG-FLOAT.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LEAST_002dPOSITIVE_002dSINGLE_002dFLOAT">Constant: <strong>LEAST-POSITIVE-SINGLE-FLOAT</strong></dt>
+<dl class="def">
+<dt id="index-LEAST_002dPOSITIVE_002dSINGLE_002dFLOAT"><span class="category">Constant: </span><span><strong>LEAST-POSITIVE-SINGLE-FLOAT</strong><a href='#index-LEAST_002dPOSITIVE_002dSINGLE_002dFLOAT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Same as LEAST-POSITIVE-LONG-FLOAT.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-COMPLEXP">Function: <strong>COMPLEXP</strong> <em>(x)</em></dt>
+<dl class="def">
+<dt id="index-COMPLEXP"><span class="category">Function: </span><span><strong>COMPLEXP</strong> <em>(x)</em><a href='#index-COMPLEXP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if X is a complex number; NIL otherwise.
@@ -986,16 +990,16 @@ Same as LEAST-POSITIVE-LONG-FLOAT.
 
 </dd></dl>
 
-<dl>
-<dt id="index-BOOLE_002dAND">Constant: <strong>BOOLE-AND</strong></dt>
+<dl class="def">
+<dt id="index-BOOLE_002dAND"><span class="category">Constant: </span><span><strong>BOOLE-AND</strong><a href='#index-BOOLE_002dAND' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Makes BOOLE return LOGAND of INTEGER1 and INTEGER2.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-MAX">Function: <strong>MAX</strong> <em>(number &amp;rest more-numbers)</em></dt>
+<dl class="def">
+<dt id="index-MAX"><span class="category">Function: </span><span><strong>MAX</strong> <em>(number &amp;rest more-numbers)</em><a href='#index-MAX' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the greatest of its arguments.
@@ -1003,8 +1007,8 @@ Makes BOOLE return LOGAND of INTEGER1 and INTEGER2.
 
 </dd></dl>
 
-<dl>
-<dt id="index-FLOAT_002dSIGN">Function: <strong>FLOAT-SIGN</strong> <em>(float1 &amp;optional (float2 (float 1 float1)))</em></dt>
+<dl class="def">
+<dt id="index-FLOAT_002dSIGN"><span class="category">Function: </span><span><strong>FLOAT-SIGN</strong> <em>(float1 &amp;optional (float2 (float 1 float1)))</em><a href='#index-FLOAT_002dSIGN' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns a floating-point number with the same sign as FLOAT1 and with the
@@ -1013,16 +1017,16 @@ same absolute value as FLOAT2.
 
 </dd></dl>
 
-<dl>
-<dt id="index-BOOLE_002dANDC2">Constant: <strong>BOOLE-ANDC2</strong></dt>
+<dl class="def">
+<dt id="index-BOOLE_002dANDC2"><span class="category">Constant: </span><span><strong>BOOLE-ANDC2</strong><a href='#index-BOOLE_002dANDC2' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Makes BOOLE return LOGANDC2 of INTEGER1 and INTEGER2.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-DENOMINATOR">Function: <strong>DENOMINATOR</strong> <em>(rational)</em></dt>
+<dl class="def">
+<dt id="index-DENOMINATOR"><span class="category">Function: </span><span><strong>DENOMINATOR</strong> <em>(rational)</em><a href='#index-DENOMINATOR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the denominator of RATIONAL as an integer.
@@ -1030,8 +1034,8 @@ Makes BOOLE return LOGANDC2 of INTEGER1 and INTEGER2.
 
 </dd></dl>
 
-<dl>
-<dt id="index-FLOAT">Function: <strong>FLOAT</strong> <em>(number &amp;optional other)</em></dt>
+<dl class="def">
+<dt id="index-FLOAT"><span class="category">Function: </span><span><strong>FLOAT</strong> <em>(number &amp;optional other)</em><a href='#index-FLOAT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Converts a non-complex number to a floating-point number.  If NUMBER is
@@ -1043,8 +1047,8 @@ as OTHER&rsquo;s.
 
 </dd></dl>
 
-<dl>
-<dt id="index-ROUND">Function: <strong>ROUND</strong> <em>(number &amp;optional (divisor 1))</em></dt>
+<dl class="def">
+<dt id="index-ROUND"><span class="category">Function: </span><span><strong>ROUND</strong> <em>(number &amp;optional (divisor 1))</em><a href='#index-ROUND' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Rounds NUMBER/DIVISOR to nearest integer.  The second returned value is the
@@ -1053,8 +1057,8 @@ remainder.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LOGAND">Function: <strong>LOGAND</strong> <em>(&amp;rest integers)</em></dt>
+<dl class="def">
+<dt id="index-LOGAND"><span class="category">Function: </span><span><strong>LOGAND</strong> <em>(&amp;rest integers)</em><a href='#index-LOGAND' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the bit-wise AND of its arguments.
@@ -1062,16 +1066,16 @@ remainder.
 
 </dd></dl>
 
-<dl>
-<dt id="index-BOOLE_002d2">Constant: <strong>BOOLE-2</strong></dt>
+<dl class="def">
+<dt id="index-BOOLE_002d2"><span class="category">Constant: </span><span><strong>BOOLE-2</strong><a href='#index-BOOLE_002d2' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Makes BOOLE return INTEGER2.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-_002a">Function: <strong>*</strong> <em>(&amp;rest numbers)</em></dt>
+<dl class="def">
+<dt id="index-_002a"><span class="category">Function: </span><span><strong>*</strong> <em>(&amp;rest numbers)</em><a href='#index-_002a' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the product of its arguments.  With no args, returns 1.
@@ -1079,8 +1083,8 @@ Makes BOOLE return INTEGER2.
 
 </dd></dl>
 
-<dl>
-<dt id="index-_003c">Function: <strong>&lt;</strong> <em>(number &amp;rest more-numbers)</em></dt>
+<dl class="def">
+<dt id="index-_003c"><span class="category">Function: </span><span><strong>&lt;</strong> <em>(number &amp;rest more-numbers)</em><a href='#index-_003c' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if its arguments are in strictly increasing order; NIL otherwise.
@@ -1088,8 +1092,8 @@ Makes BOOLE return INTEGER2.
 
 </dd></dl>
 
-<dl>
-<dt id="index-COMPLEX">Function: <strong>COMPLEX</strong> <em>(realpart &amp;optional (imagpart 0))</em></dt>
+<dl class="def">
+<dt id="index-COMPLEX"><span class="category">Function: </span><span><strong>COMPLEX</strong> <em>(realpart &amp;optional (imagpart 0))</em><a href='#index-COMPLEX' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns a complex number with the given real and imaginary parts.
@@ -1097,16 +1101,16 @@ Makes BOOLE return INTEGER2.
 
 </dd></dl>
 
-<dl>
-<dt id="index-SINGLE_002dFLOAT_002dEPSILON">Constant: <strong>SINGLE-FLOAT-EPSILON</strong></dt>
+<dl class="def">
+<dt id="index-SINGLE_002dFLOAT_002dEPSILON"><span class="category">Constant: </span><span><strong>SINGLE-FLOAT-EPSILON</strong><a href='#index-SINGLE_002dFLOAT_002dEPSILON' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Same as LONG-FLOAT-EPSILON.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-LOGANDC2">Function: <strong>LOGANDC2</strong> <em>(integer1 integer2)</em></dt>
+<dl class="def">
+<dt id="index-LOGANDC2"><span class="category">Function: </span><span><strong>LOGANDC2</strong> <em>(integer1 integer2)</em><a href='#index-LOGANDC2' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the logical AND of INTEGER1 and (LOGNOT INTEGER2).
@@ -1114,8 +1118,8 @@ Same as LONG-FLOAT-EPSILON.
 
 </dd></dl>
 
-<dl>
-<dt id="index-INTEGER_002dLENGTH">Function: <strong>INTEGER-LENGTH</strong> <em>(integer)</em></dt>
+<dl class="def">
+<dt id="index-INTEGER_002dLENGTH"><span class="category">Function: </span><span><strong>INTEGER-LENGTH</strong> <em>(integer)</em><a href='#index-INTEGER_002dLENGTH' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the number of significant bits in the absolute value of INTEGER.
@@ -1123,16 +1127,16 @@ Same as LONG-FLOAT-EPSILON.
 
 </dd></dl>
 
-<dl>
-<dt id="index-MOST_002dNEGATIVE_002dFIXNUM">Constant: <strong>MOST-NEGATIVE-FIXNUM</strong></dt>
+<dl class="def">
+<dt id="index-MOST_002dNEGATIVE_002dFIXNUM"><span class="category">Constant: </span><span><strong>MOST-NEGATIVE-FIXNUM</strong><a href='#index-MOST_002dNEGATIVE_002dFIXNUM' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The fixnum closest in value to negative infinity.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-LONG_002dFLOAT_002dNEGATIVE_002dEPSILON">Constant: <strong>LONG-FLOAT-NEGATIVE-EPSILON</strong></dt>
+<dl class="def">
+<dt id="index-LONG_002dFLOAT_002dNEGATIVE_002dEPSILON"><span class="category">Constant: </span><span><strong>LONG-FLOAT-NEGATIVE-EPSILON</strong><a href='#index-LONG_002dFLOAT_002dNEGATIVE_002dEPSILON' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The smallest positive long-float that satisfies
 	(not (= (float 1 e) (- (float 1 e) e))).
@@ -1140,8 +1144,8 @@ The smallest positive long-float that satisfies
 
 </dd></dl>
 
-<dl>
-<dt id="index-_003e_003d">Function: <strong>&gt;=</strong> <em>(number &amp;rest more-numbers)</em></dt>
+<dl class="def">
+<dt id="index-_003e_003d"><span class="category">Function: </span><span><strong>&gt;=</strong> <em>(number &amp;rest more-numbers)</em><a href='#index-_003e_003d' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if arguments are in strictly non-increasing order; NIL otherwise.
@@ -1149,16 +1153,16 @@ The smallest positive long-float that satisfies
 
 </dd></dl>
 
-<dl>
-<dt id="index-BOOLE_002dNOR">Constant: <strong>BOOLE-NOR</strong></dt>
+<dl class="def">
+<dt id="index-BOOLE_002dNOR"><span class="category">Constant: </span><span><strong>BOOLE-NOR</strong><a href='#index-BOOLE_002dNOR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Makes BOOLE return LOGNOR of INTEGER1 and INTEGER2.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-ACOS">Function: <strong>ACOS</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-ACOS"><span class="category">Function: </span><span><strong>ACOS</strong> <em>(number)</em><a href='#index-ACOS' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the arc cosine of NUMBER.
@@ -1166,8 +1170,8 @@ Makes BOOLE return LOGNOR of INTEGER1 and INTEGER2.
 
 </dd></dl>
 
-<dl>
-<dt id="index-MAKE_002dRANDOM_002dSTATE">Function: <strong>MAKE-RANDOM-STATE</strong> <em>(&amp;optional (state *random-state*))</em></dt>
+<dl class="def">
+<dt id="index-MAKE_002dRANDOM_002dSTATE"><span class="category">Function: </span><span><strong>MAKE-RANDOM-STATE</strong> <em>(&amp;optional (state *random-state*))</em><a href='#index-MAKE_002dRANDOM_002dSTATE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Creates and returns a copy of the specified random state.  If STATE is NIL,
@@ -1177,8 +1181,8 @@ random state object generated from the universal time.
 
 </dd></dl>
 
-<dl>
-<dt id="index-EXPT">Function: <strong>EXPT</strong> <em>(base-number power-number)</em></dt>
+<dl class="def">
+<dt id="index-EXPT"><span class="category">Function: </span><span><strong>EXPT</strong> <em>(base-number power-number)</em><a href='#index-EXPT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns BASE-NUMBER raised to the power POWER-NUMBER.
@@ -1186,8 +1190,8 @@ random state object generated from the universal time.
 
 </dd></dl>
 
-<dl>
-<dt id="index-SQRT">Function: <strong>SQRT</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-SQRT"><span class="category">Function: </span><span><strong>SQRT</strong> <em>(number)</em><a href='#index-SQRT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the principal square root of NUMBER.
@@ -1195,8 +1199,8 @@ random state object generated from the universal time.
 
 </dd></dl>
 
-<dl>
-<dt id="index-SCALE_002dFLOAT">Function: <strong>SCALE-FLOAT</strong> <em>(float integer)</em></dt>
+<dl class="def">
+<dt id="index-SCALE_002dFLOAT"><span class="category">Function: </span><span><strong>SCALE-FLOAT</strong> <em>(float integer)</em><a href='#index-SCALE_002dFLOAT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns (* FLOAT (expt (float-radix FLOAT) INTEGER)).
@@ -1204,8 +1208,8 @@ random state object generated from the universal time.
 
 </dd></dl>
 
-<dl>
-<dt id="index-ACOSH">Function: <strong>ACOSH</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-ACOSH"><span class="category">Function: </span><span><strong>ACOSH</strong> <em>(number)</em><a href='#index-ACOSH' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the hyperbolic arc cosine of NUMBER.
@@ -1213,24 +1217,24 @@ random state object generated from the universal time.
 
 </dd></dl>
 
-<dl>
-<dt id="index-MOST_002dNEGATIVE_002dLONG_002dFLOAT">Constant: <strong>MOST-NEGATIVE-LONG-FLOAT</strong></dt>
+<dl class="def">
+<dt id="index-MOST_002dNEGATIVE_002dLONG_002dFLOAT"><span class="category">Constant: </span><span><strong>MOST-NEGATIVE-LONG-FLOAT</strong><a href='#index-MOST_002dNEGATIVE_002dLONG_002dFLOAT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The long-float closest in value to negative infinity.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-LEAST_002dNEGATIVE_002dLONG_002dFLOAT">Constant: <strong>LEAST-NEGATIVE-LONG-FLOAT</strong></dt>
+<dl class="def">
+<dt id="index-LEAST_002dNEGATIVE_002dLONG_002dFLOAT"><span class="category">Constant: </span><span><strong>LEAST-NEGATIVE-LONG-FLOAT</strong><a href='#index-LEAST_002dNEGATIVE_002dLONG_002dFLOAT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The negative long-float closest in value to zero.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-FFLOOR">Function: <strong>FFLOOR</strong> <em>(number &amp;optional (divisor 1))</em></dt>
+<dl class="def">
+<dt id="index-FFLOOR"><span class="category">Function: </span><span><strong>FFLOOR</strong> <em>(number &amp;optional (divisor 1))</em><a href='#index-FFLOOR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Same as FLOOR, but returns a float as the first value.
@@ -1238,8 +1242,8 @@ The negative long-float closest in value to zero.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LOGNOR">Function: <strong>LOGNOR</strong> <em>(integer1 integer2)</em></dt>
+<dl class="def">
+<dt id="index-LOGNOR"><span class="category">Function: </span><span><strong>LOGNOR</strong> <em>(integer1 integer2)</em><a href='#index-LOGNOR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the complement of the logical OR of INTEGER1 and INTEGER2.
@@ -1247,8 +1251,8 @@ The negative long-float closest in value to zero.
 
 </dd></dl>
 
-<dl>
-<dt id="index-PARSE_002dINTEGER">Function: <strong>PARSE-INTEGER</strong> <em>(string &amp;key (start 0) (end (length string)) (radix 10) (junk-allowed nil))</em></dt>
+<dl class="def">
+<dt id="index-PARSE_002dINTEGER"><span class="category">Function: </span><span><strong>PARSE-INTEGER</strong> <em>(string &amp;key (start 0) (end (length string)) (radix 10) (junk-allowed nil))</em><a href='#index-PARSE_002dINTEGER' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Parses STRING for an integer and returns it.
@@ -1256,8 +1260,8 @@ The negative long-float closest in value to zero.
 
 </dd></dl>
 
-<dl>
-<dt id="index-_002b">Function: <strong>+</strong> <em>(&amp;rest numbers)</em></dt>
+<dl class="def">
+<dt id="index-_002b"><span class="category">Function: </span><span><strong>+</strong> <em>(&amp;rest numbers)</em><a href='#index-_002b' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the sum of its arguments.  With no args, returns 0.
@@ -1265,8 +1269,8 @@ The negative long-float closest in value to zero.
 
 </dd></dl>
 
-<dl>
-<dt id="index-_003d">Function: <strong>=</strong> <em>(number &amp;rest more-numbers)</em></dt>
+<dl class="def">
+<dt id="index-_003d"><span class="category">Function: </span><span><strong>=</strong> <em>(number &amp;rest more-numbers)</em><a href='#index-_003d' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if all of its arguments are numerically equal; NIL otherwise.
@@ -1274,8 +1278,8 @@ The negative long-float closest in value to zero.
 
 </dd></dl>
 
-<dl>
-<dt id="index-NUMBERP">Function: <strong>NUMBERP</strong> <em>(x)</em></dt>
+<dl class="def">
+<dt id="index-NUMBERP"><span class="category">Function: </span><span><strong>NUMBERP</strong> <em>(x)</em><a href='#index-NUMBERP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if X is any kind of number; NIL otherwise.
@@ -1283,16 +1287,16 @@ The negative long-float closest in value to zero.
 
 </dd></dl>
 
-<dl>
-<dt id="index-MOST_002dPOSITIVE_002dDOUBLE_002dFLOAT">Constant: <strong>MOST-POSITIVE-DOUBLE-FLOAT</strong></dt>
+<dl class="def">
+<dt id="index-MOST_002dPOSITIVE_002dDOUBLE_002dFLOAT"><span class="category">Constant: </span><span><strong>MOST-POSITIVE-DOUBLE-FLOAT</strong><a href='#index-MOST_002dPOSITIVE_002dDOUBLE_002dFLOAT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Same as MOST-POSITIVE-LONG-FLOAT.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-LOGTEST">Function: <strong>LOGTEST</strong> <em>(integer1 integer2)</em></dt>
+<dl class="def">
+<dt id="index-LOGTEST"><span class="category">Function: </span><span><strong>LOGTEST</strong> <em>(integer1 integer2)</em><a href='#index-LOGTEST' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if LOGAND of INTEGER1 and INTEGER2 is not zero; NIL otherwise.
@@ -1300,8 +1304,8 @@ Same as MOST-POSITIVE-LONG-FLOAT.
 
 </dd></dl>
 
-<dl>
-<dt id="index-RANDOM_002dSTATE_002dP">Function: <strong>RANDOM-STATE-P</strong> <em>(x)</em></dt>
+<dl class="def">
+<dt id="index-RANDOM_002dSTATE_002dP"><span class="category">Function: </span><span><strong>RANDOM-STATE-P</strong> <em>(x)</em><a href='#index-RANDOM_002dSTATE_002dP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if X is a random-state object; NIL otherwise.
@@ -1309,16 +1313,16 @@ Same as MOST-POSITIVE-LONG-FLOAT.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LEAST_002dPOSITIVE_002dDOUBLE_002dFLOAT">Constant: <strong>LEAST-POSITIVE-DOUBLE-FLOAT</strong></dt>
+<dl class="def">
+<dt id="index-LEAST_002dPOSITIVE_002dDOUBLE_002dFLOAT"><span class="category">Constant: </span><span><strong>LEAST-POSITIVE-DOUBLE-FLOAT</strong><a href='#index-LEAST_002dPOSITIVE_002dDOUBLE_002dFLOAT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Same as LEAST-POSITIVE-LONG-FLOAT.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-FLOAT_002dPRECISION">Function: <strong>FLOAT-PRECISION</strong> <em>(float)</em></dt>
+<dl class="def">
+<dt id="index-FLOAT_002dPRECISION"><span class="category">Function: </span><span><strong>FLOAT-PRECISION</strong> <em>(float)</em><a href='#index-FLOAT_002dPRECISION' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the number of significant radix-B digits used to represent the
@@ -1327,16 +1331,16 @@ significand F of the floating-point number, where B = (FLOAT-RADIX FLOAT).
 
 </dd></dl>
 
-<dl>
-<dt id="index-BOOLE_002dXOR">Constant: <strong>BOOLE-XOR</strong></dt>
+<dl class="def">
+<dt id="index-BOOLE_002dXOR"><span class="category">Constant: </span><span><strong>BOOLE-XOR</strong><a href='#index-BOOLE_002dXOR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Makes BOOLE return LOGXOR of INTEGER1 and INTEGER2.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-DPB">Function: <strong>DPB</strong> <em>(newbyte bytespec integer)</em></dt>
+<dl class="def">
+<dt id="index-DPB"><span class="category">Function: </span><span><strong>DPB</strong> <em>(newbyte bytespec integer)</em><a href='#index-DPB' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns an integer computed by replacing the specified byte of INTEGER with
@@ -1345,8 +1349,8 @@ NEWBYTE.
 
 </dd></dl>
 
-<dl>
-<dt id="index-ABS">Function: <strong>ABS</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-ABS"><span class="category">Function: </span><span><strong>ABS</strong> <em>(number)</em><a href='#index-ABS' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the absolute value of NUMBER.
@@ -1354,8 +1358,8 @@ NEWBYTE.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CONJUGATE">Function: <strong>CONJUGATE</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-CONJUGATE"><span class="category">Function: </span><span><strong>CONJUGATE</strong> <em>(number)</em><a href='#index-CONJUGATE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the complex conjugate of NUMBER.
@@ -1363,8 +1367,8 @@ NEWBYTE.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CIS">Function: <strong>CIS</strong> <em>(radians)</em></dt>
+<dl class="def">
+<dt id="index-CIS"><span class="category">Function: </span><span><strong>CIS</strong> <em>(radians)</em><a href='#index-CIS' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns e raised to i*RADIANS.
@@ -1372,8 +1376,8 @@ NEWBYTE.
 
 </dd></dl>
 
-<dl>
-<dt id="index-ODDP">Function: <strong>ODDP</strong> <em>(integer)</em></dt>
+<dl class="def">
+<dt id="index-ODDP"><span class="category">Function: </span><span><strong>ODDP</strong> <em>(integer)</em><a href='#index-ODDP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if INTEGER is odd; NIL otherwise.
@@ -1381,8 +1385,8 @@ NEWBYTE.
 
 </dd></dl>
 
-<dl>
-<dt id="index-RATIONALIZE">Function: <strong>RATIONALIZE</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-RATIONALIZE"><span class="category">Function: </span><span><strong>RATIONALIZE</strong> <em>(number)</em><a href='#index-RATIONALIZE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Converts NUMBER into rational approximately and returns it.
@@ -1390,8 +1394,8 @@ NEWBYTE.
 
 </dd></dl>
 
-<dl>
-<dt id="index-ISQRT">Function: <strong>ISQRT</strong> <em>(integer)</em></dt>
+<dl class="def">
+<dt id="index-ISQRT"><span class="category">Function: </span><span><strong>ISQRT</strong> <em>(integer)</em><a href='#index-ISQRT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the greatest integer less than or equal to the square root of the
@@ -1400,8 +1404,8 @@ given non-negative integer.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LOGXOR">Function: <strong>LOGXOR</strong> <em>(&amp;rest integers)</em></dt>
+<dl class="def">
+<dt id="index-LOGXOR"><span class="category">Function: </span><span><strong>LOGXOR</strong> <em>(&amp;rest integers)</em><a href='#index-LOGXOR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the bit-wise EXCLUSIVE OR of its arguments.
@@ -1409,8 +1413,8 @@ given non-negative integer.
 
 </dd></dl>
 
-<dl>
-<dt id="index-_003e">Function: <strong>&gt;</strong> <em>(number &amp;rest more-numbers)</em></dt>
+<dl class="def">
+<dt id="index-_003e"><span class="category">Function: </span><span><strong>&gt;</strong> <em>(number &amp;rest more-numbers)</em><a href='#index-_003e' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if its arguments are in strictly decreasing order; NIL otherwise.
@@ -1418,8 +1422,8 @@ given non-negative integer.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LOGBITP">Function: <strong>LOGBITP</strong> <em>(index integer)</em></dt>
+<dl class="def">
+<dt id="index-LOGBITP"><span class="category">Function: </span><span><strong>LOGBITP</strong> <em>(index integer)</em><a href='#index-LOGBITP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if the INDEX-th bit of INTEGER is 1.
@@ -1427,16 +1431,16 @@ given non-negative integer.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DOUBLE_002dFLOAT_002dEPSILON">Constant: <strong>DOUBLE-FLOAT-EPSILON</strong></dt>
+<dl class="def">
+<dt id="index-DOUBLE_002dFLOAT_002dEPSILON"><span class="category">Constant: </span><span><strong>DOUBLE-FLOAT-EPSILON</strong><a href='#index-DOUBLE_002dFLOAT_002dEPSILON' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Same as LONG-FLOAT-EPSILON.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-LOGCOUNT">Function: <strong>LOGCOUNT</strong> <em>(integer)</em></dt>
+<dl class="def">
+<dt id="index-LOGCOUNT"><span class="category">Function: </span><span><strong>LOGCOUNT</strong> <em>(integer)</em><a href='#index-LOGCOUNT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>If INTEGER is negative, returns the number of 0 bits.  Otherwise, returns
@@ -1445,8 +1449,8 @@ the number of 1 bits.
 
 </dd></dl>
 
-<dl>
-<dt id="index-GCD">Function: <strong>GCD</strong> <em>(&amp;rest integers)</em></dt>
+<dl class="def">
+<dt id="index-GCD"><span class="category">Function: </span><span><strong>GCD</strong> <em>(&amp;rest integers)</em><a href='#index-GCD' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the greatest common divisor of INTEGERs.
@@ -1454,8 +1458,8 @@ the number of 1 bits.
 
 </dd></dl>
 
-<dl>
-<dt id="index-RATIONALP">Function: <strong>RATIONALP</strong> <em>(x)</em></dt>
+<dl class="def">
+<dt id="index-RATIONALP"><span class="category">Function: </span><span><strong>RATIONALP</strong> <em>(x)</em><a href='#index-RATIONALP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if X is an integer or a ratio; NIL otherwise.
@@ -1463,8 +1467,8 @@ the number of 1 bits.
 
 </dd></dl>
 
-<dl>
-<dt id="index-MOD">Function: <strong>MOD</strong> <em>(number divisor)</em></dt>
+<dl class="def">
+<dt id="index-MOD"><span class="category">Function: </span><span><strong>MOD</strong> <em>(number divisor)</em><a href='#index-MOD' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the second result of (FLOOR NUMBER DIVISOR).
@@ -1472,8 +1476,8 @@ the number of 1 bits.
 
 </dd></dl>
 
-<dl>
-<dt id="index-MODF">Function: <strong>MODF</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-MODF"><span class="category">Function: </span><span><strong>MODF</strong> <em>(number)</em><a href='#index-MODF' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:SYSTEM
 </p>
 <p>Returns the integer and fractional part of a floating point number mod 1.0.
@@ -1481,24 +1485,24 @@ the number of 1 bits.
 
 </dd></dl>
 
-<dl>
-<dt id="index-BOOLE_002dORC1">Constant: <strong>BOOLE-ORC1</strong></dt>
+<dl class="def">
+<dt id="index-BOOLE_002dORC1"><span class="category">Constant: </span><span><strong>BOOLE-ORC1</strong><a href='#index-BOOLE_002dORC1' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Makes BOOLE return LOGORC1 of INTEGER1 and INTEGER2.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-SINGLE_002dFLOAT_002dNEGATIVE_002dEPSILON">Constant: <strong>SINGLE-FLOAT-NEGATIVE-EPSILON</strong></dt>
+<dl class="def">
+<dt id="index-SINGLE_002dFLOAT_002dNEGATIVE_002dEPSILON"><span class="category">Constant: </span><span><strong>SINGLE-FLOAT-NEGATIVE-EPSILON</strong><a href='#index-SINGLE_002dFLOAT_002dNEGATIVE_002dEPSILON' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Same as LONG-FLOAT-NEGATIVE-EPSILON.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-FLOOR">Function: <strong>FLOOR</strong> <em>(number &amp;optional (divisor 1))</em></dt>
+<dl class="def">
+<dt id="index-FLOOR"><span class="category">Function: </span><span><strong>FLOOR</strong> <em>(number &amp;optional (divisor 1))</em><a href='#index-FLOOR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the largest integer not larger than the NUMBER divided by DIVISOR.
@@ -1507,8 +1511,8 @@ The second returned value is (- NUMBER (* first-value DIVISOR)).
 
 </dd></dl>
 
-<dl>
-<dt id="index-PLUSP">Function: <strong>PLUSP</strong> <em>(number)</em></dt>
+<dl class="def">
+<dt id="index-PLUSP"><span class="category">Function: </span><span><strong>PLUSP</strong> <em>(number)</em><a href='#index-PLUSP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if NUMBER &gt; 0; NIL otherwise.
@@ -1516,8 +1520,8 @@ The second returned value is (- NUMBER (* first-value DIVISOR)).
 
 </dd></dl>
 
-<dl>
-<dt id="index-FLOAT_002dDIGITS">Function: <strong>FLOAT-DIGITS</strong> <em>(float)</em></dt>
+<dl class="def">
+<dt id="index-FLOAT_002dDIGITS"><span class="category">Function: </span><span><strong>FLOAT-DIGITS</strong> <em>(float)</em><a href='#index-FLOAT_002dDIGITS' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the number of radix-B digits used to represent the significand F of
@@ -1526,8 +1530,8 @@ the floating-point number, where B = (FLOAT-RADIX FLOAT).
 
 </dd></dl>
 
-<dl>
-<dt id="index-RANDOM">Function: <strong>RANDOM</strong> <em>(number &amp;optional (state *random-state*))</em></dt>
+<dl class="def">
+<dt id="index-RANDOM"><span class="category">Function: </span><span><strong>RANDOM</strong> <em>(number &amp;optional (state *random-state*))</em><a href='#index-RANDOM' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Generates a uniformly distributed pseudo-random number between zero
@@ -1536,10 +1540,11 @@ the floating-point number, where B = (FLOAT-RADIX FLOAT).
 
 </dd></dl>
 
+</div>
 <hr>
 <div class="header">
 <p>
-Next: <a href="Sequences-and-Arrays-and-Hash-Tables.html" accesskey="n" rel="next">Sequences and Arrays and Hash Tables</a>, Previous: <a href="index.html" accesskey="p" rel="prev">Top</a>, Up: <a href="index.html" accesskey="u" rel="up">Top</a> &nbsp; [<a href="Function-and-Variable-Index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
+Next: <a href="Sequences-and-Arrays-and-Hash-Tables.html">Sequences and Arrays and Hash Tables</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
 </div>
 
 

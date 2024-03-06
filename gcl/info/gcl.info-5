@@ -1,4 +1,4 @@
-This is gcl.info, produced by makeinfo version 6.7 from gcl.texi.
+This is gcl.info, produced by makeinfo version 6.8 from gcl.texi.
 
 This is a Texinfo GNU Common Lisp Manual based on the draft ANSI
 standard for Common Lisp.
@@ -936,7 +936,7 @@ restart-case clause to receive any necessary data from a call to
 invoke-restart.
 
    By default, invoke-restart-interactively passes no arguments and all
-arguments must be optional in order to accomodate interactive
+arguments must be optional in order to accommodate interactive
 restarting.  However, the arguments need not be optional if the
 :interactive keyword has been used to inform
 invoke-restart-interactively about how to compute a proper argument
@@ -2135,7 +2135,7 @@ File: gcl.info,  Node: gensym,  Next: *gensym-counter*,  Prev: copy-symbol,  Up:
 Arguments and Values::
 ......................
 
-x--a string or a non-negative integer. 	Complicated defaulting behavior;
+x--a string or a non-negative integer.  Complicated defaulting behavior;
 see below.
 
    new-symbol--a fresh, uninterned symbol.
@@ -2707,7 +2707,7 @@ returned.
 
    setf of get may be used to associate a new object with an existing
 indicator already on the symbol's property list, or to create a new
-assocation if none exists.
+association if none exists.
 
    If there are multiple properties_1 with that property indicator, setf
 of get associates the new-value with the first such property.
@@ -3400,7 +3400,7 @@ of the following actions are performed on an external symbol of the
 COMMON-LISP package:
 
 1.
-     Binding or altering its value (lexically or dynamically). 	(Some
+     Binding or altering its value (lexically or dynamically).  (Some
      exceptions are noted below.)
 
 2.
@@ -3408,7 +3408,7 @@ COMMON-LISP package:
 
      undefining,
 
-     or binding it as a function. 	(Some exceptions are noted below.)
+     or binding it as a function.  (Some exceptions are noted below.)
 
 3.
      Defining,
@@ -3452,7 +3452,7 @@ COMMON-LISP package:
 
      declaim,
 
-     or proclaim). 	(Some exceptions are noted below.)
+     or proclaim).  (Some exceptions are noted below.)
 
 12.
      Removing it from the COMMON-LISP package.
@@ -4487,7 +4487,7 @@ additional symbol accessibility types.
      The accessibility type for that symbol; i.e., one of the symbols
      :internal, :external, or :inherited.
 4.
-     The package from which the symbol was obtained. 	The package is one
+     The package from which the symbol was obtained.  The package is one
      of the packages present or named in package-list.
 
    After all symbols have been returned by successive invocations of
@@ -6527,7 +6527,7 @@ zero, (eql -0.0 0.0) is false, otherwise it is true.
    [Reviewer Note by Barmar: What about IEEE NaNs and infinities?]
 
    [Reviewer Note by RWK: In the following, what is the "ordering"?
-precision?  range? 	Can there be additional subtypes of float or does
+precision?  range?  Can there be additional subtypes of float or does
 "others" in the list of four?]
 
    The types short-float, single-float, double-float, and long-float are

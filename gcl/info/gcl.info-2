@@ -1,4 +1,4 @@
-This is gcl.info, produced by makeinfo version 6.7 from gcl.texi.
+This is gcl.info, produced by makeinfo version 6.8 from gcl.texi.
 
 This is a Texinfo GNU Common Lisp Manual based on the draft ANSI
 standard for Common Lisp.
@@ -1573,9 +1573,9 @@ and deal with such situations.
 
    [Editorial Note by KMP: Apparently the dotted-macro-forms cleanup
 doesn't allow for the macro to 'manually' notice dotted forms and fix
-them as well. 	It shouldn't be required that this be done only by &REST
+them as well.  It shouldn't be required that this be done only by &REST
 or a dotted pattern; it should only matter that ultimately the non-macro
-result of a full-macro expansion not contain dots. 	Anyway, I plan to
+result of a full-macro expansion not contain dots.  Anyway, I plan to
 address this editorially unless someone raises an objection.]
 
 * Menu:

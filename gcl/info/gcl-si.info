@@ -1,4 +1,4 @@
-This is gcl-si.info, produced by makeinfo version 6.7 from gcl-si.texi.
+This is gcl-si.info, produced by makeinfo version 6.8 from gcl-si.texi.
 
 INFO-DIR-SECTION GNU Common Lisp
 START-INFO-DIR-ENTRY
@@ -6229,7 +6229,7 @@ File: gcl-si.info,  Node: System Definitions,  Next: Debugging,  Prev: C Interfa
  -- Function: TOP-LEVEL ()
      Package:SI
 
-     GCL specific: Starts the standard top-level listner of GCL. When
+     GCL specific: Starts the standard top-level listener of GCL. When
      the GCL process is invoked, it calls SI:TOP-LEVEL by (FUNCALL
      'SI:TOP-LEVEL). To change the top-level of GCL, redefine
      SI:TOP-LEVEL and save the core imange in a file.  When the saved
@@ -6564,9 +6564,9 @@ File: gcl-si.info,  Node: System Definitions,  Next: Debugging,  Prev: C Interfa
  -- Function: STRING-MATCH (pattern string &optional start end)
      Package: SI Match regexp PATTERN in STRING starting in string
      starting at START and ending at END. Return -1 if match not found,
-     otherwise return the start index of the first matchs.  The variable
-     *MATCH-DATA* will be set to a fixnum array of sufficient size to
-     hold the matches, to be obtained with match-beginning and
+     otherwise return the start index of the first matches.  The
+     variable *MATCH-DATA* will be set to a fixnum array of sufficient
+     size to hold the matches, to be obtained with match-beginning and
      match-end.  If it already contains such an array, then the contents
      of it will be over written.
 
@@ -8206,16 +8206,16 @@ Node: Bignums183411
 Node: C Interface186101
 Node: Available Symbols186263
 Node: System Definitions186742
-Node: Regular Expressions217047
-Node: Debugging223137
-Node: Source Level Debugging in Emacs223338
-Node: Low Level Debug Functions227583
-Node: Miscellaneous228583
-Node: Environment228791
-Node: Inititialization229416
-Node: Low Level X Interface229960
-Node: Compiler Definitions230557
-Node: Function and Variable Index235852
+Node: Regular Expressions217049
+Node: Debugging223139
+Node: Source Level Debugging in Emacs223340
+Node: Low Level Debug Functions227585
+Node: Miscellaneous228585
+Node: Environment228793
+Node: Inititialization229418
+Node: Low Level X Interface229962
+Node: Compiler Definitions230559
+Node: Function and Variable Index235854
 
 End Tag Table
 

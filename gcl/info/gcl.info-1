@@ -1,4 +1,4 @@
-This is gcl.info, produced by makeinfo version 6.7 from gcl.texi.
+This is gcl.info, produced by makeinfo version 6.8 from gcl.texi.
 
 This is a Texinfo GNU Common Lisp Manual based on the draft ANSI
 standard for Common Lisp.
@@ -5565,7 +5565,7 @@ be of the same type:
 
    [Editorial Note by KMP: This is not the same as saying they must be
 the same type.  Maybe we mean they are of the same 'precision' or
-'format'? 	GLS had suggestions which are not yet merged.]  either both
+'format'?  GLS had suggestions which are not yet merged.]  either both
 are rationals, or both are of the same float subtype.  When constructing
 a complex, if the specified parts are not the same type, the parts are
 converted to be the same type internally (i.e., the rational part is

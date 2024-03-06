@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<!-- Created by GNU Texinfo 6.7, http://www.gnu.org/software/texinfo/ -->
+<!-- Created by GNU Texinfo 6.8, https://www.gnu.org/software/texinfo/ -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>Special Forms and Functions (GCL SI Manual)</title>
@@ -10,19 +10,21 @@
 <meta name="resource-type" content="document">
 <meta name="distribution" content="global">
 <meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
 <link href="index.html" rel="start" title="Top">
 <link href="Function-and-Variable-Index.html" rel="index" title="Function and Variable Index">
-<link href="Function-and-Variable-Index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
 <link href="index.html" rel="up" title="Top">
 <link href="Compilation.html" rel="next" title="Compilation">
 <link href="Streams-and-Reading.html" rel="prev" title="Streams and Reading">
 <style type="text/css">
 <!--
+a.copiable-anchor {visibility: hidden; text-decoration: none; line-height: 0em}
 a.summary-letter {text-decoration: none}
 blockquote.indentedblock {margin-right: 0em}
 div.display {margin-left: 3.2em}
 div.example {margin-left: 3.2em}
-div.lisp {margin-left: 3.2em}
 kbd {font-style: oblique}
 pre.display {font-family: inherit}
 pre.format {font-family: inherit}
@@ -31,6 +33,7 @@ pre.menu-preformatted {font-family: serif}
 span.nolinebreak {white-space: nowrap}
 span.roman {font-family: initial; font-weight: normal}
 span.sansserif {font-family: sans-serif; font-weight: normal}
+span:hover a.copiable-anchor {visibility: visible}
 ul.no-bullet {list-style: none}
 -->
 </style>
@@ -39,23 +42,24 @@ ul.no-bullet {list-style: none}
 </head>
 
 <body lang="en">
-<span id="Special-Forms-and-Functions"></span><div class="header">
+<div class="chapter" id="Special-Forms-and-Functions">
+<div class="header">
 <p>
-Next: <a href="Compilation.html" accesskey="n" rel="next">Compilation</a>, Previous: <a href="Streams-and-Reading.html" accesskey="p" rel="prev">Streams and Reading</a>, Up: <a href="index.html" accesskey="u" rel="up">Top</a> &nbsp; [<a href="Function-and-Variable-Index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
+Next: <a href="Compilation.html" accesskey="n" rel="next">Compilation</a>, Previous: <a href="Streams-and-Reading.html" accesskey="p" rel="prev">Streams and Reading</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
 </div>
 <hr>
 <span id="Special-Forms-and-Functions-1"></span><h2 class="chapter">6 Special Forms and Functions</h2>
 
-<dl>
-<dt id="index-LAMBDA_002dLIST_002dKEYWORDS">Constant: <strong>LAMBDA-LIST-KEYWORDS</strong></dt>
+<dl class="def">
+<dt id="index-LAMBDA_002dLIST_002dKEYWORDS"><span class="category">Constant: </span><span><strong>LAMBDA-LIST-KEYWORDS</strong><a href='#index-LAMBDA_002dLIST_002dKEYWORDS' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 List of all the lambda-list keywords used in GCL.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-THE">Special Form: <strong>THE</strong></dt>
+<dl class="def">
+<dt id="index-THE"><span class="category">Special Form: </span><span><strong>THE</strong><a href='#index-THE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -69,8 +73,8 @@ this is not the case.
 
 </dd></dl>
 
-<dl>
-<dt id="index-SETF">Special Form: <strong>SETF</strong></dt>
+<dl class="def">
+<dt id="index-SETF"><span class="category">Special Form: </span><span><strong>SETF</strong><a href='#index-SETF' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -103,8 +107,8 @@ apply
 
 </dd></dl>
 
-<dl>
-<dt id="index-WHEN">Special Form: <strong>WHEN</strong></dt>
+<dl class="def">
+<dt id="index-WHEN"><span class="category">Special Form: </span><span><strong>WHEN</strong><a href='#index-WHEN' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -118,8 +122,8 @@ simply returns NIL.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CCASE">Macro: <strong>CCASE</strong></dt>
+<dl class="def">
+<dt id="index-CCASE"><span class="category">Macro: </span><span><strong>CCASE</strong><a href='#index-CCASE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -134,8 +138,8 @@ returns the value(s) of the last FORM.  If not, signals a correctable error.
 
 </dd></dl>
 
-<dl>
-<dt id="index-MACROEXPAND">Function: <strong>MACROEXPAND</strong> <em>(form &amp;optional (env nil))</em></dt>
+<dl class="def">
+<dt id="index-MACROEXPAND"><span class="category">Function: </span><span><strong>MACROEXPAND</strong> <em>(form &amp;optional (env nil))</em><a href='#index-MACROEXPAND' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>If FORM is a macro form, then expands it repeatedly until it is not a macro
@@ -145,8 +149,8 @@ indicating whether the original form was a macro.
 
 </dd></dl>
 
-<dl>
-<dt id="index-MULTIPLE_002dVALUE_002dCALL">Special Form: <strong>MULTIPLE-VALUE-CALL</strong></dt>
+<dl class="def">
+<dt id="index-MULTIPLE_002dVALUE_002dCALL"><span class="category">Special Form: </span><span><strong>MULTIPLE-VALUE-CALL</strong><a href='#index-MULTIPLE_002dVALUE_002dCALL' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -159,8 +163,8 @@ indicating whether the original form was a macro.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DEFSETF">Macro: <strong>DEFSETF</strong></dt>
+<dl class="def">
+<dt id="index-DEFSETF"><span class="category">Macro: </span><span><strong>DEFSETF</strong><a href='#index-DEFSETF' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -191,8 +195,8 @@ symbols TEMP1 ... TEMPn and with STORE-VAR bound to the symbol TEMP0.
 </p>
 </dd></dl>
 
-<dl>
-<dt id="index-TAGBODY">Special Form: <strong>TAGBODY</strong></dt>
+<dl class="def">
+<dt id="index-TAGBODY"><span class="category">Special Form: </span><span><strong>TAGBODY</strong><a href='#index-TAGBODY' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -206,8 +210,8 @@ symbols TEMP1 ... TEMPn and with STORE-VAR bound to the symbol TEMP0.
 </dd></dl>
 
 
-<dl>
-<dt id="index-ETYPECASE">Macro: <strong>ETYPECASE</strong></dt>
+<dl class="def">
+<dt id="index-ETYPECASE"><span class="category">Macro: </span><span><strong>ETYPECASE</strong><a href='#index-ETYPECASE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -222,8 +226,8 @@ returns the value(s) of the last FORM.  If not, signals an error.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LET_002a">Special Form: <strong>LET*</strong></dt>
+<dl class="def">
+<dt id="index-LET_002a"><span class="category">Special Form: </span><span><strong>LET*</strong><a href='#index-LET_002a' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -237,8 +241,8 @@ from left to right, then evaluates FORMs as a PROGN.
 
 </dd></dl>
 
-<dl>
-<dt id="index-PROG1">Special Form: <strong>PROG1</strong></dt>
+<dl class="def">
+<dt id="index-PROG1"><span class="category">Special Form: </span><span><strong>PROG1</strong><a href='#index-PROG1' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -251,8 +255,8 @@ from left to right, then evaluates FORMs as a PROGN.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DEFUN">Special Form: <strong>DEFUN</strong></dt>
+<dl class="def">
+<dt id="index-DEFUN"><span class="category">Special Form: </span><span><strong>DEFUN</strong><a href='#index-DEFUN' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -274,8 +278,8 @@ retrieved by (documentation &rsquo;NAME &rsquo;function).
 
 </dd></dl>
 
-<dl>
-<dt id="index-MULTIPLE_002dVALUE_002dBIND">Special Form: <strong>MULTIPLE-VALUE-BIND</strong></dt>
+<dl class="def">
+<dt id="index-MULTIPLE_002dVALUE_002dBIND"><span class="category">Special Form: </span><span><strong>MULTIPLE-VALUE-BIND</strong><a href='#index-MULTIPLE_002dVALUE_002dBIND' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -289,8 +293,8 @@ NIL) and evaluates FORMs in order.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DECLARE">Special Form: <strong>DECLARE</strong></dt>
+<dl class="def">
+<dt id="index-DECLARE"><span class="category">Special Form: </span><span><strong>DECLARE</strong><a href='#index-DECLARE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -345,8 +349,8 @@ For example
 
 </dd></dl>
 
-<dl>
-<dt id="index-DEFMACRO">Special Form: <strong>DEFMACRO</strong></dt>
+<dl class="def">
+<dt id="index-DEFMACRO"><span class="category">Special Form: </span><span><strong>DEFMACRO</strong><a href='#index-DEFMACRO' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -388,8 +392,8 @@ Also, see the function doc of PPRINT for the output-formatting.
 
 </dd></dl>
 
-<dl>
-<dt id="index-_002aEVALHOOK_002a">Variable: <strong>*EVALHOOK*</strong></dt>
+<dl class="def">
+<dt id="index-_002aEVALHOOK_002a"><span class="category">Variable: </span><span><strong>*EVALHOOK*</strong><a href='#index-_002aEVALHOOK_002a' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 If *EVALHOOK* is not NIL, its value must be a function that can receive
 two arguments: a form to evaluate and an environment.  This function does
@@ -398,8 +402,8 @@ the evaluation instead of EVAL.
 
 </dd></dl>
 
-<dl>
-<dt id="index-FUNCTIONP">Function: <strong>FUNCTIONP</strong> <em>(x)</em></dt>
+<dl class="def">
+<dt id="index-FUNCTIONP"><span class="category">Function: </span><span><strong>FUNCTIONP</strong> <em>(x)</em><a href='#index-FUNCTIONP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if X is a function, suitable for use by FUNCALL or APPLY.  Returns
@@ -408,8 +412,8 @@ NIL otherwise.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LAMBDA_002dPARAMETERS_002dLIMIT">Constant: <strong>LAMBDA-PARAMETERS-LIMIT</strong></dt>
+<dl class="def">
+<dt id="index-LAMBDA_002dPARAMETERS_002dLIMIT"><span class="category">Constant: </span><span><strong>LAMBDA-PARAMETERS-LIMIT</strong><a href='#index-LAMBDA_002dPARAMETERS_002dLIMIT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The exclusive upper bound on the number of distinct parameter names that may
 appear in a single lambda-list.  Actually, however, there is no such upper
@@ -418,8 +422,8 @@ bound in GCL.
 
 </dd></dl>
 
-<dl>
-<dt id="index-FLET">Special Form: <strong>FLET</strong></dt>
+<dl class="def">
+<dt id="index-FLET"><span class="category">Special Form: </span><span><strong>FLET</strong><a href='#index-FLET' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -437,8 +441,8 @@ ignored.
 
 </dd></dl>
 
-<dl>
-<dt id="index-ECASE">Macro: <strong>ECASE</strong></dt>
+<dl class="def">
+<dt id="index-ECASE"><span class="category">Macro: </span><span><strong>ECASE</strong><a href='#index-ECASE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -453,8 +457,8 @@ returns the value(s) of the last FORM.  If not, signals an error.
 
 </dd></dl>
 
-<dl>
-<dt id="index-PROG2">Special Form: <strong>PROG2</strong></dt>
+<dl class="def">
+<dt id="index-PROG2"><span class="category">Special Form: </span><span><strong>PROG2</strong><a href='#index-PROG2' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -468,8 +472,8 @@ of SECOND.
 
 </dd></dl>
 
-<dl>
-<dt id="index-PROGV">Special Form: <strong>PROGV</strong></dt>
+<dl class="def">
+<dt id="index-PROGV"><span class="category">Special Form: </span><span><strong>PROGV</strong><a href='#index-PROGV' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -484,8 +488,8 @@ special) to the corresponding value.
 
 </dd></dl>
 
-<dl>
-<dt id="index-QUOTE">Special Form: <strong>QUOTE</strong></dt>
+<dl class="def">
+<dt id="index-QUOTE"><span class="category">Special Form: </span><span><strong>QUOTE</strong><a href='#index-QUOTE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -498,8 +502,8 @@ Simply returns X without evaluating it.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DOTIMES">Special Form: <strong>DOTIMES</strong></dt>
+<dl class="def">
+<dt id="index-DOTIMES"><span class="category">Special Form: </span><span><strong>DOTIMES</strong><a href='#index-DOTIMES' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -514,8 +518,8 @@ the value of COUNTFORM (exclusive).  Then returns the value(s) of RESULT
 
 </dd></dl>
 
-<dl>
-<dt id="index-SPECIAL_002dFORM_002dP">Function: <strong>SPECIAL-FORM-P</strong> <em>(symbol)</em></dt>
+<dl class="def">
+<dt id="index-SPECIAL_002dFORM_002dP"><span class="category">Function: </span><span><strong>SPECIAL-FORM-P</strong> <em>(symbol)</em><a href='#index-SPECIAL_002dFORM_002dP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if SYMBOL globally names a special form; NIL otherwise.
@@ -551,8 +555,8 @@ dotimes		prog*
 
 </dd></dl>
 
-<dl>
-<dt id="index-FUNCTION">Special Form: <strong>FUNCTION</strong></dt>
+<dl class="def">
+<dt id="index-FUNCTION"><span class="category">Special Form: </span><span><strong>FUNCTION</strong><a href='#index-FUNCTION' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -567,8 +571,8 @@ returns that function.
 
 </dd></dl>
 
-<dl>
-<dt id="index-MULTIPLE_002dVALUES_002dLIMIT">Constant: <strong>MULTIPLE-VALUES-LIMIT</strong></dt>
+<dl class="def">
+<dt id="index-MULTIPLE_002dVALUES_002dLIMIT"><span class="category">Constant: </span><span><strong>MULTIPLE-VALUES-LIMIT</strong><a href='#index-MULTIPLE_002dVALUES_002dLIMIT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The exclusive upper bound on the number of values that may be returned from
 a function.  Actually, however, there is no such upper bound in GCL.
@@ -576,8 +580,8 @@ a function.  Actually, however, there is no such upper bound in GCL.
 
 </dd></dl>
 
-<dl>
-<dt id="index-APPLYHOOK">Function: <strong>APPLYHOOK</strong> <em>(function args evalhookfn applyhookfn &amp;optional (env nil))</em></dt>
+<dl class="def">
+<dt id="index-APPLYHOOK"><span class="category">Function: </span><span><strong>APPLYHOOK</strong> <em>(function args evalhookfn applyhookfn &amp;optional (env nil))</em><a href='#index-APPLYHOOK' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Applies FUNCTION to ARGS, with *EVALHOOK* bound to EVALHOOKFN and with
@@ -587,8 +591,8 @@ top-level application of FUNCTION to ARGS.
 
 </dd></dl>
 
-<dl>
-<dt id="index-_002aMACROEXPAND_002dHOOK_002a">Variable: <strong>*MACROEXPAND-HOOK*</strong></dt>
+<dl class="def">
+<dt id="index-_002aMACROEXPAND_002dHOOK_002a"><span class="category">Variable: </span><span><strong>*MACROEXPAND-HOOK*</strong><a href='#index-_002aMACROEXPAND_002dHOOK_002a' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Holds a function that can take two arguments (a macro expansion function
 and the macro form to be expanded) and returns the expanded form.  This
@@ -598,8 +602,8 @@ function is whenever a macro-expansion takes place.  Initially this is set to
 
 </dd></dl>
 
-<dl>
-<dt id="index-PROG_002a">Special Form: <strong>PROG*</strong></dt>
+<dl class="def">
+<dt id="index-PROG_002a"><span class="category">Special Form: </span><span><strong>PROG*</strong><a href='#index-PROG_002a' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -612,8 +616,8 @@ function is whenever a macro-expansion takes place.  Initially this is set to
 
 </dd></dl>
 
-<dl>
-<dt id="index-BLOCK">Special Form: <strong>BLOCK</strong></dt>
+<dl class="def">
+<dt id="index-BLOCK"><span class="category">Special Form: </span><span><strong>BLOCK</strong><a href='#index-BLOCK' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -628,8 +632,8 @@ within the block.
 
 </dd></dl>
 
-<dl>
-<dt id="index-PROGN">Special Form: <strong>PROGN</strong></dt>
+<dl class="def">
+<dt id="index-PROGN"><span class="category">Special Form: </span><span><strong>PROGN</strong><a href='#index-PROGN' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -642,8 +646,8 @@ within the block.
 
 </dd></dl>
 
-<dl>
-<dt id="index-APPLY">Function: <strong>APPLY</strong> <em>(function arg &amp;rest more-args)</em></dt>
+<dl class="def">
+<dt id="index-APPLY"><span class="category">Function: </span><span><strong>APPLY</strong> <em>(function arg &amp;rest more-args)</em><a href='#index-APPLY' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Applies FUNCTION.  The arguments to the function consist of all ARGs
@@ -652,8 +656,8 @@ except for the last, and all elements of the last ARG.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LABELS">Special Form: <strong>LABELS</strong></dt>
+<dl class="def">
+<dt id="index-LABELS"><span class="category">Special Form: </span><span><strong>LABELS</strong><a href='#index-LABELS' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -670,8 +674,8 @@ functions are simply ignored.
 
 </dd></dl>
 
-<dl>
-<dt id="index-RETURN">Special Form: <strong>RETURN</strong></dt>
+<dl class="def">
+<dt id="index-RETURN"><span class="category">Special Form: </span><span><strong>RETURN</strong><a href='#index-RETURN' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -685,8 +689,8 @@ which defaults to NIL, is returned as the value of the block.
 
 </dd></dl>
 
-<dl>
-<dt id="index-TYPECASE">Macro: <strong>TYPECASE</strong></dt>
+<dl class="def">
+<dt id="index-TYPECASE"><span class="category">Macro: </span><span><strong>TYPECASE</strong><a href='#index-TYPECASE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -701,8 +705,8 @@ returns the value of the last FORM.  If not, simply returns NIL.
 
 </dd></dl>
 
-<dl>
-<dt id="index-AND">Special Form: <strong>AND</strong></dt>
+<dl class="def">
+<dt id="index-AND"><span class="category">Special Form: </span><span><strong>AND</strong><a href='#index-AND' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -717,8 +721,8 @@ last FORM.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LET">Special Form: <strong>LET</strong></dt>
+<dl class="def">
+<dt id="index-LET"><span class="category">Special Form: </span><span><strong>LET</strong><a href='#index-LET' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -732,8 +736,8 @@ all at once, then evaluates FORMs as a PROGN.
 
 </dd></dl>
 
-<dl>
-<dt id="index-COND">Special Form: <strong>COND</strong></dt>
+<dl class="def">
+<dt id="index-COND"><span class="category">Special Form: </span><span><strong>COND</strong><a href='#index-COND' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -749,8 +753,8 @@ TEST.  Returns NIL, if all TESTs evaluate to NIL.
 
 </dd></dl>
 
-<dl>
-<dt id="index-GET_002dSETF_002dMETHOD_002dMULTIPLE_002dVALUE">Function: <strong>GET-SETF-METHOD-MULTIPLE-VALUE</strong> <em>(form)</em></dt>
+<dl class="def">
+<dt id="index-GET_002dSETF_002dMETHOD_002dMULTIPLE_002dVALUE"><span class="category">Function: </span><span><strong>GET-SETF-METHOD-MULTIPLE-VALUE</strong> <em>(form)</em><a href='#index-GET_002dSETF_002dMETHOD_002dMULTIPLE_002dVALUE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
  Returns the five values (or five &rsquo;gangs&rsquo;)
 constituting the SETF method for FORM.  See the doc of
@@ -762,8 +766,8 @@ comparison.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CATCH">Special Form: <strong>CATCH</strong></dt>
+<dl class="def">
+<dt id="index-CATCH"><span class="category">Special Form: </span><span><strong>CATCH</strong><a href='#index-CATCH' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -779,8 +783,8 @@ the catcher tag.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DEFINE_002dMODIFY_002dMACRO">Macro: <strong>DEFINE-MODIFY-MACRO</strong></dt>
+<dl class="def">
+<dt id="index-DEFINE_002dMODIFY_002dMACRO"><span class="category">Macro: </span><span><strong>DEFINE-MODIFY-MACRO</strong><a href='#index-DEFINE_002dMODIFY_002dMACRO' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -798,8 +802,8 @@ retrieved by (documentation &rsquo;NAME &rsquo;function).
 
 </dd></dl>
 
-<dl>
-<dt id="index-MACROEXPAND_002d1">Function: <strong>MACROEXPAND-1</strong> <em>(form &amp;optional (env nil))</em></dt>
+<dl class="def">
+<dt id="index-MACROEXPAND_002d1"><span class="category">Function: </span><span><strong>MACROEXPAND-1</strong> <em>(form &amp;optional (env nil))</em><a href='#index-MACROEXPAND_002d1' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>If FORM is a macro form, then expands it once.  Returns two values: the
@@ -809,8 +813,8 @@ a macro.
 
 </dd></dl>
 
-<dl>
-<dt id="index-FUNCALL">Function: <strong>FUNCALL</strong> <em>(function &amp;rest arguments)</em></dt>
+<dl class="def">
+<dt id="index-FUNCALL"><span class="category">Function: </span><span><strong>FUNCALL</strong> <em>(function &amp;rest arguments)</em><a href='#index-FUNCALL' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Applies FUNCTION to the ARGUMENTs
@@ -818,8 +822,8 @@ a macro.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CALL_002dARGUMENTS_002dLIMIT">Constant: <strong>CALL-ARGUMENTS-LIMIT</strong></dt>
+<dl class="def">
+<dt id="index-CALL_002dARGUMENTS_002dLIMIT"><span class="category">Constant: </span><span><strong>CALL-ARGUMENTS-LIMIT</strong><a href='#index-CALL_002dARGUMENTS_002dLIMIT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The upper exclusive bound on the number of arguments that may be passed to
 a function.  Actually, however, there is no such upper bound in GCL.
@@ -827,8 +831,8 @@ a function.  Actually, however, there is no such upper bound in GCL.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CASE">Special Form: <strong>CASE</strong></dt>
+<dl class="def">
+<dt id="index-CASE"><span class="category">Special Form: </span><span><strong>CASE</strong><a href='#index-CASE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -843,8 +847,8 @@ returns the value(s) of the last FORM.  If not, simply returns NIL.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DEFINE_002dSETF_002dMETHOD">Macro: <strong>DEFINE-SETF-METHOD</strong></dt>
+<dl class="def">
+<dt id="index-DEFINE_002dSETF_002dMETHOD"><span class="category">Macro: </span><span><strong>DEFINE-SETF-METHOD</strong><a href='#index-DEFINE_002dSETF_002dMETHOD' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -874,8 +878,8 @@ by (documentation &rsquo;NAME &rsquo;setf).
 
 </dd></dl>
 
-<dl>
-<dt id="index-COMPILER_002dLET">Special Form: <strong>COMPILER-LET</strong></dt>
+<dl class="def">
+<dt id="index-COMPILER_002dLET"><span class="category">Special Form: </span><span><strong>COMPILER-LET</strong><a href='#index-COMPILER_002dLET' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -890,8 +894,8 @@ time, but no bindings occur when the compiled code is executed.
 
 </dd></dl>
 
-<dl>
-<dt id="index-VALUES">Function: <strong>VALUES</strong> <em>(&amp;rest args)</em></dt>
+<dl class="def">
+<dt id="index-VALUES"><span class="category">Function: </span><span><strong>VALUES</strong> <em>(&amp;rest args)</em><a href='#index-VALUES' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns ARGs in order, as values.
@@ -899,8 +903,8 @@ time, but no bindings occur when the compiled code is executed.
 
 </dd></dl>
 
-<dl>
-<dt id="index-MULTIPLE_002dVALUE_002dLIST">Special Form: <strong>MULTIPLE-VALUE-LIST</strong></dt>
+<dl class="def">
+<dt id="index-MULTIPLE_002dVALUE_002dLIST"><span class="category">Special Form: </span><span><strong>MULTIPLE-VALUE-LIST</strong><a href='#index-MULTIPLE_002dVALUE_002dLIST' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -913,8 +917,8 @@ time, but no bindings occur when the compiled code is executed.
 
 </dd></dl>
 
-<dl>
-<dt id="index-MULTIPLE_002dVALUE_002dPROG1">Special Form: <strong>MULTIPLE-VALUE-PROG1</strong></dt>
+<dl class="def">
+<dt id="index-MULTIPLE_002dVALUE_002dPROG1"><span class="category">Special Form: </span><span><strong>MULTIPLE-VALUE-PROG1</strong><a href='#index-MULTIPLE_002dVALUE_002dPROG1' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -928,8 +932,8 @@ the other FORMs.  Returns the saved values.
 
 </dd></dl>
 
-<dl>
-<dt id="index-MACROLET">Special Form: <strong>MACROLET</strong></dt>
+<dl class="def">
+<dt id="index-MACROLET"><span class="category">Special Form: </span><span><strong>MACROLET</strong><a href='#index-MACROLET' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -945,8 +949,8 @@ Doc-strings for local macros are simply ignored.
 
 </dd></dl>
 
-<dl>
-<dt id="index-GO">Special Form: <strong>GO</strong></dt>
+<dl class="def">
+<dt id="index-GO"><span class="category">Special Form: </span><span><strong>GO</strong><a href='#index-GO' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -959,8 +963,8 @@ Doc-strings for local macros are simply ignored.
 
 </dd></dl>
 
-<dl>
-<dt id="index-PROG">Special Form: <strong>PROG</strong></dt>
+<dl class="def">
+<dt id="index-PROG"><span class="category">Special Form: </span><span><strong>PROG</strong><a href='#index-PROG' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -973,8 +977,8 @@ Doc-strings for local macros are simply ignored.
 
 </dd></dl>
 
-<dl>
-<dt id="index-_002aAPPLYHOOK_002a">Variable: <strong>*APPLYHOOK*</strong></dt>
+<dl class="def">
+<dt id="index-_002aAPPLYHOOK_002a"><span class="category">Variable: </span><span><strong>*APPLYHOOK*</strong><a href='#index-_002aAPPLYHOOK_002a' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 Used to substitute another function for the implicit APPLY normally done
 within EVAL.  If *APPLYHOOK* is not NIL, its value must be a function 
@@ -984,8 +988,8 @@ and an environment.  This function does the application instead of APPLY.
 
 </dd></dl>
 
-<dl>
-<dt id="index-RETURN_002dFROM">Special Form: <strong>RETURN-FROM</strong></dt>
+<dl class="def">
+<dt id="index-RETURN_002dFROM"><span class="category">Special Form: </span><span><strong>RETURN-FROM</strong><a href='#index-RETURN_002dFROM' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -999,8 +1003,8 @@ of RESULT, which defaults to NIL, is returned as the value of the block.
 
 </dd></dl>
 
-<dl>
-<dt id="index-UNLESS">Special Form: <strong>UNLESS</strong></dt>
+<dl class="def">
+<dt id="index-UNLESS"><span class="category">Special Form: </span><span><strong>UNLESS</strong><a href='#index-UNLESS' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -1014,8 +1018,8 @@ simply returns NIL.
 
 </dd></dl>
 
-<dl>
-<dt id="index-MULTIPLE_002dVALUE_002dSETQ">Special Form: <strong>MULTIPLE-VALUE-SETQ</strong></dt>
+<dl class="def">
+<dt id="index-MULTIPLE_002dVALUE_002dSETQ"><span class="category">Special Form: </span><span><strong>MULTIPLE-VALUE-SETQ</strong><a href='#index-MULTIPLE_002dVALUE_002dSETQ' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -1029,8 +1033,8 @@ Returns the value assigned to the first variable.
 
 </dd></dl>
 
-<dl>
-<dt id="index-LOCALLY">Special Form: <strong>LOCALLY</strong></dt>
+<dl class="def">
+<dt id="index-LOCALLY"><span class="category">Special Form: </span><span><strong>LOCALLY</strong><a href='#index-LOCALLY' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -1043,8 +1047,8 @@ Returns the value assigned to the first variable.
 
 </dd></dl>
 
-<dl>
-<dt id="index-IDENTITY">Function: <strong>IDENTITY</strong> <em>(x)</em></dt>
+<dl class="def">
+<dt id="index-IDENTITY"><span class="category">Function: </span><span><strong>IDENTITY</strong> <em>(x)</em><a href='#index-IDENTITY' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Simply returns X.
@@ -1052,8 +1056,8 @@ Returns the value assigned to the first variable.
 
 </dd></dl>
 
-<dl>
-<dt id="index-NOT">Function: <strong>NOT</strong> <em>(x)</em></dt>
+<dl class="def">
+<dt id="index-NOT"><span class="category">Function: </span><span><strong>NOT</strong> <em>(x)</em><a href='#index-NOT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if X is NIL; NIL otherwise.
@@ -1061,8 +1065,8 @@ Returns the value assigned to the first variable.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DEFCONSTANT">Macro: <strong>DEFCONSTANT</strong></dt>
+<dl class="def">
+<dt id="index-DEFCONSTANT"><span class="category">Macro: </span><span><strong>DEFCONSTANT</strong><a href='#index-DEFCONSTANT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -1077,8 +1081,8 @@ and can be retrieved by (documentation &rsquo;NAME &rsquo;variable).
 
 </dd></dl>
 
-<dl>
-<dt id="index-VALUES_002dLIST">Function: <strong>VALUES-LIST</strong> <em>(list)</em></dt>
+<dl class="def">
+<dt id="index-VALUES_002dLIST"><span class="category">Function: </span><span><strong>VALUES-LIST</strong> <em>(list)</em><a href='#index-VALUES_002dLIST' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns all of the elements of LIST in order, as values.
@@ -1086,8 +1090,8 @@ and can be retrieved by (documentation &rsquo;NAME &rsquo;variable).
 
 </dd></dl>
 
-<dl>
-<dt id="index-ERROR">Function: <strong>ERROR</strong> <em>(control-string &amp;rest args)</em></dt>
+<dl class="def">
+<dt id="index-ERROR"><span class="category">Function: </span><span><strong>ERROR</strong> <em>(control-string &amp;rest args)</em><a href='#index-ERROR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Signals a fatal error.
@@ -1095,8 +1099,8 @@ and can be retrieved by (documentation &rsquo;NAME &rsquo;variable).
 
 </dd></dl>
 
-<dl>
-<dt id="index-IF">Special Form: <strong>IF</strong></dt>
+<dl class="def">
+<dt id="index-IF"><span class="category">Special Form: </span><span><strong>IF</strong><a href='#index-IF' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -1110,8 +1114,8 @@ If not, evaluates ELSE (which defaults to NIL) and returns the result.
 
 </dd></dl>
 
-<dl>
-<dt id="index-UNWIND_002dPROTECT">Special Form: <strong>UNWIND-PROTECT</strong></dt>
+<dl class="def">
+<dt id="index-UNWIND_002dPROTECT"><span class="category">Special Form: </span><span><strong>UNWIND-PROTECT</strong><a href='#index-UNWIND_002dPROTECT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -1126,8 +1130,8 @@ form.
 
 </dd></dl>
 
-<dl>
-<dt id="index-EVALHOOK">Function: <strong>EVALHOOK</strong> <em>(form evalhookfn applyhookfn &amp;optional (env nil))</em></dt>
+<dl class="def">
+<dt id="index-EVALHOOK"><span class="category">Function: </span><span><strong>EVALHOOK</strong> <em>(form evalhookfn applyhookfn &amp;optional (env nil))</em><a href='#index-EVALHOOK' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Evaluates FORM with *EVALHOOK* bound to EVALHOOKFN and *APPLYHOOK* bound
@@ -1137,8 +1141,8 @@ of FORM.
 
 </dd></dl>
 
-<dl>
-<dt id="index-OR">Special Form: <strong>OR</strong></dt>
+<dl class="def">
+<dt id="index-OR"><span class="category">Special Form: </span><span><strong>OR</strong><a href='#index-OR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -1153,8 +1157,8 @@ returns whatever values it returns.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CTYPECASE">Macro: <strong>CTYPECASE</strong></dt>
+<dl class="def">
+<dt id="index-CTYPECASE"><span class="category">Macro: </span><span><strong>CTYPECASE</strong><a href='#index-CTYPECASE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -1169,8 +1173,8 @@ returns the value(s) of the last FORM.  If not, signals a correctable error.
 
 </dd></dl>
 
-<dl>
-<dt id="index-EVAL">Function: <strong>EVAL</strong> <em>(exp)</em></dt>
+<dl class="def">
+<dt id="index-EVAL"><span class="category">Function: </span><span><strong>EVAL</strong> <em>(exp)</em><a href='#index-EVAL' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Evaluates EXP and returns the result(s).
@@ -1178,8 +1182,8 @@ returns the value(s) of the last FORM.  If not, signals a correctable error.
 
 </dd></dl>
 
-<dl>
-<dt id="index-PSETF">Macro: <strong>PSETF</strong></dt>
+<dl class="def">
+<dt id="index-PSETF"><span class="category">Macro: </span><span><strong>PSETF</strong><a href='#index-PSETF' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -1194,8 +1198,8 @@ NIL always.
 
 </dd></dl>
 
-<dl>
-<dt id="index-THROW">Special Form: <strong>THROW</strong></dt>
+<dl class="def">
+<dt id="index-THROW"><span class="category">Special Form: </span><span><strong>THROW</strong><a href='#index-THROW' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -1210,8 +1214,8 @@ returned.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DEFPARAMETER">Macro: <strong>DEFPARAMETER</strong></dt>
+<dl class="def">
+<dt id="index-DEFPARAMETER"><span class="category">Macro: </span><span><strong>DEFPARAMETER</strong><a href='#index-DEFPARAMETER' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -1226,8 +1230,8 @@ retrieved by (documentation &rsquo;NAME &rsquo;variable).
 
 </dd></dl>
 
-<dl>
-<dt id="index-DEFVAR">Macro: <strong>DEFVAR</strong></dt>
+<dl class="def">
+<dt id="index-DEFVAR"><span class="category">Macro: </span><span><strong>DEFVAR</strong><a href='#index-DEFVAR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -1242,10 +1246,11 @@ retrieved by (documentation &rsquo;NAME &rsquo;variable).
 
 </dd></dl>
 
+</div>
 <hr>
 <div class="header">
 <p>
-Next: <a href="Compilation.html" accesskey="n" rel="next">Compilation</a>, Previous: <a href="Streams-and-Reading.html" accesskey="p" rel="prev">Streams and Reading</a>, Up: <a href="index.html" accesskey="u" rel="up">Top</a> &nbsp; [<a href="Function-and-Variable-Index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
+Next: <a href="Compilation.html">Compilation</a>, Previous: <a href="Streams-and-Reading.html">Streams and Reading</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
 </div>
 
 

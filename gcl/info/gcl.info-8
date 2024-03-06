@@ -1,4 +1,4 @@
-This is gcl.info, produced by makeinfo version 6.7 from gcl.texi.
+This is gcl.info, produced by makeinfo version 6.8 from gcl.texi.
 
 This is a Texinfo GNU Common Lisp Manual based on the draft ANSI
 standard for Common Lisp.
@@ -3310,13 +3310,13 @@ stream-symbol--a stream variable designator.
 
    object--an object; evaluated.
 
-   :prefix--a string; evaluated. 	Complicated defaulting behavior; see
+   :prefix--a string; evaluated.  Complicated defaulting behavior; see
 below.
 
-   :per-line-prefix--a string; evaluated. 	Complicated defaulting
+   :per-line-prefix--a string; evaluated.  Complicated defaulting
 behavior; see below.
 
-   :suffix--a string; evaluated. 	The default is the null string.
+   :suffix--a string; evaluated.  The default is the null string.
 
    declaration--a declare expression; not evaluated.
 
@@ -3961,7 +3961,7 @@ Arguments and Values::
 
 object--an object.
 
-   output-stream--an output stream designator. 	The default is standard
+   output-stream--an output stream designator.  The default is standard
 output.
 
    \writekeydescriptionsstream--an output stream designator.  The

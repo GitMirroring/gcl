@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<!-- Created by GNU Texinfo 6.7, http://www.gnu.org/software/texinfo/ -->
+<!-- Created by GNU Texinfo 6.8, https://www.gnu.org/software/texinfo/ -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>Characters (GCL SI Manual)</title>
@@ -10,19 +10,21 @@
 <meta name="resource-type" content="document">
 <meta name="distribution" content="global">
 <meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
 <link href="index.html" rel="start" title="Top">
 <link href="Function-and-Variable-Index.html" rel="index" title="Function and Variable Index">
-<link href="Function-and-Variable-Index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
 <link href="index.html" rel="up" title="Top">
 <link href="Lists.html" rel="next" title="Lists">
 <link href="Sequences-and-Arrays-and-Hash-Tables.html" rel="prev" title="Sequences and Arrays and Hash Tables">
 <style type="text/css">
 <!--
+a.copiable-anchor {visibility: hidden; text-decoration: none; line-height: 0em}
 a.summary-letter {text-decoration: none}
 blockquote.indentedblock {margin-right: 0em}
 div.display {margin-left: 3.2em}
 div.example {margin-left: 3.2em}
-div.lisp {margin-left: 3.2em}
 kbd {font-style: oblique}
 pre.display {font-family: inherit}
 pre.format {font-family: inherit}
@@ -31,6 +33,7 @@ pre.menu-preformatted {font-family: serif}
 span.nolinebreak {white-space: nowrap}
 span.roman {font-family: initial; font-weight: normal}
 span.sansserif {font-family: sans-serif; font-weight: normal}
+span:hover a.copiable-anchor {visibility: visible}
 ul.no-bullet {list-style: none}
 -->
 </style>
@@ -39,15 +42,16 @@ ul.no-bullet {list-style: none}
 </head>
 
 <body lang="en">
-<span id="Characters"></span><div class="header">
+<div class="chapter" id="Characters">
+<div class="header">
 <p>
-Next: <a href="Lists.html" accesskey="n" rel="next">Lists</a>, Previous: <a href="Sequences-and-Arrays-and-Hash-Tables.html" accesskey="p" rel="prev">Sequences and Arrays and Hash Tables</a>, Up: <a href="index.html" accesskey="u" rel="up">Top</a> &nbsp; [<a href="Function-and-Variable-Index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
+Next: <a href="Lists.html" accesskey="n" rel="next">Lists</a>, Previous: <a href="Sequences-and-Arrays-and-Hash-Tables.html" accesskey="p" rel="prev">Sequences and Arrays and Hash Tables</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
 </div>
 <hr>
 <span id="Characters-1"></span><h2 class="chapter">3 Characters</h2>
 
-<dl>
-<dt id="index-NAME_002dCHAR">Function: <strong>NAME-CHAR</strong> <em>(name)</em></dt>
+<dl class="def">
+<dt id="index-NAME_002dCHAR"><span class="category">Function: </span><span><strong>NAME-CHAR</strong> <em>(name)</em><a href='#index-NAME_002dCHAR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Given an argument acceptable to string,
@@ -57,8 +61,8 @@ otherwise.  NAME must be an object that can be coerced to a string.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002dNAME">Function: <strong>CHAR-NAME</strong> <em>(char)</em></dt>
+<dl class="def">
+<dt id="index-CHAR_002dNAME"><span class="category">Function: </span><span><strong>CHAR-NAME</strong> <em>(char)</em><a href='#index-CHAR_002dNAME' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the name for CHAR as a string; NIL if CHAR has no name.
@@ -68,8 +72,8 @@ and #\Rubout have names.
 
 </dd></dl>
 
-<dl>
-<dt id="index-BOTH_002dCASE_002dP">Function: <strong>BOTH-CASE-P</strong> <em>(char)</em></dt>
+<dl class="def">
+<dt id="index-BOTH_002dCASE_002dP"><span class="category">Function: </span><span><strong>BOTH-CASE-P</strong> <em>(char)</em><a href='#index-BOTH_002dCASE_002dP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if CHAR is an alphabetic character; NIL otherwise.  Equivalent to
@@ -78,8 +82,8 @@ ALPHA-CHAR-P.
 
 </dd></dl>
 
-<dl>
-<dt id="index-SCHAR">Function: <strong>SCHAR</strong> <em>(simple-string index)</em></dt>
+<dl class="def">
+<dt id="index-SCHAR"><span class="category">Function: </span><span><strong>SCHAR</strong> <em>(simple-string index)</em><a href='#index-SCHAR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the character object representing the INDEX-th character in STRING.
@@ -88,24 +92,24 @@ This is faster than CHAR.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002dSUPER_002dBIT">Constant: <strong>CHAR-SUPER-BIT</strong></dt>
+<dl class="def">
+<dt id="index-CHAR_002dSUPER_002dBIT"><span class="category">Constant: </span><span><strong>CHAR-SUPER-BIT</strong><a href='#index-CHAR_002dSUPER_002dBIT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The bit that indicates a super character.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002dFONT_002dLIMIT">Constant: <strong>CHAR-FONT-LIMIT</strong></dt>
+<dl class="def">
+<dt id="index-CHAR_002dFONT_002dLIMIT"><span class="category">Constant: </span><span><strong>CHAR-FONT-LIMIT</strong><a href='#index-CHAR_002dFONT_002dLIMIT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The upper exclusive bound on values produced by CHAR-FONT.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002dDOWNCASE">Function: <strong>CHAR-DOWNCASE</strong> <em>(char)</em></dt>
+<dl class="def">
+<dt id="index-CHAR_002dDOWNCASE"><span class="category">Function: </span><span><strong>CHAR-DOWNCASE</strong> <em>(char)</em><a href='#index-CHAR_002dDOWNCASE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the lower-case equivalent of CHAR, if any.
@@ -114,8 +118,8 @@ If not, simply returns CHAR.
 
 </dd></dl>
 
-<dl>
-<dt id="index-STRING_002dCHAR_002dP">Function: <strong>STRING-CHAR-P</strong> <em>(char)</em></dt>
+<dl class="def">
+<dt id="index-STRING_002dCHAR_002dP"><span class="category">Function: </span><span><strong>STRING-CHAR-P</strong> <em>(char)</em><a href='#index-STRING_002dCHAR_002dP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if CHAR can be stored in a string.  In GCL, this function always
@@ -124,8 +128,8 @@ returns T since any character in GCL can be stored in a string.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002dNOT_002dLESSP">Function: <strong>CHAR-NOT-LESSP</strong> <em>(char &amp;rest more-chars)</em></dt>
+<dl class="def">
+<dt id="index-CHAR_002dNOT_002dLESSP"><span class="category">Function: </span><span><strong>CHAR-NOT-LESSP</strong> <em>(char &amp;rest more-chars)</em><a href='#index-CHAR_002dNOT_002dLESSP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if the codes of CHARs are in strictly non-increasing order; NIL
@@ -135,8 +139,8 @@ is used.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DISASSEMBLE">Function: <strong>DISASSEMBLE</strong> <em>(thing)</em></dt>
+<dl class="def">
+<dt id="index-DISASSEMBLE"><span class="category">Function: </span><span><strong>DISASSEMBLE</strong> <em>(thing)</em><a href='#index-DISASSEMBLE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Compiles the form specified by THING and prints the intermediate C language
@@ -150,8 +154,8 @@ Otherwise, THING itself is disassembled as a top-level form.
 </dd></dl>
 
 
-<dl>
-<dt id="index-LOWER_002dCASE_002dP">Function: <strong>LOWER-CASE-P</strong> <em>(char)</em></dt>
+<dl class="def">
+<dt id="index-LOWER_002dCASE_002dP"><span class="category">Function: </span><span><strong>LOWER-CASE-P</strong> <em>(char)</em><a href='#index-LOWER_002dCASE_002dP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if CHAR is a lower-case character; NIL otherwise.
@@ -159,8 +163,8 @@ Otherwise, THING itself is disassembled as a top-level form.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_003c_003d">Function: <strong>CHAR&lt;=</strong> <em>(char &amp;rest more-chars)</em></dt>
+<dl class="def">
+<dt id="index-CHAR_003c_003d"><span class="category">Function: </span><span><strong>CHAR&lt;=</strong> <em>(char &amp;rest more-chars)</em><a href='#index-CHAR_003c_003d' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if the codes of CHARs are in strictly non-decreasing order; NIL
@@ -169,16 +173,16 @@ otherwise.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002dHYPER_002dBIT">Constant: <strong>CHAR-HYPER-BIT</strong></dt>
+<dl class="def">
+<dt id="index-CHAR_002dHYPER_002dBIT"><span class="category">Constant: </span><span><strong>CHAR-HYPER-BIT</strong><a href='#index-CHAR_002dHYPER_002dBIT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The bit that indicates a hyper character.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-CODE_002dCHAR">Function: <strong>CODE-CHAR</strong> <em>(code &amp;optional (bits 0) (font 0))</em></dt>
+<dl class="def">
+<dt id="index-CODE_002dCHAR"><span class="category">Function: </span><span><strong>CODE-CHAR</strong> <em>(code &amp;optional (bits 0) (font 0))</em><a href='#index-CODE_002dCHAR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns a character object with the specified code, if any.
@@ -187,8 +191,8 @@ If not, returns NIL.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002dCODE">Function: <strong>CHAR-CODE</strong> <em>(char)</em></dt>
+<dl class="def">
+<dt id="index-CHAR_002dCODE"><span class="category">Function: </span><span><strong>CHAR-CODE</strong> <em>(char)</em><a href='#index-CHAR_002dCODE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the code attribute of CHAR.
@@ -196,16 +200,16 @@ If not, returns NIL.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002dCONTROL_002dBIT">Constant: <strong>CHAR-CONTROL-BIT</strong></dt>
+<dl class="def">
+<dt id="index-CHAR_002dCONTROL_002dBIT"><span class="category">Constant: </span><span><strong>CHAR-CONTROL-BIT</strong><a href='#index-CHAR_002dCONTROL_002dBIT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The bit that indicates a control character.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002dLESSP">Function: <strong>CHAR-LESSP</strong> <em>(char &amp;rest more-chars)</em></dt>
+<dl class="def">
+<dt id="index-CHAR_002dLESSP"><span class="category">Function: </span><span><strong>CHAR-LESSP</strong> <em>(char &amp;rest more-chars)</em><a href='#index-CHAR_002dLESSP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if the codes of CHARs are in strictly increasing order; NIL
@@ -215,8 +219,8 @@ is used.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002dFONT">Function: <strong>CHAR-FONT</strong> <em>(char)</em></dt>
+<dl class="def">
+<dt id="index-CHAR_002dFONT"><span class="category">Function: </span><span><strong>CHAR-FONT</strong> <em>(char)</em><a href='#index-CHAR_002dFONT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the font attribute of CHAR.
@@ -224,8 +228,8 @@ is used.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_003c">Function: <strong>CHAR&lt;</strong> <em>(char &amp;rest more-chars)</em></dt>
+<dl class="def">
+<dt id="index-CHAR_003c"><span class="category">Function: </span><span><strong>CHAR&lt;</strong> <em>(char &amp;rest more-chars)</em><a href='#index-CHAR_003c' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if the codes of CHARs are in strictly increasing order; NIL otherwise.
@@ -233,8 +237,8 @@ is used.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_003e_003d">Function: <strong>CHAR&gt;=</strong> <em>(char &amp;rest more-chars)</em></dt>
+<dl class="def">
+<dt id="index-CHAR_003e_003d"><span class="category">Function: </span><span><strong>CHAR&gt;=</strong> <em>(char &amp;rest more-chars)</em><a href='#index-CHAR_003e_003d' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if the codes of CHARs are in strictly non-increasing order; NIL
@@ -243,16 +247,16 @@ otherwise.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002dMETA_002dBIT">Constant: <strong>CHAR-META-BIT</strong></dt>
+<dl class="def">
+<dt id="index-CHAR_002dMETA_002dBIT"><span class="category">Constant: </span><span><strong>CHAR-META-BIT</strong><a href='#index-CHAR_002dMETA_002dBIT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The bit that indicates a meta character.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-GRAPHIC_002dCHAR_002dP">Function: <strong>GRAPHIC-CHAR-P</strong> <em>(char)</em></dt>
+<dl class="def">
+<dt id="index-GRAPHIC_002dCHAR_002dP"><span class="category">Function: </span><span><strong>GRAPHIC-CHAR-P</strong> <em>(char)</em><a href='#index-GRAPHIC_002dCHAR_002dP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if CHAR is a printing character, i.e., #\Space through #\~;
@@ -261,8 +265,8 @@ NIL otherwise.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002dNOT_002dEQUAL">Function: <strong>CHAR-NOT-EQUAL</strong> <em>(char &amp;rest more-chars)</em></dt>
+<dl class="def">
+<dt id="index-CHAR_002dNOT_002dEQUAL"><span class="category">Function: </span><span><strong>CHAR-NOT-EQUAL</strong> <em>(char &amp;rest more-chars)</em><a href='#index-CHAR_002dNOT_002dEQUAL' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if no two of CHARs are the same character; NIL otherwise.
@@ -271,16 +275,16 @@ Upper case character and its lower case equivalent are regarded the same.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002dBITS_002dLIMIT">Constant: <strong>CHAR-BITS-LIMIT</strong></dt>
+<dl class="def">
+<dt id="index-CHAR_002dBITS_002dLIMIT"><span class="category">Constant: </span><span><strong>CHAR-BITS-LIMIT</strong><a href='#index-CHAR_002dBITS_002dLIMIT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 The upper exclusive bound on values produced by CHAR-BITS.
 </p>
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHARACTERP">Function: <strong>CHARACTERP</strong> <em>(x)</em></dt>
+<dl class="def">
+<dt id="index-CHARACTERP"><span class="category">Function: </span><span><strong>CHARACTERP</strong> <em>(x)</em><a href='#index-CHARACTERP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if X is a character; NIL otherwise.
@@ -288,8 +292,8 @@ The upper exclusive bound on values produced by CHAR-BITS.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_003d">Function: <strong>CHAR=</strong> <em>(char &amp;rest more-chars)</em></dt>
+<dl class="def">
+<dt id="index-CHAR_003d"><span class="category">Function: </span><span><strong>CHAR=</strong> <em>(char &amp;rest more-chars)</em><a href='#index-CHAR_003d' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if all CHARs are the same character; NIL otherwise.
@@ -297,8 +301,8 @@ The upper exclusive bound on values produced by CHAR-BITS.
 
 </dd></dl>
 
-<dl>
-<dt id="index-ALPHA_002dCHAR_002dP">Function: <strong>ALPHA-CHAR-P</strong> <em>(char)</em></dt>
+<dl class="def">
+<dt id="index-ALPHA_002dCHAR_002dP"><span class="category">Function: </span><span><strong>ALPHA-CHAR-P</strong> <em>(char)</em><a href='#index-ALPHA_002dCHAR_002dP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if CHAR is an alphabetic character, A-Z or a-z; NIL otherwise.
@@ -306,8 +310,8 @@ The upper exclusive bound on values produced by CHAR-BITS.
 
 </dd></dl>
 
-<dl>
-<dt id="index-UPPER_002dCASE_002dP">Function: <strong>UPPER-CASE-P</strong> <em>(char)</em></dt>
+<dl class="def">
+<dt id="index-UPPER_002dCASE_002dP"><span class="category">Function: </span><span><strong>UPPER-CASE-P</strong> <em>(char)</em><a href='#index-UPPER_002dCASE_002dP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if CHAR is an upper-case character; NIL otherwise.
@@ -315,8 +319,8 @@ The upper exclusive bound on values produced by CHAR-BITS.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002dBIT">Function: <strong>CHAR-BIT</strong> <em>(char name)</em></dt>
+<dl class="def">
+<dt id="index-CHAR_002dBIT"><span class="category">Function: </span><span><strong>CHAR-BIT</strong> <em>(char name)</em><a href='#index-CHAR_002dBIT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if the named bit is on in the character CHAR; NIL otherwise.
@@ -325,8 +329,8 @@ In GCL, this function always returns NIL.
 
 </dd></dl>
 
-<dl>
-<dt id="index-MAKE_002dCHAR">Function: <strong>MAKE-CHAR</strong> <em>(char &amp;optional (bits 0) (font 0))</em></dt>
+<dl class="def">
+<dt id="index-MAKE_002dCHAR"><span class="category">Function: </span><span><strong>MAKE-CHAR</strong> <em>(char &amp;optional (bits 0) (font 0))</em><a href='#index-MAKE_002dCHAR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns a character object with the same code attribute as CHAR and with
@@ -335,8 +339,8 @@ the specified BITS and FONT attributes.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHARACTER">Function: <strong>CHARACTER</strong> <em>(x)</em></dt>
+<dl class="def">
+<dt id="index-CHARACTER"><span class="category">Function: </span><span><strong>CHARACTER</strong> <em>(x)</em><a href='#index-CHARACTER' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Coerces X into a character object if possible.
@@ -344,8 +348,8 @@ the specified BITS and FONT attributes.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002dEQUAL">Function: <strong>CHAR-EQUAL</strong> <em>(char &amp;rest more-chars)</em></dt>
+<dl class="def">
+<dt id="index-CHAR_002dEQUAL"><span class="category">Function: </span><span><strong>CHAR-EQUAL</strong> <em>(char &amp;rest more-chars)</em><a href='#index-CHAR_002dEQUAL' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if all of its arguments are the same character; NIL otherwise.
@@ -354,8 +358,8 @@ Upper case character and its lower case equivalent are regarded the same.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002dNOT_002dGREATERP">Function: <strong>CHAR-NOT-GREATERP</strong> <em>(char &amp;rest more-chars)</em></dt>
+<dl class="def">
+<dt id="index-CHAR_002dNOT_002dGREATERP"><span class="category">Function: </span><span><strong>CHAR-NOT-GREATERP</strong> <em>(char &amp;rest more-chars)</em><a href='#index-CHAR_002dNOT_002dGREATERP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if the codes of CHARs are in strictly non-decreasing order; NIL
@@ -365,8 +369,8 @@ is used.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_003e">Function: <strong>CHAR&gt;</strong> <em>(char &amp;rest more-chars)</em></dt>
+<dl class="def">
+<dt id="index-CHAR_003e"><span class="category">Function: </span><span><strong>CHAR&gt;</strong> <em>(char &amp;rest more-chars)</em><a href='#index-CHAR_003e' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if the codes of CHARs are in strictly decreasing order; NIL
@@ -375,8 +379,8 @@ otherwise.
 
 </dd></dl>
 
-<dl>
-<dt id="index-STANDARD_002dCHAR_002dP">Function: <strong>STANDARD-CHAR-P</strong> <em>(char)</em></dt>
+<dl class="def">
+<dt id="index-STANDARD_002dCHAR_002dP"><span class="category">Function: </span><span><strong>STANDARD-CHAR-P</strong> <em>(char)</em><a href='#index-STANDARD_002dCHAR_002dP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if CHAR is a standard character, i.e., one of the 95 ASCII printing
@@ -385,8 +389,8 @@ characters #\Space to #\~ and #Newline; NIL otherwise.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002dUPCASE">Function: <strong>CHAR-UPCASE</strong> <em>(char)</em></dt>
+<dl class="def">
+<dt id="index-CHAR_002dUPCASE"><span class="category">Function: </span><span><strong>CHAR-UPCASE</strong> <em>(char)</em><a href='#index-CHAR_002dUPCASE' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the upper-case equivalent of CHAR, if any.
@@ -395,8 +399,8 @@ If not, simply returns CHAR.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DIGIT_002dCHAR_002dP">Function: <strong>DIGIT-CHAR-P</strong> <em>(char &amp;optional (radix 10))</em></dt>
+<dl class="def">
+<dt id="index-DIGIT_002dCHAR_002dP"><span class="category">Function: </span><span><strong>DIGIT-CHAR-P</strong> <em>(char &amp;optional (radix 10))</em><a href='#index-DIGIT_002dCHAR_002dP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>If CHAR represents a digit in RADIX, then returns the weight as an integer.
@@ -405,8 +409,8 @@ Otherwise, returns nil.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002f_003d">Function: <strong>CHAR/=</strong> <em>(char &amp;rest more-chars)</em></dt>
+<dl class="def">
+<dt id="index-CHAR_002f_003d"><span class="category">Function: </span><span><strong>CHAR/=</strong> <em>(char &amp;rest more-chars)</em><a href='#index-CHAR_002f_003d' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if no two of CHARs are the same character; NIL otherwise.
@@ -414,8 +418,8 @@ Otherwise, returns nil.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002dGREATERP">Function: <strong>CHAR-GREATERP</strong> <em>(char &amp;rest more-chars)</em></dt>
+<dl class="def">
+<dt id="index-CHAR_002dGREATERP"><span class="category">Function: </span><span><strong>CHAR-GREATERP</strong> <em>(char &amp;rest more-chars)</em><a href='#index-CHAR_002dGREATERP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if the codes of CHARs are in strictly decreasing order; NIL
@@ -425,8 +429,8 @@ is used.
 
 </dd></dl>
 
-<dl>
-<dt id="index-ALPHANUMERICP">Function: <strong>ALPHANUMERICP</strong> <em>(char)</em></dt>
+<dl class="def">
+<dt id="index-ALPHANUMERICP"><span class="category">Function: </span><span><strong>ALPHANUMERICP</strong> <em>(char)</em><a href='#index-ALPHANUMERICP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if CHAR is either numeric or alphabetic; NIL otherwise.
@@ -434,8 +438,8 @@ is used.
 
 </dd></dl>
 
-<dl>
-<dt id="index-CHAR_002dBITS">Function: <strong>CHAR-BITS</strong> <em>(char)</em></dt>
+<dl class="def">
+<dt id="index-CHAR_002dBITS"><span class="category">Function: </span><span><strong>CHAR-BITS</strong> <em>(char)</em><a href='#index-CHAR_002dBITS' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns the bits attribute (which is always 0 in GCL) of CHAR.
@@ -443,8 +447,8 @@ is used.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DIGIT_002dCHAR">Function: <strong>DIGIT-CHAR</strong> <em>(digit &amp;optional (radix 10) (font 0))</em></dt>
+<dl class="def">
+<dt id="index-DIGIT_002dCHAR"><span class="category">Function: </span><span><strong>DIGIT-CHAR</strong> <em>(digit &amp;optional (radix 10) (font 0))</em><a href='#index-DIGIT_002dCHAR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns a character object that represents the DIGIT in the specified RADIX.
@@ -453,8 +457,8 @@ Returns NIL if no such character exists.
 
 </dd></dl>
 
-<dl>
-<dt id="index-SET_002dCHAR_002dBIT">Function: <strong>SET-CHAR-BIT</strong> <em>(char name newvalue)</em></dt>
+<dl class="def">
+<dt id="index-SET_002dCHAR_002dBIT"><span class="category">Function: </span><span><strong>SET-CHAR-BIT</strong> <em>(char name newvalue)</em><a href='#index-SET_002dCHAR_002dBIT' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns a character just like CHAR except that the named bit is set or
@@ -464,10 +468,11 @@ is useless in GCL.
 
 </dd></dl>
 
+</div>
 <hr>
 <div class="header">
 <p>
-Next: <a href="Lists.html" accesskey="n" rel="next">Lists</a>, Previous: <a href="Sequences-and-Arrays-and-Hash-Tables.html" accesskey="p" rel="prev">Sequences and Arrays and Hash Tables</a>, Up: <a href="index.html" accesskey="u" rel="up">Top</a> &nbsp; [<a href="Function-and-Variable-Index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
+Next: <a href="Lists.html">Lists</a>, Previous: <a href="Sequences-and-Arrays-and-Hash-Tables.html">Sequences and Arrays and Hash Tables</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
 </div>
 
 

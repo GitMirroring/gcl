@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<!-- Created by GNU Texinfo 6.7, http://www.gnu.org/software/texinfo/ -->
+<!-- Created by GNU Texinfo 6.8, https://www.gnu.org/software/texinfo/ -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>Compiler Definitions (GCL SI Manual)</title>
@@ -10,19 +10,21 @@
 <meta name="resource-type" content="document">
 <meta name="distribution" content="global">
 <meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
 <link href="index.html" rel="start" title="Top">
 <link href="Function-and-Variable-Index.html" rel="index" title="Function and Variable Index">
-<link href="Function-and-Variable-Index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
 <link href="index.html" rel="up" title="Top">
 <link href="Function-and-Variable-Index.html" rel="next" title="Function and Variable Index">
-<link href="Low-Level-X-Interface.html" rel="prev" title="Low Level X Interface">
+<link href="Miscellaneous.html" rel="prev" title="Miscellaneous">
 <style type="text/css">
 <!--
+a.copiable-anchor {visibility: hidden; text-decoration: none; line-height: 0em}
 a.summary-letter {text-decoration: none}
 blockquote.indentedblock {margin-right: 0em}
 div.display {margin-left: 3.2em}
 div.example {margin-left: 3.2em}
-div.lisp {margin-left: 3.2em}
 kbd {font-style: oblique}
 pre.display {font-family: inherit}
 pre.format {font-family: inherit}
@@ -31,6 +33,7 @@ pre.menu-preformatted {font-family: serif}
 span.nolinebreak {white-space: nowrap}
 span.roman {font-family: initial; font-weight: normal}
 span.sansserif {font-family: sans-serif; font-weight: normal}
+span:hover a.copiable-anchor {visibility: visible}
 ul.no-bullet {list-style: none}
 -->
 </style>
@@ -39,15 +42,16 @@ ul.no-bullet {list-style: none}
 </head>
 
 <body lang="en">
-<span id="Compiler-Definitions"></span><div class="header">
+<div class="chapter" id="Compiler-Definitions">
+<div class="header">
 <p>
-Next: <a href="Function-and-Variable-Index.html" accesskey="n" rel="next">Function and Variable Index</a>, Previous: <a href="Miscellaneous.html" accesskey="p" rel="prev">Miscellaneous</a>, Up: <a href="index.html" accesskey="u" rel="up">Top</a> &nbsp; [<a href="Function-and-Variable-Index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
+Next: <a href="Function-and-Variable-Index.html" accesskey="n" rel="next">Function and Variable Index</a>, Previous: <a href="Miscellaneous.html" accesskey="p" rel="prev">Miscellaneous</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
 </div>
 <hr>
 <span id="Compiler-Definitions-1"></span><h2 class="chapter">20 Compiler Definitions</h2>
 
-<dl>
-<dt id="index-EMIT_002dFN">Function: <strong>EMIT-FN</strong> <em>(turn-on)</em></dt>
+<dl class="def">
+<dt id="index-EMIT_002dFN"><span class="category">Function: </span><span><strong>EMIT-FN</strong> <em>(turn-on)</em><a href='#index-EMIT_002dFN' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:COMPILER
 </p>
 <p>If TURN-ON is t, the subsequent calls to  COMPILE-FILE will
@@ -58,8 +62,8 @@ This latter file must be manually loaded to call emit-fn.
 </p>
 
 </dd></dl>
-<dl>
-<dt id="index-_002aCMPINCLUDE_002dSTRING_002a">Variable: <strong>*CMPINCLUDE-STRING*</strong></dt>
+<dl class="def">
+<dt id="index-_002aCMPINCLUDE_002dSTRING_002a"><span class="category">Variable: </span><span><strong>*CMPINCLUDE-STRING*</strong><a href='#index-_002aCMPINCLUDE_002dSTRING_002a' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:COMPILER
 If it is a string it holds the text of the cmpinclude.h file appropriate for
 this version.  Otherwise the usual #include of *cmpinclude* will be used.  To
@@ -67,8 +71,8 @@ disable this feature set *cmpinclude-string* to NIL in the init-form.
 </p>
 
 </dd></dl>
-<dl>
-<dt id="index-EMIT_002dFN-1">Function: <strong>EMIT-FN</strong> <em>(turn-on)</em></dt>
+<dl class="def">
+<dt id="index-EMIT_002dFN-1"><span class="category">Function: </span><span><strong>EMIT-FN</strong> <em>(turn-on)</em><a href='#index-EMIT_002dFN-1' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:COMPILER
 </p>
 
@@ -93,8 +97,8 @@ tools.
 </p>
 
 </dd></dl>
-<dl>
-<dt id="index-MAKE_002dALL_002dPROCLAIMS">Function: <strong>MAKE-ALL-PROCLAIMS</strong> <em>(&amp;rest directories)</em></dt>
+<dl class="def">
+<dt id="index-MAKE_002dALL_002dPROCLAIMS"><span class="category">Function: </span><span><strong>MAKE-ALL-PROCLAIMS</strong> <em>(&amp;rest directories)</em><a href='#index-MAKE_002dALL_002dPROCLAIMS' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:COMPILER
 </p>
 
@@ -122,8 +126,8 @@ proclamations.
 
 
 </dd></dl>
-<dl>
-<dt id="index-MAKE_002dPROCLAIMS">Function: <strong>MAKE-PROCLAIMS</strong> <em>(&amp;optional (stream *standard-output*))</em></dt>
+<dl class="def">
+<dt id="index-MAKE_002dPROCLAIMS"><span class="category">Function: </span><span><strong>MAKE-PROCLAIMS</strong> <em>(&amp;optional (stream *standard-output*))</em><a href='#index-MAKE_002dPROCLAIMS' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:COMPILER
 </p>
 
@@ -133,8 +137,8 @@ on how to collect this.  Simply use LOAD to load in .fn files.
 </p>
 
 </dd></dl>
-<dl>
-<dt id="index-LIST_002dUNDEFINED_002dFUNCTIONS">Function: <strong>LIST-UNDEFINED-FUNCTIONS</strong> <em>()</em></dt>
+<dl class="def">
+<dt id="index-LIST_002dUNDEFINED_002dFUNCTIONS"><span class="category">Function: </span><span><strong>LIST-UNDEFINED-FUNCTIONS</strong> <em>()</em><a href='#index-LIST_002dUNDEFINED_002dFUNCTIONS' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:COMPILER
 </p>
 
@@ -152,8 +156,8 @@ or
 </pre></div>
 
 </dd></dl>
-<dl>
-<dt id="index-WHO_002dCALLS">Function: <strong>WHO-CALLS</strong> <em>(function-name)</em></dt>
+<dl class="def">
+<dt id="index-WHO_002dCALLS"><span class="category">Function: </span><span><strong>WHO-CALLS</strong> <em>(function-name)</em><a href='#index-WHO_002dCALLS' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:COMPILER
 </p>
 
@@ -161,8 +165,8 @@ or
 </p>
 
 </dd></dl>
-<dl>
-<dt id="index-LIST_002dUNCALLED_002dFUNCTIONS">Function: <strong>LIST-UNCALLED-FUNCTIONS</strong> <em>()</em></dt>
+<dl class="def">
+<dt id="index-LIST_002dUNCALLED_002dFUNCTIONS"><span class="category">Function: </span><span><strong>LIST-UNCALLED-FUNCTIONS</strong> <em>()</em><a href='#index-LIST_002dUNCALLED_002dFUNCTIONS' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:COMPILER
 </p>
 
@@ -174,8 +178,8 @@ special compiler optimizer properties which would eliminate an actual call.
 
 
 </dd></dl>
-<dl>
-<dt id="index-_002aCC_002a">Variable: <strong>*CC*</strong></dt>
+<dl class="def">
+<dt id="index-_002aCC_002a"><span class="category">Variable: </span><span><strong>*CC*</strong><a href='#index-_002aCC_002a' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:COMPILER
 Has value a string which controls which C compiler is used by GCL.
 Usually this string is obtained from the machine.defs file, but
@@ -183,8 +187,8 @@ may be reset by the user, to change compilers or add an include path.
 </p>
 
 </dd></dl>
-<dl>
-<dt id="index-_002aSPLIT_002dFILES_002a">Variable: <strong>*SPLIT-FILES*</strong></dt>
+<dl class="def">
+<dt id="index-_002aSPLIT_002dFILES_002a"><span class="category">Variable: </span><span><strong>*SPLIT-FILES*</strong><a href='#index-_002aSPLIT_002dFILES_002a' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:COMPILER
 This affects the behaviour of compile-file, and is useful for cases where
 the C compiler cannot handle large C files resulting from lisp compilation.
@@ -201,8 +205,8 @@ The package information will be inserted in each file.
 </p>
 
 </dd></dl>
-<dl>
-<dt id="index-_002aCOMPILE_002dORDINARIES_002a">Variable: <strong>*COMPILE-ORDINARIES*</strong></dt>
+<dl class="def">
+<dt id="index-_002aCOMPILE_002dORDINARIES_002a"><span class="category">Variable: </span><span><strong>*COMPILE-ORDINARIES*</strong><a href='#index-_002aCOMPILE_002dORDINARIES_002a' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:COMPILER
 If this has a non nil value [default = nil], then all top level
 forms will be compiled into machine instructions.    Otherwise
@@ -212,10 +216,11 @@ with (progn &rsquo;compile ...) will do so.
 
 </dd></dl>
 
+</div>
 <hr>
 <div class="header">
 <p>
-Next: <a href="Function-and-Variable-Index.html" accesskey="n" rel="next">Function and Variable Index</a>, Previous: <a href="Miscellaneous.html" accesskey="p" rel="prev">Miscellaneous</a>, Up: <a href="index.html" accesskey="u" rel="up">Top</a> &nbsp; [<a href="Function-and-Variable-Index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
+Next: <a href="Function-and-Variable-Index.html">Function and Variable Index</a>, Previous: <a href="Miscellaneous.html">Miscellaneous</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
 </div>
 
 

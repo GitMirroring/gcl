@@ -1,4 +1,4 @@
-This is gcl.info, produced by makeinfo version 6.7 from gcl.texi.
+This is gcl.info, produced by makeinfo version 6.8 from gcl.texi.
 
 This is a Texinfo GNU Common Lisp Manual based on the draft ANSI
 standard for Common Lisp.
@@ -3004,7 +3004,7 @@ the value associated with that key.
   acons  assoc-if      pairlis  rassoc-if      
   assoc  assoc-if-not  rassoc   rassoc-if-not  
 
-  Figure 14-4: Some defined names related to assocation lists.
+  Figure 14-4: Some defined names related to association lists.
 
 
 
@@ -5804,7 +5804,7 @@ returned.
 
    setf of getf may be used to associate a new object with an existing
 indicator in the property list held by place, or to create a new
-assocation if none exists.
+association if none exists.
 
    If there are multiple properties_1 with that property indicator, setf
 of getf associates the new-value with the first such property.

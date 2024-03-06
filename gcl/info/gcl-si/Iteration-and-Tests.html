@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<!-- Created by GNU Texinfo 6.7, http://www.gnu.org/software/texinfo/ -->
+<!-- Created by GNU Texinfo 6.8, https://www.gnu.org/software/texinfo/ -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>Iteration and Tests (GCL SI Manual)</title>
@@ -10,19 +10,21 @@
 <meta name="resource-type" content="document">
 <meta name="distribution" content="global">
 <meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
 <link href="index.html" rel="start" title="Top">
 <link href="Function-and-Variable-Index.html" rel="index" title="Function and Variable Index">
-<link href="Function-and-Variable-Index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
 <link href="index.html" rel="up" title="Top">
 <link href="User-Interface.html" rel="next" title="User Interface">
 <link href="Structures.html" rel="prev" title="Structures">
 <style type="text/css">
 <!--
+a.copiable-anchor {visibility: hidden; text-decoration: none; line-height: 0em}
 a.summary-letter {text-decoration: none}
 blockquote.indentedblock {margin-right: 0em}
 div.display {margin-left: 3.2em}
 div.example {margin-left: 3.2em}
-div.lisp {margin-left: 3.2em}
 kbd {font-style: oblique}
 pre.display {font-family: inherit}
 pre.format {font-family: inherit}
@@ -31,6 +33,7 @@ pre.menu-preformatted {font-family: serif}
 span.nolinebreak {white-space: nowrap}
 span.roman {font-family: initial; font-weight: normal}
 span.sansserif {font-family: sans-serif; font-weight: normal}
+span:hover a.copiable-anchor {visibility: visible}
 ul.no-bullet {list-style: none}
 -->
 </style>
@@ -39,15 +42,16 @@ ul.no-bullet {list-style: none}
 </head>
 
 <body lang="en">
-<span id="Iteration-and-Tests"></span><div class="header">
+<div class="chapter" id="Iteration-and-Tests">
+<div class="header">
 <p>
-Next: <a href="User-Interface.html" accesskey="n" rel="next">User Interface</a>, Previous: <a href="Structures.html" accesskey="p" rel="prev">Structures</a>, Up: <a href="index.html" accesskey="u" rel="up">Top</a> &nbsp; [<a href="Function-and-Variable-Index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
+Next: <a href="User-Interface.html" accesskey="n" rel="next">User Interface</a>, Previous: <a href="Structures.html" accesskey="p" rel="prev">Structures</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
 </div>
 <hr>
 <span id="Iteration-and-Tests-1"></span><h2 class="chapter">11 Iteration and Tests</h2>
 
-<dl>
-<dt id="index-DO_002dEXTERNAL_002dSYMBOLS">Macro: <strong>DO-EXTERNAL-SYMBOLS</strong></dt>
+<dl class="def">
+<dt id="index-DO_002dEXTERNAL_002dSYMBOLS"><span class="category">Macro: </span><span><strong>DO-EXTERNAL-SYMBOLS</strong><a href='#index-DO_002dEXTERNAL_002dSYMBOLS' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -63,8 +67,8 @@ Then evaluates RESULT-FORM (which defaults to NIL) and returns the value(s).
 
 </dd></dl>
 
-<dl>
-<dt id="index-DO_002a">Special Form: <strong>DO*</strong></dt>
+<dl class="def">
+<dt id="index-DO_002a"><span class="category">Special Form: </span><span><strong>DO*</strong><a href='#index-DO_002a' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -79,8 +83,8 @@ like LET* and SETQ do.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DO_002dALL_002dSYMBOLS">Macro: <strong>DO-ALL-SYMBOLS</strong></dt>
+<dl class="def">
+<dt id="index-DO_002dALL_002dSYMBOLS"><span class="category">Macro: </span><span><strong>DO-ALL-SYMBOLS</strong><a href='#index-DO_002dALL_002dSYMBOLS' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -95,8 +99,8 @@ returns the value(s).
 
 </dd></dl>
 
-<dl>
-<dt id="index-YES_002dOR_002dNO_002dP">Function: <strong>YES-OR-NO-P</strong> <em>(&amp;optional (format-string nil) &amp;rest args)</em></dt>
+<dl class="def">
+<dt id="index-YES_002dOR_002dNO_002dP"><span class="category">Function: </span><span><strong>YES-OR-NO-P</strong> <em>(&amp;optional (format-string nil) &amp;rest args)</em><a href='#index-YES_002dOR_002dNO_002dP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Asks the user a question whose answer is either &rsquo;YES&rsquo; or &rsquo;NO&rsquo;.  If FORMAT-
@@ -107,8 +111,8 @@ printed as if FORMAT-STRING and ARGs were given to FORMAT, and then a prompt
 
 </dd></dl>
 
-<dl>
-<dt id="index-MAPHASH">Function: <strong>MAPHASH</strong> <em>#'hash-table</em></dt>
+<dl class="def">
+<dt id="index-MAPHASH"><span class="category">Function: </span><span><strong>MAPHASH</strong> <em>#'hash-table</em><a href='#index-MAPHASH' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>For each entry in HASH-TABLE, calls FUNCTION on the key and value of the
@@ -117,8 +121,8 @@ entry; returns NIL.
 
 </dd></dl>
 
-<dl>
-<dt id="index-MAPCAR">Function: <strong>MAPCAR</strong> <em>(fun list &amp;rest more-lists)</em></dt>
+<dl class="def">
+<dt id="index-MAPCAR"><span class="category">Function: </span><span><strong>MAPCAR</strong> <em>(fun list &amp;rest more-lists)</em><a href='#index-MAPCAR' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Applies FUN to successive cars of LISTs and returns the results as a list.
@@ -126,8 +130,8 @@ entry; returns NIL.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DOLIST">Special Form: <strong>DOLIST</strong></dt>
+<dl class="def">
+<dt id="index-DOLIST"><span class="category">Special Form: </span><span><strong>DOLIST</strong><a href='#index-DOLIST' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -141,8 +145,8 @@ LISTFORM.  Then returns the value(s) of RESULT (which defaults to NIL).
 
 </dd></dl>
 
-<dl>
-<dt id="index-EQ">Function: <strong>EQ</strong> <em>(x y)</em></dt>
+<dl class="def">
+<dt id="index-EQ"><span class="category">Function: </span><span><strong>EQ</strong> <em>(x y)</em><a href='#index-EQ' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if X and Y are the same identical object; NIL otherwise.
@@ -150,8 +154,8 @@ LISTFORM.  Then returns the value(s) of RESULT (which defaults to NIL).
 
 </dd></dl>
 
-<dl>
-<dt id="index-EQUALP">Function: <strong>EQUALP</strong> <em>(x y)</em></dt>
+<dl class="def">
+<dt id="index-EQUALP"><span class="category">Function: </span><span><strong>EQUALP</strong> <em>(x y)</em><a href='#index-EQUALP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if X and Y are EQUAL, if they are characters and satisfy CHAR-EQUAL,
@@ -161,8 +165,8 @@ components that are all EQUALP.  Returns NIL otherwise.
 
 </dd></dl>
 
-<dl>
-<dt id="index-EQUAL">Function: <strong>EQUAL</strong> <em>(x y)</em></dt>
+<dl class="def">
+<dt id="index-EQUAL"><span class="category">Function: </span><span><strong>EQUAL</strong> <em>(x y)</em><a href='#index-EQUAL' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Returns T if X and Y are EQL or if they are of the same type and corresponding
@@ -173,8 +177,8 @@ arrays must be EQ to be EQUAL.
 
 </dd></dl>
 
-<dl>
-<dt id="index-DO_002dSYMBOLS">Macro: <strong>DO-SYMBOLS</strong></dt>
+<dl class="def">
+<dt id="index-DO_002dSYMBOLS"><span class="category">Macro: </span><span><strong>DO-SYMBOLS</strong><a href='#index-DO_002dSYMBOLS' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -190,8 +194,8 @@ RESULT-FORM (which defaults to NIL) and returns the value(s).
 
 </dd></dl>
 
-<dl>
-<dt id="index-LOOP">Special Form: <strong>LOOP</strong></dt>
+<dl class="def">
+<dt id="index-LOOP"><span class="category">Special Form: </span><span><strong>LOOP</strong><a href='#index-LOOP' class='copiable-anchor'> &para;</a></span></dt>
 <dd><p>Package:LISP
 </p>
 <p>Syntax:
@@ -205,10 +209,11 @@ surrounded by an implicit NIL block.
 
 </dd></dl>
 
+</div>
 <hr>
 <div class="header">
 <p>
-Next: <a href="User-Interface.html" accesskey="n" rel="next">User Interface</a>, Previous: <a href="Structures.html" accesskey="p" rel="prev">Structures</a>, Up: <a href="index.html" accesskey="u" rel="up">Top</a> &nbsp; [<a href="Function-and-Variable-Index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
+Next: <a href="User-Interface.html">User Interface</a>, Previous: <a href="Structures.html">Structures</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Function-and-Variable-Index.html" title="Index" rel="index">Index</a>]</p>
 </div>
 
 

@@ -1,4 +1,4 @@
-This is gcl.info, produced by makeinfo version 6.7 from gcl.texi.
+This is gcl.info, produced by makeinfo version 6.8 from gcl.texi.
 
 This is a Texinfo GNU Common Lisp Manual based on the draft ANSI
 standard for Common Lisp.
@@ -4556,7 +4556,7 @@ is returned.  If no translation matches, an error is signaled.
 
    translate-logical-pathname might perform additional translations,
 typically to provide translation of file types to local naming
-conventions, to accomodate physical file systems with limited length
+conventions, to accommodate physical file systems with limited length
 names, or to deal with special character requirements such as
 translating hyphens to underscores or uppercase letters to lowercase.
 Any such additional translations are implementation-defined.  Some
@@ -6404,9 +6404,9 @@ a subtype of type character.
 Examples::
 ..........
 
-     ;; Note that the stream must accomodate at least the specified type,
-     ;; but might accomodate other types.  Further note that even if it does
-     ;; accomodate exactly the specified type, the type might be specified in
+     ;; Note that the stream must accommodate at least the specified type,
+     ;; but might accommodate other types.  Further note that even if it does
+     ;; accommodate exactly the specified type, the type might be specified in
      ;; any of several ways.
       (with-open-file (s "test" :element-type '(integer 0 1)
                                 :if-exists :error
@@ -7687,7 +7687,7 @@ of this specification to define.  A given implementation might not be
 able to support all of these options in exactly the manner stated.  An
 implementation is required to recognize all of these option keywords and
 to try to do something "reasonable" in the context of the host file
-system.  Where necessary to accomodate the file system, an
+system.  Where necessary to accommodate the file system, an
 implementation deviate slightly from the semantics specified here
 without being disqualified for consideration as a conforming
 implementation.  If it is utterly impossible for an implementation to
