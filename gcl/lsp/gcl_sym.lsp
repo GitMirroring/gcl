@@ -70,7 +70,7 @@
   (or (let ((x (c-symbol-sfdef s)))
 	(when (nani x) (cons 'special x)))
       (let ((x (c-symbol-gfdef s)))
-	(when (zerop (address x))
+	(when (eql (address x) +objnull+)
 	  (error 'undefined-function :name s))
 	(if (zerop (c-symbol-mflag s)) x (cons 'macro x)))))
 
@@ -82,7 +82,7 @@
 (defun makunbound (s)
   (declare (optimize (safety 1)))
   (check-type s symbol)
-  (c-set-symbol-dbind s (nani 0))
+  (c-set-symbol-dbind s (nani +objnull+))
   s)
 
 (defun set (s y)

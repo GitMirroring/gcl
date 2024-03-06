@@ -61,7 +61,7 @@ enum type {
 #define mark(a_)                 if (imcdr(a_)) mark_imm_fixnum(Zcdr(a_)); else (a_)->d.m=1
 #define unmark(a_)               if (imcdr(a_)) unmark_imm_fixnum(Zcdr(a_)); else (a_)->d.m=0
 #define is_free(a_)              (!is_imm_fixnum(a_) && !imcdr(a_) && (a_)->d.f)
-#define make_free(a_)            ({(a_)->fw=0;(a_)->d.f=1;(a_)->fw|=(fixnum)OBJNULL;})/*set_type_of(a_,t_other)*/
+#define make_free(a_)            ({(a_)->fw=0;(a_)->d.f=1;(a_)->d.h=(fixnum)OBJNULL ? 1 : 0;})
 #define make_unfree(a_)          {(a_)->d.f=0;}
 
 #ifdef WIDE_CONS
@@ -81,7 +81,7 @@ enum type {
 #endif
 
 #define set_type_of(x,y) ({object _x=(object)(x);enum type _y=(y);_x->d.f=0;\
-    if (TYPEWORD_TYPE_P(_y)) {_x->d.e=1;_x->d.t=_y;_x->fw|=(fixnum)OBJNULL;}})
+      if (TYPEWORD_TYPE_P(_y)) {_x->d.e=1;_x->d.t=_y;_x->d.h=(fixnum)OBJNULL ? 1 : 0;}})
 
 #ifndef WIDE_CONS
 

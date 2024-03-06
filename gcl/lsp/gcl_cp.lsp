@@ -195,7 +195,7 @@
 
 (defun funcallable-symbol-p (s)
   (and (symbolp s)
-       (/= (si::address (c-symbol-gfdef s)) 0)
+       (/= (si::address (c-symbol-gfdef s)) +objnull+)
        (= (c-symbol-mflag s) 0)
        (= (c-symbol-sfdef s) (si::address nil))))
 (setf (get 'funcallable-symbol-p 'cmp-inline) t)

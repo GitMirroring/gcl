@@ -9,22 +9,24 @@ typedef unsigned long   ufixnum;
 #ifndef WORDS_BIGENDIAN
 
 /* high bit must be clear to distinguish from high immediate fixnum*/
-#define FRSTWRD(t_,b_,a_...) ufixnum    e:1,m:1,f:1,    t_:5,t:5,st:3,a_,b_
-#define FIRSTWORD            ufixnum    e:1,m:1,f:1,    tt:5,t:5,st:3,w:LM(16)
-#define FSTPWORD             ufixnum  emf:3,            tp:10,   st:3,w:LM(16)
-#define MARKWORD             ufixnum    e:1,   mf:2,    tt:5,t:5,x:LM(13)
-#define SGCMWORD             ufixnum    e:1,mf:2,       tt:5,t:5,x:LM(13)
-#define TYPEWORD             ufixnum  emf:3,            tt:5,t:5,x:LM(13)
+#define FRSTWRD(t_,b_,a_...) ufixnum    e:1,m:1,f:1,    t_:5,t:5,st:3,a_,b_,h:1
+#define FRSTWRDF(t_,a_...)   ufixnum    e:1,m:1,f:1,    t_:5,t:5,st:3,a_,h:1
+#define FIRSTWORD            ufixnum    e:1,m:1,f:1,    tt:5,t:5,st:3,w:LM(17),h:1
+#define FSTPWORD             ufixnum  emf:3,            tp:10,   st:3,w:LM(17),h:1
+#define MARKWORD             ufixnum    e:1,   mf:2,    tt:5,t:5,xx:LM(14),h:1
+#define SGCMWORD             ufixnum    e:1,mf:2,       tt:5,t:5,xx:LM(14),h:1
+#define TYPEWORD             ufixnum  emf:3,            tt:5,t:5,xx:LM(14),h:1
 
 #else
 
 /* high bit must be clear to distinguish from high immediate fixnum*/
-#define FRSTWRD(t_,b_,a_...) ufixnum b_,a_,   st:3,t:5,t_:5,    f:1,m:1,e:1
-#define FIRSTWORD            ufixnum w:LM(16),st:3,t:5,tt:5,    f:1,m:1,e:1
-#define FSTPWORD             ufixnum w:LM(16),st:3,tp:10,             emf:3
-#define MARKWORD             ufixnum x:LM(13),     t:5,tt:5,       mf:2,e:1
-#define SGCMWORD             ufixnum x:LM(13),     t:5,tt:5,       mf:2,e:1
-#define TYPEWORD             ufixnum x:LM(13),     t:5,tt:5,          emf:3
+#define FRSTWRD(t_,b_,a_...) ufixnum h:1,b_,a_,   st:3,t:5,t_:5,    f:1,m:1,e:1
+#define FRSTWRDF(t_,a_...)   ufixnum h:1,a_,   st:3,t:5,t_:5,    f:1,m:1,e:1
+#define FIRSTWORD            ufixnum h:1,w:LM(17),st:3,t:5,tt:5,    f:1,m:1,e:1
+#define FSTPWORD             ufixnum h:1,w:LM(17),st:3,tp:10,             emf:3
+#define MARKWORD             ufixnum h:1,w:LM(14),     t:5,tt:5,       mf:2,e:1
+#define SGCMWORD             ufixnum h:1,w:LM(14),     t:5,tt:5,       mf:2,e:1
+#define TYPEWORD             ufixnum h:1,w:LM(14),     t:5,tt:5,          emf:3
 
 #endif
 
@@ -234,30 +236,28 @@ struct hashtable {           /*  hash table header  */
 #if SIZEOF_LONG == 8
 #ifdef WORDS_BIGENDIAN
 #define ARRAYWORD(b_,c_)						\
-  FRSTWRD(J(b_,J(c_,elttype)),						\
-	  pd2:LM(63),							\
-	  J(b_,J(c_,eltmode)):3,					\
-          J(b_,J(c_,dim)):ARRAY_DIMENSION_BITS,				\
-	  J(b_,J(c_,hasfillp)):1,					\
-	  J(b_,J(c_,writable)):1,					\
-	  J(b_,J(c_,rank)):ARRAY_RANK_BITS,				\
-	  pd1:1,							\
-	  J(b_,J(c_,adjustable)):1,					\
-	  J(b_,J(c_,offset)):3,						\
-	  J(b_,J(c_,eltsize)):3)
+  FRSTWRDF(J(b_,J(c_,elttype)),						\
+	   J(b_,J(c_,eltmode)):3,					\
+	   J(b_,J(c_,dim)):ARRAY_DIMENSION_BITS,			\
+	   J(b_,J(c_,hasfillp)):1,					\
+	   J(b_,J(c_,writable)):1,					\
+	   J(b_,J(c_,rank)):ARRAY_RANK_BITS,				\
+	   pd1:1,							\
+	   J(b_,J(c_,adjustable)):1,					\
+	   J(b_,J(c_,offset)):3,					\
+	   J(b_,J(c_,eltsize)):3)
 #else
 #define ARRAYWORD(b_,c_)						\
-  FRSTWRD(J(b_,J(c_,elttype)),						\
-	  pd2:LM(63),							\
-	  J(b_,J(c_,hasfillp)):1,					\
-	  J(b_,J(c_,writable)):1,					\
-	  J(b_,J(c_,rank)):ARRAY_RANK_BITS,				\
-	  pd1:1,							\
-	  J(b_,J(c_,adjustable)):1,					\
-	  J(b_,J(c_,offset)):3,						\
-	  J(b_,J(c_,eltsize)):3,					\
-	  J(b_,J(c_,eltmode)):3,					\
-	  J(b_,J(c_,dim)):ARRAY_DIMENSION_BITS)
+  FRSTWRDF(J(b_,J(c_,elttype)),						\
+	   J(b_,J(c_,hasfillp)):1,					\
+	   J(b_,J(c_,writable)):1,					\
+	   J(b_,J(c_,rank)):ARRAY_RANK_BITS,				\
+	   pd1:1,							\
+	   J(b_,J(c_,adjustable)):1,					\
+	   J(b_,J(c_,offset)):3,					\
+	   J(b_,J(c_,eltsize)):3,					\
+	   J(b_,J(c_,eltmode)):3,					\
+	   J(b_,J(c_,dim)):ARRAY_DIMENSION_BITS)
 #endif
 
 #define atem(a_,b_,c_)				\
@@ -267,14 +267,13 @@ struct hashtable {           /*  hash table header  */
 #else
 
 #define ARRAYWORD(b_,c_)						\
-  FRSTWRD(J(b_,J(c_,elttype)),						\
-	  pad:LM(31),							\
-	  J(b_,J(c_,hasfillp)):1,					\
-	  J(b_,J(c_,adjustable)):1,					\
-	  J(b_,J(c_,writable)):1,					\
-	  J(b_,J(c_,offset)):3,						\
-	  J(b_,J(c_,eltsize)):3,					\
-	  J(b_,J(c_,rank)):ARRAY_RANK_BITS)
+  FRSTWRDF(J(b_,J(c_,elttype)),						\
+	   J(b_,J(c_,hasfillp)):1,					\
+	   J(b_,J(c_,adjustable)):1,					\
+	   J(b_,J(c_,writable)):1,					\
+	   J(b_,J(c_,offset)):3,					\
+	   J(b_,J(c_,eltsize)):3,					\
+	   J(b_,J(c_,rank)):ARRAY_RANK_BITS)
 
 #define atem(a_,b_,c_)					\
   ARRAYWORD(b_,c_);					\
@@ -462,14 +461,14 @@ struct function {
 
   FRSTWRD(tt,
 #if SIZEOF_LONG == 8
-	  fw:LM(38),
+	  fw:LM(39),
 	  fun_minarg:6,    /* required arguments */
 	  fun_maxarg:6,    /* maximum arguments */
 	  pd:4,
 	  fun_neval:5,     /* maximum extra values set */
 	  fun_vv:1         /* variable number of values */
 #else
-	  fw:LM(28),
+	  fw:LM(29),
 	  fun_minarg:6,    /* required arguments */
 	  fun_maxarg:6     /* maximum arguments */
 #endif
@@ -492,7 +491,7 @@ struct function {
 struct cfdata {
 
   FRSTWRD(tt,
-	  cfw:LM(17),
+	  cfw:LM(18),
 	  cfd_prof:1       /* profiling */
 	  );
 

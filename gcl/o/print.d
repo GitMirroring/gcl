@@ -1649,7 +1649,7 @@ write_object(object x,int level) {
 		case smm_string_input:
 		        write_unreadable_str(x,"#<string-input stream ");
 			y = x->sm.sm_object0;
-			if (y) {
+			if (y!=OBJNULL) {
 			  write_str(" from \"");
 			  j = VLEN(y);
 			  for (i = 0;  i < j && i < 16;  i++)

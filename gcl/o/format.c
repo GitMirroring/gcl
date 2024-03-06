@@ -2694,7 +2694,7 @@ fmt_semicolon(bool colon, bool atsign)
 
 DEFVAR("*FORMAT-UNUSED-ARGS*",sSAformat_unused_argsA,SI,OBJNULL,"");
 
-static object justification_regexp,logical_block_regexp;
+static object justification_regexp=OBJNULL,logical_block_regexp=OBJNULL;
 
 static int
 fmt_pp_string(object control) {
