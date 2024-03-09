@@ -2176,13 +2176,12 @@
 (defvar *compiling-ordinary* nil)
 
 (defun compile-ordinary-p (form)
-  (when (consp form)
-    (or (eq (car form) 'fset)
-	(compile-ordinary-p (car form))
-	(compile-ordinary-p (cdr form)))))
+  (typecase form
+    ((cons (member lambda) (cons proper-list proper-list)) t)
+    (cons (or (compile-ordinary-p (car form)) (compile-ordinary-p (cdr form))))))
 
 (defun compile-ordinaryp (form)
-  (compile-ordinary-p (pd 'cmp-anon nil (list form))))
+  (compile-ordinary-p (cddr (pd 'cmp-anon nil (list form)))))
 
 (defun t1ordinary (form)
   (cond ((unless *compiling-ordinary*
