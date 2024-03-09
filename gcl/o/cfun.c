@@ -158,75 +158,8 @@ DEFUN("DLLIST-PUSH",object,fSdllist_push,SI,3,3,NONE,OO,OI,OO,OO,(object cfd,obj
 
 }
 
-static object MFnew(object sym, void (*self)(), object data)
-{
-	object cf;
 
-	if (type_of(sym) != t_symbol)
-		not_a_symbol(sym);
-	if (sym->s.s_sfdef != NOT_SPECIAL && sym->s.s_mflag)
-		sym->s.s_sfdef = NOT_SPECIAL;
-	cf=make_cfun(self,sym,data,NULL,0);
-	/* cf = alloc_object(t_cfun); */
-	/* cf->cf.cf_self = self; */
-	/* cf->cf.cf_name = sym; */
-	/* cf->cf.cf_call = Cnil; */
-	/* cf->cf.cf_data = data; */
-	sym = clear_compiler_properties(sym,cf);
- 	sym->s.s_gfdef = cf;
-	sym->s.s_mflag = FALSE;
-	return sym;
-}
-
-DEFUN("MF",object,fSmf,SI
-   ,2,2,NONE,OO,OO,OO,OO,(object name,object addr),"")
-
-{ /* 2 args */
-  MFnew(name,PADDR(addr),sSPmemory->s.s_dbind);
-  RETURN1(name);
-}
-
-
-
-static object
-MM(object sym, void (*self)(), char *start, int size, object data)
-{
-	object cf;
-
-	if (type_of(sym) != t_symbol)
-		not_a_symbol(sym);
-	if (sym->s.s_sfdef != NOT_SPECIAL)
-	  if (symbol_value(sSAinhibit_macro_specialA) != Cnil)
-	    sym->s.s_sfdef = NOT_SPECIAL;
-
-/*  && sym->s.s_mflag) */
 /* 		sym->s.s_sfdef = NOT_SPECIAL; */
-	cf=make_cfun(self,sym,data,start,size);
-	/* cf = alloc_object(t_cfun); */
-	/* cf->cf.cf_self = self; */
-	/* cf->cf.cf_name = sym; */
-	/* cf->cf.cf_call = Cnil; */
-	/* cf->cf.cf_data = data; */
-	/* data->cfd.cfd_start=start;  */
-	/* data->cfd.cfd_size=size; */
-	sym = 	clear_compiler_properties(sym,cf);
-	sym->s.s_gfdef = cf;
-	sym->s.s_sfdef = NOT_SPECIAL;
-	sym->s.s_mflag = TRUE;
-	return sym;
-}
-
-DEFUN("MM",object,fSmm,SI
-   ,2,2,NONE,OO,OO,OO,OO,(object name,object addr),"")
-
-{ /* 2 args */
-  MM(name,PADDR(addr),
-    /* bit wasteful to pass these in just to be reset to themselves..*/
-    sSPmemory->s.s_dbind->cfd.cfd_start,
-    sSPmemory->s.s_dbind->cfd.cfd_size,
-    sSPmemory->s.s_dbind
-     );RETURN1(name);
-}
 
   
 
