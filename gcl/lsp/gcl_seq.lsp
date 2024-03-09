@@ -25,9 +25,8 @@
 
 (in-package :si)
 
-#.`(defun make-sequence-element-type (xx &aux (x (cmp-norm-tp xx)))
+#.`(defun make-sequence-element-type (x)
      (or
-      #+pre-gcl(when (eq xx 'string) 'character);accelerator
       (cdr (assoc x
 		 ',(mapcar (lambda (x) (cons (cmp-norm-tp (car x)) (cdr x)))
 			   `((null . null) (cons . cons) (list . list)
@@ -67,8 +66,7 @@
     (let ((x (lremove-duplicates (ntp-vector-lengths (caddr tp)))))
       (unless (member '* x) x))))
 
-(defun sequence-tp-lengths (type &aux (tp (cmp-norm-tp type)))
-  #+pre-gcl(when (eq type 'string) (return-from sequence-tp-lengths nil))
+(defun sequence-tp-lengths (tp)
   (if (tp<= tp #tlist)
       (cons-tp-lengths tp)
       (vector-tp-lengths tp)))
@@ -76,17 +74,20 @@
 					;type-lengths
 
 
-(defun sequence-tp-nonsimple-p (type)
-  #-pre-gcl(when (eq type 'string) (return-from sequence-tp-nonsimple-p nil))
-  (tp<= (cmp-norm-tp type) #tnon-simple-array))
+(defun sequence-tp-nonsimple-p (tp)
+  (tp<= tp #tnon-simple-array))
 (setf (get 'sequence-tp-nonsimple-p 'type-propagator) 'compiler::expand-type-propagator)
 
 #.`(defun make-sequence (type size &key initial-element)
      (declare (optimize (safety 1)))
      (check-type type type-spec)
      (check-type size seqbnd)
-     (let* ((st (make-sequence-element-type type));FIXME cmp-norm-tp once
-	    (lns (sequence-tp-lengths type)))
+     #+pre-gcl(when (eq type 'string);accelerator
+		(return-from make-sequence
+		  (make-vector 'character size nil nil nil 0 nil initial-element)))
+     (let* ((tp (cmp-norm-tp type))
+	    (st (make-sequence-element-type tp))
+	    (lns (sequence-tp-lengths tp)))
        (check-type st (not null))
        (when lns
 	 (assert (member size lns) (size) 'type-error :datum size :expected-type (cons 'member lns)))
@@ -95,7 +96,7 @@
 	 ((cons list)
 	  (when (eq st 'cons) (check-type size (integer 1)))
 	  (make-list size :initial-element initial-element))
-	 (otherwise (make-vector st size (sequence-tp-nonsimple-p type) nil nil 0 nil initial-element)))))
+	 (otherwise (make-vector st size (sequence-tp-nonsimple-p tp) nil nil 0 nil initial-element)))))
 
 
 (defun concatenate (rt &rest seqs)
