@@ -376,12 +376,11 @@
 	  (push (cons (cadr l) tp) cps)))))
 
   (let ((s (> (body-safety others) (if (top-level-src-p) 0 1))))
-    (when cps
-      (unless s
-;	  (setq body `((let ,(mapcar (lambda (x) (list (car x) (car x))) cps) ,@body)))
-	(setq ts (nconc cps ts))))
     (when ctps
-      (setq body (nconc (if s ctps (mapcan (lambda (x) (when (eq (car x) 'assert) (list (cadr x)))) ctps)) body))))
+      (setq body (nconc (if s ctps
+			    (nconc (mapcar (lambda (x) `(infer-tp ,(car x) ,(cdr x))) cps)
+				   (mapcan (lambda (x) (when (eq (car x) 'assert) (list (cadr x)))) ctps)))
+			body))))
   (values body ss ts is others (when doc-p doc) cps)))
 
 ;; (defun c1body (body doc-p &aux ss is ts others cps)
