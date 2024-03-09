@@ -187,3 +187,41 @@
 		  +make-complex-alist+)
 	  :initial-value nil))
 (setf (get 'make-complex 'type-propagator) 'make-complex-propagator)
+
+(defun float-digits (x)
+  (declare (optimize (safety 1)))
+  (check-type x float);FIXME etypecase
+  (typecase x
+    (short-float 24)
+    (t 53)))
+
+(defun float-precision (x)
+  (declare (optimize (safety 1)))
+  (check-type x float);FIXME etypecase
+  (typecase x
+    ((member 0.0 0.0s0) 0)
+    (short-float 24)
+    (t 53)))
+
+(defun float-sign (x &optional (y 1.0))
+  (declare (optimize (safety 1)))
+  (check-type x float)
+  (check-type y float)
+  (let ((y (float (abs y) x)))
+    (if (minusp x) (- y) y)))
+
+(defun float-radix (x)
+  (declare (optimize (safety 1)))
+  (check-type x float);FIXME etypecase
+  2)
+
+(defun atomic-tp-propagator (f &rest r);  tp &aux (atp (atomic-tp tp)))
+  (declare (dynamic-extenr t))
+  (unless (member-if-not 'atomic-tp r)
+    (let ((l (multiple-value-list (apply f (mapcar (lambda (x) (car (atomic-tp x))) r)))))
+      (if (cdr l)
+	  `(returns-exactly ,@(mapcar 'object-tp l))
+	  (object-tp (car l))))))
+
+(dolist (l '(integer-decode-float decode-float scale-float));float-radix float-digits float-precision float-sign
+  (setf (get l 'type-propagator) 'atomic-tp-propagator (get l 'compiler::c1no-side-effects) t))

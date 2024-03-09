@@ -630,6 +630,75 @@ DEFUN("HASH-SET",object,fShash_set,SI,3,3,NONE,OO,OO,OO,OO,(object x,object y,ob
 
 }
 
+DEFUN("COMPLEX",object,fLcomplex,LISP,1,2,NONE,OO,OO,OO,OO,(object r,...),"") {
+  fixnum nargs=INIT_NARGS(1);
+  object l=Cnil,f=OBJNULL,i;
+  va_list ap;
+
+  va_start(ap,r);
+  i=NEXT_ARG(nargs,ap,l,f,make_fixnum(0));
+  va_end(ap);
+
+  check_type_or_rational_float(&r);
+  check_type_or_rational_float(&i);
+
+  RETURN1(make_complex(r,i));
+
+}
+
+DEFUN("FLOAT",object,fLfloat,LISP,1,2,NONE,OO,OO,OO,OO,(object x,...),"") {
+
+  fixnum nargs=INIT_NARGS(1);
+  object l=Cnil,f=OBJNULL,y;
+  va_list ap;
+  double d;
+  enum type t;
+
+  va_start(ap,x);
+  y=NEXT_ARG(nargs,ap,l,f,(t=type_of(x))==t_shortfloat || t==t_longfloat ? x : make_longfloat(0.0));
+  va_end(ap);
+
+  /* check_type_float(&x); */
+  check_type_float(&y);
+
+  t=type_of(y);
+
+  switch (type_of(x)) {
+  case t_fixnum:
+    if (t == t_shortfloat)
+      x = make_shortfloat((shortfloat)(fix(x)));
+    else
+      x = make_longfloat((double)(fix(x)));
+    break;
+
+  case t_bignum:
+  case t_ratio:
+    d = number_to_double(x);
+    if (t == t_shortfloat)
+      x = make_shortfloat((shortfloat)d);
+    else
+      x = make_longfloat(d);
+    break;
+
+  case t_shortfloat:
+    if (t == t_longfloat)
+      x = make_longfloat((double)(sf(x)));
+    break;
+
+  case t_longfloat:
+    if (t == t_shortfloat)
+      x = make_shortfloat((shortfloat)(lf(x)));
+    break;
+
+  default:
+    FEwrong_type_argument(TSor_rational_float, x);
+  }
+
+  RETURN1(x);
+
+}
+
+
 #ifndef NO_BOOT_H
 #include "boot.h"
 #endif

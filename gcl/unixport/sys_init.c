@@ -53,6 +53,9 @@ gcl_init_system(object no_init)
   check_init(lsp,gcl_typeof,no_init);
   check_init(lsp,gcl_subtypep,no_init);
   check_init(lsp,gcl_bit,no_init);
+#ifndef pre_gcl
+  check_init(lsp,gcl_bnum,no_init);
+#endif
 #ifdef pre_gcl/*FIXME coerce in compiled funcall*/
   check_init(lsp,gcl_type,no_init);
   check_init(lsp,gcl_typecase,no_init);
@@ -100,7 +103,9 @@ gcl_init_system(object no_init)
   
   check_init(lsp,gcl_callhash,no_init);
   check_init(lsp,gcl_describe,no_init);
+#ifdef pre_gcl
   check_init(lsp,gcl_bnum,no_init);
+#endif
 #ifndef pre_gcl
   check_init(lsp,gcl_mnum,no_init);
 #endif
