@@ -90,7 +90,7 @@
 
 (defconstant +objnull+ (objnull))
 
-#.`(defun coerce (object type &aux ntype (atp (listp type)) (ctp (if atp (car type) type)) (tp (when atp (cdr type))))
+(defun coerce (object type &aux ntype (atp (listp type)) (ctp (if atp (car type) type)) (tp (when atp (cdr type))))
   (declare (optimize (safety 2))) ;(print (list 'coerce object type))
 ;  (check-type type (or (member function) type-spec));FIXME
   (case ctp
@@ -102,12 +102,12 @@
 	    (function object) 
 	    ((and symbol (not boolean)) 
 	     (let* ((f (c-symbol-gfdef object))(fi (address f))(m (c-symbol-mflag object)))
-	       (check-type fi (and fixnum (not (integer ,+objnull+ ,+objnull+))))
+	       (check-type fi (and fixnum (not (integer #.+objnull+ #.+objnull+))))
 	       (check-type m  (integer 0 0))
 	       f))
 	    (cons (the function (eval object))))))
 	;FIXME member
-	((list cons vector array member simple-array non-simple-array)
+	((list cons vector string array member simple-array non-simple-array)
 	 (if (typep object type) object (replace (make-sequence type (length object)) object)))
 	(character (character object))
 	(short-float (float object 0.0S0))
