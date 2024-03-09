@@ -97,6 +97,13 @@
 
 
 
+(defvar *sosm* (make-string-output-stream))
+
+(defun get-sosm nil
+  (when *sosm*
+    (setf (fill-pointer (c-stream-object0 *sosm*)) 0)
+    *sosm*))
+
 (defmacro with-output-to-string ((var &optional string &key element-type) . body)
   (declare (optimize (safety 2)))
   (let ((e (sgen "WITH-OUTPUT-TO-STRING")))
@@ -105,7 +112,8 @@
       `(let* ((,e ,element-type)
 	      (,var ,(if string
 			 `(make-string-output-stream-from-string ,string)
-			 `(make-string-output-stream :element-type ,e))))
+			 `(or (get-sosm) (make-string-output-stream :element-type ,e))))
+	      (*sosm* (unless (eq ,var *sosm*) *sosm*)))
 	 ,@decls
 	 ,@ctps
 	 ,@body
@@ -143,20 +151,17 @@
 		  ((:right-margin    *print-right-margin*)     *print-right-margin*))
   (write-int x stream))
 
-(defun write-to-string (x &rest r &aux (stream (make-string-output-stream)))
+(defun write-to-string (x &rest r &aux (stream (or (get-sosm) (make-string-output-stream)))(*sosm* nil))
   (declare (optimize (safety 1))(dynamic-extent r))
   (apply 'write x :stream stream r)
   (get-output-stream-string stream))
 
-(defun prin1-to-string (object
-                        &aux (stream (make-string-output-stream)))
+(defun prin1-to-string (object &aux (stream (or (get-sosm) (make-string-output-stream)))(*sosm* nil))
   (declare (optimize (safety 2)))
   (prin1 object stream)
   (get-output-stream-string stream))
 
-
-(defun princ-to-string (object
-                        &aux (stream (make-string-output-stream)))
+(defun princ-to-string (object &aux (stream (or (get-sosm) (make-string-output-stream)))(*sosm* nil))
   (declare (optimize (safety 2)))
   (princ object stream)
   (get-output-stream-string stream))
@@ -505,4 +510,3 @@
      (let ((n (get-byte-stream-nchars x))
 	   (p (case pos (:start 0) (:end (file-length x)) (otherwise pos))))
        (if pos-p (when (fseek x (* p n)) p) (/ (ftell x) n))))))
-
