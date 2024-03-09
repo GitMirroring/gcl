@@ -1154,6 +1154,7 @@
     (when (constant-type-p b)
       (object-type (funcall f b)))))
 (dolist (l 'si::(expand-array-element-type
+		 cmp-norm-tp sequence-tp-nonsimple-p sequence-tp-lengths make-sequence-element-type
 		 expand-deftype sdata-includes
 		 lookup-simple-typep-fn lookup-typep-fn))
   (setf (get l 'compiler::c1no-side-effects) t)

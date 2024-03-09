@@ -33,7 +33,6 @@
 			     ,@(mapcar (lambda (x) `((vector ,x) . ,x)) +array-types+)))
 		 :test 'tp<=))
       (equal #tvector (if (listp x) (car x) x))))
-(setf (get 'make-sequence-element-type 'type-propagator) 'compiler::expand-type-propagator)
 
 (defun ntp-cons-lengths (x)
   (labels ((g (x) (if (integerp x) (1+ x) x))
@@ -70,13 +69,9 @@
   (if (tp<= tp #tlist)
       (cons-tp-lengths tp)
       (vector-tp-lengths tp)))
-(setf (get 'sequence-tp-lengths 'type-propagator) 'compiler::expand-type-propagator)
-					;type-lengths
-
 
 (defun sequence-tp-nonsimple-p (tp)
   (tp<= tp #tnon-simple-array))
-(setf (get 'sequence-tp-nonsimple-p 'type-propagator) 'compiler::expand-type-propagator)
 
 #.`(defun make-sequence (type size &key initial-element)
      (declare (optimize (safety 1)))
