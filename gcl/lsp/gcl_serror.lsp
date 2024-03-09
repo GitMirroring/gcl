@@ -154,6 +154,7 @@
      (muffle-warning nil :report "Skip warning."  (return-from warn nil)))
     (format *error-output* "~&Warning: ~a~%" c)
     nil))
+(putprop 'cerror t 'compiler::cmp-notinline)
 
 (dolist (l '(break cerror error universal-error-handler ihs-top get-sig-fn-name next-stack-frame check-type-symbol))
   (setf (get l 'dbl-invisible) t))
