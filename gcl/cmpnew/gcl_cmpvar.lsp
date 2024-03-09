@@ -369,9 +369,6 @@
 	     (set-var-reffed var)
 	     (keyed-cmpnote (list 'var-ref (var-name var))
 			    "Making variable ~s reference with barrier ~s" (var-name var) (if ccb 'cb (if clb 'lb)))
-	     (when (or ccb clb)
-	       (unless (eq (var-kind var) 'lexical)
-		 (cmpwarn "Cross closure reference to non-lexical variable ~s, which is likely not what you want" (var-name var))))
 	     (return-from c1vref (list* var (if (eq (var-kind var) 'lexical) (list ccb clb) '(nil nil))))))))
 
 ;; (defun c1vref (name &optional setq &aux ccb clb)
