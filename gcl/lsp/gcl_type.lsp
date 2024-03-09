@@ -532,7 +532,7 @@
 
 (defun hashable-typep (x)
   (or (when (symbolp x)
-	(unless (si-find-class x nil)
+	(unless (is-standard-class (si-find-class x nil))
 	  (let ((z (get x 's-data))) (if z (when (s-data-frozen z) x) x))))
       (when (listp x)
 	(when (eq (car x) 'member)
