@@ -1,3 +1,11 @@
+gcl (2.6.14-8) unstable; urgency=medium
+
+  * Version_2_6_15pre7
+  * Bug fix: "fricas: missing build-dep on libtirpc-dev or libtirpc-dev dependency in gcl",
+    thanks to Aurelien Jarno (Closes: #1065210).
+
+ -- Camm Maguire <camm@debian.org>  Sun, 10 Mar 2024 11:13:46 -0400
+
 gcl (2.6.14-7) unstable; urgency=medium
 
   * Version_2_6_15pre6
