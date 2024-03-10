@@ -8,7 +8,7 @@ Standards-Version: 4.5.0
 
 Package: gcl
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${gcc}, debconf (>= 1.2.0), emacs | emacsen, ucf
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${gcc}, debconf (>= 1.2.0), emacs | emacsen, ucf, libnsl-dev
 Breaks: emacsen-common (<< 2.0.0)
 Suggests: gcl-doc
 Description: GNU Common Lisp compiler
