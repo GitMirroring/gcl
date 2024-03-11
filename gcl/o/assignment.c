@@ -190,9 +190,10 @@ DEFUN("FSET",object,fSfset,SI,2,2,NONE,OO,OO,OO,OO,(object sym,object function),
   }
   
   sym->s.s_sfdef=NOT_SPECIAL;/*FIXME?*/
-  if (function->fun.fun_plist!=Cnil)
+  if (function->fun.fun_plist!=Cnil) {
     function->fun.fun_plist->c.c_cdr->c.c_cdr->c.c_cdr->c.c_cdr->c.c_cdr->c.c_car=sym;/*FIXME*/
-  
+    function->fun.fun_plist->c.c_cdr->c.c_cdr->c.c_cdr->c.c_car=sLAload_pathnameA->s.s_dbind;/*FIXME*/
+  }
   RETURN1(function);
 
 }

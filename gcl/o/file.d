@@ -1688,6 +1688,7 @@ const char *s;
 	if (user_match(s,strlen(s)))
 		return;
 	filename = make_simple_string(s);
+	bds_bind(sLAload_pathnameA,filename);
 	vs_push(filename);
 	strm = open_stream(filename, smm_input, Cnil, sKerror);
 	vs_push(strm);
@@ -1702,6 +1703,7 @@ const char *s;
 		vs_popp;
 	}
 	close_stream(strm);
+	bds_unwind1;
 	vs_reset;
 }
 
