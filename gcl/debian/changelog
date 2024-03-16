@@ -1,3 +1,11 @@
+gcl27 (2.7.0-21) unstable; urgency=high
+
+  * Version_2_7_0pre24
+  * Bug fix: "recent libc6-dev change causes XDR support to be dropped",
+    thanks to Aurelien Jarno (Closes: #1065207).
+
+ -- Camm Maguire <camm@debian.org>  Fri, 15 Mar 2024 20:00:19 -0400
+
 gcl27 (2.7.0-20) unstable; urgency=medium
 
   * Version_2_7_0pre23

@@ -1,2 +1,2 @@
-"Version_2_7_0pre23"
+"Version_2_7_0pre24"
 
