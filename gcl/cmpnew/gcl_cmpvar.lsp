@@ -631,7 +631,7 @@
 	(unless (type>= (var-mt v) tp)
 	  (setf (var-mt v) (type-and (bbump-tp (type-or1 (var-mt v) tp)) (var-dt v))))))))
 
-(defun set-form-type (form type) (sft form type))
+(defun set-form-type (form type &optional no-recur) (sft form type no-recur))
 
 ;; (defun set-form-type (form type) (setf (info-type (cadr form)) (type-and type (info-type (cadr form)))))
 ;  (sft form type))  FIXME cannot handle nil return types such as tail recursive calls
@@ -642,35 +642,40 @@
 	 (sft (car (last form)) type))
 	(t (sft-block (car form) block type) (sft-block (cdr form) block type))))
 
-(defun sft (form type)
+(defun sft (form type &optional no-recur);FIXME sft-block labels avoid mutual recursion
   (let ((it (info-type (cadr form))))
     (unless (type>= type it)
       (let ((nt (type-and type it)))
-	(when nt;FIXME
-;	  (when (eq form +c1nil+) (break))
-	  (setf (info-type (cadr form)) nt)
+	(unless nt
+	  (unless type
+	    (cmpwarn "NOT setting form type from ~s to ~s" (cmp-unnorm-tp it) (cmp-unnorm-tp type))
+	    (return-from sft nil))
+	  (cmpwarn "Setting form type ~s to orthogonal type ~s"
+		   (cmp-unnorm-tp it) (cmp-unnorm-tp type))
+	  (setq nt type))
+	(setf (info-type (cadr form)) nt)
+	(unless no-recur
 	  (case (car form)
-		(block (sft-block (fourth form) (third form) type))
-		((decl-body inline) (sft (car (last form)) type))
-		((let let*)
-		 (sft (car (last form)) type)
-		 (mapc (lambda (x y) (sft y (var-type x)))
-		       (caddr form) (cadddr form)))
-		(var (do-setq-tp (caaddr form) nil (type-and nt (var-type (caaddr form)))))
-		(progn (sft (car (last (third form))) type))
-		;; (if 
-		;;     (when (ignorable-form (third form));FIXME put third form into progn
-		;;       (let ((tt (type-and type (nil-to-t (info-type (cadr (fourth form))))))
-		;; 	    (ft (type-and type (nil-to-t (info-type (cadr (fifth form)))))))
-		;; 	(unless tt
-		;; 	  (sft (fifth form) type)
-		;; 	  (setf (car form) 'progn (cadr form) (cadr (fifth form)) (caddr form) 
-		;; 		(list (fifth form)) (cdddr form) nil))
-		;; 	(unless ft
-		;; 	  (sft (fourth form) type)
-		;; 	  (setf (car form) 'progn (cadr form) (cadr (fourth form)) (caddr form) 
-		;; 		(list (fourth form)) (cdddr form) nil)))))
-		))))))
+	    (block (sft-block (fourth form) (third form) type))
+	    ((decl-body inline) (sft (car (last form)) type))
+	    ((let let*)
+	     (sft (car (last form)) type)
+	     (mapc (lambda (x y) (sft y (var-type x)))
+		   (caddr form) (cadddr form)))
+	    (var (do-setq-tp (caaddr form) nil (type-and nt (var-type (caaddr form)))))
+	    (progn (sft (car (last (third form))) type))))))))
+	  ;; (if
+	  ;;     (when (ignorable-form (third form));FIXME put third form into progn
+	  ;;       (let ((tt (type-and type (nil-to-t (info-type (cadr (fourth form))))))
+	  ;; 	    (ft (type-and type (nil-to-t (info-type (cadr (fifth form)))))))
+	  ;; 	(unless tt
+	  ;; 	  (sft (fifth form) type)
+	  ;; 	  (setf (car form) 'progn (cadr form) (cadr (fifth form)) (caddr form)
+	  ;; 		(list (fifth form)) (cdddr form) nil))
+	  ;; 	(unless ft
+	  ;; 	  (sft (fourth form) type)
+	  ;; 	  (setf (car form) 'progn (cadr form) (cadr (fourth form)) (caddr form)
+	  ;; 		(list (fourth form)) (cdddr form) nil)))))
 
 (defun c1setq1 (name form &aux (info (make-info)) type form1 name1)
   (cmpck (not (symbolp name)) "The variable ~s is not a symbol." name)

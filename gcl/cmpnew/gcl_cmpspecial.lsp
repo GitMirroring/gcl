@@ -62,10 +62,11 @@
   (when (equal dtype #tboolean)
     (unless (type>= dtype (info-type info))
       (return-from c1the (c1expr `(when ,(cadr args) t)))))
-  (setq type (type-and dtype (info-type info)))
+;  (setq type (type-and dtype (info-type info)))
 
   (setq form (list* (car form) info (cddr form)))
-  (if (type>= #tboolean dtype) (setf (info-type (cadr form)) type) (set-form-type form type))
+  (set-form-type form dtype (type>= #tboolean dtype));FIXME understand boolean exception
+;  (if (type>= #tboolean dtype) (setf (info-type (cadr form)) type) (set-form-type form dtype));FIXME
 ;  (setf (info-type info) type)
   form)
 
