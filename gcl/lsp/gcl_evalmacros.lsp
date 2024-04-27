@@ -333,14 +333,16 @@
 (defmacro dotimes ((var form &optional val) &rest body
 		   &aux (s (sgen "DOTIMES"))(m (sgen "DOTIMES")))
   (declare (optimize (safety 1)))
-  `(let* ((,s (block nil ,form))(,m (min (max 0 ,s) most-positive-fixnum)))
+  `(let ((,s (block nil ,form)))
      (check-type ,s integer)
-     (do ((,var 0 (1+ ,var)))
-	 ((>= ,var ,m)
-	  (when (> ,s most-positive-fixnum)
-	    (do ((,var most-positive-fixnum (1+ ,var)))((>= ,var ,s)) ,@body))
-	  ,val);FIXME bbumps to non-negative-integer
-       ,@body)))
+     (let ((,m (min (max 0 ,s) most-positive-fixnum)))
+       (do ((,var 0 (1+ ,var)))
+	   ((>= ,var ,m)
+	    (when (> ,s most-positive-fixnum)
+	      (let ((,var ,var)) ,@body)
+	      (do ((,var (1+ most-positive-fixnum) (1+ ,var)))((>= ,var ,s)) ,@body))
+	    ,val)
+	 ,@body))))
 
 
 (defmacro declaim (&rest l)
