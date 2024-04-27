@@ -41,9 +41,21 @@
     (mapc (lambda (x &aux (s (car x)) (cmp-sig (cdr x))(act-sig (car (sym-plist s))))
 	    (unless (eq sym s)
 	      (when act-sig
-		(unless (eq cmp-sig act-sig);Can be sig= if we don't hash
-		  (return-from needs-recompile (list (list sym s cmp-sig act-sig))))))) callees)
+		(unless (sig= cmp-sig act-sig);Can be sig= if we don't hash, or eq
+		  (return-from needs-recompile (list (list sym s cmp-sig act-sig)))))))
+	  callees)
     nil))
+
+(defun all-conflicts (&aux r q)
+  (do-all-symbols (sym q)
+    (let* ((plist (sym-plist sym))(callees (cadr plist)))
+      (mapc (lambda (x &aux (s (car x)) (cmp-sig (cdr x))(act-sig (car (sym-plist s))))
+	      (unless (eq sym s)
+		(when act-sig
+		  (unless (sig= cmp-sig act-sig);Can be sig= if we don't hash, or eq
+		    (pushnew sym (cadar (pushnew (list (car (pushnew (list s cmp-sig act-sig) r :test 'equal)) nil) q :key 'car :test 'equal)))))))
+	    callees)
+      nil)))
 
 (defun same-file-all-callees (x y fn)
 ;  (let ((z (remove-if-not (lambda (x) (equal (file x) fn)) (callees x)))) ;FIXME remove inline
@@ -263,32 +275,34 @@
 	       (unless (callers-p s)
 		 (push s r))))))))))
 
-(defun do-pcl (x &aux (*sig-discovery-props* x))
-  (break)
-  (si::chdir "../pcl")
-  (mapc (lambda (x) (when (find-package x) (delete-package x))) '(:pcl :slot-accessor-name :iterate :walker))
-  (mapc 'delete-file (directory "*.o"))
-  (mapc 'load '("../clcs/package.lisp" "../clcs/myload1.lisp" "sys-package.lisp"))
-  (let ((*features* (remove :kcl *features*))) (load "../pcl/defsys.lisp"))
-  (setf (symbol-value (find-symbol "*DEFAULT-PATHNAME-EXTENSIONS*" (find-package :pcl))) (cons "lisp" "o")
-	(symbol-value (find-symbol "*PATHNAME-EXTENSIONS*" (find-package :pcl))) (cons "lisp" "o"))
-					;(load "sys-proclaim.lisp")
-  (setq compiler::*keep-gaz* t compiler::*tmp-dir* "" si::*disable-recompile* t)
-  (si::chdir "../pcl")
-  (funcall (find-symbol "COMPILE-PCL" :pcl)))
+(defun gen-discovery-props (&aux (*sig-discovery* t) q)
+  (do-all-symbols (s) (let ((x (needs-recompile s))) (when x (pushnew (caar x) q))))
+  (when q
+    (format t "~%Pass 1 signature discovery on ~s functions ..." (length q))
+    (mapc (lambda (x) (format t "~s " x) (compile x)) q)
+    (gen-discovery-props)))
 
-(defun do-recomp (&rest excl &aux r *sig-discovery-props* *compile-verbose*)
-  (labels ((d (&aux (*sig-discovery* t)(q (remove-duplicates (mapcar 'car (mapcan 'needs-recompile r)))))
-	      (when q
-		(format t "~%Pass 1 signature discovery on ~s functions ..." (length q))
-		(mapc (lambda (x) (format t "~s " x) (compile x)) q) (d))))
-	  (do-all-symbols (s) (push s r))(d)
-	  (let* ((fl (mapcar 'car *sig-discovery-props*))
-		 (pclp (member-if (lambda (x) (eq (symbol-package x) (find-package :pcl))) fl))
-		 (fl (remove-duplicates (mapcar (lambda (x) (file x)) fl) :test 'string=))
-		 (fl (set-difference fl (cons "pcl_" excl) :test (lambda (x y) (search y x)))))
-	    (compiler::cdebug)
-	    (format t "~%Recompiling original source files ...")
-	    (mapc (lambda (x) (format t "~s~%" x) (compile-file x)) (remove nil fl))
-	    (when pclp
-	      (do-pcl *sig-discovery-props*)))))
+(defun do-recomp2 (sp fl &aux *sig-discovery-props* *compile-verbose* r)
+  (gen-discovery-props)
+  (dolist (s (gen-all-ftype-symbols))
+    (let* ((f (file s))(f (if f (namestring (truename f)) ""));FIXME
+	   (sig (car (sym-plist s))))
+      (when (and sig (member f fl :test 'string=));e.g. fns in o/, interpreted, wrong-file
+	(push (list s sig) r))))
+  (write-sys-proclaims1 sp r))
+
+(defun do-recomp (&rest excl &aux *sig-discovery-props* *compile-verbose*)
+  (gen-discovery-props)
+  (let* ((fl (mapcar 'car *sig-discovery-props*))
+	 (fl (remove-duplicates (mapcar (lambda (x &aux (f (file x))) (when f (namestring f))) fl) :test 'string=))
+	 (fl (set-difference fl excl :test (lambda (x y) (search y x)))))
+    (compiler::cdebug)
+    (format t "~%Recompiling original source files ...")
+    (mapc (lambda (x) (format t "~s~%" x) (compile-file x)) (remove nil fl))))
+
+(defun gen-all-ftype-symbols (&aux r)
+  (do-all-symbols (s r)
+    (when (fboundp s)
+      (unless (or (macro-function s) (special-operator-p s))
+	(pushnew s r)))))
+

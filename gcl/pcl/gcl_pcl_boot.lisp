@@ -644,14 +644,6 @@ work during bootstrapping.
     (let ((method (find-method (gdefinition name) qualifiers specializers)))
       (apply #'no-next-method (method-generic-function method) method args))))
 
-(defun generic-function-nreq (gf)
-  (let* ((arg-info (if (early-gf-p gf)
-                       (early-gf-arg-info gf)
-                       (gf-arg-info gf)));safe
-         (metatypes (arg-info-metatypes arg-info)))
-    (declare (list metatypes))
-    (length metatypes)))
-
 (defun %check-cnm-args (cnm-args orig-args method-name-declaration)
   (declare (optimize (speed 3) (safety 0) (debug 0))
            (type list cnm-args orig-args))
@@ -1334,6 +1326,14 @@ work during bootstrapping.
     `(let ((,valsym ,val))
        (unless (equal ,pos ,valsym)
 	 (setf ,pos ,valsym)))))
+
+(defun generic-function-nreq (gf)
+  (let* ((arg-info (if (early-gf-p gf)
+                       (early-gf-arg-info gf)
+                       (gf-arg-info gf)));safe
+         (metatypes (arg-info-metatypes arg-info)))
+    (declare (list metatypes))
+    (length metatypes)))
 
 (defun set-arg-info (gf &key new-method (lambda-list nil lambda-list-p)
 			argument-precedence-order)
@@ -2121,7 +2121,7 @@ work during bootstrapping.
 		 ,gensyms 
 		 ,(caddr form)
 		 .,(reverse (mapcar (lambda (v g) `(setf ,v ,g)) vars gensyms))))))
-	  ((eq (car form) 'conditions::restart-case)
+	  ((eq (car form) 'restart-case)
 	   (let* ((nf (cadr form))
 		  (nf (let ((y (assoc nf specs)))
 			(if (and y (eq (cadr y) (variable-lexical-p nf env))) (walker::macroexpand-all (caddr y) env) nf))))

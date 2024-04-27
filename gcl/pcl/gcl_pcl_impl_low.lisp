@@ -63,7 +63,7 @@
 	(env (make-list funcallable-instance-closure-size :initial-element nil)))
     (si::set-function-environment fin env)
     (c-set-t-tt fin (logior 1 (c-t-tt fin)))
-    fin))
+    (the si::funcallable-std-instance fin)))
 
 (defun funcallable-instance-p (x) (typep x 'funcallable-std-instance))
 (defun std-instance-p (x) (typep x 'std-instance))
@@ -168,33 +168,20 @@
 
 (defun renew-sys-files nil
   ;; packages:
-  (compiler::get-packages "sys-package.lisp")
+  (compiler::get-packages-ansi
+   '(:walker :iterate :pcl :slot-accessor-name)
+   "sys-package.lisp")
   (with-open-file (st "sys-package.lisp"
-			  :direction :output
-			  :if-exists :append)
-	(format st "(lisp::in-package \"SI\")
+		      :direction :output
+		      :if-exists :append)
+		  (format st "(lisp::in-package \"SI\")
 (export '(%structure-name
           %compiled-function-name
           %set-compiled-function-name))
 (in-package \"PCL\")
 "))
 
-  ;; proclaims
-  (compiler::make-all-proclaims "*.fn")
-  (with-open-file (st "sys-proclaim.lisp"
-		      :direction :output
-		      :if-exists :append)
-    (format st "~%(IN-PACKAGE \"PCL\")~%")
-    (print
-     `(dolist (v ',
-     
-	       (sloop::sloop for v in-package "PCL"
-			     when (get v 'compiler::proclaimed-closure)
-			     collect v))
-	(setf (get v 'compiler::proclaimed-closure) t))
-     st)
-    (format st "~%")
-))
+  (si::do-recomp2 "sys-proclaim.lisp" (mapcar 'namestring (directory "*.*p"))))
 
 	
 		 

@@ -446,18 +446,17 @@ Cannot compile ~a.~%" (namestring (merge-pathnames input-pathname *compiler-defa
 	 ;; FIXME -- support warnings-p and failures-p.  CM 20041119
 	((multiple-value-setq (tem na) (get-named-form name))
 	 (let (warnings failures *compiler-compile-data*)
-	   (unless (and (fboundp 'si::init-cmp-anon) (or (si::init-cmp-anon) (fmakunbound 'si::init-cmp-anon)))
-	     (with-open-file
-	      (st (setq gaz (gazonk-name)) :direction :output))
-	     (multiple-value-bind 
-	      (fn w f)
-	      (let ((*compiler-compile* tem))
-		(compile-file gaz))
-	      (when fn 
-		(load fn)
-		(unless *keep-gaz* (delete-file fn)))
-	      (setq warnings w failures f))
-	     (unless *keep-gaz* (delete-file gaz)))
+	   (with-open-file
+	       (st (setq gaz (gazonk-name)) :direction :output))
+	   (multiple-value-bind
+		 (fn w f)
+	       (let ((*compiler-compile* tem))
+		 (compile-file gaz))
+	     (when fn
+	       (load fn)
+	       (unless *keep-gaz* (delete-file fn)))
+	     (setq warnings w failures f))
+	   (unless *keep-gaz* (delete-file gaz))
 	   (unless (eq na name) (setf (symbol-function name) (symbol-function na)))
 	   (when *tmp-pack*
 	     (delete-package *tmp-pack*)

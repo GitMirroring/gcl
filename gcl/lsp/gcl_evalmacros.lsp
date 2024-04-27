@@ -523,37 +523,53 @@
 	 (d (cond (z '*)(y (remove '&optional d))(x `(returns-exactly ,@(cdr d)))(d))))
     (list a d)))
 
-(defun norm-possibly-unkown-type (type &aux (tp (cmp-norm-tp type)))
-  (flet ((fix (tp) (or tp t)))
+(defun norm-possibly-unknown-type (type &aux (tp (cmp-norm-tp type)))
+  (flet ((fix (tp) (or tp (when type t))))
     (cond ((cmpt tp) `(,(pop tp) ,@(mapcar #'fix tp)))
 	  ((fix tp)))))
 
 (defun proclaim-ftype (ftype var-list
 		       &aux  (sig (ftype-to-sig (cdr ftype)))
-			 (sig (uniq-sig (list (mapcar 'norm-possibly-unkown-type (car sig))
-					      (norm-possibly-unkown-type (cadr sig))))))
+			 (sig (uniq-sig (list (mapcar 'norm-possibly-unknown-type (car sig))
+					      (norm-possibly-unknown-type (cadr sig))))))
   (declare (optimize (safety 2)))
-  (mapc (lambda (x &aux (c (car (call x))))
-	  (cond (c (unless (sig= c sig)
-		     (warn "Ignoring proclaimed signature ~s on ~s, currently fbound to ~s~%"
-			   (readable-sig sig) x (readable-sig c))))
-		((setf (get x 'proclaimed-signature) sig))))
+  (mapc (lambda (x) (setf (get x 'proclaimed-signature) sig));(unless (car (call x)) )
 	var-list))
 
-(defun write-sys-proclaims (fn &rest package-list &aux
-				  (pl (mapcar 'find-package (or package-list (list-all-packages))))
-				  (h (make-hash-table :test 'eq))
-				  (*print-readably* t))
+(defun write-sys-proclaims (fn &rest string-list
+			    &aux (h (make-hash-table :test 'eq)) (*print-readably* t))
   (with-open-file
    (q fn :direction :output)
    (do-all-symbols
     (s)
-    (when (member (symbol-package s) pl)
-      (let ((x (sig s)))
+    (when (and (file s) (if string-list (member-if (lambda (x) (search x (namestring (file s)))) string-list) t))
+      (let ((x (or (car (sym-plist s)) (sig s))))
 	(when x
 	  (setf (gethash x h)
 		(adjoin s (gethash x h)))))))
    (maphash (lambda (x y)
-	      (print `(proclaim '(ftype (function ,(mapcar 'cmp-unnorm-tp (car x)) ,(cmp-unnorm-tp (cadr x))) ,@y))
-		     q))
+	      (flet ((ptp (x) (normalize-type (cmp-unnorm-tp x))))
+		(print `(proclaim '(ftype (function ,(mapcan (lambda (x) (if (eq x '*) '(&rest t) (list (ptp x)))) (car x))
+					   ,(cond ((cmpt (cadr x)) `(values ,@(when (eq (caadr x) 'values) `(&optional)) ,@(mapcar (lambda (x) (ptp x)) (cdadr x))))
+						  ((eq (cadr x) '*) '(values &rest t))
+						  ((ptp (cadr x)))))
+				    ,@y))
+		       q)))
 	    h)))
+
+
+(defun write-sys-proclaims1 (fn sl &aux (h (make-hash-table :test 'eq)) (*print-readably* t))
+  (with-open-file
+      (q fn :direction :output)
+    (dolist (s sl)
+      (let ((sym (car s))(sig (cadr s)))
+      (setf (gethash sig h) (adjoin sym (gethash sig h)))))
+    (flet ((ptp (x) (normalize-type (cmp-unnorm-tp x))))
+      (maphash (lambda (x y)
+		 (print `(proclaim '(ftype (function ,(mapcan (lambda (x) (if (eq x '*) '(&rest t) (list (ptp x)))) (car x))
+					    ,(cond ((cmpt (cadr x)) `(values ,@(when (eq (caadr x) 'values) `(&optional)) ,@(mapcar (lambda (x) (ptp x)) (cdadr x))))
+						   ((eq (cadr x) '*) '(values &rest t))
+						   ((ptp (cadr x)))))
+				     ,@y))
+			q))
+	       h))))

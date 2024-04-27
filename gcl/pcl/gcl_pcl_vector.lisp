@@ -237,7 +237,7 @@
 				     2)))))
     (or (probe-cache cache pv-wrappers)
 	(let* ((pv (compute-pv slot-name-lists pv-wrappers))
-	       (calls (compute-calls call-list pv-wrappers))
+	       (calls '#());(compute-calls call-list pv-wrappers)
 	       (pv-cell (cons pv calls))
 	       (new-cache (fill-cache cache pv-wrappers pv-cell)))
 	  (unless (eq new-cache cache)

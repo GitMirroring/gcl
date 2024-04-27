@@ -122,7 +122,8 @@ $(PORTDIR)/saved_mod_gcl: $(PORTDIR)/saved_gcl
 	echo '(si::do-recomp)' | $@ && cd $(@D) && $(MAKE) $(@F)
 
 $(PORTDIR)/saved_pcl_gcl: $(PORTDIR)/saved_mod_gcl
-	(cd $(PCLDIR); $(MAKE) clean; $(MAKE) all)
+#	(cd $(PCLDIR); $(MAKE) clean; $(MAKE) all)
+	(cd $(PCLDIR); $(MAKE) remake-sys-files)
 	cd $(@D) && $(MAKE) $(@F)
 
 $(PORTDIR)/saved_ansi_gcl: $(PORTDIR)/saved_pcl_gcl
