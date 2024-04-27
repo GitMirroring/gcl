@@ -1069,6 +1069,7 @@ GBC(enum type t) {
   }
 
   ngc_thresh=fix(sSAleaf_collection_thresholdA->s.s_dbind);
+  cumulative_allocation+=recent_allocation;
   recent_allocation=0;
 
   if (in_signal_handler && t == t_relocatable)
@@ -1301,6 +1302,13 @@ FFN(siLheap_report)(void) {
 #endif
 
 }  
+DEFUN("CUMULATIVE-ALLOCATION",object,fScumulative_allocation,SI,0,0,NONE,OO,OO,OO,OO,(void),"") {
+  ufixnum x=(cumulative_allocation+recent_allocation)>>20;
+  if ((fixnum)x>=0)
+    RETURN1(make_fixnum(x));
+  mpz_set_ui(MP(big_fixnum1),x);
+  RETURN1(replace_big(big_fixnum1));
+}
 
 DEFUN("ROOM-REPORT",object,fSroom_report,SI,0,0,NONE,OO,OO,OO,OO,(void),"") {
 

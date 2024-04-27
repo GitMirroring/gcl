@@ -319,7 +319,7 @@ setup_maxpages(double scale) {
   resv_pages=available_pages/100;
   available_pages-=resv_pages;
 
-  recent_allocation=0;
+  cumulative_allocation=recent_allocation=0;
 
 }
 

@@ -421,7 +421,8 @@ EXTER long holepage;			/*  hole pages  */
 #define rbgbccount tm_table[t_relocatable].tm_gbccount
 EXTER fixnum new_holepage,starting_hole_div,starting_relb_heap_mult;
 
-EXTER ufixnum recent_allocation,wait_on_abort;
+EXTER ulfixnum cumulative_allocation,recent_allocation;
+EXTER ufixnum wait_on_abort;
 EXTER double gc_alloc_min,mem_multiple,gc_page_min,gc_page_max;
 EXTER bool multiprocess_memory_pool;
 

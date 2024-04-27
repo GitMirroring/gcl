@@ -38,8 +38,9 @@
   (declare (optimize (safety 2)))
   (let ((real-start (gensym)) (real-end (gensym)) (gbc-time-start (gensym))
 	(gbc-time (gensym)) (x (gensym)) (run-start (gensym)) (run-end (gensym))
-	(child-run-start (gensym)) (child-run-end (gensym)))
-  `(let (,real-start ,real-end (,gbc-time-start (gbc-time)) ,gbc-time ,x)
+	(child-run-start (gensym)) (child-run-end (gensym))
+	(alloc-start (gensym)))
+  `(let (,real-start ,real-end (,gbc-time-start (gbc-time)) ,gbc-time ,x (,alloc-start (cumulative-allocation)))
      (setq ,real-start (get-internal-real-time))
      (multiple-value-bind (,run-start ,child-run-start) (get-internal-run-times)
        (gbc-time 0)
@@ -53,11 +54,13 @@
 		 "real time       : ~10,3F secs~%~
                   run-gbc time    : ~10,3F secs~%~
                   child run time  : ~10,3F secs~%~
-                  gbc time        : ~10,3F secs~%"
+                  gbc time        : ~10,3F secs~%~
+                  allocation      : ~10D Mbytes~%"
 		 (/ (- ,real-end ,real-start) internal-time-units-per-second)
 		 (/ (- (- ,run-end ,run-start) ,gbc-time) internal-time-units-per-second)
 		 (/ (- ,child-run-end ,child-run-start) internal-time-units-per-second)
-		 (/ ,gbc-time internal-time-units-per-second))))
+		 (/ ,gbc-time internal-time-units-per-second)
+		 (- (cumulative-allocation) ,alloc-start))))
        (values-list ,x))))
 
        
