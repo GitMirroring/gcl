@@ -337,29 +337,26 @@
 	     (list ar (round-up pos (size-of t)) has-holes)
 	     ))))
 
-
-(defun tp-heads (tp0 &aux r)
-  (maphash (lambda (x y); (print x)
-	     (mapl (lambda (x) (unless (eq '* (car x)) (when (tp= tp0 (car x)) (push x r)))) (car x))
-	     (if (cmpt (cadr x))
-		 (mapl (lambda (x) (when (tp= tp0 (car x)) (push x r))) (cdadr x))
-		 (when (tp= tp0 (cadr x)) (push (cdr x) r))))
-	   *uniq-sig*)
-  r)
-
-(defun get-uniq-old-tp-heads (name);fixopt, others?
-  (when name
-    (cons (list* name (tp-heads (cmp-norm-tp name)))
-	  (get-uniq-old-tp-heads (sdata-name (sdata-includes (get name 's-data)))))))
-
 ;FIXME reconsider holding on to computed structure types
-(defun update-sdata-included (name &aux (i (sdata-includes (get name 's-data))))
-  (when i; (print (list 'foo (sdata-name i)))
-    (let ((r (get-uniq-old-tp-heads (sdata-name i))))
-      (pushnew name (s-data-included i))
-      (mapc (lambda (x &aux (tp1 (uniq-tp (cmp-norm-tp (pop x)))))
-	      (mapc (lambda (x) (setf (car x) tp1)) x))
-	    r))))
+(defun update-sdata-included (name &aux r (i (sdata-includes (get name 's-data))))
+  (when i
+    (let ((to (cmp-norm-tp `(and ,(sdata-name i) (not (or ,@(sdata-included i))))))
+	  (tn (cmp-norm-tp name))(ntn (cmp-norm-tp `(not ,name))))
+      (labels ((find-updates (x &aux (tp (car x)))
+		 (when (unless (tp<= #tstructure tp) (tp-and #tstructure tp))
+		   (let ((ntp (if (tp-and to tp) (tp-or tn tp) tp)));FIXME negative
+		     (unless (tp= tp ntp)
+		       (setf (car x) ntp)
+		       (push (cons tp ntp) r)))))
+	       (update-sig (x &aux (y (assoc (car x) r)))
+		 (when y (setf (car x) (cdr y)))))
+	(mapl #'find-updates (gethash (tsrch #tstructure) *uniq-tp*));FIXME more systematic
+	(mapl #'find-updates (gethash t *uniq-tp*))
+	(maphash (lambda (x y)
+		   (mapl #'update-sig (car x))
+		   (if (cmpt (cadr x)) (mapl #'update-sig (cdadr x)) (update-sig (cdr x))))
+		 *uniq-sig*)))
+    (pushnew name (s-data-included i))))
 
 ;FIXME function-src for all functions, sigs for constructor and copier
 (defun define-structure (name conc-name no-conc type named slot-descriptions copier
