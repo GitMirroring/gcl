@@ -776,7 +776,7 @@
 (si::putprop 'cons 'cons-propagator 'type-propagator)
 
 (defun co1carcdr (f x)
-  (let* ((tp (car (atomic-tp (info-type (cadr (with-restore-vars (c1arg (car x))))))))
+  (let* ((tp (car (atomic-tp (info-type (cadr (with-restore-vars (c1arg (car x))))))));FIXME ignorable-form
 	 (tp (when (consp tp) (funcall f tp)))
 	 (tp (get-var tp)))
     (when tp (c1var tp))))

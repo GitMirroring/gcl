@@ -708,7 +708,10 @@
 		(fmlae (if (notevery 'cddr inf) t   fmlae)))
 	   (when inf 
 	     (keyed-cmpnote (list* 'type-inference (mapcar (lambda (x) (var-name (car x))) inf))
-			  "inferring types on form ~s, ~s" f (mapcar (lambda (x) (list (pop x) (cmp-unnorm-tp (pop x)) (cmp-unnorm-tp x))) inf)))
+			    "inferring types on form ~s, ~s"
+			    f (mapcar (lambda (x)
+					(list (pop x) (cmp-unnorm-tp (pop x)) (cmp-unnorm-tp x)))
+				      inf)))
 	   (if (not (eq fmlae 'boolean))
 
  	       (cond (fmlae 
@@ -1147,7 +1150,7 @@
 	 (arg (pop args))
 	 (tp (or tp (co1or-arg-tp arg)))
 	 (atp (atomic-tp (type-and tp #t(not null)))))
-    (when (atomic-type-constant-value atp);FIXME make sure this is never a binding
+    (when (atomic-type-constant-value atp);FIXME make sure this is never a binding, FIXME ignorable-form?
       (c1expr (if args `(if ,arg ',(car atp) (or ,@args)) arg)))))
 
 ;; (defun co1or (fn args)

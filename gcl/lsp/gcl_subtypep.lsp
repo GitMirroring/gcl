@@ -442,8 +442,6 @@
 (defun std-ld (x &aux (c (pop x)))
   (cons c (if x (filter-included c (gen-get-included (car x))) '(t))))
 
-
-
 (defun std-matches (x)
   (lremove-if-not (lambda (y) (member (car y) x :test 'member :key 'cdr)) x))
 

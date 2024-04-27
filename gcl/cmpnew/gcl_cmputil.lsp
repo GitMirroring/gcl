@@ -76,7 +76,9 @@
        (let ((,cf *current-form*)(,sri *src-inline-recursion*)) 
 	 (push (lambda nil
 		 (let ((*current-form* ,cf)
-		       (*src-inline-recursion* ,sri)) ,@body)) *warning-note-stack*))
+		       (*src-inline-recursion* ,sri))
+		   ,@body))
+	       *warning-note-stack*))
      (progn ,@body))))
 
 (defun output-warning-note-stack nil
