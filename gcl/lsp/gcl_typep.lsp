@@ -34,15 +34,15 @@
 (setf (get 'ibb 'cmp-inline) t)
 
 (defun sdata-includes (x)
-  (the (or s-data null) (*object (c-structure-self x) 4 nil nil)));FIXME s-data-name boostrap loop
+  (when x (the (or s-data null) (*object (c-structure-self x) 4 nil nil))));FIXME s-data-name boostrap loop
 (setf (get 'sdata-includes 'cmp-inline) t)
 (defun sdata-included (x)
-  (the proper-list (*object (c-structure-self x) 3 nil nil)));FIXME s-data-name boostrap loop
+  (when x (the proper-list (*object (c-structure-self x) 3 nil nil))));FIXME s-data-name boostrap loop
 (setf (get 'sdata-included 'cmp-inline) t)
 (defun sdata-name (x)
-  (the symbol (*object (c-structure-self x) 0 nil nil)));FIXME s-data-name boostrap loop
+  (when x (the symbol (*object (c-structure-self x) 0 nil nil))));FIXME s-data-name boostrap loop
 (defun sdata-type (x)
-  (the symbol (*object (c-structure-self x) 16 nil nil)));FIXME s-data-name boostrap loop
+  (when x (the symbol (*object (c-structure-self x) 16 nil nil))));FIXME s-data-name boostrap loop
 (setf (get 'sdata-name 'cmp-inline) t)
 
 (defun mss (o sn) (when o (or (eq (sdata-name o) sn) (mss (sdata-includes o) sn))))
