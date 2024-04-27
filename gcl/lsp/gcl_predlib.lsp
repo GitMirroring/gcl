@@ -366,14 +366,11 @@
  (defmacro clh nil
   `(progn
      ,@(mapcar (lambda (x &aux (f (when (eq x 'find-class) `(&optional ep))) (z (intern (string-concatenate "SI-" (symbol-name x)))))
-		 `(let (y)
-		    (defun ,z (o ,@f &aux e (x ',x))
-		      (declare (notinline find-class));to enable recompile file in ansi image
-		      (cond ((and x (fboundp x) (fboundp 'classp))
-			     (prog1 (funcall x o ,@(cdr f))
-			       (fset ',z (symbol-function x))))
-			    ((setq e (get ',z 'early)) (values (funcall e o ,@(cdr f))))
-			    (y)))))
+		 `(defun ,z (o ,@f &aux e (x ',x) (fn (load-time-value nil)))
+		    (declare (notinline find-class));to enable recompile file in ansi image
+		    (setq fn (or fn (and (fboundp 'classp) (fboundp x) x)))
+		    (cond (fn (values (funcall fn o ,@(cdr f))))
+			  ((setq e (get ',z 'early)) (values (funcall e o ,@(cdr f)))))))
 	       '(classp class-precedence-list find-class class-name class-of class-direct-subclasses))
      (let (fun)
        (defun si-class-finalized-p (x)
