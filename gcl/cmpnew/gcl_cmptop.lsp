@@ -1133,7 +1133,7 @@
 	  (fifth e) (if (= (length clv) 0) 1 0)
 	  (sixth e) name)
     (when *sig-discovery*
-      (when (symbol-package name) (unless (eq name 'lambda) (push (cons name (apply 'si::make-function-plist e)) si::*sig-discovery-props*))))
+      (when (symbol-package name) (unless (eq name 'lambda) (push (cons name (apply 'si::make-function-plist (exp-sig (pop e)) e)) si::*sig-discovery-props*))))
     l))
 
 ;; (defun do-fun (name src e vis b)
