@@ -3148,9 +3148,7 @@ case $use in
 	case $use in
 	    ia64*)
 		def_dlopen="yes" ; def_custreloc="no" ;;
-	    hppa*)
-		def_pic="yes" ;;
-	esac;;
+	    	    	esac;;
 esac
 
 # Check whether --enable-widecons was given.
@@ -8575,7 +8573,10 @@ printf "%s\n" "not found" >&6; }
 	fi
 	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking output_mach" >&5
 printf %s "checking output_mach... " >&6; }
-	output_mach=`cat gcl.script |grep OUTPUT_ARCH|head -n 1|sed 's,.*(\(.*\)).*,\1:,1'|cut -f2 -d:|tr '-' '_'`;
+	output_mach=`cat gcl.script |grep OUTPUT_ARCH|head -n 1|sed 's,.*(\(.*\)).*,\1:,1'|cut -f2 -d:|tr '-' '_'|tr -d '.'`;
+        if test "$output_mach" = "common" ; then
+	   output_mach=""
+	fi
 	defaulted=""
         if test "$output_mach" = "" ; then
 		if test "$output_arch" = "i386" ; then

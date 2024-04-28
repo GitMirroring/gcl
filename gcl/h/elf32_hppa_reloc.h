@@ -11,18 +11,35 @@
       s>>=11;
       store_valu(where,MASK(21),ASM21(s));
       break;
+    case R_PARISC_DIR21L:
+      s+=a;
+      s>>=11;
+      store_valu(where,MASK(21),ASM21(s));
+      break;
     case R_PARISC_PCREL14R:
       s+=a;
       s-=p+11;
       s&=MASK(11);
       store_valu(where,MASK(14),s<<1);
       break;
+    case R_PARISC_DIR14R:
+      s+=a;
+      s&=MASK(11);
+      store_valu(where,MASK(14),s<<1);
+      break;
+    case R_PARISC_DIR17R:
+      s+=a;
+      s&=MASK(11);
+      store_valu(where,MASK(17),s<<1);
+      break;
     case R_PARISC_LTOFF21L:
+    case R_PARISC_DPREL21L:
       s-=pltgot;
       s>>=11;
       store_valu(where,MASK(21),ASM21(s));
       break;
     case R_PARISC_LTOFF14R:
+    case R_PARISC_DPREL14R:
       s-=pltgot;
       s&=MASK(11);
       store_valu(where,MASK(14),s<<1);
