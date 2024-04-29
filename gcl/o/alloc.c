@@ -316,20 +316,6 @@ int reserve_pages_for_signal_handler=30;
  */
 
 void
-empty_relblock(void) {
-
-  object o=sSAleaf_collection_thresholdA->s.s_dbind;
-  
-  sSAleaf_collection_thresholdA->s.s_dbind=make_fixnum(0);
-  for (;!rb_emptyp();) {
-    tm_table[t_relocatable].tm_adjgbccnt--;
-    GBC(t_relocatable);
-  }
-  sSAleaf_collection_thresholdA->s.s_dbind=o;
-
-}
-
-void
 setup_rb(bool preserve_rb_pointerp) {
 
   int lowp=rb_high();
@@ -703,6 +689,21 @@ reset_contblock_freelist(void) {
   cb_pointer=NULL;
   cbv->v.v_fillp=0;
   
+}
+
+void
+empty_relblock(void) {
+
+  object o=sSAleaf_collection_thresholdA->s.s_dbind;
+
+  sSAleaf_collection_thresholdA->s.s_dbind=make_fixnum(0);
+  for (;!rb_emptyp();) {
+    tm_table[t_relocatable].tm_adjgbccnt--;
+    expand_contblock_index_space();
+    GBC(t_relocatable);
+  }
+  sSAleaf_collection_thresholdA->s.s_dbind=o;
+
 }
 
 static inline void *
