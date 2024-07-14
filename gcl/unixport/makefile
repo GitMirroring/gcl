@@ -155,9 +155,9 @@ ifeq ($(GNU_LD),1)
 	$(CC) $(LD_FLAGS) -o raw_$*$(EXE) $(filter %.o,$^) \
 		$(shell if echo $@ | grep -q gprof ; then echo "-pg"; else echo ""; fi) \
 		-rdynamic -L. $(EXTRA_LD_LIBS) $(LD_STACK_FLAGS) \
-		-Wl,-Map raw_$*_map $(LD_LIBS_PRE) -l$* $(LD_LIBS_POST)
+		-Wl,-Map raw_$*_map $(LD_LIBS_PRE) -l$* $(LD_LIBS_POST) -lboot
 else
-	$(CC) $(LD_FLAGS) -o raw_$*$(EXE) $(filter %.o,$^) $(shell if grep -q gprof $@ ; then echo "-pg"; else echo ""; fi) -L. $(EXTRA_LD_LIBS) $(LD_LIBS_PRE) -l$* $(LD_LIBS_POST)
+	$(CC) $(LD_FLAGS) -o raw_$*$(EXE) $(filter %.o,$^) $(shell if grep -q gprof $@ ; then echo "-pg"; else echo ""; fi) -L. $(EXTRA_LD_LIBS) $(LD_LIBS_PRE) -l$* $(LD_LIBS_POST) -lboot
 endif
 
 map_%:
