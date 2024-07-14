@@ -47,6 +47,7 @@ case $canonical in
     s390*linux*) use=s390-linux;;
     ia64*linux*) use=ia64-linux;;
     hppa*linux*) use=hppa-linux;;
+    loongarch64*linux*) use=loongarch64-linux;;
     powerpc*linux*) use=powerpc-linux;;
     powerpc-*-darwin*) use=powerpc-macosx;;
     *86*darwin*) use=386-macosx;;
@@ -343,6 +344,9 @@ case $use in
 	if ! add_arg_to_cflags -msse2 || ! add_arg_to_cflags -mfpmath=sse ; then
 	   add_arg_to_cflags -ffloat-store;
         fi;;
+    loongarch64-linux)
+        add_arg_to_cflags -mno-relax
+        add_arg_to_cflags -Wa,-mno-relax;;
     386-macosx)
 #	assert_arg_to_cflags -Wno-error=implicit-function-declaration
 	add_arg_to_cflags -Wno-incomplete-setjmp-declaration
