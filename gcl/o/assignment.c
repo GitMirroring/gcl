@@ -161,6 +161,7 @@ DEFUN("FUNCTION-NAME",object,fSfunction_name,SI,1,1,NONE,OO,OO,OO,OO,(object x),
 DEFUN("FSET",object,fSfset,SI,2,2,NONE,OO,OO,OO,OO,(object sym,object function),"") {
 
   object x;
+  extern int initializing_boot;
 
   if (type_of(sym)!=t_symbol)
     sym=ifuncall1(sSfunid_to_sym,sym);
@@ -174,7 +175,7 @@ DEFUN("FSET",object,fSfset,SI,2,2,NONE,OO,OO,OO,OO,(object sym,object function),
 	      1, sym);
   }
   if (sym->s.s_hpack == lisp_package &&
-      sym->s.s_gfdef != OBJNULL && !raw_image && sLwarn->s.s_gfdef)
+      sym->s.s_gfdef != OBJNULL && !initializing_boot && sLwarn->s.s_gfdef)
     ifuncall2(sLwarn,make_simple_string("~S is being redefined."),sym);
   sym = clear_compiler_properties(sym,function);
   if (type_of(function) == t_function) {
