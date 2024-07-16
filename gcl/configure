@@ -7498,11 +7498,17 @@ printf "%s\n" "$as_me: trying to adjust text start" >&6;}
             cat gcl.script.def | $AWK '/SIZEOF_HEADERS/ {gsub("0x[0-9]*","0x" j,$0);} {print}' j=$j >gcl.script
 	    #        diff -u gcl.script.def gcl.script
             echo "int main() {return 0;}" >foo.c
-            if ( $CC $LDFLAGS -Wl,-T gcl.script foo.c -o foo && ./foo ) >/dev/null 2>&1 ; then
+            if ( $CC $LDFLAGS -Wl,-T gcl.script foo.c -o foo && ./foo >/dev/null 2<&1 ) >/dev/null 2>&1 ; then
 		if test $n -lt $min ; then min=$n; fi;
 		if test $n -gt $max; then max=$n; fi;
 	    elif test $max -gt 0 ; then
-		break;
+	    	# Workaround for false island of acceptability on riscv64, 20240716
+	    	if test `$AWK 'END {print n-m}' m=$min n=$max </dev/null` -gt 2 ; then
+		   break;
+		else
+		   min=$lim
+		   max=0;
+		fi
             fi;
             n=`$AWK 'END {print n+1}' n=$n </dev/null`
 	done
@@ -7526,12 +7532,12 @@ printf "%s\n" "$as_me: max log text start reduced to $max considering c stack ad
             if test $max -ge $enable_fastimmfix && test "$enable_immfix" != "no" ; then
 	        j=`$AWK 'END {for (i=j=0;j<=n;j++) i=i ? i*2 : 1;printf("%x\n",3*i)}' n=$max </dev/null`
 		low_shft=`$AWK 'END {print n+1}' n=$max </dev/null`;
-		{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: raising log text to $j for a $max bit wide low immfix table" >&5
-printf "%s\n" "$as_me: raising log text to $j for a $max bit wide low immfix table" >&6;}
+		{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: raising log text to 0x$j for a $max bit wide low immfix table" >&5
+printf "%s\n" "$as_me: raising log text to 0x$j for a $max bit wide low immfix table" >&6;}
             else
 	        j=`$AWK 'END {for (i=j=0;j<=n;j++) i=i ? i*2 : 1;printf("%x\n",3*i)}' n=$min </dev/null`
-		{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: lowering log text to $j to maximize data area" >&5
-printf "%s\n" "$as_me: lowering log text to $j to maximize data area" >&6;}
+		{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: lowering log text to 0x$j to maximize data area" >&5
+printf "%s\n" "$as_me: lowering log text to 0x$j to maximize data area" >&6;}
 	    fi
 	fi
 
@@ -7551,7 +7557,7 @@ printf "%s\n" "#define OBJNULL NULL" >>confdefs.h
 	#      echo $j;
 	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking our linker script" >&5
 printf %s "checking our linker script... " >&6; }
-	if test "$j" -ne "-1" ; then
+	if test "$j" != "-1" ; then
             cat gcl.script.def | $AWK '/SIZEOF_HEADERS/ {gsub("0x[0-9]*","0x" j,$0);} {print}' j=$j >gcl.script
 	    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: done" >&5
 printf "%s\n" "done" >&6; }
