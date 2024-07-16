@@ -20,12 +20,6 @@ gcl_init_init()
 #endif
   }
 #endif
-
-#if defined(pre_gcl)
-  gcl_init_boot();/*Superfluous call to hard link boot.so into pre
-		    image only, where it is used in raw_ and saved_
-		    images and must have a fixed address*/
-#endif
   
   lsp_init("lsp","gcl_export");
 

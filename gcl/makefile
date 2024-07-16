@@ -96,11 +96,11 @@ $(PORTDIR)/saved_pre_gcl: $(HDIR)cmpinclude.h
 	(cd $(ODIR); $(MAKE) all)
 	$(MAKE) $<
 	rm -f o/cmpinclude.h ; cp h/cmpinclude.h o
-	cd $(@D) && LD_LIBRARY_PATH=$(@D):$$LD_LIBRARY_PATH $(MAKE) $(@F)
+	cd $(@D) && $(MAKE) $(@F)
 	touch $< $@
 
 $(PORTDIR)/saved_gcl0: $(PORTDIR)/saved_pre_gcl $(HDIR)cmpinclude.h
-	cd $(@D) && echo '(time (load "boot.lisp"))' | LD_LIBRARY_PATH=$(@D):$$LD_LIBRARY_PATH ../$<
+	cd $(@D) && echo '(time (load "boot.lisp"))' | ../$<
 	cd $(@D) && $(MAKE) saved_gcl && mv saved_gcl $(@F)
 
 $(PORTDIR)/saved_gcl1: $(PORTDIR)/saved_gcl0 $(HDIR)cmpinclude.h
