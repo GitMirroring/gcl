@@ -1510,7 +1510,13 @@ dnl     FIXME
 		if test $n -lt $min ; then min=$n; fi;
 		if test $n -gt $max; then max=$n; fi;
 	    elif test $max -gt 0 ; then
-		break;
+	    	# Workaround for false island of acceptability on riscv64, 20240716
+	    	if test `$AWK 'END {print n-m}' m=$min n=$max </dev/null` -gt 2 ; then
+		   break;
+		else
+		   min=$lim
+		   max=0;
+		fi
             fi;
             n=`$AWK 'END {print n+1}' n=$n </dev/null`
 	done
@@ -1531,10 +1537,10 @@ dnl     FIXME
             if test $max -ge $enable_fastimmfix && test "$enable_immfix" != "no" ; then
 	        j=`$AWK 'END {for (i=j=0;j<=n;j++) i=i ? i*2 : 1;printf("%x\n",3*i)}' n=$max </dev/null`
 		low_shft=`$AWK 'END {print n+1}' n=$max </dev/null`;
-		AC_MSG_NOTICE([raising log text to $j for a $max bit wide low immfix table])
+		AC_MSG_NOTICE([raising log text to 0x$j for a $max bit wide low immfix table])
             else					
 	        j=`$AWK 'END {for (i=j=0;j<=n;j++) i=i ? i*2 : 1;printf("%x\n",3*i)}' n=$min </dev/null`
-		AC_MSG_NOTICE([lowering log text to $j to maximize data area])
+		AC_MSG_NOTICE([lowering log text to 0x$j to maximize data area])
 	    fi
 	fi
 
@@ -1547,7 +1553,7 @@ dnl     FIXME
 
 	#      echo $j;
 	AC_MSG_CHECKING([our linker script])
-	if test "$j" -ne "-1" ; then
+	if test "$j" != "-1" ; then
             cat gcl.script.def | $AWK '/SIZEOF_HEADERS/ {gsub("0x[[0-9]]*","0x" j,$0);} {print}' j=$j >gcl.script
 	    AC_MSG_RESULT([done])
 	    rm -f gcl.script.def
