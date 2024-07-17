@@ -546,7 +546,7 @@ DEFUN("WILD-PATHNAME-P",object,fLwild_pathname_p,LISP,1,2,NONE,OO,OO,OO,OO,(obje
   return Cnil;
 }
 
-DEFUN("SET-DIFFERENCE-EQ",object,fSset_difference_eq,SI,2,8,NONE,OO,OO,OO,OO,
+DEFUN("SET-DIFFERENCE",object,fLset_difference,LISP,2,8,NONE,OO,OO,OO,OO,
 	  (object x,object y,...),"") {
   object z=Cnil,yy;
   for (;x!=Cnil;x=x->c.c_cdr) {
@@ -558,7 +558,7 @@ DEFUN("SET-DIFFERENCE-EQ",object,fSset_difference_eq,SI,2,8,NONE,OO,OO,OO,OO,
 
 }
 
-DEFUN("UNION-EQ",object,fSunion_eq,SI,2,8,NONE,OO,OO,OO,OO,
+DEFUN("UNION",object,fLunion,LISP,2,8,NONE,OO,OO,OO,OO,
 	  (object x,object y,...),"") {
   object z=y,yy;
   for (;x!=Cnil;x=x->c.c_cdr) {
@@ -570,7 +570,7 @@ DEFUN("UNION-EQ",object,fSunion_eq,SI,2,8,NONE,OO,OO,OO,OO,
 
 }
 
-DEFUN("NUNION-EQ",object,fSnunion_eq,SI,2,8,NONE,OO,OO,OO,OO,
+DEFUN("NUNION",object,fLnunion,LISP,2,8,NONE,OO,OO,OO,OO,
 	  (object x,object y,...),"") {
   object z=Cnil,zp=z,yy;
   for (;x!=Cnil;x=x->c.c_cdr) {
@@ -585,7 +585,7 @@ DEFUN("NUNION-EQ",object,fSnunion_eq,SI,2,8,NONE,OO,OO,OO,OO,
 
 }
 
-DEFUN("INTERSECTION-EQ",object,fSintersection_eq,SI,2,8,NONE,OO,OO,OO,OO,
+DEFUN("INTERSECTION",object,fLintersection,LISP,2,8,NONE,OO,OO,OO,OO,
 	  (object x,object y,...),"") {
   object z=Cnil,yy;
   for (;x!=Cnil;x=x->c.c_cdr) {

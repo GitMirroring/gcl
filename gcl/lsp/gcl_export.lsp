@@ -493,11 +493,6 @@
 
 ;FIXME bootstrap code
 
-(fset 'intersection #'intersection-eq)
-(fset 'union #'union-eq)
-(fset 'set-difference #'set-difference-eq)
-(fset 'nunion #'nunion-eq)
-
 (*make-constant '+array-types+ (si::aelttype-list))
 (*make-constant '+sfix+ (eql (truncate fixnum-length char-length) 4))
 
