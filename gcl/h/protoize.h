@@ -1610,6 +1610,9 @@ apply_format_function(object,object,object,object,object,object);
 object
 fSstring_match2(object,object);
 
+object
+aelttype_list(void);
+
 object alloc_simple_string(int);
 object alloc_string(int);
 object append(object,object);

@@ -431,7 +431,9 @@ fSmake_vector(object etp,fixnum n,object adjp,object fp,object displaced_to,fixn
 }
 #endif
 
-DEFUN("AELTTYPE-LIST",object,fSaelttype_list,SI,0,0,NONE,OO,OO,OO,OO,(),"") {
+
+object
+aelttype_list(void) {
 
   aet_type_struct *p,*pe;
   object f=Cnil,x,y=OBJNULL;
@@ -444,6 +446,7 @@ DEFUN("AELTTYPE-LIST",object,fSaelttype_list,SI,0,0,NONE,OO,OO,OO,OO,(),"") {
   return f;
 
 }
+DEFCONST("+ARRAY-TYPES+",sSParray_typesP,SI,aelttype_list(),"");
   
 
 DEFUN("GET-AELTTYPE",object,fSget_aelttype,SI,1,1,NONE,OO,OO,OO,OO,(object x),"") {

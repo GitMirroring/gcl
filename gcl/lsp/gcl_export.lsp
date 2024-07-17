@@ -487,23 +487,3 @@
        use-value                            y-or-n-p                  
        user-homedir-pathname                yes-or-no-p               
        values                               zerop))
-
-(in-package :si)
-
-
-;FIXME bootstrap code
-
-(*make-constant '+array-types+ (si::aelttype-list))
-(*make-constant '+sfix+ (eql (truncate fixnum-length char-length) 4))
-
-
-(defun num-comp (x y tp) 
-  (if (c-fixnum-== tp 1) (c-fixnum-== x y)
-    (if (c-fixnum-== tp 2) (eql 0 (gmp::mpz_cmp x y))
-      (if (c-fixnum-== tp 3) (and (eql (numerator x) (numerator y))
-				  (eql (denominator x) (denominator y)))
-	(if (c-fixnum-== tp 4) (c-float-== x y)
-	  (if (c-fixnum-== tp 5) (c-double-== x y)
-	    (if (c-fixnum-== tp 6) (and (eql (realpart x) (realpart y)) (eql (imagpart x) (imagpart y)))
-	      (if (c-fixnum-== tp 7) (c-fcomplex-== x y)
-		(if (c-fixnum-== tp 8) (c-dcomplex-== x y))))))))))
