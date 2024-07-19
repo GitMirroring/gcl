@@ -6,7 +6,7 @@ COMPILE_FILE=./saved_clcs_gcl ./ $(LISPFLAGS) -system-p -c-file -data-file \
 FILES:=$(shell ls -1 gcl_clcs_*.lisp | sed 's,\.lisp,,1')
 APPEND=../xbin/append
 
-all: $(addsuffix .c,$(FILES)) $(addsuffix .o,$(FILES))
+all: $(addsuffix .c,$(FILES)) $(addsuffix .h,$(FILES)) $(addsuffix .data,$(FILES)) $(addsuffix .o,$(FILES))
 
 gprof_objs: $(addprefix ../gprof/,$(addsuffix .o,$(FILES)))
 
