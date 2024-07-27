@@ -327,11 +327,14 @@
 ;;   (push a (car (fn-env f)))
 ;;   f)
 
-(defun mf (id)
+(defun mf (id &optional fun)
   (let* ((f (mc)))
 ;    (when (consp id) (setf (caddr (si::call f)) (compress-fle id nil nil)))
+    (when fun
+      (afe (cons 'fun fun) f))
     (afe (cons 'id id) f)
-    (afe (cons 'df (current-env)) f)
+    (when (or fun (consp id))
+      (afe (cons 'df (current-env)) f))
     f))
 
 ;; (defun fn-get (fn prop)

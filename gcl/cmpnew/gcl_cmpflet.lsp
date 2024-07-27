@@ -227,7 +227,7 @@
   
   (let ((*funs* (if labels *funs* ofuns)))
 ;    (mapc (lambda (x &aux (x (car x))) (setf (fun-fn x) (afe (cons 'df (current-env)) (mf (fun-name x))))) defs1))
-    (mapc (lambda (x &aux (x (car x))) (setf (fun-fn x) (mf (fun-name x)))) defs1))
+    (mapc (lambda (x &aux (x (car x))) (setf (fun-fn x) (mf (fun-name x) x))) defs1))
 
   (multiple-value-setq (body ss ts is other-decl) (c1body (cdr args) t))
   
@@ -253,7 +253,7 @@
 	 (cls (mapcar (lambda (x) (caddr (fun-c1cb x))) (remove-if-not 'fun-ref-ccb funs))))
     (if (or fns cls)
 	(list (if labels 'labels 'flet) info fns cls body)
-      body)))
+	body)))
 
 ;; (defun c1flet-labels (labels args &aux body ss ts is other-decl (info (make-info))
 ;; 			     defs1 fnames (ofuns *funs*) (*funs* *funs*))

@@ -2096,14 +2096,10 @@
 ;;     res))
 
 (defun local-fun-p (fname)
-  (car (member-if (lambda (x) (when (fun-p x)
-				(or (eq fname x) (eq fname (fun-fn x))
-				    (when (eq fname (fun-name x)) (not (member x *lexical-env-mask*))))))
-		  *funs*)))
-
-(defun local-fun-call (id)
-  (let* ((fun (local-fun-p id)))
-    (when fun (fun-call fun))))
+  (typecase fname
+    (function (fn-get fname 'fun))
+    (fun fname)
+    (symbol (car (member-if (lambda (x) (when (fun-p x) (when (eq fname (fun-name x)) (not (member x *lexical-env-mask*))))) *funs*)))))
 
 (defun cmp-expand-macro-w (fd x)
   (macroexpand-helper
