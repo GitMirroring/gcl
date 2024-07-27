@@ -363,46 +363,9 @@
 	  ((member test `(equal ,#'equal)) '(equal-is-eq equal-is-eq-tp))
 	  ((member test `(equalp ,#'equalp)) '(equalp-is-eq equalp-is-eq-tp)))))
 
-(defun do-predicate (fn args)
-  (let* ((info (make-info :type #tboolean))
-	 (nargs (c1args args info))
-	 (tp (car (rassoc fn +cmp-type-alist+))))
-    (when (cdr args) (baboon))
-    (let ((at (nil-to-t (coerce-to-one-value (info-type (cadar nargs))))))
-      (cond ((type>= tp at) (c1expr (ignorable-pivot (car args) t)))
-	    ((not (type-and at tp)) (c1expr (ignorable-pivot (car args) nil)))
-	    ((list 'call-global info fn nargs))))))
-
 (defun cons-type-length (type)
   (cond ((and (consp type) (eq (car type) 'cons)) (the seqind (+ 1 (cons-type-length (caddr type)))))
 	(0)))
-
-
-
-(defun co1eql (f args)
-  (declare (ignore f))
-  (or (and (cdr args) (not *safe-compile*))
-      (return-from co1eql nil))
-  (cond ((replace-constant args)
-	 (cond ((characterp (second args))
-		(setq args (reverse args))))
-	 (cond ((characterp (car args))
-		(let ((c (sgen "CO1EQL")))
-		  (c1expr
-		   `(let ((,c ,(second args)))
-		      (declare (type ,(result-type (second args))
-				     ,c))
-		      (and (typep ,c 'character)
-			   (= (char-code ,(car args))
-			      (the fixnum
-				   (char-code
-				    (the character
-					 ,c)))
-			      ))))))))))
-
-
-	 
-(si::putprop 'eql 'co1eql 'co1)		    
 
 (defvar *frozen-defstructs* nil)
 

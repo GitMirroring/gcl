@@ -2142,14 +2142,6 @@
 	 ((mi1 fname args)))))
 
 
-(defun replace-constant (lis &aux found tem)
-  (do ((v lis (cdr v)))
-      ((null v)  found)
-      (cond ((and (constantp (car v))
-		  (or (numberp (setq tem(eval (car v))))
-		      (characterp tem)))
-	     (setq found t) (setf (car v) tem)))))
-
 ;; (defun remove-doc-string (body)
 ;;   (nconc (do (d doc) ((or (not body) (if (stringp (car body)) 
 ;; 					 (or (endp (cdr body)) doc)

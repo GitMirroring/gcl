@@ -999,12 +999,6 @@
   (let ((a (member '&aux ll)))
     (ldiff ll a)))
 
-(defun suppress-unfinalized-local-fun-warnings (name b l)
-  (let ((fun (local-fun-p name)))
-    (when fun
-      (member-if (lambda (x) (when (fun-p x) (unless (eq x fun) (not (consp (if (eq b 'cb) (fun-c1cb x) (fun-c1 x)))))))
-		 (append (info-ref (cadr l)) (info-ref-ccb (cadr l)))))))
-
 (defun do-l1-fun (name src e b &aux (wns *warning-note-stack*) (*recursion-detected* (cons (list name) *recursion-detected*)))
 
   (let* ((l (c1lambda-expr src))
