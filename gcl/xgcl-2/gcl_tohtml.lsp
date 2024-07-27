@@ -61,7 +61,7 @@
 ; Make a contents list for a file of LaTex slides
 ; n is first page number: required if first page is not 1.
 ; html is prefix string to make html contents
-(in-package 'xlib)
+(in-package "XLIB")
 
 (defvar *line*)
 (defvar *ptr*)
