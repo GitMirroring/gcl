@@ -616,7 +616,9 @@ gcl_init_or_load1(void (*fn)(void),const char *file) {
     faslfile=open_stream(make_simple_string(file),smm_input,Cnil,sKerror);
     SEEK_TO_END_OFILE(faslfile->sm.sm_fp);
     set_min_cfd_self=1;
+    bds_bind(sLAload_pathnameA,make_simple_string(file));
     call_init(0,memory,faslfile);
+    bds_unwind1;
     set_min_cfd_self=0;
     close_stream(faslfile);
 
