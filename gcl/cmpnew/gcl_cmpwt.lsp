@@ -223,9 +223,6 @@
   (cond (*compiler-compile*;FIXME, clean this up
 	 (setq *compiler-compile-data* (mapcar 'verify-datum (nreverse *data*)))
 	 (wt-data2 `(mapc 'eval *compiler-compile-data*)))
-	(*fasd-data*
-	 (dolist (v (nreverse *data*))
-	   (wt-data2 (verify-datum v))))
 	((wt-data2 `(progn ,@(mapcar 'verify-datum (nreverse *data*))))))
   (when *fasd-data*
     (si::close-fasd (car *fasd-data*))))
