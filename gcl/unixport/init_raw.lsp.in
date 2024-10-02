@@ -10,6 +10,7 @@
 (make-package :tk :use '(:cl :sloop))
 (make-package :fpe :use '(:cl))
 (make-package :cltl1-compat)
+(make-package "libm")
 
 (in-package :system)
 (use-package '(:fpe :s :gmp))
