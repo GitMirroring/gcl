@@ -381,8 +381,7 @@
    (string (sort sequence predicate :key key))
    (bit-vector (sort sequence predicate :key key))
    (otherwise 
-    (coerce (list-merge-sort (coerce sequence 'list) predicate key)
-	    (seqtype sequence)))))
+    (replace sequence (list-merge-sort (coerce sequence 'list) predicate key)))))
 
 (eval-when (compile eval)
   (defmacro f+ (x y) `(the fixnum (+ (the fixnum ,x) (the fixnum ,y))))
