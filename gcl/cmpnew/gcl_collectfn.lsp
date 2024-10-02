@@ -15,7 +15,7 @@
 ;; collected.
 
 (in-package :compiler)
-(import 'sloop::sloop)
+;(import 'sloop::sloop)
 
 (defstruct fn
   name           ;; name of THIS FUNCTION
@@ -65,6 +65,7 @@
   )
 
 (defun emit-fn (flag)
+  (declare (ignore flag))
 ;  (setq *record-call-info* flag)
   )
 
@@ -100,7 +101,7 @@
 	(t *other-form*)))
 
 (defun who-calls (f)
-  (sloop for (ke val) in-table *call-table*
+  (sloop::sloop for (ke val) in-table *call-table*
 	 when (or (member f (fn-callees val))
 		  (member f (fn-macros val)))
 	 collect ke))
@@ -230,6 +231,7 @@
       ))
 
 (defun make-all-proclaims (&rest files)
+  (declare (ignore files))
   ;; (setup-sys-proclaims)
   ;; (dolist (v files)
   ;; 	  (mapcar 'load (directory v)))
@@ -291,7 +293,7 @@
 (defun list-undefined-functions (&aux undefs)
   (sloop::sloop for (name fn) in-table *call-table*
 		declare (ignore name)
-		do (sloop for w in (fn-callees fn)
+		do (sloop::sloop for w in (fn-callees fn)
 			  when (not (or (fboundp w)
 					(gethash w *call-table*)
 					(get w 'inline-always)
