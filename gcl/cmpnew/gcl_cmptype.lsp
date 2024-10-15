@@ -779,11 +779,21 @@
 	(#tcons)))
 (si::putprop 'cons 'cons-propagator 'type-propagator)
 
-(defun co1carcdr (f x)
-  (let* ((tp (car (atomic-tp (info-type (cadr (with-restore-vars (c1arg (car x))))))));FIXME ignorable-form
+(defun carcdr-c1form-narg (fm)
+  (case (car fm)
+    (inline (carcdr-c1form-narg (fourth fm)))
+    (let* (carcdr-c1form-narg (fifth fm)))
+    (lit (carcdr-c1form-narg (car (fifth fm))))
+    (ub (fourth fm))))
+
+(defun co1carcdr (f x);FIXME c1 prop?
+  (let* ((c1form (mi1 f x))
+	 (narg (carcdr-c1form-narg c1form))
+	 (tp (when (and narg (ignorable-form narg)) (car (atomic-tp (info-type (cadr narg))))))
 	 (tp (when (consp tp) (funcall f tp)))
 	 (tp (get-var tp)))
-    (when tp (c1var tp))))
+    (if tp (c1var tp) c1form)))
+
 
 (setf (get 'car 'co1) 'co1carcdr)
 (setf (get 'cdr 'co1) 'co1carcdr)
