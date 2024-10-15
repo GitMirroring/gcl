@@ -216,7 +216,7 @@
   2)
 
 (defun atomic-tp-propagator (f &rest r);  tp &aux (atp (atomic-tp tp)))
-  (declare (dynamic-extent t))
+  (declare (dynamic-extent r))
   (unless (member-if-not 'atomic-tp r)
     (let ((l (multiple-value-list (apply f (mapcar (lambda (x) (car (atomic-tp x))) r)))))
       (if (cdr l)
