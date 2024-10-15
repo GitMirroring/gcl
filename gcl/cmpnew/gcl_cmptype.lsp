@@ -362,7 +362,11 @@
   (if (consp x) (car x) 0))
 
 (defun pole-check (f r)
-  (apply f (if (when (symbolp f) (get f 'pole)) r (mapcar 'bound-num r))))
+  (si::break-on-floating-point-exceptions :suspend t)
+  (prog1
+      (apply f (if (when (symbolp f) (get f 'pole)) r (mapcar 'bound-num r)))
+    (si::break-on-floating-point-exceptions :suspend nil)))
+
 
 (defun mfc1 (f &rest r)
   (?list-bound (?rationalize (pole-check f r) f r) r))
