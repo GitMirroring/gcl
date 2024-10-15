@@ -478,13 +478,11 @@
 		   z))))
 
 
-(defun complex-contagion (z)
-  (car (member (object-tp z)
-	       '(#t(complex integer)
-		 #t(complex rational)
-		 #t(complex short-float)
-		 #t(complex long-float)
-		 #tcomplex) :test 'type<=)))
+(defun complex-contagion (z &aux (z (if (listp z) (car z) z)))
+  (cadar (member z
+		 '#.(mapcar (lambda (x &aux (x `(complex ,x))) (list x (cmp-norm-tp x)))
+			   '(integer rational short-float long-float real))
+		 :test 'typep :key 'car)))
 
 (defun mfc-complexp (x &aux (x (if (listp x) (car x) x)))
   (complexp x))
