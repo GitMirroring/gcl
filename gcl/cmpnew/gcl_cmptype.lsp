@@ -508,10 +508,8 @@
     (super-range f t1)))
 (si::putprop 'atan 'atan-propagator 'type-propagator)
 
-(defun float-propagator (f t1 &optional (t2 #tnull))
-  (if (equal t2 #tnull)
-      (super-range f (type-and #treal t1))
-    (super-range f (type-and #treal t1) (type-and #tfloat t2))))
+(defun float-propagator (f t1 &optional t2)
+  (super-range f (type-and #treal t1) (or t2 (type-and #tfloat t1) #t(member 0.0))))
 (setf (get 'float 'type-propagator) 'float-propagator)
 
 (defun bit-type (tp)
