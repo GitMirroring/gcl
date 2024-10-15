@@ -1112,17 +1112,20 @@
 	       (structure (si::s-data-print-function (c-structure-def x)))
 	       (t t))))
     (when (consp tp)
-      (if (cmpt tp)
-	  (mapcan 'kingdoms-with-unprintable-individuals (cdr tp))
-	  (mapcan (lambda (x)
-		    (when (member-if (lambda (x) (f x)) (cdr x));FIXME #'f
-		      (list (car x))))
-		  (caaddr tp))))))
+      (mapcan (lambda (x)
+		(when (member-if (lambda (x) (f x)) (cdr x));FIXME #'f
+		  (list (car x))))
+	      (caaddr tp)))))
 
-
-(defun export-type (type)
+(defun export-type1 (type)
   (let ((x (kingdoms-with-unprintable-individuals type)))
     (if x (type-or1 type (cmp-norm-tp (cons 'or x))) type)))
+
+(defun export-type (type)
+  (if (cmpt type)
+      (cons (pop type) (mapcar 'export-type1 type))
+    (export-type1 type)))
+
 
 (defun bump-tp (tp)
   (cond ((eq tp '*) tp)
