@@ -296,9 +296,10 @@
 
 (defun get-inf (x)
   (etypecase
-   x
-   (rational (if (plusp x) '+rinf (if (minusp x) '-rinf 'rnan)))
-   (float (float (if (plusp x) +inf (if (minusp x) -inf nan)) x))))
+      x
+    (integer (if (plusp x) '+iinf (if (minusp x) '-iinf 'inan)))
+    (rational (if (plusp x) '+rinf (if (minusp x) '-rinf 'rnan)))
+    (float (float (if (plusp x) +inf (if (minusp x) -inf nan)) x))))
 
 (defun pole-type (y)
   (etypecase
@@ -310,7 +311,8 @@
 
 (defun tp-to-inf (tp x)
   (ecase tp
-	 ((integer ratio) (if x '-rinf '+rinf))
+	 (integer (if x '-iinf '+iinf))
+	 (ratio (if x '-rinf '+rinf))
 	 (short-float (if x -sinf +sinf))
 	 (long-float (if x -inf +inf))))
 
@@ -324,15 +326,18 @@
 
 
 (defun bound-num (x)
-  (cond ((eq x '+rinf) +sinf)
-	((eq x '-rinf) -sinf)
-	((eq x '+rnan) snan)
+  (cond ((member x '(+iinf +rinf)) +sinf)
+	((member x '(-iinf -rinf)) -sinf)
+	((member x '(inan rnan)) snan)
 	((consp x) (cadr x))
 	(x)))
 	
 (defun rat-bound-p (x)
-  (or (member x '(+rinf -rinf rnan))
+  (or (member x '(+iinf -iinf inan +rinf -rinf rnan))
       (rationalp (if (consp x) (cadr x) x))))
+(defun int-bound-p (x)
+  (or (member x '(+iinf -iinf inan))
+      (integerp (if (consp x) (cadr x) x))))
 
 
 ;; (& ^ \| ~)
@@ -344,17 +349,18 @@
 ;; (ash >> << integer-length clzl ctzl abs )
 
 
-(defun ?rationalize (x f r)
-  (cond ((not (member f '(+ - * max min si::number-plus si::number-times si::number-minus pexpt /-pole))) x);closed functions over rationals
+(defun ?rationalize (x f r &aux (z (or (eq f '/-pole) (member-if-not 'int-bound-p r))))
+  (cond ((not (member f '(+ - * max min si::number-plus si::number-times si::number-minus pexpt /-pole))) x);closed functions over rationals plus pexpt
 	((member-if-not 'rat-bound-p r) x)
-	((isinf x) (if (> x 0) '+rinf '-rinf))
-	((isnan x) 'rnan)
+	((unless (int-bound-p (cadr r)) (eq f 'pexpt)) x)
+	((isinf x) (if (plusp x) (if z '+rinf '+iinf) (if z '-rinf '-iinf)))
+	((isnan x) (if z 'rnan 'inan))
 	((numberp x) (rational x))
 	(x)))
 
 (defun ?list-bound (x r)
   (if (when (and (numberp x) (member-if 'consp r))
-	(not (or (isinf x) (isnan x) (integerp x))))
+	(not (or (isinf x) (isnan x))))
       (list x)
       x))
 
@@ -372,10 +378,10 @@
   (?list-bound (?rationalize (pole-check f r) f r) r))
 
 (defun infp (x m)
-  (or (eq x (if m '-rinf '+rinf)) (eql x (if m -inf +inf)) (eql x (if m -sinf +sinf))))
+  (member x (if m `(-iinf -rinf ,-sinf ,-inf) `(+iinf +rinf ,+sinf ,+inf))))
 
 (defun nanp (x)
-  (or (eq x 'rnan) (isnan x)))
+  (or (member x '(inan rnan)) (isnan x)))
 
 (defun minmax1 (tp m)
   (reduce (lambda (y x &aux (x (if (when (consp x) (eq (cdr x) 'incl)) (car x) x)))
@@ -389,12 +395,22 @@
 		  (y)))
 	  tp :initial-value nil))
 
-(defun mk-tp1 (e tp)
-  (cmp-norm-tp
-   `(,(let* ((x (car (member e si::+range-types+ :test 'typep))))
-	(case x (ratio 'rational)(otherwise x)))
-     ,(minmax1 tp t)
-     ,(minmax1 tp nil))))
+(defun inf-tp (x)
+  (case x
+    ((+iinf -iinf inan) 'integer)
+    ((+rinf -ring rnan) 'ratio)))
+
+(defun mk-tp2 (tp &aux (mm1 (minmax1 tp t)) (mm2 (minmax1 tp nil)))
+  (reduce
+   'type-or1
+   (mapcar (lambda (x)
+	     (when (member-if (lambda (y &aux (y (if (listp y) (if (integerp (car y)) 1/2 (car y)) y)))
+				(or (typep y x) (eq (inf-tp y) x)))
+			      tp)
+	       (cmp-norm-tp `(,(if (eq x 'ratio) 'rational x) ,mm1 ,mm2))))
+	   si::+range-types+)
+   :initial-value nil))
+
 
 (defun outer-merge (&rest r &aux (z (pop r)))
   (mapcan (lambda (z)
@@ -421,8 +437,7 @@
 	  (vr (set-difference v vc)))
      (reduce 'type-or1
 	     (mapcar 'complex-contagion vc)
-	     :initial-value
-	     (when vr (mk-tp1 (mk-contagion-rep f nil r) vr))))
+	     :initial-value  (mk-tp2 vr)))
    (complex-contagion (mk-contagion-rep f t r))))
 
 (defun super-range (f &rest r)
@@ -855,8 +870,8 @@
 			   &aux (t1 (type-and #treal t1))(t2 (type-and #treal t2))
 			   (i (member f '(floor truncate round ceiling))))
   (let* ((sr (super-range (lambda (x)
-			    (cond ((isinf x) (if i (if (> x 0) '+rinf '-rinf) x))
-				  ((isnan x) (if i 'rnan x))
+			    (cond ((isinf x) (if i (if (> x 0) '+iinf '-iinf) x))
+				  ((isnan x) (if i 'inan x))
 				  ((funcall f x))))
 			  (/-propagator '/ t1 t2)))
 	 (sr (if i (type-and #tinteger sr) sr)))
@@ -899,7 +914,7 @@
   (typecase
    y
    ((real 0 0) (1+ y))
-   ((integer 1000) '+rinf)
+   ((integer 1000) (get-inf x))
    (otherwise (expt x y))))
 
 (defun expt-propagator (f t1 t2)
