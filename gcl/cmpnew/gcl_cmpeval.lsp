@@ -2771,7 +2771,7 @@
 
 
 (define-compiler-macro vector-push-extend (&whole form &rest args)
-  (let* ((vref (when (symbolp (cadr args)) (c1vref (cadr args))))
+  (let* ((vref (when (symbolp (cadr args)) (c1vref (cadr args))));FIXME local-aliases
 	 (var (car vref)))
     (when vref
       (do-setq-tp var form (reduce (lambda (y x) (if (type-and y x) (type-or1 y x) y))
