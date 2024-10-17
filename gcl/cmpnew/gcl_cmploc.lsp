@@ -212,7 +212,7 @@
 	 (when (and *values-to-go* *mv-var*) 
 	   (wt "register object *_x=vs_base+1,"
 	       "*_y=(object *)V" (var-loc *mv-var*) ";"
-	       "if (!_y) vs_top=base; else if (vs_top<_x) vs_top=_y-1; else {for(;_x<vs_top;) *_y++=*_x++;vs_top=_y;}")
+	       "if (!_y) vs_top=base; else {for(;_x<vs_top;) *_y++=*_x++;if (_x>vs_top) _y--;vs_top=_y;}")
 	   (base-used)
 	   (unless (boundp '*extend-vs-top*) (baboon))
 	   (setq *extend-vs-top* t *values-to-go* nil))
