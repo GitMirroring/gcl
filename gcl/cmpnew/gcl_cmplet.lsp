@@ -28,6 +28,7 @@
 (si:putprop 'let 'c2let 'c2)
 (si:putprop 'let* 'c1let* 'c1special)
 (si:putprop 'let* 'c2let* 'c2)
+(si:putprop 'locally 'c1locally 'c1special)
 
 (defun set-var-init-type (v t1);;FIXME should be in c1make-var
   (when (eq (var-kind v) 'lexical)
@@ -290,6 +291,16 @@
       
       (if vars (list nm info vars fms body)
 	  (list* (car body) info (cddr body))))))
+
+(defun c1locally (args)
+
+  (multiple-value-bind
+   (body ss ts is other-decls)
+   (c1body args nil)
+
+  (dolist (d ts) (c1infer-tp (list (car d) (cdr d))))
+
+  (c1decl-body other-decls body)))
 
 ;; (defun c1let-* (args &optional star inls
 ;; 		     &aux (nm (if star 'let* 'let))
