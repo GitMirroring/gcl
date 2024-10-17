@@ -238,11 +238,6 @@
                  si::*break-hidden-packages*)))
          (si:error-set form)))
 
-(dolist (v '(si::cdefn inline-safe inline-unsafe
-		       inline-always c1conditional c2 c1 c1+ co1
-		       si::structure-access co1special
-		       top-level-macro t3 t2 t1))
-	   (si::putprop v t 'compiler-prop ))
 
 (defun  compiler-def-hook (symbol code) symbol code nil)
 
