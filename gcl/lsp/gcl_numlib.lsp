@@ -25,6 +25,16 @@
 
 (in-package :system)
 
+(defun powm (a b c)
+  (declare (optimize (safety 1)))
+  (check-type a integer)
+  (check-type b (integer 0))
+  (check-type c (integer 0))
+  (if (typep b 'fixnum)
+      (gmp:mpz_powm_ui a b c)
+      (gmp:mpz_powm a b c)))
+(declaim (inline powm))
+
 (defconstant imag-one #C(0.0d0 1.0d0))
 
 (defun isqrt (i)

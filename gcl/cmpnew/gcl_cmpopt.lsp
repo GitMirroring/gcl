@@ -609,24 +609,6 @@
 	 "@01;({fixnum _t=(#0)/(#1);_t=((#0)<=0 && (#1)>=0) || ((#0)>=0 && (#1)<=0) || ((#1)*_t==(#0)) ? _t : _t+1;@1((#0)-_t*(#1))@ _t;})")
    (get 'ceiling 'inline-always))
 
-;;SI::POWM
- (push '((t t t) t #.(flags)"powm_bbb(#0,#1,#2)")
-   (get 'si::powm 'inline-unsafe))
- (push '((fixnum t t) t #.(flags)"powm_fbb(#0,#1,#2)")
-   (get 'si::powm 'inline-unsafe))
- (push '((t fixnum t) t #.(flags)"powm_bfb(#0,#1,#2)")
-   (get 'si::powm 'inline-unsafe))
- (push '((t t fixnum) t #.(flags)"powm_bbf(#0,#1,#2)")
-   (get 'si::powm 'inline-unsafe))
- (push '((fixnum fixnum t) t #.(flags)"powm_ffb(#0,#1,#2)")
-   (get 'si::powm 'inline-unsafe))
- (push '((fixnum t fixnum) t #.(flags)"powm_fbf(#0,#1,#2)")
-   (get 'si::powm 'inline-unsafe))
- (push '((t fixnum fixnum) t #.(flags)"powm_bff(#0,#1,#2)")
-   (get 'si::powm 'inline-unsafe))
- (push '((fixnum fixnum fixnum) t #.(flags)"powm_fff(#0,#1,#2)")
-   (get 'si::powm 'inline-unsafe))
-
 ;;FOURTH
 ;;  (push '((t) t #.(flags)"cadddr(#0)")
 ;;    (get 'fourth 'inline-safe))
