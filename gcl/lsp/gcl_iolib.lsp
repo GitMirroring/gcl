@@ -104,15 +104,14 @@
     (setf (fill-pointer (c-stream-object0 *sosm*)) 0)
     *sosm*))
 
-(defmacro with-output-to-string ((var &optional string &key element-type) . body)
+(defmacro with-output-to-string ((var &optional string &key (element-type ''character)) . body)
   (declare (optimize (safety 2)))
   (let ((e (sgen "WITH-OUTPUT-TO-STRING")))
     (multiple-value-bind (doc decls ctps body) (parse-body-header body)
       (declare (ignorable doc))
-      `(let* ((,e ,element-type)
-	      (,var ,(if string
-			 `(make-string-output-stream-from-string ,string)
-			 `(or (get-sosm) (make-string-output-stream :element-type ,e))))
+      `(let* ((,var ,(if string
+			 `(progn ,element-type (make-string-output-stream-from-string ,string))
+			 `(or (get-sosm) (make-string-output-stream :element-type ,element-type))))
 	      (*sosm* (unless (eq ,var *sosm*) *sosm*)))
 	 ,@decls
 	 ,@ctps
