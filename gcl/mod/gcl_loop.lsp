@@ -1278,9 +1278,7 @@ collected result will be returned as the value of the LOOP."
   (cond ((or (null name) (null dtype) (eq dtype t)) nil)
 	((symbolp name)
 	 (unless (or (eq dtype t) (member (the symbol name) *loop-nodeclare*))
-	   (let ((dtype #-cmu dtype
-			#+cmu
-			(let ((init (loop-typed-init dtype)))
+	   (let ((dtype (let ((init (loop-typed-init dtype)))
 			  (if (typep init dtype)
 			      dtype
 			      `(or (member ,init) ,dtype)))))
