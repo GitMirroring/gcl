@@ -722,7 +722,7 @@
 	    (rc (pop oc))
 	    ;FIXME check-type must refer to top regular variable binding, but must be beneath argument number logic
 	    (oc (append (when s rc) (car oc)))
-	    (rc (mapcar (lambda (x) `(declare (,@(when s `(hint)) ,(caddr x) ,(cadr x)))) rc))
+	    (rc (mapcan (lambda (x) (when (eq (car x) 'check-type) `((declare (,@(when s `(hint)) ,(caddr x) ,(cadr x)))))) rc))
 	    (rc (cons `(declare (optimize (safety ,dl))) rc))
 	    (narg (when opts +nargs+));FIXME (cdr opts)
 	    (nr (length regs))
