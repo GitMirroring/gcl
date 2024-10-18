@@ -475,7 +475,7 @@
 	 (ft   (loc-kind loc))
 	 (tt   (get key 'cmp-lisp-type))
 	 (cast (if (member key '(:cnum :creal)) "" (strcat "(" key ")")))
-	 (pp   (search "*" cast)))
+	 (pp   (find #\* cast)))
 
     (cond ((unless fvt (eq ft tt)))
 	  ((equal ft #tt)

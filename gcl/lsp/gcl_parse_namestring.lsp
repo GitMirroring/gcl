@@ -28,7 +28,7 @@
 
 (defun dir-parse (x sep sepfirst &optional (b 0))
   (when (stringp x)
-    (let ((i (search sep x :start2 b)));string-match spoils outer match results
+    (let ((i (position sep x :start b)));string-match spoils outer match results
       (when i
 	(let* ((y (dir-parse x sep sepfirst (1+ i)))
 	       (z (element x b i :directory))
@@ -55,7 +55,7 @@
 	    (error 'error :format-control "Host part of ~s does not match ~s" :format-arguments (list x host))))
       (let ((host (or host mhost (pathname-host def))))
 	(when (logical-pathname-host-p host)
-	  (let* ((dir (dir-parse (match-component x 2 :none) ";" :relative))
+	  (let* ((dir (dir-parse (match-component x 2 :none) #\; :relative))
 		 (edir (expand-home-dir dir)))
 	  (make-pathname :host host
 			 :device :unspecific
@@ -69,12 +69,12 @@
 
 (defun expand-home-dir (dir)
   (if (and (eq (car dir) :relative) (stringp (cadr dir)) (eql #\~ (aref (cadr dir) 0)))
-      (append (dir-parse (home-namestring (cadr dir)) "/" :absolute) (cddr dir))
+      (append (dir-parse (home-namestring (cadr dir)) #\/ :absolute) (cddr dir))
     dir))
 
 (defun pathname-parse (x b e)
   (when (and (eql b (string-match +generic-physical-pathname-regexp+ x b e)) (eql (match-end 0) e))
-    (let* ((dir (dir-parse (match-component x 1 :none) "/" :absolute))
+    (let* ((dir (dir-parse (match-component x 1 :none) #\/ :absolute))
 	   (edir (expand-home-dir dir)))
       (make-pathname :directory edir
 		     :name (match-component x 3 :name)

@@ -326,7 +326,7 @@
 
 (defun mod-argstr (n call st nsup)
   (let* ((x (commasep (append (nobs nsup "#") (nobs (- n nsup)) (when st (list "_l")))))
-	 (s (or (search "#" call) (length call))))
+	 (s (or (position #\# call) (length call))))
     (ms (subseq call 0 s) x)))
 
 (defun nvfun-wrap (cname argstr sig clp ap)

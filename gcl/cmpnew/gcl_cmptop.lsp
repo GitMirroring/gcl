@@ -967,7 +967,7 @@
 				  (unless (stringp x) (list (c1arg (cons 'ub x) info))))
 				args)))
 	    (when (eq tp :opaque) (baboon))
-	    (when (search "=" inl)
+	    (when (find #\= inl)
 	      (setf (info-flags info) (logior (iflags side-effects) (info-flags info))))
 	    (list 'lit info (info-type info) inl nargs (make-vs info))))))
 
