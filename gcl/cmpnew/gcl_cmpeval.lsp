@@ -665,7 +665,7 @@
   (list 'comment (make-info :type t  :flags (iflags side-effects))
 	(with-output-to-string (s) (princ (car args) s))))
 (defun c2comment (comment)
-  (wt-nl "/*" comment "*/"))
+  (wt-nl "/*" (mysub (mysub comment "/*" "_*") "*/" "*_") "*/"))
 (si::putprop 'comment 'c1comment 'c1)
 (si::putprop 'comment 'c2comment 'c2)
 
