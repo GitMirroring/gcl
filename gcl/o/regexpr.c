@@ -37,6 +37,7 @@ gcl_regerror(char *s)
 		not_a_string(x)
 
 
+DEFVAR("*COMPILED-REGEXP-CACHE*",sSAcompiled_regexp_cacheA,SI,MMcons(MMcons(sLnil,sLnil),sLnil),"");
 DEFVAR("*MATCH-DATA*",sSAmatch_dataA,SI,sLnil,"");
 DEFVAR("*CASE-FOLD-SEARCH*",sSAcase_fold_searchA,SI,sLnil,
        "Non nil means that a string-match should ignore case");
@@ -112,8 +113,6 @@ be over written.   \
   fixnum nargs=INIT_NARGS(2);
   int i,ans;
   int len,start,end;
-  static char buf[400],case_fold;
-  static regexp *saved_compiled_regexp;
   va_list ap;
   object v=sSAmatch_dataA->s.s_dbind,l=Cnil,f=OBJNULL;
   char **pp,*str,save_c=0;
@@ -136,62 +135,69 @@ be over written.   \
      FEerror("Bad start or end",0);
 
   len=VLEN(pattern);
-   if (len==0) {
-     /* trivial case of empty pattern */
-     for (i=0;i<NSUBEXP;i++) 
-       ((fixnum *)v->a.a_self)[i]=i ? -1 : 0;
-     memcpy(((fixnum *)v->a.a_self)+NSUBEXP,((fixnum *)v->a.a_self),NSUBEXP*sizeof(*((fixnum *)v->a.a_self)));
-     RETURN1(0);
-   }
+  if (len==0) {
+    /* trivial case of empty pattern */
+    for (i=0;i<NSUBEXP;i++)
+      ((fixnum *)v->a.a_self)[i]=i ? -1 : 0;
+    memcpy(((fixnum *)v->a.a_self)+NSUBEXP,((fixnum *)v->a.a_self),NSUBEXP*sizeof(*((fixnum *)v->a.a_self)));
+    RETURN1(0);
+  }
 
-   {
+  {
 
-     regexp *compiled_regexp=saved_compiled_regexp;
+    regexp *compiled_regexp;
 
-     BEGIN_NO_INTERRUPT;
+    BEGIN_NO_INTERRUPT;
 
-     case_fold_search = sSAcase_fold_searchA->s.s_dbind != sLnil ? 1 : 0;
-     
-     if (type_of(pattern)==t_vector)
-       
-       compiled_regexp=(void *)pattern->ust.ust_self;
+    if (type_of(pattern)==t_vector)
 
-     else if (case_fold != case_fold_search || len != strlen(buf) || memcmp(pattern->ust.ust_self,buf,len)) 
+      compiled_regexp=(void *)pattern->ust.ust_self;
 
-       compiled_regexp=saved_compiled_regexp=(regexp *)FFN(fScompile_regexp)(pattern)->v.v_self;
+    else {
 
+      object cache=sSAcompiled_regexp_cacheA->s.s_dbind;
 
-     str=string->st.st_self;
-     if (NULL_OR_ON_C_STACK(str+end) || str+end==(void *)compiled_regexp) {
+      if (cache->c.c_car->c.c_car!=pattern || cache->c.c_car->c.c_cdr!=sSAcase_fold_searchA->s.s_dbind) {
+	cache->c.c_car->c.c_car=pattern;
+	cache->c.c_car->c.c_cdr=sSAcase_fold_searchA->s.s_dbind;
+	cache->c.c_cdr=FFN(fScompile_regexp)(pattern);
+      }
 
-       if (!(str=alloca(VLEN(string)+1)))
-	 FEerror("Cannot allocate memory on C stack",0);
-       memcpy(str,string->st.st_self,VLEN(string));
+      compiled_regexp=(regexp *)cache->c.c_cdr->v.v_self;
 
-     } else
-       save_c=str[end];
-     str[end]=0;
+    }
 
-     ans = regexec(compiled_regexp,str+start,str,end-start);
+    str=string->st.st_self;
+    if (NULL_OR_ON_C_STACK(str+end) || str+end==(void *)compiled_regexp) {
 
-     str[end] = save_c;
+      if (!(str=alloca(VLEN(string)+1)))
+	FEerror("Cannot allocate memory on C stack",0);
+      memcpy(str,string->st.st_self,VLEN(string));
 
-     if (!ans ) {
-       END_NO_INTERRUPT;
-       RETURN1((object)-1);
-     }
+    } else
+      save_c=str[end];
+    str[end]=0;
 
-     pp=compiled_regexp->startp;
-     for (i=0;i<NSUBEXP;i++,pp++)
-       ((fixnum *)v->a.a_self)[i]=*pp ? *pp-str : -1;
-     pp=compiled_regexp->endp;
-     for (;i<2*NSUBEXP;i++,pp++)
-       ((fixnum *)v->a.a_self)[i]=*pp ? *pp-str : -1;
+    ans = regexec(compiled_regexp,str+start,str,end-start);
 
-     END_NO_INTERRUPT;
-     RETURN1((object)((fixnum *)v->a.a_self)[0]);
+    str[end] = save_c;
 
-   }
+    if (!ans ) {
+      END_NO_INTERRUPT;
+      RETURN1((object)-1);
+    }
+
+    pp=compiled_regexp->startp;
+    for (i=0;i<NSUBEXP;i++,pp++)
+      ((fixnum *)v->a.a_self)[i]=*pp ? *pp-str : -1;
+    pp=compiled_regexp->endp;
+    for (;i<2*NSUBEXP;i++,pp++)
+      ((fixnum *)v->a.a_self)[i]=*pp ? *pp-str : -1;
+
+    END_NO_INTERRUPT;
+    RETURN1((object)((fixnum *)v->a.a_self)[0]);
+
+  }
 
 }
 object
