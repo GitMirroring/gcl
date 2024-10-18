@@ -307,8 +307,17 @@
 	(unless (or (< i2 start2) (>= i2 end2) (when l (endp s2)))
 	    (if from-end start1 (let ((ln1 (length s1))) (if end1 (min end1 ln1) ln1)))))))
 
+(defun nonregexp-string-p (str s e)
+  (when (and (stringp str) (zerop s) (if e (eql e (length str)) t));FIXME frame
+    (map nil (lambda (x) (case (char-code x) (#.(mapcar 'char-code (coerce "\\^$.|?*+()[]{}" 'list)) (return-from nonregexp-string-p nil)))) str)
+    t))
+(declaim (inline nonregexp-string-p))
 
 (defseq search (nil (s1 s2));consider (position-if-not 'eql-is-eq s1 :start start1 :end end1)
+  (unless (or test test-not key from-end)
+    (when (and (stringp s2) (nonregexp-string-p s1 start1 end1))
+      (let ((x (string-match s1 s2 start2 end2)))
+	(return-from search (unless (minusp x) x)))))
   (let ((n (max 0 (- (or end1 (length s1)) start1))))
     (do ((p (when l (if from-end (nthcdr (max 0 (1- n)) r) s)) (cdr p))
 	 (i (if from-end (- end2 n) start2) (if (>= i end2) (return nil) (+ i (if from-end -1 1)))));keep i seqbnd
