@@ -152,20 +152,23 @@
 (defvar *fasd-data*)
 
 (defvar *hash-eq* nil)
-(defvar *run-hash-equal-data-checking* t)
+(defvar *run-hash-equal-data-checking* nil)
 (defun memoized-hash-equal (x depth);FIXME implement all this in lisp
-  (declare (fixnum depth))
-  (when *run-hash-equal-data-checking*
-    (unless *hash-eq* (setq *hash-eq* (make-hash-table :test 'eq)))
-    (or (gethash x *hash-eq*)
-	(setf (gethash x *hash-eq*)
+  (declare (fixnum depth)(inline si::hash-set))
+  (unless *run-hash-equal-data-checking*
+    (return-from memoized-hash-equal 0))
+  (unless *hash-eq* (setq *hash-eq* (make-hash-table :test 'eq)))
+  (address
+   (or (gethash x *hash-eq*)
+       (setf (gethash x *hash-eq*)
+	     (nani
 	      (if (> depth 3) 0
-		(if (typep x 'cons)
-		    (logxor (setq depth (the fixnum (1+ depth)));FIXME?
-			    (logxor
-			     (memoized-hash-equal (car x) depth)
-			     (memoized-hash-equal (cdr x) depth)))
-		  (si::hash-equal x depth)))))))
+		  (if (typep x 'cons)
+		      (logxor (setq depth (the fixnum (1+ depth)));FIXME?
+			      (logxor
+			       (memoized-hash-equal (car x) depth)
+			       (memoized-hash-equal (cdr x) depth)))
+		      (si::hash-equal x depth))))))))
 
 (defun push-data-incf (x)
   (declare (ignore x));FIXME
