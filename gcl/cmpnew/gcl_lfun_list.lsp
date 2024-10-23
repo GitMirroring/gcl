@@ -16,6 +16,8 @@
 ;	     (((list) t) . si::cons-car)
 ;	     (((list) t) . si::cons-cdr)
 	     (((t t) cons) . cons)
+	     (((*) si::proper-list) . list)
+	     (((t *) list) . list*)
 	     (((fixnum) t) . si::nani)
 	     (((t) fixnum) . si::address);FIXME
 ;	     (((integer) fixnum) . si::mpz_bitlength)

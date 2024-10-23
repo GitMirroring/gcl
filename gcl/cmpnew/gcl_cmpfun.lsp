@@ -569,6 +569,7 @@
 (si::putprop 'list 'c1list 'c1)
       
 (defun c1list* (args)
+  (unless args (too-few-args 'list* 1 0))
   (let* ((info (make-info))
 	 (nargs (c1args args info)))
     (cond ((not nargs) (c1nil))

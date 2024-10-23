@@ -1139,6 +1139,7 @@
 	     (wt-nl "_p->c_car=" x ";_p->c_cdr=(object)(_p+1);_p++;"))))))
 
 (defun list-inline (&rest x &aux (*values-to-go* nil))
+  (assert x)
   (cond ((can-allocate-on-stack) (wt-stack-list* x nil))
 	((endp (cdr x)) (wt "make_cons(" (car x) ",Cnil)"))
 	(t 
@@ -1146,6 +1147,7 @@
 	 (dolist (loc x (wt #\))) (wt #\, loc)))))
 
 (defun list*-inline (&rest x &aux (*values-to-go* nil))
+  (assert x)
   (if (can-allocate-on-stack)
       (wt-stack-list* (butlast x) (car (last x)))
     (case (length x)
