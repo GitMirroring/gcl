@@ -68,7 +68,8 @@
   (when (and (eq loc 'fun-val)
              (not (eq *value-to-go* 'return))
 	     (not (rassoc *value-to-go* +return-alist+))
-             (not (eq *value-to-go* 'top)))
+             (not (eq *value-to-go* 'top))
+	     (not (multiple-values-p)));FIXME cleanup
         (wt-nl) (reset-top))
   (cond ((and (consp *value-to-go*) (eq (car *value-to-go*) 'jump-true))
          (set-jump-true loc (cadr *value-to-go*))
