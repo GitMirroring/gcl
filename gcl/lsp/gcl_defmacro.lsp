@@ -81,10 +81,10 @@
 	((stringp x) (gensym1s x))
 	((gensym1ig x))))
 			 
-(let* ((gsyms (mapl #'(lambda (x) (setf (car x) (gensym))) (make-list 50)))(syms gsyms))
+(let* ((gsyms (mapl #'(lambda (x) (setf (car x) (gensym))) (make-list 100)))(syms gsyms))
   (defun tsym (&optional r)
     (cond (r (setq syms gsyms) nil)
-	  ((or (pop syms) (error 'program-error :format-control "Out of symbols when binding lambda list" :format-arguments nil))))))
+	  ((or (pop syms) (gensym)))))); FIXME print? (error 'program-error :format-control "Out of symbols when binding lambda list" :format-arguments nil)
 
 (defun unbnd (k l &aux (lc (when (or (eq k '&optional) (eq k '&key)) (consp l)))
 	      (ln (if lc (pop l) l)) (ld (when lc (pop l))) (lp (when lc (car l)))
