@@ -391,24 +391,26 @@
 (si::putprop 'cons 'co1cons 'co1)
 ;; turn repetitious cons's into a list*
 
-(defun cons-to-lista (x)
-  (let ((tem  (last x)))
-    (cond 
-	((and (consp tem)
-	      (consp (car tem))
-	      (eq (caar tem) 'cons)
-	      (eql (length (cdar tem)) 2)
-	      (cons-to-lista (append (butlast x) (cdar tem)))))
-	(t x))))
-    	 
+(defun cons-to-listb (x)
+  (typecase x
+    ((cons t (cons (cons (member cons) (cons t t)) null))
+     (let ((a (pop x))(d (cons-to-listb (cdar x))))
+       (when d (cons a d))))
+    ((cons t (cons t null)) x)))
 
-(defun co1cons (f args)
+(defun limit-list-call-args (form &aux (of form)(fn (pop of))
+				    (x (nthcdr (1- call-arguments-limit) of)))
+  (if x
+      `(nconc (list ,@(ldiff of x)) ,(limit-list-call-args (cons fn x)))
+      form))
+
+(defun co1cons (f args &aux (tem (cons-to-listb args)))
   (declare (ignore f))
-  (let ((tem (and (eql (length args) 2) (cons-to-lista args))))
-    (and tem (not (eq tem args))
-	 (c1expr  (if (equal '(nil) (last tem))
-		     (cons 'list (butlast tem))
-		     (cons 'list* tem))))))
+  (when tem
+    (c1expr (limit-list-call-args
+	     (if (equal '(nil) (last tem))
+		 (cons 'list (butlast tem))
+		 (cons 'list* tem))))))
 
 ;; Facilities for faster reading and writing from file streams.
 ;; You must declare the stream to be :in-file
