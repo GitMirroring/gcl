@@ -273,9 +273,18 @@
      (let ((z (rational nx)))
        (if (eql z nx) (if (integerp x) (list x) x)
 	   (if a z (list z)))))
-    ((short-float long-float)
-     (let ((z (float nx (if (eq tp 'short-float) 0.0s0 0.0))))
-       (if (eql z nx) x (if a z (list z)))))))
+    (short-float
+     (cond ((<= most-negative-short-float nx most-positive-short-float)
+	    (let ((z (float nx 0.0s0)))
+	      (if (eql z nx) x (if a z (list z)))))
+	   ((< 0 nx) most-positive-short-float)
+	   (most-negative-short-float)))
+    (long-float
+     (cond ((<= most-negative-long-float nx most-positive-long-float)
+	    (let ((z (float nx 0.0)))
+	      (if (eql z nx) x (if a z (list z)))))
+	   ((< 0 nx) most-positive-long-float)
+	   (most-negative-long-float)))))
 
 (defun ctp-bnd (x tp inc)
   (if (eq x '*) x (ctp-num-bnd x tp inc)))
