@@ -391,12 +391,15 @@
 (si::putprop 'cons 'co1cons 'co1)
 ;; turn repetitious cons's into a list*
 
-(defun cons-to-listb (x)
+(defun cons-to-listc (x)
   (typecase x
-    ((cons t (cons (cons (member cons) (cons t t)) null))
-     (let ((a (pop x))(d (cons-to-listb (cdar x))))
-       (when d (cons a d))))
-    ((cons t (cons t null)) x)))
+    ((cons t (cons t null))
+     (let ((y (cadr x)))
+       (typecase y
+	 ((cons (member cons) (cons t (cons t null)))
+	  (let ((d (cons-to-listc (cdr y))))
+	    (when d (cons (car x) d))))
+	 (otherwise x))))))
 
 (defun limit-list-call-args (form &aux (of form)(fn (pop of))
 				    (x (nthcdr (1- call-arguments-limit) of)))
@@ -404,7 +407,7 @@
       `(nconc (list ,@(ldiff of x)) ,(limit-list-call-args (cons fn x)))
       form))
 
-(defun co1cons (f args &aux (tem (cons-to-listb args)))
+(defun co1cons (f args &aux (tem (cons-to-listc args)))
   (declare (ignore f))
   (when tem
     (c1expr (limit-list-call-args
