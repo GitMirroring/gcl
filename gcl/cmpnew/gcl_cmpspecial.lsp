@@ -57,7 +57,6 @@
   (setq form (c1expr (cadr args)))
   (setq info (copy-info (cadr form)))
   (setq dtype (cmp-norm-tp (cadr (si::ftype-to-sig (list nil (car args))))))
-  (when *compiler-new-safety* (setq dtype t))
   (when (exit-to-fmla-p) (setq dtype (type-or1 (when (type-and #tnull dtype) #tnull) (when (type-and #t(not null) dtype) #ttrue))));FIXME
   (when (equal dtype #tboolean)
     (unless (type>= dtype (info-type info))
