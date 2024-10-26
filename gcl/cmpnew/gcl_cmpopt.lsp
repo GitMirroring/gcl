@@ -686,7 +686,7 @@
    (get 'length 'inline-always))
 
 ;;LIST
-(push '((t *) si::proper-list #.(flags ans rfa) LIST-INLINE)
+(push '((t *) list #.(flags ans rfa) LIST-INLINE);proper-list can get bumped
    (get 'list 'inline-always))
 
 ;;LIST*
