@@ -266,11 +266,11 @@
 
 (defun ctp-num-bnd (x tp inc &aux (a (atom x))(nx (if a x (car x))))
   (flet ((f (b)
-	   (when (fboundp 'break-on-floating-point-exceptions);FIXME
-	     (break-on-floating-point-exceptions :suspend t))
+	   (when (fboundp 'fpe::break-on-floating-point-exceptions);FIXME
+	     (fpe::break-on-floating-point-exceptions :suspend t))
 	   (let ((z (float nx b)))
-	     (when (fboundp 'break-on-floating-point-exceptions)
-	       (break-on-floating-point-exceptions :suspend nil))
+	     (when (fboundp 'fpe::break-on-floating-point-exceptions)
+	       (fpe::break-on-floating-point-exceptions :suspend nil))
 	     (if (eql z nx) x (if a z (list z))))))
   (case tp
     (integer
