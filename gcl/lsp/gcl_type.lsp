@@ -555,7 +555,7 @@
 	((eq x '*) x)
 	((when (listp x)
 	   (case (car x)
-		 ((returns-exactly values) (cons (car x) (mapcar 'cmp-norm-tp (cdr x)))))))
+		 ((returns-exactly values) (cons (car x) (mapcar 'cmp-norm-tp (cdr x)))))));FIXME
 	((comp-tp1 x))))
 
 (defun tp-type1 (x)
