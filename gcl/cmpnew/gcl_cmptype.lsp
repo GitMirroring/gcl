@@ -398,7 +398,7 @@
 (defun inf-tp (x)
   (case x
     ((+iinf -iinf inan) 'integer)
-    ((+rinf -ring rnan) 'ratio)))
+    ((+rinf -rinf rnan) 'ratio)))
 
 (defun mk-tp2 (tp &aux (mm1 (minmax1 tp t)) (mm2 (minmax1 tp nil)))
   (reduce
