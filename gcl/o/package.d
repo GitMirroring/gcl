@@ -1253,7 +1253,6 @@ gcl_init_package()
 #endif
 #endif
 
-	make_package(make_simple_string("C"),Cnil,Cnil,0,0);
 	gmp_package=make_package(make_simple_string("GMP"),Cnil,Cnil,0,0);
 
 	/*  There is no need to enter a package as a mark origin.  */
