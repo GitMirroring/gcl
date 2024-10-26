@@ -387,7 +387,7 @@
   (reduce (lambda (y x &aux (x (if (when (consp x) (eq (cdr x) 'incl)) (car x) x)))
 	    (cond ((eq y '*) y)
 		  ((infp x m) '*)
-		  ((infp x (not m)) y)
+		  ((infp x (not m)) (or y 0))
 		  ((nanp x) '*)
 		  ((not y) x)
 		  ((funcall (if m '< '>) (if (consp x) (car x) x) (if (consp y) (car y) y)) x)
