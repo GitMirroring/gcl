@@ -73,8 +73,6 @@
 (gbc t)
 (reset-gbc-count)
 
-(defun top-level nil (gcl-top-level))
-
 (set-up-top-level)
 
 (setq *gcl-extra-version* @LI-EXTVERS@
