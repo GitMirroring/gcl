@@ -106,17 +106,16 @@
 
 (defmacro with-output-to-string ((var &optional string &key (element-type ''character)) . body)
   (declare (optimize (safety 2)))
-  (let ((e (sgen "WITH-OUTPUT-TO-STRING")))
-    (multiple-value-bind (doc decls ctps body) (parse-body-header body)
-      (declare (ignorable doc))
-      `(let* ((,var ,(if string
-			 `(progn ,element-type (make-string-output-stream-from-string ,string))
-			 `(or (get-sosm) (make-string-output-stream :element-type ,element-type))))
-	      (*sosm* (unless (eq ,var *sosm*) *sosm*)))
-	 ,@decls
-	 ,@ctps
-	 ,@body
-	 ,@(unless string `((get-output-stream-string ,var)))))))
+  (multiple-value-bind (doc decls ctps body) (parse-body-header body)
+    (declare (ignorable doc))
+    `(let* ((,var ,(if string
+		       `(progn ,element-type (make-string-output-stream-from-string ,string))
+		       `(or (get-sosm) (make-string-output-stream :element-type ,element-type))))
+	    (*sosm* (unless (eq ,var *sosm*) *sosm*)))
+       ,@decls
+       ,@ctps
+       ,@body
+       ,@(unless string `((get-output-stream-string ,var))))))
 
 
 (defun read-from-string (string &optional (eof-error-p t) eof-value
