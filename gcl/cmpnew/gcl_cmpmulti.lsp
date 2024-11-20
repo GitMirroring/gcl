@@ -352,14 +352,16 @@
   (setq init-form (c1arg (cadr args) info))
 
   (setq vars (nreverse vars))
-  (let* ((tp (info-type (second init-form)))(otp tp)
+  (let* ((tp (info-type (second init-form)))
+	 (tp (if (cmpt tp) (unless (member nil tp) tp) tp));FIXME
+	 (def (when tp #tnull))
 	 (tp (cond ((not tp) tp)
 		   ((single-type-p tp) (list tp))
 		   ((eq tp '*) (make-list (length vars) :initial-element t))
 		   ((cdr tp)))))
     (do ((v vars (cdr v)) (t1 tp (cdr t1)))
 	((not v))
-	(set-var-init-type (car v) (when otp (or (car t1) #tnull)))))
+	(set-var-init-type (car v) (if t1 (car t1) def))))
 
   (dolist (v vars) (push-var v init-form))
 
