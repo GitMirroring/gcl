@@ -653,6 +653,9 @@
 	  (cmpwarn "Setting form type ~s to orthogonal type ~s"
 		   (cmp-unnorm-tp it) (cmp-unnorm-tp type))
 	  (setq nt type))
+	(when (or (eq form (c1nil)) (eq form (c1t)));FIXME
+	  (unless (type= it nt)
+	    (cmperr "setting constant form types")))
 	(setf (info-type (cadr form)) nt)
 	(unless no-recur
 	  (case (car form)
