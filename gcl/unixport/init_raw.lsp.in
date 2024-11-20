@@ -2,8 +2,8 @@
 (defun make-package (name &key nicknames use)
   (si::make-package-int name nicknames use))
 
-(make-package :s :use '(:cl))
-(make-package :compiler :use '(:cl :si :s))
+(make-package :cstruct :use '(:cl))
+(make-package :compiler :use '(:cl :si :cstruct))
 (make-package :sloop :use '(:cl))
 (make-package :ansi-loop :use'(:cl))
 (make-package :defpackage :use '(:cl))
@@ -13,7 +13,7 @@
 (make-package "libm")
 
 (in-package :system)
-(use-package '(:fpe :s :gmp))
+(use-package '(:fpe :cstruct :gmp))
 
 (export 'si::(object double cnum system cmp-inline cmp-eval type-propagator c1no-side-effects defcfun clines defentry) :si);FIXME
 

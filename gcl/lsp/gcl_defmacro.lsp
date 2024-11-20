@@ -317,7 +317,7 @@
 
 (defmacro symbol-to-function (sym)
   (let* ((n (gensym))
-	 (gf (find-symbol "C-SYMBOL-GFDEF" (find-package :s))))
+	 (gf (find-symbol "C-SYMBOL-GFDEF" (find-package :cstruct))))
     `(when (symbolp ,sym)
        ,(if (fboundp gf) `(let ((,n (address (,gf ,sym))))
 			    (unless (= +objnull+ ,n) (nani ,n)))

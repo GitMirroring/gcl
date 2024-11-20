@@ -1,5 +1,5 @@
 ;; Copyright (C) 2024 Camm Maguire
-(in-package :s)
+(in-package :cstruct)
 
 (defun strcat (&rest r) (declare (dynamic-extent r)) (nstring-downcase (apply 'string-concatenate r)))
 

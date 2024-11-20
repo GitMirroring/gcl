@@ -1,5 +1,5 @@
 ;; Copyright (C) 2024 Camm Maguire
-(in-package :s)
+(in-package :cstruct)
 
 (export '(lisp-type defdlfun +ks+ +fl+ strcat adjustable-vector adjustable-array matrix))
 (si::import-internal 'si::(\| & ^ ~ c+ c* << >> object double end-shft

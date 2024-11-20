@@ -1414,7 +1414,7 @@
 ;	  ((< (cons-count src) 30))
 	  ((not (symbolp fun)))
 	  ((let* ((n (symbol-package fun))(n (when n (package-name n)))(p (find-package :lib))) 
-	     (when n (or (when p (find-symbol n p)) (string-equal "S" n)))));FIXME
+	     (when n (or (when p (find-symbol n p)) (string-equal "CSTRUCT" n)))));FIXME
 	  ((local-fun-p fun))
 	  ((intersection-p '(&key &rest) (cadr src)))
 	  ((member-if-not (lambda (x) (type>= (car x) (cdr x))) 
