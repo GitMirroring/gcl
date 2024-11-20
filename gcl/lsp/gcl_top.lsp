@@ -152,7 +152,7 @@
 		    (format t "~%~a>"
 			    (if (eq *package* (user-package)) ""
 			      (package-name *package*))))
-		  (reset-stack-limits)
+		  (reset-stack-limits t)
 		  ;; have to exit and re-enter to multiply stacks
 		  (cond (*multiply-stacks* (Return-from top-level1)))
 		  (setq - (locally (declare (notinline read))

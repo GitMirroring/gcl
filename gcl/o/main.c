@@ -983,7 +983,9 @@ DEFUN("CATCH-FATAL",object,fScatch_fatal,SI,1,1,NONE,OI,OO,OO,OO,(fixnum i),"") 
   return Cnil;
 }
 
-DEFUN("RESET-STACK-LIMITS",object,fSreset_stack_limits,SI,0,0,NONE,OO,OO,OO,OO,(void),"") {
+DEFUN("RESET-STACK-LIMITS",object,fSreset_stack_limits,SI,0,1,NONE,OO,OO,OO,OO,(object cs_org_reset,...),"") {
+
+  if (!INIT_NARGS(0)) cs_org_reset=Cnil;
 
   if(catch_fatal <0) catch_fatal=1;
 #ifdef SGC	
@@ -1005,15 +1007,23 @@ DEFUN("RESET-STACK-LIMITS",object,fSreset_stack_limits,SI,0,0,NONE,OO,OO,OO,OO,(
     ihs_limit = ihs_org + stack_multiple *  IHSSIZE;
   else
     error("can't reset ihs_limit");
-  cs_org=alloca(1);
+
+  if (cs_org_reset!=Cnil) {
+
+    cs_org=alloca(1);
+
 #ifdef __ia64__
- {
-   extern void * GC_save_regs_in_stack();
-   cs_org2=GC_save_regs_in_stack();
- }
+    {
+      extern void * GC_save_regs_in_stack();
+      cs_org2=GC_save_regs_in_stack();
+    }
 #endif
-  /* reset_cstack_limit(i); */
- RETURN1(Cnil);
+    /* reset_cstack_limit(i); */
+
+  }
+
+  RETURN1(Cnil);
+
 }
 
 #define COPYSTACK(org,p,typ,lim,top,geta,size) \
