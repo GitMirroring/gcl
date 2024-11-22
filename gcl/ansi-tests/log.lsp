@@ -105,6 +105,14 @@
 	 collect (list x1 x2 rlist)))
   nil)
 
+(deftest log.9
+    (log (expt 2 1024))
+  709.782712893384)
+
+(deftest log.10
+    (log (complex (expt 2 1024) 3))
+  #C(709.782712893384 1.668805393880401E-308))
+
 ;;; FIXME
 ;;; Add tests for two-arg calls
 	 
