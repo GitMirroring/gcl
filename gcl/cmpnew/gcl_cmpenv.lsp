@@ -803,9 +803,11 @@
     (c2expr body)))
 
 (defun check-vdecl (vnames ts is)
-  (dolist (x ts)
-    (unless (member (car x) vnames)
-      (cmpwarn "Type declaration was found for not bound variable ~s" (car x))))
+  (dolist (d ts)
+    (unless (member (car d) vnames);FIXME check error without this
+      (keyed-cmpnote (list 'free-type-declaration (car d))
+		     "free type declaration ~s ~s" (car d) (cdr d))
+      (c1infer-tp (list (car d) (cdr d)))))
   (dolist (x is)
     (unless (or (eq x 'ignorable) (member x vnames))
       (cmpwarn "Ignore/ignorable declaration was found for not bound variable ~s." x))))
