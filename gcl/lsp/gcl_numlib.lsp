@@ -109,7 +109,16 @@
 (defun signum (x) 
   (declare (optimize (safety 1)))
   (check-type x number)
-  (if (zerop x) x (/ x (abs x))))
+  (if (zerop x) x
+      (typecase x
+	(rational (if (minusp x) -1 1))
+	(short-float (if (minusp x) -1.0s0 1.0s0))
+	(long-float (if (minusp x) -1.0 1.0))
+	(fcomplex (/ x (abs x)))
+	(dcomplex (/ x (abs x)))
+	(complex (let* ((y (max (abs (realpart x)) (abs (imagpart x))))
+			(z (complex (/ (realpart x) y) (/ (imagpart x) y))))
+		   (/ z (abs z)))))))
 
 (defun cis (x) 
   (declare (optimize (safety 1)))
