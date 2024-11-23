@@ -655,7 +655,7 @@
 	  (setq nt type))
 	(when (or (eq form (c1nil)) (eq form (c1t)));FIXME
 	  (unless (type= it nt)
-	    (cmperr "setting constant form types")))
+	    (return-from sft nil)))
 	(setf (info-type (cadr form)) nt)
 	(unless no-recur
 	  (case (car form)
