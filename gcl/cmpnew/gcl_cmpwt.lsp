@@ -226,7 +226,8 @@
   (cond (*compiler-compile*;FIXME, clean this up
 	 (setq *compiler-compile-data* (mapcar 'verify-datum (nreverse *data*)))
 	 (wt-data2 `(mapc 'eval *compiler-compile-data*)))
-	((wt-data2 `(progn ,@(mapcar 'verify-datum (nreverse *data*))))))
+	;; Carefully allow sharing across all data but preseve eval order
+	((wt-data2 `'(progn ,@(mapcar (lambda (x) (cons '|#,| (verify-datum x))) (nreverse *data*))))))
   (when *fasd-data*
     (si::close-fasd (car *fasd-data*))))
 
