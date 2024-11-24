@@ -6,9 +6,10 @@ gcl27 (2.7.0-26) unstable; urgency=medium
 
 gcl27 (2.7.0-25) unstable; urgency=medium
 
-  * Version_2_7_0pre28
+  * Bug fix: "needs rebuild against dh-elpa &gt;=2.1.5", thanks to
+    spwhitton@spwhitton.name</a>; (Closes: #1077103).
 
- -- Camm Maguire <camm@debian.org>  Wed, 02 Oct 2024 09:31:58 -0400
+ -- Camm Maguire <camm@debian.org>  Sun, 28 Jul 2024 12:07:24 -0400
 
 gcl27 (2.7.0-24) unstable; urgency=medium
 
