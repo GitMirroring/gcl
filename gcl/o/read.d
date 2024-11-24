@@ -1438,7 +1438,8 @@ Lsharp_dot_reader()
 	}
 	if (READeval) {
 	  vs_base[0] = read_object(vs_base[0]);
-	  vs_base[0] = ieval(vs_base[0]);
+	  /*FIXME: assumes no sharing until patch-sharp appears.  Bootstrap requires *fasd-data**/
+	  vs_base[0] = ieval(sSpatch_sharp->s.s_gfdef!=OBJNULL ? patch_sharp(vs_base[0]) : vs_base[0]);
 	} else {
 	  READER_ERROR(vs_base[0],"Sharp dot found with *read-eval* set to nil");
 	}
