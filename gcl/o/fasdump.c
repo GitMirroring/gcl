@@ -1003,34 +1003,16 @@ DEFUN("FIND-SHARING-TOP",object,fSfind_sharing_top,SI
 
 }
 
+static object
+lisp_eval(object x) {
 
+  SAVE_CURRENT_FASD;
+  x=ieval(x);
+  RESTORE_FASD;
 
-/* static object            */
-/* read_fasd(int i) */
-/* {object tem; */
-/*    read_fasd1(i,&tem); */
-/*    return tem;} */
+  return x;
 
-
-     /* I am not sure if saving vs_top,vs_base is necessary */
-static object 
-lisp_eval(object x)
-{  /* object *b,*t; */
-   SAVE_CURRENT_FASD;
-   x=fLeval(x);/*FIXME FFN*/
-   /* b=vs_base; */
-   /* t=vs_top; */
-   /* vs_base=vs_top; */
-   /* vs_push(x); */
-   /* Leval();  */
-   /* x=vs_base[0]; */
-   /* vs_base=b; */
-   /* vs_top=t; */
-   RESTORE_FASD;
-   return x;
- }
-
-    
+}
 
 #define CHECK_CH(i)    	   do{if ((i)==EOF && stream_at_end(fas_stream)) bad_eof();}while (0)
 /* grow vector AR of general type */
