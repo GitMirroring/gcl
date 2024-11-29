@@ -1046,8 +1046,8 @@ multiply_stacks(int m) {
   frs = (stack_multiple*FRSSIZE + (STACK_OVER+1)*FRSGETA)*ELTSIZE(frs_org);
   ihs = (stack_multiple*IHSSIZE + (STACK_OVER+1)*IHSGETA)*ELTSIZE(ihs_org);
   if (stack_space==0) {enter_mark_origin(&stack_space);}
-  stack_space = alloc_simple_string(vs+bd+frs+ihs);
-  array_allocself(stack_space,1,code_char(0));
+  stack_space = alloc_simple_vector((vs+bd+frs+ihs)/sizeof(object));
+  array_allocself(stack_space,1,OBJNULL);
   p=stack_space->st.st_self;
   COPYSTACK(vs_org,p,object,vs_limit,vs_top,VSGETA,VSSIZE);
   COPYSTACK(bds_org,p,struct bds_bd,bds_limit,bds_top,BDSGETA,BDSSIZE);
