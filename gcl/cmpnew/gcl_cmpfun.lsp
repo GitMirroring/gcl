@@ -252,6 +252,7 @@
 
 
 (defun do-eq-et-al (fn args &aux (info (make-info :type #tboolean)));FIXME  pass through function inlining
+  (cmpck (not (eql (length args) 2)) "Predicate ~s takes two arguments" fn)
   (let* ((nargs (c1args args info))
 	 (t1 (info-type (cadar nargs)))(t2 (info-type (cadadr nargs)))
 	 (a1 (atomic-tp t1))(a2 (atomic-tp t2))
