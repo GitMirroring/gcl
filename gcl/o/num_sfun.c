@@ -673,13 +673,12 @@ LFD(Lexp)(void)
 	vs_base[0] = number_exp(vs_base[0]);
 }
 
-LFD(Lexpt)(void)
-{
-	check_arg(2);
-	check_type_number(&vs_base[0]);
-	check_type_number(&vs_base[1]);
-	vs_base[0] = number_expt(vs_base[0], vs_base[1]);
-	vs_popp;
+DEFUN("EXPT",object,fLexpt,LISP,2,2,NONE,OO,OO,OO,OO,(object x,object y),"") {
+
+  check_type_number(&vs_base[0]);
+  check_type_number(&vs_base[1]);
+  RETURN1(number_expt(x,y));
+
 }
 
 LFD(Llog)(void)
@@ -823,7 +822,6 @@ gcl_init_num_sfun(void)
 	make_constant("PI", make_longfloat(PI));
 
 	make_function("EXP", Lexp);
-	make_function("EXPT", Lexpt);
 	make_function("LOG", Llog);
 	make_function("SQRT", Lsqrt);
 	make_function("SIN", Lsin);
