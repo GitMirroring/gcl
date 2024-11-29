@@ -27,11 +27,8 @@ static int
 set_lock(void) {
   
   errno=0;
-  if (fcntl(pool,F_SETLKW,plp)) {
-    if (errno==EINTR)
-      set_lock();
-    return -1;
-  }
+  if (fcntl(pool,F_SETLKW,plp))
+    return errno==EINTR ? set_lock() : -1;
   return 0;
 
 }
