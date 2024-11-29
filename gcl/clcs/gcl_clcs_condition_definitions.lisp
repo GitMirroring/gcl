@@ -119,23 +119,11 @@
 		       (internal-condition-function-name condition)))
 	     (call-next-method))))
 
-(define-condition internal-simple-condition (internal-condition simple-condition) nil)
 
 (define-condition internal-simple-error (internal-condition simple-error) nil)
 (define-condition internal-simple-type-error (internal-condition simple-type-error) nil)
 (define-condition internal-simple-warning (internal-condition simple-warning) nil)
 
-       (DEFINE-CONDITION DIVISION-BY-ZERO (ARITHMETIC-ERROR) NIL)
-
-       (DEFINE-CONDITION FLOATING-POINT-INVALID-OPERATION
-           (ARITHMETIC-ERROR) NIL)
-
-       (DEFINE-CONDITION FLOATING-POINT-UNDERFLOW (ARITHMETIC-ERROR)
-           NIL)
-(DEFINE-CONDITION FLOATING-POINT-INEXACT (ARITHMETIC-ERROR) NIL)
-
-       (DEFINE-CONDITION FLOATING-POINT-OVERFLOW (ARITHMETIC-ERROR)
-           NIL)
 #.`(progn
      ,@(mapcar (lambda (x) 
 		 `(define-condition
@@ -179,17 +167,3 @@
 	    ,@(mapcar (lambda (x) `(define-condition ,@x nil))
 		      (make-sub-fpe-conditions fpe::+fe-list+))))))
   (make-fpe-conditions))
-
-#.`(progn
-     ,@(mapcar (lambda (x)
-		 `(define-condition
-		    ,(intern (concatenate 'string "INTERNAL-SIMPLE-" (string x)))
-		    (internal-condition simple-condition ,x) nil))
-	       `(stack-overflow storage-exhausted print-not-readable end-of-file style-warning
-				unbound-variable unbound-slot undefined-function division-by-zero
-				case-failure abort-failure
-				,@(mapcar (lambda (x) (intern (concatenate 'string "FLOATING-POINT-" (string x))))
-					  '(overflow underflow invalid-operation inexact))
-				,@(mapcar (lambda (x) (intern (concatenate 'string (string x) "-ERROR")))
-					  '(program control parse stream reader file
-						    package cell arithmetic pathname)))))
