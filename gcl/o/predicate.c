@@ -200,6 +200,8 @@ DEFUN("EQL",object,fLeql,LISP,2,2,NONE,OO,OO,OO,OO,(object x0,object x1),"") {
 bool
 equal1(register object x, register object y) {
 
+  enum type tx,ty;
+
   /*x and y are not == and not Cnil and not immfix*/
 
   /*gcc boolean expression tail position bug*/
@@ -207,22 +209,23 @@ equal1(register object x, register object y) {
   if (valid_cdr(x)) return !valid_cdr(y)||!equal(x->c.c_car,y->c.c_car) ? FALSE : equal(x->c.c_cdr,y->c.c_cdr);
 
   if (valid_cdr(y)) return FALSE;
-  
-  switch(x->d.t) {
 
-  case t_simple_string:
+#define BASE_T(a_) ({enum type _t=(a_)->d.t;\
+  _t==t_simple_string ? t_string : (_t==t_simple_bitvector ? t_bitvector : _t);})
+
+  if ((tx=BASE_T(x))!=(ty=BASE_T(y)))
+    return FALSE;
+#undef BASE_T
+  
+  switch(tx) {
+
   case t_string:
-    if (y->d.t!=t_simple_string && y->d.t!=t_string)
-      return(FALSE);
     return(string_eq(x, y));
     
   case t_bitvector:
-  case t_simple_bitvector:
     {
       fixnum i, ox, oy;
       
-      if (y->d.t!=t_simple_bitvector && y->d.t!=t_bitvector)
-	return(FALSE);
       if (VLEN(x) != VLEN(y))
 	return(FALSE);
       ox = x->bv.bv_offset;
@@ -297,66 +300,36 @@ equalp1(register object x, register object y) {
     
   if (listp(y)) return FALSE;
 
-  tx=is_imm_fixnum(x) ? t_fixnum : x->d.t;
-  ty=is_imm_fixnum(y) ? t_fixnum : y->d.t;
+#define BASE_T(a_) ({object _t=(a_);\
+  numberp(_t) ? t_fixnum : (vectorp(_t) ? t_vector : _t->d.t);})
+
+  if ((tx=BASE_T(x))!=(ty=BASE_T(y)))
+    return FALSE;
+
+#undef BASE_T
 
   switch(tx) {
 
   case t_fixnum:
-  case t_bignum:
-  case t_ratio:
-  case t_shortfloat:
-  case t_longfloat:
-  case t_complex:
-    if (ty==t_fixnum||ty==t_bignum||ty==t_ratio ||
-	ty==t_shortfloat||ty==t_longfloat ||
-	ty==t_complex)
-      return(!number_compare(x, y));
-    else
-      return(FALSE);
-    
-  case t_simple_vector:
-  case t_simple_string:
-  case t_simple_bitvector:
-  case t_vector:
-  case t_string:
-  case t_bitvector:
-    if (TS_MEMBER(ty,TS(t_vector)|TS(t_string)|TS(t_bitvector)|
-		  TS(t_simple_vector)|TS(t_simple_string)|TS(t_simple_bitvector))) {
-      j = VLEN(x);
-      if (j != VLEN(y))
-	return FALSE;
-      goto ARRAY;
-    }
-    else
-      return(FALSE);
-    
+    return(!number_compare(x, y));
+
   case t_array:
-    if (ty==t_array && x->a.a_rank==y->a.a_rank) { 
-      if (x->a.a_rank > 1) {
-	fixnum i;
-	for (i=0; i< x->a.a_rank; i++) {
-	  if (x->a.a_dims[i]!=y->a.a_dims[i])
-	    return(FALSE);
-	}
-      }
-      if (x->a.a_dim != y->a.a_dim)
-	return(FALSE);
-      j=x->a.a_dim;
-      goto ARRAY;
+    if (x->a.a_rank!=y->a.a_rank)
+      return FALSE;
+    if (x->a.a_rank>1 && memcmp(x->a.a_dims,y->a.a_dims,x->a.a_rank*sizeof(*x->a.a_dims)))
+      return FALSE;
+
+  case t_vector:
+    if ((j=VLEN(x))!=VLEN(y))
+      return FALSE;
+    {
+      fixnum i;
+      for (i = 0;  i < j;  i++)
+	if (!equalp(aref(x, i), aref(y, i)))
+	  return(FALSE);
     }
-    else
-      return(FALSE);
-
-  default:
-    break;
-  }
-  
-  if (tx != ty)
-    return(FALSE);
-  
-  switch (tx) {
-
+    return(TRUE);
+    
   case t_character:
     return(char_equal(x, y));
     
@@ -428,18 +401,6 @@ equalp1(register object x, register object y) {
   default:
     return(FALSE);
 
-  }
-  
-  
- ARRAY:
-  
-  {
-    fixnum i;
-    
-    for (i = 0;  i < j;  i++)
-      if (!equalp(aref(x, i), aref(y, i)))
-	return(FALSE);
-    return(TRUE);
   }
 
 }
