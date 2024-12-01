@@ -1875,8 +1875,7 @@
 
   (let ((vstu (cond (*mv-var* 
 		     (let ((loc (write-to-string (var-loc *mv-var*))))
-		       (concatenate 'string " if ((b_)>=-1) vs_top=V" loc 
-				    " ? (object *)V" loc "+(b_) : base;")))
+		       (concatenate 'string " if (V" loc ") {if ((b_)>=-1) vs_top=(object *)V" loc "+(b_);} else vs_top=base;")))
 		    ((or (> *max-vs* 0) *base-used*) " vs_top=base;")
 		    ("")))
 	(bdsu (if *bds-used* " for (;bds_top>old_bds_top;) bds_unwind1;" ""))
