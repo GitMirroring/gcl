@@ -37,37 +37,45 @@ object sKinitial_element;
 object sKelement_type;
 
 object
-alloc_string(l)
-int l;
-{
-	object x;
+alloc_string(fixnum l) {/*FIXME consolidate these through fSmake_vector*/
 
-	x = alloc_object(t_string);
-	x->st.st_hasfillp = TRUE;
-	x->st.st_adjustable = TRUE;
-	set_array_elttype(x,aet_ch);
-	x->st.st_rank = 1;
-	x->st.st_displaced=Cnil;
-	x->st.st_dim = l;
-	x->st.st_fillp = l;
-	x->st.st_self = NULL;
-	return(x);
+  object x;
+
+  if (l<0 || l>=ARRAY_DIMENSION_LIMIT)
+    TYPE_ERROR(make_fixnum(l),list(3,sLinteger,make_fixnum(0),MMcons(make_fixnum(ARRAY_DIMENSION_LIMIT),Cnil)));
+
+  x = alloc_object(t_string);
+  x->st.st_hasfillp = TRUE;
+  x->st.st_adjustable = TRUE;
+  set_array_elttype(x,aet_ch);
+  x->st.st_rank = 1;
+  x->st.st_displaced=Cnil;
+  x->st.st_dim = l;
+  x->st.st_fillp = l;
+  x->st.st_self = NULL;
+
+  return(x);
+
 }
 
 object
-alloc_simple_string(l)
-int l;
-{
-	object x;
+alloc_simple_string(fixnum l) {
 
-	x = alloc_object(t_simple_string);
-	x->sst.sst_hasfillp = FALSE;
-	x->sst.sst_adjustable = FALSE;
-	set_array_elttype(x,aet_ch);
-	x->sst.sst_rank = 1;
-	x->sst.sst_dim = l;
-	x->sst.sst_self = NULL;
-	return(x);
+  object x;
+
+  if (l<0 || l>=ARRAY_DIMENSION_LIMIT)
+    TYPE_ERROR(make_fixnum(l),list(3,sLinteger,make_fixnum(0),MMcons(make_fixnum(ARRAY_DIMENSION_LIMIT),Cnil)));
+
+  x = alloc_object(t_simple_string);
+  x->sst.sst_hasfillp = FALSE;
+  x->sst.sst_adjustable = FALSE;
+  set_array_elttype(x,aet_ch);
+  x->sst.sst_rank = 1;
+  x->sst.sst_dim = l;
+  x->sst.sst_self = NULL;
+
+  return(x);
+
 }
 
 /*

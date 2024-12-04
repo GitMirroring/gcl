@@ -33,74 +33,89 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 	I know the following name is not good.
 */
 object
-alloc_simple_vector(l)
-int l;
-{
-	object x;
+alloc_simple_vector(fixnum l) {
 
-	x = alloc_object(t_simple_vector);
-	x->sv.sv_hasfillp = FALSE;
-	x->sv.sv_adjustable = FALSE;
-	x->sv.sv_dim = l;
-	x->sv.sv_self = NULL;
-	set_array_elttype(x,aet_object);
-	x->sv.sv_rank = 1;
-	return(x);
+  object x;
+
+  if (l<0 || l>=ARRAY_DIMENSION_LIMIT)
+    TYPE_ERROR(make_fixnum(l),list(3,sLinteger,make_fixnum(0),MMcons(make_fixnum(ARRAY_DIMENSION_LIMIT),Cnil)));
+
+  x = alloc_object(t_simple_vector);
+  x->sv.sv_hasfillp = FALSE;
+  x->sv.sv_adjustable = FALSE;
+  x->sv.sv_dim = l;
+  x->sv.sv_self = NULL;
+  set_array_elttype(x,aet_object);
+  x->sv.sv_rank = 1;
+
+  return(x);
+
 }
 
 object
-alloc_vector(l, aet)
-int l;
-enum aelttype aet;
-{
-	object x;
+alloc_vector(fixnum l,enum aelttype aet) {
 
-	x = alloc_object(t_vector);
-	x->v.v_hasfillp = TRUE;
-	x->v.v_adjustable = TRUE;
-	x->v.v_displaced = Cnil;
-	x->v.v_dim = l;
-	x->v.v_fillp = l;
-	x->v.v_self = NULL;
-	set_array_elttype(x,(short)aet);
-	x->v.v_rank = 1;
-	return(x);
+  object x;
+
+  if (l<0 || l>=ARRAY_DIMENSION_LIMIT)
+    TYPE_ERROR(make_fixnum(l),list(3,sLinteger,make_fixnum(0),MMcons(make_fixnum(ARRAY_DIMENSION_LIMIT),Cnil)));
+
+  x = alloc_object(t_vector);
+  x->v.v_hasfillp = TRUE;
+  x->v.v_adjustable = TRUE;
+  x->v.v_displaced = Cnil;
+  x->v.v_dim = l;
+  x->v.v_fillp = l;
+  x->v.v_self = NULL;
+  set_array_elttype(x,(short)aet);
+  x->v.v_rank = 1;
+
+  return(x);
+
 }
 
 object
-alloc_simple_bitvector(l)
-int l;
-{
-	object x;
+alloc_simple_bitvector(fixnum l) {
 
-	x = alloc_object(t_simple_bitvector);
-	x->sbv.sbv_hasfillp = FALSE;
-	x->sbv.sbv_adjustable = FALSE;
-	x->sbv.sbv_dim = l;
-	x->sbv.sbv_offset = 0;
-	x->sbv.sbv_self = NULL;
-	set_array_elttype(x,aet_bit);
-        x->sbv.sbv_rank = 1;
-	return(x);
+  object x;
+
+  if (l<0 || l>=ARRAY_DIMENSION_LIMIT)
+    TYPE_ERROR(make_fixnum(l),list(3,sLinteger,make_fixnum(0),MMcons(make_fixnum(ARRAY_DIMENSION_LIMIT),Cnil)));
+
+  x = alloc_object(t_simple_bitvector);
+  x->sbv.sbv_hasfillp = FALSE;
+  x->sbv.sbv_adjustable = FALSE;
+  x->sbv.sbv_dim = l;
+  x->sbv.sbv_offset = 0;
+  x->sbv.sbv_self = NULL;
+  set_array_elttype(x,aet_bit);
+  x->sbv.sbv_rank = 1;
+
+  return(x);
+
 }
 
 object
-alloc_bitvector(l)
-int l;
-{
-	object x;
+alloc_bitvector(fixnum l) {
 
-	x = alloc_object(t_bitvector);
-	x->bv.bv_hasfillp = TRUE;
-	x->bv.bv_adjustable = TRUE;
-	x->bv.bv_displaced = Cnil;
-	x->bv.bv_dim = l;
-	x->bv.bv_fillp = l;
-	x->bv.bv_offset = 0;
-	x->bv.bv_self = NULL;
-	set_array_elttype(x,aet_bit);
-        x->bv.bv_rank = 1;
-	return(x);
+  object x;
+
+  if (l<0 || l>=ARRAY_DIMENSION_LIMIT)
+    TYPE_ERROR(make_fixnum(l),list(3,sLinteger,make_fixnum(0),MMcons(make_fixnum(ARRAY_DIMENSION_LIMIT),Cnil)));
+
+  x = alloc_object(t_bitvector);
+  x->bv.bv_hasfillp = TRUE;
+  x->bv.bv_adjustable = TRUE;
+  x->bv.bv_displaced = Cnil;
+  x->bv.bv_dim = l;
+  x->bv.bv_fillp = l;
+  x->bv.bv_offset = 0;
+  x->bv.bv_self = NULL;
+  set_array_elttype(x,aet_bit);
+  x->bv.bv_rank = 1;
+
+  return(x);
+
 }
 
 LFD(Lelt)()

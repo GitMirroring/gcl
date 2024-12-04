@@ -1613,8 +1613,8 @@ fSstring_match2(object,object);
 object
 aelttype_list(void);
 
-object alloc_simple_string(int);
-object alloc_string(int);
+object alloc_simple_string(fixnum);
+object alloc_string(fixnum);
 object append(object,object);
 object car(object);
 object cdr(object);
@@ -1642,10 +1642,10 @@ object read_object_non_recursive(object);
 object make_symbol(object);
 object elt_set(object,int,object);
 object reverse(object);
-object alloc_bitvector(int);
-object alloc_simple_bitvector(int);
-object alloc_simple_vector(int);
-object alloc_vector(int,enum aelttype);
+object alloc_bitvector(fixnum);
+object alloc_simple_bitvector(fixnum);
+object alloc_simple_vector(fixnum);
+object alloc_vector(fixnum,enum aelttype);
 object coerce_to_character(object);
 object peek_char(bool,object);
 object prin1(object,object);
