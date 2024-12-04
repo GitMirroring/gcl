@@ -621,43 +621,6 @@
 		 ,@(mapcar 'c1retnote (last le))))
 	(otherwise (list (car le) 'foo))))
 
-;; (defun c1retnote (le)
-;;   (case (car le)
-;; 	(call-global (list (third le) (export-type (info-type (second le)))))
-;; 	((let let* flet labels) 
-;; 	 (list (car le) (export-type (info-type (second le))) 
-;; 	       (mapcar (lambda (x y) (list (var-name x) (c1retnote y))) 
-;; 		       (third le) (fourth le)) 
-;; 	       (c1retnote (fifth le))))
-;; 	(recur (list (car le) (export-type (info-type (second le)))))
-;; 	(progn 
-;; 	  (list (car le)
-;; 		(export-type (info-type (second le)))
-;; 		(mapcar 'c1retnote (car (last le)))))
-;; 	((lambda decl-body) 
-;; 	 (list (car le) 
-;; 	       (export-type (info-type (second le))) 
-;; 	       (c1retnote (car (last le)))))
-;; 	(inline 
-;; 	 (list (car le) (caddr le)
-;; 	       (export-type (info-type (second le))) 
-;; 	       (c1retnote (car (last le)))))
-;; 	(if 
-;; 	    (list (car le) 
-;; 		  (export-type (info-type (second le))) 
-;; 		  (c1retnote (fourth le)) 
-;; 		  (c1retnote (fifth le))))
-;; 	(var (list (car le) (export-type (info-type (second le))) (var-name (car (third le)))))
-;; 	(location (list (car le) (export-type (info-type (second le)))))
-;; 	(return-from (list (car le) (c1retnote (car (last le)))))
-;; 	(tagbody `(,(car le) 
-;; 		   ,(export-type (info-type (second le))) 
-;; 		   ,@(mapcar (lambda(x) (unless (tag-p x) (c1retnote x))) (car (last le)))))
-;; 	(block `(,(car le) 
-;; 		 ,(export-type (info-type (second le))) 
-;; 		 ,@(mapcar 'c1retnote (last le))))
-;; 	(otherwise (list (car le) 'foo))))
-
 ;(defvar *callees* nil)
 
 (defconstant +nargs+ (let ((s (tmpsym))) (setf (get s 'tmp) t) s))
@@ -1014,92 +977,11 @@
 	   (do-l1-fun name src e b))
 	  (l))))
 
-;; (defun do-l1-fun (name src e b &aux *callees* (*recursion-detected* (cons (list name) *recursion-detected*))
-;; 		       *warning-note-stack* *undefined-vars*)
-
-;;   (let* ((l (c1lambda-expr src))
-;; 	 (osig (car e))
-;; 	 (sig (lam-e-to-sig l))
-;; 	 (rd (cdar *recursion-detected*))
-;; 	 (sig (if rd (list (car sig) (bbump-tp (cadr sig))) sig)))
-;;     (setf (car e) sig (cadr e) *callees*)
-;;     (if (and rd (not (eq (cadr osig) (cadr sig))))
-;; 	(progn
-;; 	  (keyed-cmpnote (list name 'recursion) "Reprocessing ~s: ~s ~s" name osig sig)
-;; 	  (do-l1-fun name src e b))
-;;       (progn
-;; 	(unless (suppress-unfinalized-local-fun-warnings name b l)
-;; 	  (output-warning-note-stack))
-;; 	l))))
-
-;; (defun do-l1-fun (name src e &aux *callees* (*recursion-detected* (cons (list name) *recursion-detected*)) *warning-note-stack*)
-
-;;   (let* ((l (c1lambda-expr src))
-;; 	 (osig (car e))
-;; 	 (sig (lam-e-to-sig l))
-;; 	 (rd (cdar *recursion-detected*))
-;; 	 (sig (if rd (list (car sig) (bbump-tp (cadr sig))) sig)))
-;;     (setf (car e) sig (cadr e) *callees*)
-;;     (if (and rd (not (eq (cadr osig) (cadr sig))))
-;; 	(progn (keyed-cmpnote (list name 'recursion) "Reprocessing ~s: ~s ~s" name osig sig) (do-l1-fun name src e))
-;;       l)))
-
-;; (defun do-l1-fun (name src e &aux *callees* *recursion-detected* *warning-note-stack*)
-
-;;   (let* ((l (c1lambda-expr src))
-;; 	 (osig (car e))
-;; 	 (sig (lam-e-to-sig l))
-;; 	 (sig (if *recursion-detected* (list (car sig) (bbump-tp (cadr sig))) sig)))
-;;     (setf (car e) sig (cadr e) *callees*)
-;;     (if (and *recursion-detected* (not (eq (cadr osig) (cadr sig))))
-;; 	(progn (keyed-cmpnote (list name 'recursion) "Reprocessing ~s: ~s ~s" name osig sig) (do-l1-fun name src e))
-;;       l)))
-
-;; (defun do-l1-fun (name src e &aux *callees* *recursion-detected* *warning-note-stack*)
-
-;;   (let* ((l (c1lambda-expr src))
-;; 	 (osig (car e))
-;; 	 (sig (lam-e-to-sig l))
-;; 	 (sig (if *recursion-detected* (list (car sig) (bbump-tp (cadr sig))) sig)))
-;;     (setf (car e) sig (cadr e) *callees*)
-;;     (if (and *recursion-detected* (not (eq (cadr osig) (cadr sig))))
-;; 	(do-l1-fun name src e)
-;;       l)))
-
-;; (defun do-l1-fun (name src e &aux *callees* *recursion-detected* *warning-note-stack*)
-
-;;   (let* ((l (c1lambda-expr src))
-;; 	 (osig (car e))
-;; 	 (sig (lam-e-to-sig l))
-;; 	 (sig (if *recursion-detected* (list (car sig) (bbump-tp (cadr sig))) sig)))
-;;     (setf (car e) sig (cadr e) *callees*)
-;;     (cond ((and *recursion-detected* (not (eq (cadr osig) (cadr sig))))
-;; 	   (do-l1-fun name src e))
-;; 	  (t (output-warning-note-stack) l))))
-
-;; (defun do-l1-fun (name src e &aux *callees* *recursion-detected* *warning-note-stack*)
-
-;;   (let* ((l (c1lambda-expr src name))
-;; 	 (osig (car e))
-;; 	 (sig (lam-e-to-sig l))
-;; 	 (sig (if *recursion-detected* (list (car sig) (bbump-tp (cadr sig))) sig)))
-;;     (setf (car e) sig (cadr e) *callees*)
-;;     (cond ((and *recursion-detected* (not (eq (cadr osig) (cadr sig))))
-;; 	   (do-l1-fun name src e))
-;; 	  (t (output-warning-note-stack) l))))
-
-;   (unless (member v (caaddr l));FIXME not in info referred?
-;     (when (and (var-p v) (var-cb v)) 
-;       )))
 
 (defun get-clv (l &aux (i (cadr l)))
   (mapcan
    (lambda (v) (when (var-p v) (list (list v nil))))
    (append (info-ref-ccb i) (info-ref-clb i))))
-
-;; (defun get-clv (l &aux r)
-;;   (do-referred-cb (v (cadr l)) (push (list (var-name v) (car (atomic-tp (var-type v)))) r))
-;;   (nreverse r))
 
 (defvar *top-tag* nil)
 
@@ -1129,65 +1011,6 @@
     (when *sig-discovery*
       (when (symbol-package name) (unless (eq name 'lambda) (push (cons name (apply 'si::make-function-plist (exp-sig (pop e)) e)) si::*sig-discovery-props*))))
     l))
-
-;; (defun do-fun (name src e vis b)
-;;   (let* ((*vars*   (when b (cons b *vars*)))
-;; 	 (*funs*   (when b (cons b *funs*)))
-;; 	 (*blocks* (when b (cons b *blocks*)))
-;; 	 (*tags*   (when b (cons b *tags*)))
-;; 	 (tag (tmpsym))
-;; 	 (*prev-sri* (append *src-inline-recursion* *prev-sri*))
-;; 	 (*src-inline-recursion* (when vis (list (list (list (sir-name name)) tag (ttl-ll (cadr src))))))
-;; 	 (*c1exit* (list name))
-;; 	 (*current-form* `(defun ,name))
-;; 	 (l (do-l1-fun name (cdr (new-defun-args src tag)) e))
-;; 	 (clv (get-clv l)))
-;;     (setf (car e) (export-sig (car e))
-;; 	  (third e) (list src clv name)
-;; 	  (fourth e) (unless *compiler-compile* (namestring (truename (pathname *compiler-input*))))
-;; 	  (fifth e) (if (= (length clv) 0) 1 0))
-;;     (if (suppress-unfinalized-local-fun-warnings name b l)
-;;       (output-warning-note-stack))
-;;     l))
-
-;; (defun do-fun (name src e vis b)
-;;   (let* ((*vars*   (when b (cons b *vars*)))
-;; 	 (*funs*   (when b (cons b *funs*)))
-;; 	 (*blocks* (when b (cons b *blocks*)))
-;; 	 (*tags*   (when b (cons b *tags*)))
-;; 	 (tag (tmpsym))
-;; 	 (*prev-sri* (append *src-inline-recursion* *prev-sri*))
-;; 	 (*src-inline-recursion* (when vis (list (list (list (sir-name name)) tag (ttl-ll (cadr src))))))
-;; 	 *provisional-inline*
-;; 	 (*c1exit* (list name))
-;; 	 (*current-form* `(defun ,name))
-;; 	 (l (do-l1-fun name (cdr (new-defun-args src tag)) e))
-;; 	 (clv (get-clv l)))
-;;     (setf (car e) (export-sig (car e))
-;; 	  (third e) (list src clv name)
-;; 	  (fourth e) (unless *compiler-compile* (namestring (truename (pathname *compiler-input*))))
-;; 	  (fifth e) (if (= (length clv) 0) 1 0))
-;;     l))
-
-;; (defun do-fun (name src e vis b)
-;;   (let* ((*vars*   (when b (cons b *vars*)))
-;; 	 (*funs*   (when b (cons b *funs*)))
-;; 	 (*blocks* (when b (cons b *blocks*)))
-;; 	 (*tags*   (when b (cons b *tags*)))
-;; 	 (tag (tmpsym))
-;; 	 (*prev-sri* (append *src-inline-recursion* *prev-sri*))
-;; 	 (*src-inline-recursion* (when vis (list (list (list (sir-name name)) tag (ttl-ll (cadr src))))))
-;; 	 *provisional-inline*
-;; 	 (*c1exit* (list name))
-;; 	 (*current-form* `(defun ,name))
-;; 	 (l (do-l1-fun name (cdr (new-defun-args src tag)) e))
-;; 	 (clv (get-clv l)))
-;;     (setf (car e) (export-sig (car e))
-;; 	  (third e) (compress-fle src clv name)
-;; 	  (fourth e) (unless *compiler-compile* (namestring (pathname *compiler-input*)))
-;; 	  (fifth e) (if (= (length clv) 0) 1 0))
-;;     l))
-	 
 
 (defun t1defun (args &aux *warning-note-stack*)
 
@@ -1232,52 +1055,6 @@
     (push (cons fname cfun) *global-funs*)
 
     (output-warning-note-stack)))
-
-;; (defun t1defun (args)
-
-;;   (when (or (endp args) (endp (cdr args)))
-;;     (too-few-args 'defun 2 (length args)))
-;;   (maybe-eval nil (cons 'defun args))
-
-;;   (let* ((fname (car args))
-;; 	 (fname (or (function-symbol fname) (cmperr "The function name ~s is not valid." fname)))
-;; 	 (cfun (next-cfun))
-;; 	 (oal (get-arg-types fname)) (ort (get-return-type fname))
-;; 	 (osig (export-sig (list oal ort)))
-;; 	 (e (or (gethash fname *sigs*) (setf (gethash fname *sigs*) (make-list 5))))
-;; 	 (setjmps *setjmps*)
-;; 	 (lambda-expr (do-fun fname args e t nil))
-;; 	 (sig (car e))
-;; 	 (osig (if (equal '((*) *) osig) sig osig));FIXME
-;; 	 (doc (cadddr lambda-expr)))
-	 
-;;     (or (eql setjmps *setjmps*) (setf (info-volatile (cadr lambda-expr)) 1))
-;;     (keyed-cmpnote (list 'return-type fname) "~s return type ~s" fname (c1retnote lambda-expr))
-    
-;;     (unless (or (equal osig sig) (eq fname 'cmp-anon));FIXME
-;;       (cmpwarn "signature change on function ~s, ~s -> ~s~%" fname osig sig)
-;;       (setq *new-sigs-in-file* 
-;; 	    (some
-;; 	     (lambda (x) 
-;; 	       (unless (eq x fname)
-;; 		 (multiple-value-bind 
-;; 		  (s f) (gethash x *sigs*) 
-;; 		  (declare (ignore s))
-;; 		  (when f (list x fname osig sig))))) (si::callers fname))))
-    
-;;     (push (let* ((at (car sig))
-;; 		 (al (mapcar (lambda (x) (link-rt (cmp-norm-tp x) nil)) at))
-;; 		 (rt (link-rt (cmp-norm-tp (cadr sig)) nil)))
-;; 	    (list fname al rt
-;; 		  (if (single-type-p rt) (flags set ans) (flags set ans sets-vs-top))
-;; 		  (make-inline-string cfun at fname)))
-;; 	  *inline-functions*)
-  
-;;     (push (list 'defun fname cfun lambda-expr doc nil) *top-level-forms*)
-;;     (push (cons fname cfun) *global-funs*)
-    
-;;     (when *sig-discovery*
-;;       (si::add-hash fname (car e) (cadr e) nil nil))))
 
 (defun make-inline-string (cfun args fname)
   (format nil "~d(~a)" (c-function-name "LI" cfun fname)
@@ -1382,60 +1159,6 @@
         ~%T1defun could not assure suitability of args for C call" fname)))
 	       nil))))))
 
-;; (defun wt-if-proclaimed (fname cfun lambda-expr macro-p)
-;;   (when (fast-link-proclaimed-type-p fname);(and  (not (member '* (get-arg-types fname))))
-;;     (let* ((sig (lam-e-to-sig lambda-expr))
-;; 	   (at (pop sig))
-;; 	   (rt (car sig)))
-;;       (cond ((assoc fname *inline-functions*)
-;; 	     (add-init `(si::init-function ',(if macro-p (cons 'macro fname) fname)
-;; 					   ,(add-address (c-function-name "LI" cfun fname))
-;; 					   nil nil -1 ,(new-proclaimed-argd at rt)
-;; 					   ,(argsizes at rt (xa lambda-expr)))))
-;; 	    ((let ((arg-c (length (car (lambda-list lambda-expr))))
-;; 		   (arg-p (length at))
-;; 		   (va (member '* at)))
-;; 	       (cond (va
-;; 		      (or (>= arg-c (- arg-p (length va)))
-;; 			  (cmpwarn "~a needs ~a args. ~a supplied." fname (- arg-p (length va)) arg-c)))
-;; 		     ((not (eql arg-c arg-p))
-;; 		      (cmpwarn
-;; 		       "~%;; ~a Number of proclaimed args was ~a. ~
-;;                           ~%;;Its definition had ~a." fname arg-p arg-c))
-;; 					;((>= arg-c 10.)) ;checked above 
-;; 					;(cmpwarn " t1defun only likes 10 args ~
-;; 					;            ~%for proclaimed functions")
-;; 		     (t (cmpwarn
-;; 		       " ~a is proclaimed but not in *inline-functions* ~
-;;         ~%T1defun could not assure suitability of args for C call" fname)))
-;; 	       nil))))))
-
-;; (defun wt-if-proclaimed (fname cfun lambda-expr)
-;;   (when (fast-link-proclaimed-type-p fname);(and  (not (member '* (get-arg-types fname))))
-;;     (let ((at (get-arg-types fname))
-;; 	  (rt (get-return-type fname)))
-;;       (cond ((assoc fname *inline-functions*)
-;; 	     (add-init `(si::init-function ',fname
-;; 					   ,(add-address (c-function-name "LI" cfun fname))
-;; 					   nil nil -1 ,(new-proclaimed-argd at rt)
-;; 					   ,(argsizes at rt (xa lambda-expr)))))
-;; 	    ((let ((arg-c (length (car (lambda-list lambda-expr))))
-;; 		   (arg-p (length at))
-;; 		   (va (member '* at)))
-;; 	       (cond (va
-;; 		      (or (>= arg-c (- arg-p (length va)))
-;; 			  (cmpwarn "~a needs ~a args. ~a supplied." fname (- arg-p (length va)) arg-c)))
-;; 		     ((not (eql arg-c arg-p))
-;; 		      (cmpwarn
-;; 		       "~%;; ~a Number of proclaimed args was ~a. ~
-;;                           ~%;;Its definition had ~a." fname arg-p arg-c))
-;; 					;((>= arg-c 10.)) ;checked above 
-;; 					;(cmpwarn " t1defun only likes 10 args ~
-;; 					;            ~%for proclaimed functions")
-;; 		     (t (cmpwarn
-;; 		       " ~a is proclaimed but not in *inline-functions* ~
-;;         ~%T1defun could not assure suitability of args for C call" fname)))
-;; 	       nil))))))
 	
 
 (defun volatile (info) (if (iflag-p (info-flags info) volatile) "VOL " ""))
@@ -1495,64 +1218,6 @@
   (when (< *space* 2)
     (setf (get fname 'debug-prop) t)))
 
-;; (defun t2defun (fname cfun lambda-expr doc sp)
-;;   (declare (ignore sp))
-
-;;   (cond ((get fname 'no-global-entry)(return-from t2defun nil)))
-
-;;   (when doc (add-init `(si::putprop ',fname ,doc 'si::function-documentation)))
-
-;;   (cond ((wt-if-proclaimed fname cfun lambda-expr))
-;; 	((numberp cfun)
-;; 	 (let ((at (mapcar 'global-type-bump (get-arg-types fname)))
-;; 	       (rt (global-type-bump (get-return-type fname))))
-;; 	   (add-init `(si::init-function
-;; 		       ',fname
-;; ;		       ,(add-address (c-function-name "LI" (format nil "G~a" cfun) fname))
-;; 		       ,(add-address (c-function-name "LI" (format nil "~a" cfun) fname))
-;; 		       nil nil -1 ,(new-proclaimed-argd at rt)
-;; 		       ,(argsizes at rt (xa lambda-expr)))))
-;; ;         (wt-h "static void " (c-function-name "L" cfun fname) "();")
-;; ;	 (add-init `(si::mf ',fname ,(add-address (c-function-name "L" cfun fname))))
-;; 	 )
-;;         (t (baboon)(wt-h cfun "();")
-;; 	   (add-init `(si::mf ',fname ,(add-address (c-function-name "" cfun fname))))))
-
-;;   (when *compiler-auto-proclaim*
-;;     (add-init `(si::add-hash ',fname ,@(mapcar (lambda (x) `(quote ,x)) (export-call (gethash fname *sigs*))))))
-  
-;;   (when (< *space* 2)
-;;     (setf (get fname 'debug-prop) t)))
-
-
-;; (defun t2defun (fname cfun lambda-expr doc sp)
-;;   (declare (ignore sp))
-
-;;   (cond ((get fname 'no-global-entry)(return-from t2defun nil)))
-
-;;   (when doc (add-init `(si::putprop ',fname ,doc 'si::function-documentation)))
-
-;;   (cond ((wt-if-proclaimed fname cfun lambda-expr))
-;; 	((numberp cfun)
-;; 	 (let ((at (mapcar 'global-type-bump (get-arg-types fname)))
-;; 	       (rt (global-type-bump (get-return-type fname))))
-;; 	   (add-init `(si::init-function
-;; 		       ',fname
-;; ;		       ,(add-address (c-function-name "LI" (format nil "G~a" cfun) fname))
-;; 		       ,(add-address (c-function-name "LI" (format nil "~a" cfun) fname))
-;; 		       nil nil -1 ,(new-proclaimed-argd at rt)
-;; 		       ,(argsizes at rt (xa lambda-expr)))))
-;; ;         (wt-h "static void " (c-function-name "L" cfun fname) "();")
-;; ;	 (add-init `(si::mf ',fname ,(add-address (c-function-name "L" cfun fname))))
-;; 	 )
-;;         (t (baboon)(wt-h cfun "();")
-;; 	   (add-init `(si::mf ',fname ,(add-address (c-function-name "" cfun fname))))))
-
-;;   (when *compiler-auto-proclaim*
-;;     (add-init `(si::add-hash ',fname ,@(mapcar (lambda (x) `(quote ,x)) (gethash fname *sigs*)))))
-  
-;;   (when (< *space* 2)
-;;     (setf (get fname 'debug-prop) t)))
 
 (defun si::add-debug (fname x)
   (si::putprop fname x  'si::debugger))
@@ -1572,58 +1237,6 @@
 				      ,(argsizes at rt (xa lambda-expr)))))
       (add-init `(fset ',fname ,(if macro-p `(cons 'macro ,finit) finit))))))
 
-;; (defun t3init-fun (fname cfun lambda-expr doc macro-p)
-
-;;   (when doc (add-init `(putprop ',fname ,doc 'function-documentation)))
-
-;;   (unless (wt-if-proclaimed fname cfun lambda-expr macro-p)
-;;     (assert (numberp cfun))
-;;     (let* ((sig (lam-e-to-sig lambda-expr))
-;; 	   (at (mapcar 'global-type-bump (pop sig)))
-;; 	   (rt (global-type-bump (car sig))))
-;;       (add-init `(init-function
-;; 		  ',(if macro-p (cons 'macro fname) fname)
-;; 		  ,(add-address (c-function-name "LI" (format nil "~a" cfun) fname))
-;; 		  nil nil -1 ,(new-proclaimed-argd at rt)
-;; 		  ,(argsizes at rt (xa lambda-expr))))))
-
-;;   (when *compiler-auto-proclaim*
-;;     (push `(si::add-hash ',fname ,@(mapcar (lambda (x) `(quote ,x)) (export-call (gethash fname *sigs*)))) *add-hash-calls*)))
-
-;; (defun t3init-fun (fname cfun lambda-expr doc)
-
-;;   (when doc (add-init `(putprop ',fname ,doc 'function-documentation)))
-
-;;   (unless (wt-if-proclaimed fname cfun lambda-expr)
-;;     (assert (numberp cfun))
-;;     (let* ((sig (lam-e-to-sig lambda-expr))
-;; 	   (at (mapcar 'global-type-bump (pop sig)))
-;; 	   (rt (global-type-bump (car sig))))
-;;       (add-init `(init-function
-;; 		  ',fname
-;; 		  ,(add-address (c-function-name "LI" (format nil "~a" cfun) fname))
-;; 		  nil nil -1 ,(new-proclaimed-argd at rt)
-;; 		  ,(argsizes at rt (xa lambda-expr))))))
-
-;;   (when *compiler-auto-proclaim*
-;;     (add-init `(si::add-hash ',fname ,@(mapcar (lambda (x) `(quote ,x)) (export-call (gethash fname *sigs*)))))))
-
-;; (defun t3init-fun (fname cfun lambda-expr doc)
-
-;;   (when doc (add-init `(putprop ',fname ,doc 'function-documentation)))
-
-;;   (unless (wt-if-proclaimed fname cfun lambda-expr)
-;;     (assert (numberp cfun))
-;;     (let ((at (mapcar 'global-type-bump (get-arg-types fname)))
-;; 	  (rt (global-type-bump (get-return-type fname))))
-;;       (add-init `(init-function
-;; 		  ',fname
-;; 		  ,(add-address (c-function-name "LI" (format nil "~a" cfun) fname))
-;; 		  nil nil -1 ,(new-proclaimed-argd at rt)
-;; 		  ,(argsizes at rt (xa lambda-expr))))))
-
-;;   (when *compiler-auto-proclaim*
-;;     (add-init `(si::add-hash ',fname ,@(mapcar (lambda (x) `(quote ,x)) (export-call (gethash fname *sigs*)))))))
 
 (defun t3defun (fname cfun lambda-expr doc sp macro-p &aux inline-info 
 ;		      (macro-p (equal `(mflag ,fname) (cadr (member *current-form* *top-level-forms*))))
@@ -1671,125 +1284,11 @@
 
     (add-debug-info fname lambda-expr)))
 
-;; (defun t3defun (fname cfun lambda-expr doc sp &aux inline-info 
-;; 		      (macro-p (equal `(mflag ,fname) (cadr (member *current-form* *top-level-forms*))))
-;; 		      (*current-form* (list 'defun fname))
-;; 		      (*volatile* (volatile (second lambda-expr))))
-
-;;   (declare (ignore doc))
-
-;;   (let ((*compiler-check-args* *compiler-check-args*)
-;;         (*safe-compile* *safe-compile*)
-;;         (*compiler-push-events* *compiler-push-events*)
-;;         (*compiler-new-safety* *compiler-new-safety*)
-;;         (*notinline* *notinline*)
-;;         (*space* *space*)
-;;         (*debug* *debug*))
-    
-;;     (when (eq (car (caddr (cddr lambda-expr))) 'decl-body)
-;;       (local-compile-decls (caddr (caddr (cddr lambda-expr)))))
-
-;;     (cond
-;;      ((dolist (v *inline-functions*)
-;; 	(or (si::fixnump (nth 3 v))
-;; 	    (error "Old style inline"))
-;; 	(and (eq (car v) fname)
-;; 	     (not (nth 5 v)) ; ie.not  'link-call or 'ifuncall
-;; 	     (return (setq inline-info v))))
-      
-;;     ;;; Add global entry information.
-;; ;; 	(push (list fname cfun (cadr inline-info) (caddr inline-info))
-;; ;; 	      *global-entries*))
-    
-;;     ;;; Local entry
-;;       (analyze-regs (cadr lambda-expr) 0)
-
-;;       (mapc (lambda (x) (setf (var-type x) (global-type-bump (var-type x)))) (caaddr lambda-expr))
-;;       (setf (info-type (cadr (fifth lambda-expr))) (global-type-bump (info-type (cadr (fifth lambda-expr)))))
-;;       (setf (caddr inline-info) (global-type-bump (cadr (lam-e-to-sig lambda-expr))))
-
-;;       (t3defun-aux 't3defun-local-entry
-;; 		   (or (cdr (assoc (promoted-c-type (caddr inline-info)) +return-alist+)) 'return-object)
-;; 		   fname cfun lambda-expr sp inline-info))
-;;      ((baboon)))
-    
-;;     (t3init-fun fname cfun lambda-expr doc macro-p)
-
-;;     (add-debug-info fname lambda-expr)))
-
-;; (defun t3defun (fname cfun lambda-expr doc sp &aux inline-info 
-;; 		      (*current-form* (list 'defun fname))
-;; 		      (*volatile* (volatile (second lambda-expr))))
-
-;;   (declare (ignore doc))
-
-;;   (let ((*compiler-check-args* *compiler-check-args*)
-;;         (*safe-compile* *safe-compile*)
-;;         (*compiler-push-events* *compiler-push-events*)
-;;         (*compiler-new-safety* *compiler-new-safety*)
-;;         (*notinline* *notinline*)
-;;         (*space* *space*)
-;;         (*debug* *debug*))
-    
-;;     (when (eq (car (caddr (cddr lambda-expr))) 'decl-body)
-;;       (local-compile-decls (caddr (caddr (cddr lambda-expr)))))
-
-;;     (cond
-;;      ((dolist (v *inline-functions*)
-;; 	(or (si::fixnump (nth 3 v))
-;; 	    (error "Old style inline"))
-;; 	(and (eq (car v) fname)
-;; 	     (not (nth 5 v)) ; ie.not  'link-call or 'ifuncall
-;; 	     (return (setq inline-info v))))
-      
-;;     ;;; Add global entry information.
-;; ;; 	(push (list fname cfun (cadr inline-info) (caddr inline-info))
-;; ;; 	      *global-entries*))
-    
-;;     ;;; Local entry
-;;       (analyze-regs (cadr lambda-expr) 0)
-;;       (let ((lambda-expr (if (fast-link-proclaimed-type-p fname) lambda-expr (ttl-to-top lambda-expr fname))))
-;; 	(t3defun-aux 't3defun-local-entry
-;; 		     (or (cdr (assoc (promoted-c-type (caddr inline-info)) +return-alist+)) 'return-object)
-;; 		     fname cfun lambda-expr sp inline-info))
-
-
-;;       (when (not (fast-link-proclaimed-type-p fname))
-;; 	(let* ((sig (lam-e-to-sig lambda-expr))
-;; 	       (lsig (list (car sig) (if (type>= #tboolean (cadr sig)) #tt (cadr sig))));FIXME
-;; 	       (fun (make-fun :level -1 
-;; 			      :info (make-info :type (cadr lsig)) :call (list lsig) 
-;; 			      :name fname :cfun (format nil "I~a" cfun)))
-;; 	       (ttl (find-ttl-vars lambda-expr))
-;; 	       (vp (member-if-not 'var-p ttl))
-;; 	       (ttl (ldiff ttl vp))
-;; 	       (v (mapcar (lambda (x) (list 'var (make-info :type (var-type x)) (list x nil))) ttl))
-;; 	       (tp (cadr sig))
-;; 	       (inline-info (copy-tree inline-info)))
-;; 	  (setf (caddr inline-info) (global-type-bump tp))
-;; 	  (rcl lambda-expr fun v fname)
-;; 	  (t3defun-aux 't3defun-local-entry
-;; 		       (or (cdr (assoc (promoted-c-type (caddr inline-info)) +return-alist+)) 'return-object)
-;; 		       fname (format nil "G~a" cfun) lambda-expr sp inline-info))))
-
-;;      ((baboon)))
-    
-;;     (add-debug-info fname lambda-expr)))
 
 (defun t3defun-aux (f *exit* &rest lis)
   (let-pass3 ()   (apply f lis)))   
 
 (defvar *mv-var* nil)
-
-;; (defun tail-recursion-info (fname mv-var ll)
-;;   (when *do-tail-recursion*
-;;     (cons fname (append (if mv-var (cdr (car ll)) (car ll)) (ll-optionals ll) (list (ll-rest ll)) (ll-keywords ll)))))
-
-;; (defun tail-recursion-info (fname mv-var l)
-;;   (declare (ignore mv-var))
-;;   (when *do-tail-recursion*
-;;     (cons fname (find-ttl-vars l))))
-
 
 (defun t3defun-local-entry (fname cfun lambda-expr sp inline-info
 				  &aux specials *reg-clv* (requireds (caaddr lambda-expr)) nargs)

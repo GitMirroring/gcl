@@ -57,7 +57,6 @@
   (c-set-function-vv (symbol-function l) 0)
   (c-set-function-neval (symbol-function l) 1)
   )
-;  (si::add-hash (cdr l) (export-sig (car l)) nil nil nil))
 
 (dolist (l '(eq eql equal equalp ldb-test logtest))
   (setf (get l 'predicate) t))
