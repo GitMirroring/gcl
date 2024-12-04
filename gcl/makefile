@@ -114,12 +114,12 @@ $(PORTDIR)/saved_gcl2: $(PORTDIR)/saved_gcl1 $(HDIR)cmpinclude.h
 
 $(PORTDIR)/saved_gcl: $(PORTDIR)/saved_gcl2 $(HDIR)cmpinclude.h
 	cd $(@D) && echo '(time (load "boot.lisp"))' | ./$(<F) && $(MAKE) $(@F)
-	echo '(si::do-recomp)' | $@ && cd $(@D) && $(MAKE) $(@F)
+	echo '(si::do-recomp t)' | $@ && cd $(@D) && $(MAKE) $(@F)
 
 $(PORTDIR)/saved_mod_gcl: $(PORTDIR)/saved_gcl
 	(cd $(MODDIR); $(MAKE) clean; $(MAKE) all)
 	cd $(@D) && $(MAKE) $(@F)
-	echo '(si::do-recomp)' | $@ && cd $(@D) && $(MAKE) $(@F)
+	echo '(si::do-recomp t)' | $@ && cd $(@D) && $(MAKE) $(@F)
 
 $(PORTDIR)/saved_pcl_gcl: $(PORTDIR)/saved_mod_gcl
 #	(cd $(PCLDIR); $(MAKE) clean; $(MAKE) all)

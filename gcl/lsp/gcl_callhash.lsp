@@ -294,12 +294,12 @@
 	(push (list s sig) r))))
   (write-sys-proclaims1 sp r))
 
-(defun do-recomp (&rest excl &aux *sig-discovery-props* *compile-verbose*)
+(defun do-recomp (&optional cdebug &rest excl &aux *sig-discovery-props* *compile-verbose*)
   (gen-discovery-props)
   (let* ((fl (mapcar 'car *sig-discovery-props*))
 	 (fl (remove-duplicates (mapcar (lambda (x &aux (f (file x))) (when f (namestring f))) fl) :test 'string=))
 	 (fl (set-difference fl excl :test (lambda (x y) (search y x)))))
-    (compiler::cdebug)
+    (when cdebug (compiler::cdebug))
     (format t "~%Recompiling original source files ...")
     (mapc (lambda (x) (format t "~s~%" x) (compile-file x)) (remove nil fl))))
 
