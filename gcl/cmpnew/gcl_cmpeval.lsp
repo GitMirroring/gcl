@@ -1904,6 +1904,45 @@
 ;; 	(`(call-global ,info ,fn ,fms nil ,@ll))))
 
 
+(defun unreadable-individuals (f x) ;(print (list 'g x))
+       (mapcan (lambda (y &aux (y (if (listp y) (car y) y)))
+		 (when (funcall f y)
+		   (list (cons (car x) y))))
+	       (cdr x)))
+
+(defun kingdoms-with-unreadable-individuals (ntp)
+  (mapcan (lambda (x) ;(print (list 'm x))
+	    (case (car x)
+	      ((std-instance structure funcallable-std-instance)
+	       (unreadable-individuals (lambda (y) (not (eq 'top (si::std-def y)))) x))
+	      ((proper-cons improper-cons)
+	       (mapcan (lambda (y)
+			 (when (listp y)
+			   (append (kingdoms-with-unreadable-individuals (car y))
+				   (kingdoms-with-unreadable-individuals (cadr y))
+				   (when (caddr y) (list (cons (car x) (caddr y))))
+				   (when (cadddr y) (list (cons (car x) (caadddr y)))))))
+		       (cdr x)))
+	      (#.(mapcar 'cdr si::*all-array-types*)  (unreadable-individuals 'arrayp x))
+	      (gsym (unreadable-individuals (lambda (y) (not (symbol-package y))) x))
+	      (#.si::+singleton-types+ (unreadable-individuals (lambda (y) (not (eq y t))) x))))
+	  (car ntp)))
+
+(defun bump-unreadable-individuals (tp)
+  (cond ((cmpt tp) (cons (car tp) (mapcar 'bump-unreadable-individuals (cdr tp))))
+	((consp tp)
+	 (type-or1 tp
+		   (cmp-norm-tp
+		    (cons 'or
+			  (remove-duplicates
+			   (mapcar 'car (kingdoms-with-unreadable-individuals (caddr tp))))))))
+	(tp)))
+
+(defun unreadable-individuals-p (tp)
+  (when (consp tp)
+      (kingdoms-with-unreadable-individuals (caddr tp))))
+
+
 (defun type-from-args (fun fms last info &aux x)
   (when (symbolp fun)
     (setf (info-type info) (type-and (or (get-return-type fun) '*) (info-type info)))
@@ -1919,6 +1958,12 @@
 	 (let ((tp (result-type-from-args fun (mapcar (lambda (x) (info-type (cadr x))) fms))))
 	   (when tp
 	     (setf (info-type info) (type-and (info-type info) tp))))))
+  ;;FIXME inline functions from source with static data
+  ;; (when (unreadable-individuals-p (info-type info))
+  ;;   (keyed-cmpnote (list fun 'unreadable-individuals)
+  ;; 		   "~<;; ~@;Setting return type on call to ~s to nil due to unreadable individuals in~%~s~;~:>"
+  ;; 		   (list fun (cmp-unnorm-tp (info-type info))))
+  ;;   (setf (info-type info) nil))
   (info-type info))
 
 (defun coerce-ff (ff)
@@ -2054,15 +2099,15 @@
 (defun mi1 (fn args &optional last ff)
   (let* ((tp (get-return-type fn))
 	 (sp (if (when (symbolp fn) (get fn 'no-sp-change)) 0 1))
-	 (info (make-info :type tp :flags (if sp (iflags sp-change) 0)))
+	 (info (make-info :type (bump-unreadable-individuals tp) :flags (if sp (iflags sp-change) 0)))
  	 (res (mi1a fn args last info ff)))
     (when tp 
       (let ((t1 (info-type (cadr res)))(t2 (info-type info)))
 	(when (exit-to-fmla-p)
 	  (labels ((tb (tp) (type-or1 (when (type-and #tnull tp) #tnull)
 				      (when (type-and #t(not null) tp) #ttrue))))
-		  (setq t1 (tb t1) t2 (tb t2))))
-	(setf (info-type (cadr res)) (type-and t1 t2))))
+	    (setq t1 (tb t1) t2 (tb t2) tp (tb tp))))
+	(setf (info-type (cadr res)) (type-and t1 (if (type= t1 t2) tp t2)))))
     res))
 
 ;; (defun mi1 (fn args &optional last)
