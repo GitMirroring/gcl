@@ -1116,38 +1116,6 @@
 	  ',(apply 'compress-fle (pop l))
 	  ',l))
 
-
-(defun wt-if-proclaimed (fname cfun lambda-expr macro-p)
-  (when (fast-link-proclaimed-type-p fname);(and  (not (member '* (get-arg-types fname))))
-    (let* ((sig (lam-e-to-sig lambda-expr))
-	   (at (pop sig))
-	   (rt (car sig)))
-      (cond ((assoc fname *inline-functions*)
-	     (let ((finit `(init-function ,(export-call-struct (gethash fname *sigs*))
-					     ,(add-address (c-function-name "LI" cfun fname))
-					     nil nil -1 ,(new-proclaimed-argd at rt)
-					     ,(argsizes at rt (xa lambda-expr)))))
-	       (add-init `(fset ',fname ,(if macro-p `(cons 'macro ,finit) finit)))))
-	    ((let ((arg-c (length (car (lambda-list lambda-expr))))
-		   (arg-p (length at))
-		   (va (member '* at)))
-	       (cond (va
-		      (or (>= arg-c (- arg-p (length va)))
-			  (cmpwarn "~a needs ~a args. ~a supplied." fname (- arg-p (length va)) arg-c)))
-		     ((not (eql arg-c arg-p))
-		      (cmpwarn
-		       "~%;; ~a Number of proclaimed args was ~a. ~
-                          ~%;;Its definition had ~a." fname arg-p arg-c))
-					;((>= arg-c 10.)) ;checked above 
-					;(cmpwarn " t1defun only likes 10 args ~
-					;            ~%for proclaimed functions")
-		     (t (cmpwarn
-		       " ~a is proclaimed but not in *inline-functions* ~
-        ~%T1defun could not assure suitability of args for C call" fname)))
-	       nil))))))
-
-	
-
 (defun volatile (info) (if (iflag-p (info-flags info) volatile) "VOL " ""))
 (defun set-volatile (info) (setf (info-flags info) (logior (iflags volatile) (info-flags info))))
 
@@ -1213,16 +1181,18 @@
 
   (when doc (add-init `(putprop ',fname ,doc 'function-documentation)))
 
-  (unless (wt-if-proclaimed fname cfun lambda-expr macro-p)
-    (assert (numberp cfun))
-    (let* ((sig (lam-e-to-sig lambda-expr))
-	   (at (mapcar 'global-type-bump (pop sig)))
-	   (rt (global-type-bump (car sig)))
-	   (finit `(init-function ,(export-call-struct (gethash fname *sigs*))
-				      ,(add-address (c-function-name "LI" (format nil "~a" cfun) fname))
-				      nil nil -1 ,(new-proclaimed-argd at rt)
-				      ,(argsizes at rt (xa lambda-expr)))))
-      (add-init `(fset ',fname ,(if macro-p `(cons 'macro ,finit) finit))))))
+  (let* ((e (gethash fname *sigs*))
+	 (f (when (fast-link-proclaimed-type-p fname) (assert (assoc fname *inline-functions*)) t))
+	 (sig (car e))
+	 (at (pop sig))
+	 (at (if f at (mapcar 'global-type-bump at)))
+	 (rt (car sig))
+	 (rt (if f rt (global-type-bump rt)))
+	 (finit `(init-function ,(export-call-struct (gethash fname *sigs*))
+				,(add-address (c-function-name "LI" cfun fname))
+				nil nil -1 ,(new-proclaimed-argd at rt)
+				,(argsizes at rt (xa lambda-expr)))))
+    (add-init `(fset ',fname ,(if macro-p `(cons 'macro ,finit) finit)))))
 
 
 (defun t3defun (fname cfun lambda-expr doc sp macro-p &aux inline-info 
