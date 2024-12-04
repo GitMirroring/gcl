@@ -1945,7 +1945,6 @@
 
 (defun type-from-args (fun fms last info &aux x)
   (when (symbolp fun)
-    (setf (info-type info) (type-and (or (get-return-type fun) '*) (info-type info)))
     (unless (get fun 'c1no-side-effects)
       (setf (info-flags info) (logior (info-flags info) (iflags side-effects)))));FIXME
   (cond ((setq x (member-if-not 'identity fms :key (lambda (x) (info-type (cadr x)))))
