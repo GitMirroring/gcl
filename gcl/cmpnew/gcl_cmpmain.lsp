@@ -426,6 +426,11 @@ Cannot compile ~a.~%" (namestring (merge-pathnames input-pathname *compiler-defa
 	    form)
 	  na))))))
 
+(defun interpret (name &aux (form (get-named-form name)))
+  (if (when (consp (cadr form)) (eq (caadr form) 'macro))
+      (setf (macro-function (cdadr form)) (eval (cons 'lambda (cddr form))))
+      (eval form)))
+
 (defvar *compiler-compile-data* nil)
 
 (defun compile (name &optional def &aux na tem gaz (*default-pathname-defaults* #p"."))
