@@ -47,7 +47,10 @@
     nil))
 
 (defun all-conflicts (&aux r q)
-  (do-all-symbols (sym q)
+  (do-all-symbols (sym (sort q (lambda (x y)
+				 (cond ((member (caar x) (cadr y)) 1)
+				       ((member (caar y) (cadr x)) -1)
+				       (0)))))
     (let* ((plist (sym-plist sym))(callees (cadr plist)))
       (mapc (lambda (x &aux (s (car x)) (cmp-sig (cdr x))(act-sig (car (sym-plist s))))
 	      (unless (eq sym s)
