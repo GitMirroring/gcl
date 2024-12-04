@@ -1031,7 +1031,8 @@
     (keyed-cmpnote (list 'return-type fname) "~s return type ~s" fname (c1retnote lambda-expr))
     
     (unless (or (equal osig sig) (eq fname 'cmp-anon));FIXME
-      (cmpwarn "signature change on function ~s,~%   ~s -> ~s~%" fname (ex-sig osig) (ex-sig sig))
+      (cmpwarn "signature change on function ~s,~%   ~s -> ~s~%"
+	       fname (si::readable-sig osig) (si::readable-sig sig))
       (setq *new-sigs-in-file* 
 	    (some
 	     (lambda (x) 
@@ -1107,8 +1108,6 @@
 	((eq (car tp) 'returns-exactly) (- 2 (length tp)))
 	((- (length tp) 2))))
 
-
-(defun ex-sig (sig) (list (mapcar 'cmp-unnorm-tp (car sig)) (cmp-unnorm-tp (cadr sig))))
 (defun export-call-struct (l)
   `(apply 'make-function-plist
 	  ',(pop l)
