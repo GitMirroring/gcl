@@ -252,10 +252,6 @@
 (defun export-sig (sig)
   (uniq-sig `((,@(mapcar 'export-type (car sig))) ,(export-type (cadr sig)))))
 
-(defun mbt (tp &aux (atp (atomic-tp tp)))
-  (if (and atp (consp (car atp)))
-      (if (typep (car atp) 'proper-cons) #tproper-cons #tcons)
-    tp))
 
 
 ;; (defun mbt (tp &aux (atp (atomic-tp tp)))
@@ -266,7 +262,7 @@
 (defun lam-e-to-sig (l &aux (args (caddr l)) (regs (car args)) (regs (if (is-first-var (car regs)) (cdr regs) regs)))
   `((,@(mapcar 'var-type regs)
      ,@(when (or (is-narg-le l) (member-if 'identity (cdr args))) `(*)))
-    ,(mbt (info-type (cadar (last l))))))
+    ,(info-type (cadar (last l)))))
 
 ;; (defun lam-e-to-sig (l &aux (args (caddr l)) (regs (car args)) (narg (is-narg-le l))
 ;; 		       (first (is-first-var (car regs))) (regs (if first (cdr regs) regs)))
