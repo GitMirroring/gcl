@@ -954,6 +954,7 @@ DEFUNM("SEMICOLON-READER",object,fSsemicolon_reader,SI,2,2,NONE,OO,OO,OO,OO,
 	  (object str,object c),"") {
 
   fixnum vals=fcall.valp;
+  object *base=vs_top;
 
   do
     { read_char_to(c,str, goto L); }

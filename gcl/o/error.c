@@ -342,6 +342,7 @@ DEFUN("SCH-FRS-BASE",object,fSsch_frs_base,SI,2,2,NONE,OO,OO,OO,OO,(object x0,ob
 DEFUNM("INTERNAL-SUPER-GO",object,fSinternal_super_go,SI,3,3,NONE,OO,OO,OO,OO,(object tag,object x1,object x2),"") {
   frame_ptr fr;
   fixnum vals=(fixnum)fcall.valp;
+  object *base=vs_top;
   
   fr = frs_sch(tag);
   if (fr == NULL)

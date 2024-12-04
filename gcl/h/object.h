@@ -606,7 +606,7 @@ EXTER char *alloca_val;
 #define RETURN2I(x,y)   RETURN(2,fixnum,x,(RV(y)))
 /* #define RETURN1(x) RETURN(1,object,x,) */
 #define RETURN1(x) return(x)
-#define RETURN0 do {vs_top=(object *)vals-1;return Cnil;} while (0)
+#define RETURN0 do {vs_top=vals ? (object *)vals-1 : base;return Cnil;} while (0)
 
 #define RV(x) ({if (_p) *_p++ = x;})
 
