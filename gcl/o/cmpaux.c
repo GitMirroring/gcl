@@ -111,13 +111,15 @@ DEFUN("DEBUGGER",object,fSdebugger,SI
 }
 
 
-DEFUN("SETVV",object,fSsetvv,SI
-       ,2,2,NONE,OO,OO,OO,OO,(object index,object val),"")
-{ /* 2 args */
+DEFUN("SETVV",object,fSsetvv,SI,2,2,NONE,OO,OO,OO,OO,(object index,object val),"") {
+
   if(type_of(sSPmemory->s.s_dbind)==t_cfdata)
-  sSPmemory->s.s_dbind->cfd.cfd_self[fix(index)]=val;
-  else FEerror("setvv called outside %init",0);
+    sSPmemory->s.s_dbind->cfd.cfd_self[fix(index)]=val;
+  else
+    FEerror("setvv called outside %init",0);
+
   RETURN1(index);
+
 }
 
 DEFVAR("%MEMORY",sSPmemory,SI,OBJNULL,"");
