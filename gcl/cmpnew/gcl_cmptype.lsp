@@ -1115,39 +1115,70 @@
 
 (defun coerce-to-one-value (type) (type-and type t))
 
-(defun unprintable-individualsp (u)
-  (case (when (listp u) (car u))
-	((or returns-exactly values) (member-if 'unprintable-individualsp (cdr u)))
-	(member (member-if (lambda (x)
-			     (or (si::si-classp x) (typep x '(or function cons binding array))))
-			   (cdr u)))
-	((short-float long-float) (member-if (lambda (x) (or (isinf x) (isnan x))) (cdr u)))
-	(otherwise (si::si-classp u))))
+(defun individuals (f x)
+  (mapcan (lambda (y &aux (y (if (listp y) (car y) y)))
+	    (when (funcall f y)
+	      (list (cons (car x) y))))
+	  (cdr x)))
 
-(defun kingdoms-with-unprintable-individuals (tp)
-  (labels ((f (x)
-	     (typecase x
-	       (float (or (isnan x) (isinf x)))
-	       ((or string bit-vector number random-state character symbol pathname) nil)
-	       (cons (or (f (car x)) (f (cdr x))))
-	       ((array t) (some (lambda (x) (f x)) x));FIXME #'f
-	       ;FIXME assumes structure elements are printable
-	       (structure (si::s-data-print-function (c-structure-def x)))
-	       (t t))))
-    (when (consp tp)
-      (mapcan (lambda (x)
-		(when (member-if (lambda (x) (f x)) (cdr x));FIXME #'f
-		  (list (car x))))
-	      (caaddr tp)))))
+(defun ntp-kingdoms-with-individuals (ntp)
+  (mapcan (lambda (x)
+	    (case (car x)
+	      ((complex-integer complex-integer-ratio complex-ratio-integer
+				complex-short-float complex-long-float)
+	       (individuals 'complexp x))
+	      ((integer ratio))
+	      ((short-float long-float);FIXME conceptually this should not be here.
+	       (mapcan (lambda (y)
+			 (when (consp y)
+			   (labels ((d (z &aux (z (if (listp z) (car z) z)))
+				      (when (or (isinf z) (isnan z))
+					(list (cons (car x) z)))))
+			     (append (d (car y)) (d (cdr y))))))
+		       (cdr x)))
+	      ((std-instance structure funcallable-std-instance)
+	       (individuals (lambda (y) (not (eq 'top (si::std-def y)))) x))
+	      ((proper-cons si::improper-cons);FIXME
+	       (mapcan (lambda (y)
+			 (when (listp y)
+			   (append (ntp-kingdoms-with-individuals (car y))
+				   (ntp-kingdoms-with-individuals (cadr y))
+				   (when (caddr y) (list (cons (car x) (caddr y))))
+				   (when (cadddr y) (list (cons (car x) (car (cadddr y))))))))
+		       (cdr x)))
+	      (#.(mapcar 'cdr si::*all-array-types*)  (individuals 'arrayp x))
+	      (otherwise (individuals (lambda (y) (not (eq y t))) x))))
+	  (car ntp)))
 
-(defun export-type1 (type)
-  (let ((x (kingdoms-with-unprintable-individuals type)))
-    (if x (type-or1 type (cmp-norm-tp (cons 'or x))) type)))
+(defun kingdoms-with-individuals (tp)
+  (when (consp tp)
+    (ntp-kingdoms-with-individuals (caddr tp))))
+
+
+(declaim (inline bump-individuals))
+(defun bump-individuals (f tp)
+  (cond ((cmpt tp) (cons (car tp) (mapcar (lambda (x) (bump-individuals f x)) (cdr tp))))
+	((let* ((x (kingdoms-with-individuals tp))
+		(x (remove-if-not f x :key 'cdr))
+		(x (remove-duplicates (mapcar 'car x))))
+	   (if x
+	       (compiler::type-or1 (cmp-norm-tp (cons 'or x)) tp)
+	       tp)))))
+
+(declaim (inline unprintable-individual-p))
+(defun unprintable-individual-p (x)
+  (typecase x
+    (float (or (isnan x) (isinf x)));t
+    ((or string bit-vector number random-state character symbol pathname) nil)
+    (cons (or (unprintable-individual-p (car x)) (unprintable-individual-p (cdr x))))
+    ((array t) (some 'unprintable-individual-p x))
+    ;FIXME assumes structure elements are printable
+    (structure (si::s-data-print-function (c-structure-def x)))
+    (t t)))
 
 (defun export-type (type)
-  (if (cmpt type)
-      (cons (pop type) (mapcar 'export-type1 type))
-    (export-type1 type)))
+  (bump-individuals 'unprintable-individual-p type))
+
 
 
 (defun bump-tp (tp)

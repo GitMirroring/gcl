@@ -1904,43 +1904,14 @@
 ;; 	(`(call-global ,info ,fn ,fms nil ,@ll))))
 
 
-(defun unreadable-individuals (f x) ;(print (list 'g x))
-       (mapcan (lambda (y &aux (y (if (listp y) (car y) y)))
-		 (when (funcall f y)
-		   (list (cons (car x) y))))
-	       (cdr x)))
-
-(defun kingdoms-with-unreadable-individuals (ntp)
-  (mapcan (lambda (x) ;(print (list 'm x))
-	    (case (car x)
-	      ((std-instance structure funcallable-std-instance)
-	       (unreadable-individuals (lambda (y) (not (eq 'top (si::std-def y)))) x))
-	      ((proper-cons improper-cons)
-	       (mapcan (lambda (y)
-			 (when (listp y)
-			   (append (kingdoms-with-unreadable-individuals (car y))
-				   (kingdoms-with-unreadable-individuals (cadr y))
-				   (when (caddr y) (list (cons (car x) (caddr y))))
-				   (when (cadddr y) (list (cons (car x) (caadddr y)))))))
-		       (cdr x)))
-	      (#.(mapcar 'cdr si::*all-array-types*)  (unreadable-individuals 'arrayp x))
-	      (gsym (unreadable-individuals (lambda (y) (not (symbol-package y))) x))
-	      (#.si::+singleton-types+ (unreadable-individuals (lambda (y) (not (eq y t))) x))))
-	  (car ntp)))
+;; Objects when read are not eql
+(declaim (inline unreadable-individual-p))
+(defun unreadable-individual-p (x)
+  (typecase x (number)(symbol (not (symbol-package x)))(otherwise t)))
 
 (defun bump-unreadable-individuals (tp)
-  (cond ((cmpt tp) (cons (car tp) (mapcar 'bump-unreadable-individuals (cdr tp))))
-	((consp tp)
-	 (type-or1 tp
-		   (cmp-norm-tp
-		    (cons 'or
-			  (remove-duplicates
-			   (mapcar 'car (kingdoms-with-unreadable-individuals (caddr tp))))))))
-	(tp)))
+  (bump-individuals 'unreadable-individual-p tp))
 
-(defun unreadable-individuals-p (tp)
-  (when (consp tp)
-      (kingdoms-with-unreadable-individuals (caddr tp))))
 
 
 (defun type-from-args (fun fms last info &aux x)

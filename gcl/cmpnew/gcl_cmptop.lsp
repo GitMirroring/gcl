@@ -1331,6 +1331,7 @@
 	((eq (car tp) 'returns-exactly) (- 2 (length tp)))
 	((- (length tp) 2))))
 
+(declaim (inline ty-contains-binding-p))
 (defun ty-contains-binding-p (tp)
   (typecase tp
     (binding t)
@@ -1338,9 +1339,7 @@
     (cons (or (ty-contains-binding-p (car tp)) (ty-contains-binding-p (cdr tp))))))
 
 (defun ex-tp (tp)
-  (if (ty-contains-binding-p tp)
-      (car tp)
-      tp))
+  (bump-individuals 'ty-contains-binding-p tp))
 
 (defun exp-sig (sig)
   (list (mapcar 'ex-tp (car sig)) (if (cmpt (cadr sig)) (cons (caadr sig) (mapcar 'ex-tp (cdadr sig))) (ex-tp (cadr sig)))))
