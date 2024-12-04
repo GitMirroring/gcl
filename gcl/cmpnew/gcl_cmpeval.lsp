@@ -2761,7 +2761,7 @@
 	   (fun (when (fun-p fun) fun))
 	   (sym (car (atomic-tp (info-type (cadar nargs))))))
       (when (and sym fun);FIXME
-	(push (cons sym (apply 'si::make-function-plist (exp-sig (car (fun-call fun))) (cdr (fun-call fun)))) si::*sig-discovery-props*))))
+	(push (cons sym (apply 'si::make-function-plist (fun-call fun))) si::*sig-discovery-props*))))
   form)
 
 

@@ -1001,15 +1001,14 @@
 	 (*current-form* `(defun ,name))
 	 (l (do-l1-fun name (cdr (new-defun-args src tag)) e b))
 	 (clv (get-clv l)))
-    (setf (car e) (export-sig (car e))
-	  (second e) (mapcan (lambda (x) (when (symbolp x) (list (cons x (get-sig x)))))
+    (setf (second e) (mapcan (lambda (x) (when (symbolp x) (list (cons x (get-sig x)))))
 			     (info-ref (cadr l)))
 	  (third e) (list src clv name)
 	  (fourth e) *function-filename*
 	  (fifth e) (if (= (length clv) 0) 1 0)
 	  (sixth e) name)
     (when *sig-discovery*
-      (when (symbol-package name) (unless (eq name 'lambda) (push (cons name (apply 'si::make-function-plist (exp-sig (pop e)) e)) si::*sig-discovery-props*))))
+      (when (symbol-package name) (unless (eq name 'lambda) (push (cons name (apply 'si::make-function-plist e)) si::*sig-discovery-props*))))
     l))
 
 (defun t1defun (args &aux *warning-note-stack*)
@@ -1124,7 +1123,7 @@
 (defun ex-sig (sig) (list (mapcar 'cmp-unnorm-tp (car sig)) (cmp-unnorm-tp (cadr sig))))
 (defun export-call-struct (l)
   `(apply 'make-function-plist
-	  ',(exp-sig (pop l))
+	  ',(pop l)
 	  ',(pop l)
 	  ',(apply 'compress-fle (pop l))
 	  ',l))

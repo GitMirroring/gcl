@@ -193,7 +193,7 @@
 
 
 (defun lam-e-to-sig (l &aux (args (caddr l)) (regs (car args)) (regs (if (is-first-var (car regs)) (cdr regs) regs)))
-  (exp-sig
+  (export-sig
    `((,@(mapcar 'var-type regs)
 	,@(when (or (is-narg-le l) (member-if 'identity (cdr args))) `(*)))
      ,(info-type (cadar (last l))))))
