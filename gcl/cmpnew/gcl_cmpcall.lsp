@@ -551,27 +551,6 @@
 ;;     (and loc (wt "}")))
 ;;   (unwind-exit 'fun-val))
 
-(defun inline-proc (fname args &aux (n (length args)) res (obj fname))
-  (format t "~%Using ifuncall: ~a" fname)
-  (let ((result
-  (case n
-	;(0  (list () t (flags ans set) (format nil "ifuncall0(VV[~d])" obj)))
-	(1 (list  '(t) t (flags ans set) (format nil "ifuncall1(~a,(#0))" (vv-str obj))
-		  'ifuncall))
-	(2 (list  '(t t) t  (flags ans set) 
-		       (format nil "ifuncall2(~a,(#0),(#1))" (vv-str obj))
-		       'ifuncall))
-	(t
-	 (list (make-list n :initial-element t)
-	       t (flags ans set) 
-	       (format nil "ifuncall(~a,~a~{,#~a~})"
-		       (vv-str obj) n
-		       (dotimes (i n(nreverse res))
-				(push i res)))
-	       'ifuncall)))))
-    (push (cons fname result ) *inline-functions*)
-    result
-    ))
 
 
 (si:putprop 'simple-call 'wt-simple-call 'wt-loc)
