@@ -260,9 +260,10 @@
 ;; 	(tp)))
 
 (defun lam-e-to-sig (l &aux (args (caddr l)) (regs (car args)) (regs (if (is-first-var (car regs)) (cdr regs) regs)))
-  `((,@(mapcar 'var-type regs)
-     ,@(when (or (is-narg-le l) (member-if 'identity (cdr args))) `(*)))
-    ,(info-type (cadar (last l)))))
+  (exp-sig
+   `((,@(mapcar 'var-type regs)
+	,@(when (or (is-narg-le l) (member-if 'identity (cdr args))) `(*)))
+     ,(info-type (cadar (last l))))))
 
 ;; (defun lam-e-to-sig (l &aux (args (caddr l)) (regs (car args)) (narg (is-narg-le l))
 ;; 		       (first (is-first-var (car regs))) (regs (if first (cdr regs) regs)))
