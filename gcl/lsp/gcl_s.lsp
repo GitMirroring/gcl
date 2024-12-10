@@ -115,3 +115,17 @@
 
 (mffe)
 (mfff)
+
+;; We access bit-vectors by fixnum, and there appears no way to ensure alignment in any subset of cases
+#+sparc64
+(defun *fixnum (x o s y)
+  (declare (boolean s))
+  (declare (fixnum o x))
+  (if s
+      ;FIXME there does not appear any useful way to lift thie branch into lisp for possible branch elimination
+      (lit :fixnum "((" (:fixnum x) "&(sizeof(fixnum)-1)) ? "
+	   "({fixnum _t=" (:fixnum y) ";unsigned char *p1=(void *)(((fixnum *)" (:fixnum x) ")+" (:fixnum o) "),*p2=(void *)&_t,*pe=p1+sizeof(fixnum);for (;p1<pe;) *p1++=*p2++;_t;}) : "
+	   "({((fixnum *)" (:fixnum x) ")[" (:fixnum o) "]=" (:fixnum y) ";}))")
+      (lit :fixnum "((" (:fixnum x) "&(sizeof(fixnum)-1)) ? "
+	   "({fixnum _t;unsigned char *p1=(void *)(((fixnum *)" (:fixnum x) ")+" (:fixnum o) "),*p2=(void *)&_t,*pe=p1+sizeof(fixnum);for (;p1<pe;) *p2++=*p1++;_t;}) : "
+	   "((fixnum *)" (:fixnum x) ")[" (:fixnum o) "])")))
