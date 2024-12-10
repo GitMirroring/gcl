@@ -457,6 +457,9 @@ case $use in
 	    ia64*)
 		if test "$enable_debug" != "yes" ; then TO3FLAGS="-O" ; fi #FIXME needed asof gcc 4.8.1
 		;;
+	    hppa*)
+		AC_DEFINE([SET_STACK_POINTER],["copy %0,%%sp\n\t"],[asm string to set the stack pointer])
+		;;
 	    arm*)
 		AC_DEFINE([SET_STACK_POINTER],["mov %%sp,%0\n\t"],[asm string to set the stack pointer])
 		AC_MSG_CHECKING([how to set stack pointer])
@@ -1364,7 +1367,7 @@ AC_DEFINE_UNQUOTED(CSTACK_ALIGNMENT,$cstack_alignment,[C stack alignment])
 AC_MSG_RESULT($cstack_alignment)
 
 AC_ARG_ENABLE([cstackmax],[  --enable-cstackmax=xxxx will ensure that the cstack begins below xxxx or fail],
-	      [if test "$enableval" != "" ; then AC_DEFINE_UNQUOTED([CSTACKMAX],$enableval,[cstack max]) fi])
+	      [cstack_max=-1;if test "$enableval" != "" ; then cstack_max=$enableval;AC_DEFINE_UNQUOTED([CSTACKMAX],$enableval,[cstack max]) fi])
 
 
 AC_MSG_CHECKING(CSTACK_ADDRESS)
@@ -1590,7 +1593,7 @@ AC_RUN_IFELSE(
 
 		for (i=2,k=1;i;k=i,i<<=1);
 		    l=$cstack_address;
-		    l=$cstack_direction==1 ? (l<k ? k-1 : -1) : l;
+		    l=$cstack_direction==1 ? (l<k ? k-1 : $cstack_max) : l;
 		    for (i=j=k;j && i<l;j>>=1,i|=j);
 			if (j<(k>>3)) i=0;
 			   j=1;
