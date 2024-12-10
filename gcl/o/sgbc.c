@@ -912,7 +912,7 @@ sgc_quit(void) {
 
 fixnum debug_fault =0;
 fixnum fault_count =0;
-extern char etext;
+
 static void
 memprotect_handler(int sig, long code, void *scp, char *addr) {
   

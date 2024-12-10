@@ -125,7 +125,7 @@ LFD(build_symbol_table)(void) {
   {
     fixnum i;
 
-    min_text=(void *)&etext;
+    min_text=etext;
     for (i=0;i<c_table.alloc_length;i++) {
       void *p=(void *)c_table.ptable[i].address;
       min_text=p<min_text ? p : min_text;

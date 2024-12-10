@@ -31,7 +31,7 @@ filecpy(save, original, stsize - sizeof(stsize))
 #define NUMBER_OPEN_FILES getdtablesize() 
 
 
-extern char etext;
+extern char etext[];
 
 #define INIT_ALLOC heap_end = core_end = PCEI(sbrk(0),PAGESIZE);
 
