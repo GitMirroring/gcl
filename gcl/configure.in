@@ -84,8 +84,8 @@ case $use in
 	case $use in
 	    ia64*)
 		def_dlopen="yes" ; def_custreloc="no" ;;
-	    dnl hppa*)
-	    dnl 	def_pic="yes" ;;
+	    hppa*) # FIXME
+		def_pic="yes" ;;
 	esac;;
 esac
 

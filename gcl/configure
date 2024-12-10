@@ -3149,7 +3149,9 @@ case $use in
 	case $use in
 	    ia64*)
 		def_dlopen="yes" ; def_custreloc="no" ;;
-	    	    	esac;;
+	    hppa*) # FIXME
+		def_pic="yes" ;;
+	esac;;
 esac
 
 # Check whether --enable-widecons was given.
