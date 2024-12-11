@@ -5800,6 +5800,9 @@ case $use in
 		assert_arg_to_cflags -mlong-calls
 		TLIBS="$TLIBS -lgcc_s" # workaround hppa __moddi3 local func symbols with default linker flags
 		if test "$enable_debug" != "yes" ; then TO3FLAGS="-O2" ; TFPFLAG=""; fi #FIXME needed asof gcc 4.8.1
+
+printf "%s\n" "#define SET_STACK_POINTER \"copy %0,%%sp\\n\\t\"" >>confdefs.h
+
 		;;
 	    mips*)
 		case $canonical in
@@ -5810,11 +5813,6 @@ case $use in
 		;;
 	    ia64*)
 		if test "$enable_debug" != "yes" ; then TO3FLAGS="-O" ; fi #FIXME needed asof gcc 4.8.1
-		;;
-	    hppa*)
-
-printf "%s\n" "#define SET_STACK_POINTER \"copy %0,%%sp\\n\\t\"" >>confdefs.h
-
 		;;
 	    arm*)
 

@@ -66,9 +66,11 @@
 #if CSTACK_DIRECTION < 0
 #define CSTACK_OFFSET (1L<<PAGEWIDTH)
 #define MAP_GROWSDOWN_FLAG MAP_GROWSDOWN
+#define CSTACK_SET CSTACKMAX-4*CSTACK_ALIGNMENT
 #else
-#define CSTACK_OFFSET (1L<<23)
+#define CSTACK_OFFSET (1L<<23)/*FIXME configurable*/
 #define MAP_GROWSDOWN_FLAG 0
+#define CSTACK_SET CSTACKMAX-CSTACK_OFFSET+4*CSTACK_ALIGNMENT
 #endif
     if ((void *)&argc > (void *)CSTACKMAX) {
       if (mmap((void *)CSTACKMAX-CSTACK_OFFSET,(1L << PAGEWIDTH),
@@ -77,7 +79,7 @@
 	  exit(-1);
 	}
 #ifdef SET_STACK_POINTER
-      {void *p=(void *)CSTACKMAX+4*CSTACK_ALIGNMENT*CSTACK_DIRECTION;asm volatile (SET_STACK_POINTER::"r" (p):"memory");}
+      {void *p=(void *)CSTACK_SET;asm volatile (SET_STACK_POINTER::"r" (p):"memory");}
 #else
 #error SET_STACK_POINTER undefined
 #endif
