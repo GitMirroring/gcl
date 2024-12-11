@@ -424,7 +424,7 @@ EXTER fixnum new_holepage,starting_hole_div,starting_relb_heap_mult;
 EXTER ulfixnum cumulative_allocation,recent_allocation;
 EXTER ufixnum wait_on_abort;
 EXTER double gc_alloc_min,mem_multiple,gc_page_min,gc_page_max;
-EXTER bool multiprocess_memory_pool;
+EXTER char *multiprocess_memory_pool;
 
 EXTER char *new_rb_start;		/*  desired relblock start after next gc  */
 EXTER char *rb_start;           	/*  relblock start  */

@@ -792,6 +792,13 @@ too_full_p(struct typemanager *tm) {
 
 }
 
+DEFUN("POOL-STAT",object,fSpool_stat,SI,0,0,NONE,OO,OO,OO,OO,(void),"") {
+
+  pool_stat();
+  RETURN1(MMcons(make_fixnum(pool_pid),MMcons(make_fixnum(pool_n),MMcons(make_fixnum(pool_s),Cnil))));
+
+}
+
 static inline bool
 do_gc_p(struct typemanager *tm,fixnum n) {
 

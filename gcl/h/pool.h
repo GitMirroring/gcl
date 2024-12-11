@@ -19,6 +19,7 @@ static struct pool {
   ufixnum n;
   ufixnum s;
 } *Pool;
+static ufixnum pool_pid,pool_n,pool_s;
 
 static struct flock f,pl,*plp=&pl;
 static char gcl_pool[PATH_MAX];
@@ -62,8 +63,13 @@ open_pool(void) {
 
   if (pool==-1) {
 
-    massert(!home_namestring1("~",1,FN1,sizeof(FN1)));
-    massert(snprintf(gcl_pool,sizeof(gcl_pool),"%sgcl_pool",FN1)>=0);
+    struct stat ss;
+    massert(!lstat(multiprocess_memory_pool,&ss));
+    massert(S_ISDIR(ss.st_mode));
+
+    massert(snprintf(gcl_pool,sizeof(gcl_pool),"%s%sgcl_pool",
+		     multiprocess_memory_pool,
+		     multiprocess_memory_pool[strlen(multiprocess_memory_pool)-1]=='/' ? "" : "/")>=0);
     massert((pool=open(gcl_pool,O_CREAT|O_RDWR,0644))!=-1);
     massert(!ftruncate(pool,sizeof(struct pool)));
     massert((Pool=mmap(NULL,sizeof(struct pool),PROT_READ|PROT_WRITE,MAP_SHARED,pool,0))!=(void *)-1);
@@ -153,6 +159,24 @@ get_pool(void) {
 
   return s;
   
+}
+
+static void
+pool_stat(void) {
+
+#ifndef NO_FILE_LOCKING
+  if (multiprocess_memory_pool) {
+
+    open_pool();
+    lock_pool();
+    pool_pid=Pool->pid;
+    pool_n=Pool->n;
+    pool_s=Pool->s;
+    unlock_pool();
+
+  }
+#endif
+
 }
 
 

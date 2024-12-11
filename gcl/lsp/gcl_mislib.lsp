@@ -227,6 +227,12 @@
     (heaprep))
   (values))
 
+(defun pool-watch (&optional (s 3) (c 10) &aux (x (pool-stat)))
+  (when (plusp c)
+    (format t "master pid ~s ~s processes ~s pages~%" (pop x) (pop x) (car x))
+    (sleep s)
+    (pool-watch s (1- c))))
+
 (defun gprof-output (symtab gmon)
   (with-open-file
      (s (format nil "|gprof -S '~a' '~a' '~a'" symtab (kcl-self) gmon))
