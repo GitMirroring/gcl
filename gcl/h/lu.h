@@ -24,9 +24,9 @@ typedef unsigned long   ufixnum;
 #define FRSTWRDF(t_,a_...)   ufixnum h:1,a_,   st:3,t:5,t_:5,    f:1,m:1,e:1
 #define FIRSTWORD            ufixnum h:1,w:LM(17),st:3,t:5,tt:5,    f:1,m:1,e:1
 #define FSTPWORD             ufixnum h:1,w:LM(17),st:3,tp:10,             emf:3
-#define MARKWORD             ufixnum h:1,w:LM(14),     t:5,tt:5,       mf:2,e:1
-#define SGCMWORD             ufixnum h:1,w:LM(14),     t:5,tt:5,       mf:2,e:1
-#define TYPEWORD             ufixnum h:1,w:LM(14),     t:5,tt:5,          emf:3
+#define MARKWORD             ufixnum h:1,xx:LM(14),    t:5,tt:5,       mf:2,e:1
+#define SGCMWORD             ufixnum h:1,xx:LM(14),    t:5,tt:5,       mf:2,e:1
+#define TYPEWORD             ufixnum h:1,xx:LM(14),    t:5,tt:5,          emf:3
 
 #endif
 
