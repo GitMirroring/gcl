@@ -23,4 +23,4 @@
 #define CLEAR_CACHE imb()
 
 /*FIXME probe broken in recent kernels, no access*/
-#define DEFINED_REAL_MAXPAGE (1UL<<18) /*FIXME brk probe broken*/
+/* #define DEFINED_REAL_MAXPAGE (1UL<<18) /\*FIXME brk probe broken*\/ */
