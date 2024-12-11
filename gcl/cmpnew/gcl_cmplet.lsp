@@ -268,7 +268,7 @@
     (check-vdecl vnames ts is)
     (setq body (c1decl-body other-decls body))
 
-    (unless (single-type-p (info-type (cadr body))) 
+    (unless (single-type-p (info-type (cadr body))) ;FIXME infinite recursion
       (let ((mv (car (member-if 'is-mv-var vars))))
 	(when mv
 	  (ref-vars (c1var (var-name mv)) (list mv)))))
