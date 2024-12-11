@@ -64,6 +64,7 @@ ARCHCONF=--enable-cstackmax=0xc0000000
 endif
 ifeq ($(ARCHT),hppa)
 ARCHCONF=--enable-cstackmax=0xc0000000
+endif
 
 
 #ifeq ($(ARCHT),hppa)
