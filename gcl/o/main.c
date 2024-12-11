@@ -581,6 +581,11 @@ main(int argc, char **argv, char **envp) {
 #include "unrandomize.h"
 #endif
 
+  vs_top = vs_base = vs_org;
+  ihs_top = ihs_org-1;
+  bds_top = bds_org-1;
+  frs_top = frs_org-1;
+
   gcl_init_alloc(alloca(1));
 
   setbuf(stdin, stdin_buf); 
@@ -596,11 +601,6 @@ main(int argc, char **argv, char **envp) {
   ARGV = argv;
   ENVP = envp;
   
-  vs_top = vs_base = vs_org;
-  ihs_top = ihs_org-1;
-  bds_top = bds_org-1;
-  frs_top = frs_org-1;
-
   if (raw_image) {
 
     printf("GCL (GNU Common Lisp)  %s  %ld pages\n",LISP_IMPLEMENTATION_VERSION,real_maxpage);
