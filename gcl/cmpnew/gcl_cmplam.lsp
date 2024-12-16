@@ -57,13 +57,7 @@
 ;;; Body' is body possibly surrounded by a LET* (if &aux parameters are
 ;;; supplied) and an implicit block.
 
-(defmacro ck-spec (condition)
-  `(unless ,condition
-           (cmperr "The parameter specification ~s is illegal." spec)))
 
-(defmacro ck-vl (condition)
-  `(unless ,condition
-           (cmperr "The lambda list ~s is illegal." vl)))
 
 
 (defun wfs-error ()

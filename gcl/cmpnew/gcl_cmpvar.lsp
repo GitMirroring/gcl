@@ -371,117 +371,6 @@
 			    "Making variable ~s reference with barrier ~s" (var-name var) (if ccb 'cb (if clb 'lb)))
 	     (return-from c1vref (list* var (if (eq (var-kind var) 'lexical) (list ccb clb) '(nil nil))))))))
 
-;; (defun c1vref (name &optional setq &aux ccb clb)
-;;   (dolist (var *vars*
-;;                (let ((var (sch-global name)))
-;;                     (unless var
-;;                       (unless (or (si:specialp name) (constantp name)) (undefined-variable name))
-;;                       (setq var (make-var :name name
-;;                                           :kind 'GLOBAL
-;;                                           :loc (add-symbol name)
-;;                                           :type (or (get name 'cmp-type) t)
-;; 					  :ref t));FIXME
-;;                       (push var *undefined-vars*))
-;;                     (list var ccb)))
-;;       (cond ((eq var 'cb) (setq ccb t))
-;;             ((eq var 'lb) (setq clb t))
-;;             ((or (eq (var-name var) name) (eq var name))
-;; 	     (set-var-reffed var)
-;; 	     (keyed-cmpnote (list 'var-ref (var-name var))
-;; 			    "Making variable ~s reference with barrier ~s" (var-name var) (if ccb 'cb (if clb 'lb)))
-;; 	     (let ((nv (if setq var (get-var var))))
-;; 	       (return-from c1vref (if (eq var nv) (list var ccb clb) (c1vref nv setq))))))))
-
-;; (defun c1vref (name &optional setq &aux ccb clb)
-;;   (dolist (var *vars*
-;;                (let ((var (sch-global name)))
-;;                     (unless var
-;;                       (unless (or (si:specialp name) (constantp name)) (undefined-variable name))
-;;                       (setq var (make-var :name name
-;;                                           :kind 'GLOBAL
-;;                                           :loc (add-symbol name)
-;;                                           :type (or (get name 'cmp-type) t)
-;; 					  :ref t));FIXME
-;;                       (push var *undefined-vars*))
-;;                     (list var ccb)))
-;;       (cond ((eq var 'cb) (setq ccb t))
-;;             ((eq var 'lb) (setq clb t))
-;;             ((or (eq (var-name var) name) (eq var name))
-;; 	     (set-var-reffed var)
-;; 	     (keyed-cmpnote (list 'var-ref (var-name var))
-;; 			    "Making variable ~s reference with barrier ~s" (var-name var) (if ccb 'cb (if clb 'lb)))
-;; 	     (return-from c1vref (list (if setq var (get-var var)) ccb clb))))))
-
-;; (defun c1vref (name &aux ccb clb)
-;;   (dolist (var *vars*
-;;                (let ((var (sch-global name)))
-;;                     (unless var
-;;                       (unless (or (si:specialp name) (constantp name)) (undefined-variable name))
-;;                       (setq var (make-var :name name
-;;                                           :kind 'GLOBAL
-;;                                           :loc (add-symbol name)
-;;                                           :type (or (get name 'cmp-type) t)
-;; 					  :ref t));FIXME
-;;                       (push var *undefined-vars*))
-;;                     (list var ccb)))
-;;       (cond ((eq var 'cb) (setq ccb t))
-;;             ((eq var 'lb) (setq clb t))
-;;             ((eq (var-name var) name)
-;; 	     (set-var-reffed var)
-;; 	     (keyed-cmpnote (list 'var-ref (var-name var))
-;; 			    "Making variable ~s reference with barrier ~s" (var-name var) (if ccb 'cb (if clb 'lb)))
-;; 	     (let ((l (list var ccb clb)))
-;; 	       (push l (var-store var))
-;; 	       (return-from c1vref l))))))
-
-;; (defun c1vref (name &aux ccb clb)
-;;   (dolist (var *vars*
-;;                (let ((var (sch-global name)))
-;;                     (unless var
-;;                       (unless (or (si:specialp name) (constantp name)) (undefined-variable name))
-;;                       (setq var (make-var :name name
-;;                                           :kind 'GLOBAL
-;;                                           :loc (add-symbol name)
-;;                                           :type (or (get name 'cmp-type) t)
-;; 					  :ref t));FIXME
-;;                       (push var *undefined-vars*))
-;;                     (list var ccb)))
-;;       (cond ((eq var 'cb) (setq ccb t))
-;;             ((eq var 'lb) (setq clb t))
-;;             ((eq (var-name var) name)
-;; 	     (set-var-reffed var)
-;; 	     (keyed-cmpnote (list 'var-ref (var-name var))
-;; 			    "Making variable ~s reference with barrier ~s" (var-name var) (if ccb 'cb (if clb 'lb)))
-;;              (return-from c1vref (list var ccb clb))))))
-
-;; (defun c1vref (name &optional noref &aux ccb clb inner)
-;;   (dolist (var *vars*
-;;                (let ((var (sch-global name)))
-;;                     (unless var
-;;                       (unless (or (si:specialp name) (constantp name)) (undefined-variable name))
-;;                       (setq var (make-var :name name
-;;                                           :kind 'GLOBAL
-;;                                           :loc (add-symbol name)
-;;                                           :type (or (get name 'cmp-type) t)
-;; 					  :ref t));FIXME
-;;                       (push var *undefined-vars*))
-;;                     (list var ccb)))
-;;       (cond ((eq var 'cb) (setq ccb t inner (or inner 'cb)))
-;;             ((eq var 'lb) (setq clb t inner (or inner 'lb)))
-;;             ((eq (var-name var) name)
-;;              (when (eq (var-ref var) 'IGNORE)
-;; 	       (cmpwarn "The ignored variable ~s is used." name)
-;; 	       (unless noref (setf (var-ref var) t)))
-;;              (cond (ccb 
-;; 		    (ref-inner inner) 
-;; 		    (setf (var-ref-ccb var) t));FIXME think noref
-;;                    (clb 
-;; 		    (when (eq (var-kind var) 'lexical) (setf (var-loc var) 'clb))
-;; 		    (setf (var-ref var) t));FIXME
-;; 		   (t (unless noref (setf (var-ref var) t))
-;; 		      (setf (var-register var) (1+ (var-register var)))))
-;;              (return-from c1vref (list var ccb))))))
-
 (defun c2var-kind (var)
   (when (and (eq (var-kind var) 'LEXICAL)
            (not (var-ref-ccb var))
@@ -491,24 +380,7 @@
 	  ((and (boundp '*c-gc*) *c-gc* 'OBJECT)))))
 
 
-;; (defun c2var-kind (var)
-;;   (if (and (eq (var-kind var) 'LEXICAL)
-;;            (not (var-ref-ccb var))
-;;            (not (eq (var-loc var) 'clb)))
-;;       (if (eq (var-loc var) 'OBJECT)
-;;           'OBJECT
-;;           (let ((type (var-type var)))
-;;                (cond ((car (member type +c-local-var-types+ :test 'type<=)))
-;;                      ((and (boundp '*c-gc*) *c-gc* 'OBJECT))
-;; 		     (t nil))))
-;;       nil)
-;;   )
-
 (defun c2var (vref c1fv stores) (declare (ignore c1fv stores)) (unwind-exit (cons 'var vref) nil 'single-value))
-
-;; (defun c2var (vref c1fv) (declare (ignore c1fv)) (unwind-exit (cons 'var vref) nil 'single-value))
-
-;; (defun c2var (vref) (unwind-exit (cons 'var vref) nil 'single-value))
 
 (defun c2location (loc) (unwind-exit loc nil 'single-value))
 

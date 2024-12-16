@@ -102,51 +102,6 @@
           (t (c1constant-value form t)))))
   (if (eq form '*cmperr-tag*) (c1nil) form))
 
-;; (defun c1expr (form)
-;;   (setq form (catch *cmperr-tag*
-;;     (cond ((symbolp form)
-;;            (cond ((constantp form) 
-;; 		  (let ((val (symbol-value form)))
-;; 		    (or 
-;; 		     (c1constant-value val nil)
-;; 		     `(location ,(make-info :type (object-type val)) (VV ,(add-constant form))))))
-;;                  ((c1var form))))
-;; ;                 ((c1expr-avct (c1var form))))) ;FIXME pcl
-;;           ((consp form)
-;;            (let ((fun (car form)))
-;; 	     (c1expr-avct (cond ((symbolp fun)
-;; 				 (c1symbol-fun form))
-;; 				((and (consp fun) (eq (car fun) 'lambda))
-;; 				 (c1symbol-fun (cons 'funcall form)))
-;; 				((and (consp fun) (eq (car fun) 'si:|#,|))
-;; 				 (cmperr "Sharp-comma-macro was found in a bad place."))
-;; 				(t (cmperr "The function ~s is illegal." fun))))))
-;;           (t (c1constant-value form t)))))
-;;   (if (eq form '*cmperr-tag*) (c1nil) form))
-
-;; (defun c1expr (form)
-;;   (setq form (catch *cmperr-tag*
-;;     (cond ((symbolp form)
-;;            (cond ((constantp form) 
-;; 		  (let ((val (symbol-value form)))
-;; 		    (or 
-;; 		     (c1constant-value val nil)
-;; 		     `(location ,(make-info :type (object-type val)) (VV ,(add-constant form))))))
-;;                  ((c1var form))))
-;;           ((consp form)
-;;            (let* ((fun (car form))
-;; 		  (res (cond ((symbolp fun)
-;; 			      (c1symbol-fun form))
-;; 			     ((and (consp fun) (eq (car fun) 'lambda))
-;; 			      (c1symbol-fun (cons 'funcall form)))
-;; 			     ((and (consp fun) (eq (car fun) 'si:|#,|))
-;; 			      (cmperr "Sharp-comma-macro was found in a bad place."))
-;; 			     (t (cmperr "The function ~s is illegal." fun))))
-;; 		  (atp (atomic-tp (info-type (cadr res)))))
-;; 	     (or (when (ignorable-form res) (atomic-type-constant-value atp)) res)))
-;;           (t (c1constant-value form t)))))
-;;   (if (eq form '*cmperr-tag*) (c1nil) form))
-
 (si::putprop 'si:|#,| 'c1sharp-comma 'c1special)
 (si::putprop 'load-time-value 'c1load-time-value 'c1special)
 
@@ -1457,101 +1412,12 @@
 	       (*src-inline-recursion* (maybe-cons-tagged-sir tagged-sir src env)))
 	  (catch tagged-sir (mi4 fun args la tsrc env inls)))))))
 
-;; (defun mi3 (fun args la fms ttag envl inls &aux (src (under-env (pop envl) (inline-src fun))) (env (car envl)))
-;;   (when (maybe-inline-src fun fms src)
-;;     (let ((sir (cons (sir-name fun) (mapcar (lambda (x) (when x (info-type (cadr x)))) fms))))
-;;       (unless (prev-sir sir)
-;; 	(let* ((tag (tmpsym))
-;; 	       (tsrc (ttl-tag-src src tag))
-;; 	       (*src-inline-recursion* (maybe-cons-sir sir tag ttag src env)))
-;; 	  (catch tag (mi4 fun args la tsrc env inls)))))))
-
-;; (defun mi3 (fun args la fms ttag envl inls &aux (src (under-env (pop envl) (inline-src fun))) (env (car envl)))
-;;   (when (maybe-inline-src fun fms src)
-;;     (let ((sir (cons (sir-name fun) (mapcar (lambda (x) (when x (info-type (cadr x)))) fms))))
-;;       (unless (prev-sir sir)
-;; 	(let* ((tag (tmpsym))
-;; 	       (tsrc (ttl-tag-src src tag))
-;; 	       (*src-inline-recursion* (maybe-cons-sir sir tag ttag src env)))
-;; 	  (with-restore-vars
-;; 	   (prog1 (catch tag (mi4 fun args la tsrc env inls))
-;; 	     (keep-vars))))))))
-
-;; (defun mi3 (fun args la fms ttag envl inls &aux (src (under-env (pop envl) (inline-src fun))) (env (car envl)))
-;;   (when (maybe-inline-src fun fms src)
-;;     (let ((sir (cons (sir-name fun) (mapcar (lambda (x) (when x (info-type (cadr x)))) fms))))
-;;       (if (prev-sir sir)
-;; 	  (let ((tag (sir-tag sir))) (when tag (throw tag nil)))
-;; 	(let* ((tag (tmpsym))
-;; 	       (tsrc (ttl-tag-src src tag))
-;; 	       (*src-inline-recursion* (maybe-cons-sir sir tag ttag src env)))
-;; 	  (with-restore-vars
-;; 	   (prog1 (catch tag (mi4 fun args la tsrc env inls))
-;; 	     (keep-vars))))))))
-
-;; (defun mi3 (fun args la fms ttag envl inls &aux (src (under-env (pop envl) (inline-src fun))) (env (car envl)))
-;;   (when src
-;;     (let ((sir (cons (sir-name fun) (mapcar (lambda (x) (when x (info-type (cadr x)))) fms))))
-;;       (if (prev-sir sir)
-;; 	  (let ((tag (sir-tag sir))) (when tag (throw tag nil)))
-;; 	(let* ((tag (tmpsym))
-;; 	       (tsrc (ttl-tag-src src tag))
-;; 	       (*src-inline-recursion* (maybe-cons-sir sir tag ttag src env)))
-;; 	  (with-restore-vars
-;; 	   (prog1 (catch tag (mi4 fun args la tsrc env inls))
-;; 	     (keep-vars))))))))
-
-;; (defun mi3 (fun args la fms ttag envl &aux (src (under-env (pop envl) (inline-src fun))) (env (car envl)))
-;;   (when src
-;;     (let ((sir (cons (sir-name fun) (mapcar (lambda (x) (when x (info-type (cadr x)))) fms))))
-;;       (if (prev-sir sir)
-;; 	  (let ((tag (sir-tag sir))) (when tag (throw tag nil)))
-;; 	(let* ((tag (tmpsym))
-;; 	       (tsrc (ttl-tag-src src tag))
-;; 	       (*src-inline-recursion* (maybe-cons-sir sir tag ttag src env)))
-;; 	  (with-restore-vars
-;; 	   (prog1 (catch tag (mi4 fun args la tsrc env))
-;; 	     (keep-vars))))))))
-
-;; (defun mi3 (fun args la fms ttag envl &aux  (src (under-env (pop envl) (inline-src fun))) (env (car envl)))
-;;   (when src
-;;     (let ((sir (cons (if (symbolp fun) fun (tmpsym))
-;; 		     (mapcar (lambda (x) (when x (info-type (cadr x)))) fms))))
-;;       (if (prev-sir sir)
-;; 	  (let ((tag (sir-tag sir))) (when tag (throw tag nil)))
-;; 	(let* ((tag (tmpsym))
-;; 	       (tsrc (ttl-tag-src src tag))
-;; 	       (*src-inline-recursion* (maybe-cons-sir sir tag ttag src env)))
-;; 	  (with-restore-vars
-;; 	   (prog1 (catch tag (mi4 fun args la tsrc env))
-;; 	     (keep-vars))))))))
-
-;; (defun mod-env (ce e l);FIXME
-;;   (if ce (append e l) l))
-
-;; (defun mod-env (ce e l);FIXME
-;;   (if ce e l))
 
 (defun mod-env (e l)
   (setq *lexical-env-mask* (nconc (remove-if (lambda (x) (or (symbolp x) (is-fun-var x))) (ldiff l e)) *lexical-env-mask*));FIXME
   l)
 
 
-;; (defun mod-env (ce e l);FIXME
-;;   (if ce (append (remove-if-not (lambda (x) (or (symbolp x) (is-fun-var x))) (ldiff l e)) e) l))
-
-;; (defun mod-env (ce e l);FIXME
-;;   (if ce (append (remove-if (lambda (x) (or (symbolp x) (is-fun-var x))) e) l) l))
-
-
-;; (defun mod-env (ce e l);FIXME
-;;   (let* ((r (if ce (append (remove-if-not (lambda (x) (or (symbolp x) (is-fun-var x))) (ldiff l e)) e) l))
-;; 	 ;; (vp (member-if 'var-p l))
-;; 	 ;; (ol (when vp (mapcar (lambda (x) (cond ((var-p x) (var-name x)) (x))) l)))
-;; 	 ;; (or (when vp (mapcar (lambda (x) (cond ((var-p x) (var-name x)) (x))) r)))
-;; 	 ) 
-;; ;    (unless (equal or ol) (print ol) (print or))
-;;     r))
 
 (defvar *lexical-env-mask* nil)
 
@@ -1564,29 +1430,6 @@
 	  (*funs*   (mod-env (pop ,e) *funs*)))
      ,@forms))
 
-;; (defmacro under-env (env &rest forms &aux (e (tmpsym)))
-;;   `(let* ((,e ,env)
-;; 	  (*vars*   (mod-env ,e (pop ,e) *vars*))
-;; 	  (*blocks* (mod-env ,e (pop ,e) *blocks*))
-;; 	  (*tags*   (mod-env ,e (pop ,e) *tags*))
-;; 	  (*funs*   (mod-env ,e (pop ,e) *funs*)))
-;;      ,@forms))
-
-;; (defmacro under-env (env form &aux (e (tmpsym)))
-;;   `(let* ((,e ,env)
-;; 	  (*vars*   (mod-env ,e (pop ,e) *vars*))
-;; 	  (*blocks* (mod-env ,e (pop ,e) *blocks*))
-;; 	  (*tags*   (mod-env ,e (pop ,e) *tags*))
-;; 	  (*funs*   (mod-env ,e (pop ,e) *funs*)))
-;;      ,form))
-
-;; (defmacro under-env (env form &aux (e (tmpsym)))
-;;   `(let* ((,e ,env)
-;; 	  (*vars* (if ,e (pop ,e) *vars*))
-;; 	  (*blocks* (if ,e (pop ,e) *blocks*))
-;; 	  (*tags* (if ,e (pop ,e) *tags*))
-;; 	  (*funs* (if ,e (pop ,e) *funs*)))
-;;      ,form))
 
 (defun barrier-cross-p (fun &aux (f (local-fun-p fun)))
   (not (tailp (member-if-not 'fun-p *funs*)
@@ -1691,67 +1534,6 @@
 	((or (endp f) (endp a)) nargs)
 	(maybe-reverse-type-prop (car a) (car f)))))
 
-;; (defun make-c1forms (fn args last info)
-;;   (let* ((at (get-arg-types fn))
-;; 	 (nargs (c1args args info))
-;; 	 (c1l (when last (c1expr last)))
-;; 	 (nargs (if (when last (not (type>= #tnull (info-type (cadr c1l)))))
-;; 		    (progn (add-info info (cadr c1l)) (nconc nargs (list c1l)))
-;; 		  nargs))
-;; 	 (nat (mapcar (lambda (x) (info-type (cadr x))) nargs))
-;; 	 (ss (gethash fn *sigs*));FIXME?
-;; 	 (at (if (and ss (not (car ss))) nat at)))
-
-;;     (mapc (lambda (x) (setf (info-type (cadr x)) (coerce-to-one-value (info-type (cadr x))))) nargs)
-
-;;     (unless (or last (local-fun-p fn) (eq fn (cadr *current-form*)));FIXME
-;;       (when (do (p ;n
-;; 		 (a at (if (eq (car a) '*) a (cdr a)))
-;; 		 (r args (cdr r))
-;; 		 (f nargs (cdr f)))
-;; 		((or p (endp f) (endp a))
-;; 		 (or p f (and a (not (eq (car a) '*))))) ; (when (setq nargs (nreverse n)) nil)))
-;; 		(check-form-type (car a) (car f) (car r))
-;; 					;	      (push (and-form-type (or (car a) '*) (car f) (car r)) n)
-;; 		(setq p (when (info-type (cadar f)) (null (info-type (cadar f))))))
-;; 	(cmpwarn "inlining of ~a prevented due to argument type mismatch: ~a ~a~%" 
-;; 		 fn at nat)
-;; 	(setf (info-type info) nil)))
-
-;;     (do ((a at (if (eq '* (car a)) a (cdr a)))
-;; 	 (r args (cdr r))
-;; 	 (f nargs (cdr f)))
-;; 	((or (endp f) (endp a)) nargs)
-;; 	(maybe-reverse-type-prop (car a) (car f)))))
-
-;; (defun make-c1forms (fn args last info &aux (*provisional-inline* t))
-;;   (let* ((at (get-arg-types fn))
-;; 	 (nargs (c1args (append args (when last (list last))) info))
-;; 	 (nat (mapcar (lambda (x) (info-type (cadr x))) nargs))
-;; 	 (ss (gethash fn *sigs*));FIXME?
-;; 	 (at (if (and ss (not (car ss))) nat at)))
-
-;;     (mapc (lambda (x) (setf (info-type (cadr x)) (coerce-to-one-value (info-type (cadr x))))) nargs)
-
-;;     (unless (or (local-fun-p fn) (eq fn (cadr *current-form*)));FIXME
-;;       (when (do (p ;n
-;; 		 (a at (if (eq (car a) '*) a (cdr a)))
-;; 		 (r args (cdr r))
-;; 		 (f nargs (cdr f)))
-;; 		((or p (endp f) (endp a))
-;; 		 (or p f (and a (not (eq (car a) '*))))) ; (when (setq nargs (nreverse n)) nil)))
-;; 		(check-form-type (car a) (car f) (car r))
-;; 					;	      (push (and-form-type (or (car a) '*) (car f) (car r)) n)
-;; 		(setq p (when (info-type (cadar f)) (null (info-type (cadar f))))))
-;; 	(cmpwarn "inlining of ~a prevented due to argument type mismatch: ~a ~a~%" 
-;; 		 fn at nat)
-;; 	(setf (info-type info) nil)))
-
-;;     (do ((a at (if (eq '* (car a)) a (cdr a)))
-;; 	 (r args (cdr r))
-;; 	 (f nargs (cdr f)))
-;; 	((or (endp f) (endp a)) nargs)
-;; 	(maybe-reverse-type-prop (car a) (car f)))))
 
 (defun make-ordinary (fn &aux *c1exit*);FIXME *c1exit*
   (let* ((s (sgen "ORDS"))(g (sgen "ORDG"))
@@ -1991,80 +1773,10 @@
       (prog1 (mi1c fun args last i1 ff)
 	(setf (info-type info) (info-type i1)))))
 
-;; (defun mi1a (fun args last info &optional ff &aux (*in-inline* t))
-
-;;   (let* ((otp (info-type info))
-;; 	 (fms (make-c1forms fun args last info))
-;; 	 (last (when (and last (nth (length args) fms)) last))
-;; 	 (tp (type-from-args fun fms last info))
-;; 	 (inl (when (or tp (eq otp tp)) (mi2 fun args last fms (ff-env (or ff fun))))))
-;;     (or inl (mi5 (or (when (symbolp fun) fun) ff) info fms last))))
-
-;; (defun mi1a (fun args last info &aux (*in-inline* t))
-
-;;   (let* ((af (member fun '(apply funcall)))
-;; 	 (ff (when af (c1arg (pop args) info)))
-;; 	 (fun (if ff (coerce-ff ff) fun));FIXME, e.g. when funcall
-;; 	 (otp (info-type info))
-;; 	 (fms (make-c1forms fun args last info))
-;; 	 (last (when (and last (nth (length args) fms)) last))
-;; 	 (tp (type-from-args fun fms last info))
-;; 	 (inl (when (or tp (eq otp tp)) (mi2 fun args last fms (ff-env (or ff fun))))))
-;;     (or inl (mi5 (or (when (symbolp fun) fun) ff) info fms last))))
-
-;; (defun mi1a (fun args last info &aux (*in-inline* t))
-
-;;   (let* ((af (member fun '(apply funcall)))
-;; 	 (ff (when af (c1expr (pop args))))
-;; 	 (fun (if ff (coerce-ff ff) fun));FIXME, e.g. when funcall
-;; 	 (otp (info-type info))
-;; 	 (fms (make-c1forms fun args last info))
-;; 	 (last (when (and last (nth (length args) fms)) last))
-;; 	 (tp (type-from-args fun fms last info))
-;; 	 (inl (when (or tp (eq otp tp)) (mi2 fun args last fms (ff-env (or ff fun))))))
-;;     (or inl (mi5 (or (when (symbolp fun) fun) ff) info fms last))))
-
-;; (defun mi1a (fun args last info &aux (*in-inline* t) *provisional-inline*)
-
-;;   (let* ((fms (make-c1forms fun args last info))
-;; 	 (af (member fun '(apply funcall)))
-;; 	 (args (if af (cdr args) args))
-;; 	 (ff (when af (pop fms)))
-;; 	 (fun (if ff (coerce-ff ff) fun))
-;; 	 (tp (type-from-args fun fms last info))
-;; 	 (inl (when tp (mi2 fun args last fms (ff-env ff)))))
-;;     (or (uui inl) (mi5 (or (when (symbolp fun) fun) (uu ff)) info (uu fms) last))))
-
-;; (defun mi1a (fun args last info &aux (*in-inline* t))
-
-;;   (let* ((fms (make-c1forms fun args last info))
-;; 	 (af (member fun '(apply funcall)))
-;; 	 (args (if af (cdr args) args))
-;; 	 (ff (when af (pop fms)))
-;; 	 (fun (if ff (coerce-ff ff) fun))
-;; 	 (tp (type-from-args fun fms last info))
-;; 	 (inl (when tp (mi2 fun args last fms (ff-env ff)))))
-;;     (uu (or inl (mi5 (or (when (symbolp fun) fun) ff) info fms last)))))
-
-
-
-;; (defun unprovfn (f &optional b fun &aux (args (pop f)) (env (caar f)))
-;;   (under-env env (c1function args nil b fun)))
-;; (defun unfoo (f)
-;;   (c1function (caddr f) nil (cadddr f)))
 
 (defun current-env nil (list *lexical-env-mask* *vars* *blocks* *tags* *funs*))
 
 
-;; (defun uu (f)
-;;   (cond ((atom f) f)
-;; 	((eq (car f) 'provfn) (unprovfn (cddr f)))
-;; 	((setf (car f) (uu (car f)) (cdr f) (uu (cdr f)) f f))))
-;; (defun uu (f)
-;;   (cond ((atom f) f)
-;; 	((eq (car f) 'foo) (unfoo f))
-;; 	((let* ((a (car f))(d (cdr f)) (ua (uu a))(ud (uu d)))
-;; 	   (if (and (eq a ua) (eq d ud)) f (cons ua ud))))))
 
 (defun mi1 (fn args &optional last ff)
   (let* ((tp (get-return-type fn))
@@ -2080,35 +1792,6 @@
 	(setf (info-type (cadr res)) (type-and t1 (if (type= t1 t2) tp t2)))))
     res))
 
-;; (defun mi1 (fn args &optional last)
-;;   (let* ((tp (get-return-type fn))
-;; 	 (sp (if (get fn 'no-sp-change) 0 1))
-;; 	 (info (make-info :type tp :sp-change sp))
-;;  	 (res (mi1a fn args last info)))
-;;     (when tp 
-;;       (let ((t1 (info-type (cadr res)))(t2 (info-type info)))
-;; 	(when (exit-to-fmla-p)
-;; 	  (labels ((tb (tp) (type-or1 (when (type-and #tnull tp) #tnull)
-;; 				      (when (type-and #t(not null) tp) #t(member t)))))
-;; 		  (setq t1 (tb t1) t2 (tb t2))))
-;; 	(setf (info-type (cadr res)) (type-and t1 t2))))
-;;     res))
-
-;; (defun mi1 (fn args &optional last)
-;;   (let* ((tp (get-return-type fn))
-;; 	 (sp (if (get fn 'no-sp-change) 0 1))
-;; 	 (info (make-info :type tp :sp-change sp))
-;;  	 (res (mi1a fn args last info)))
-;;     (when tp (setf (info-type (cadr res)) (type-and (info-type info) (info-type (cadr res)))));FIXME
-;;     res))
-
-;; (defun mi1 (fn args &optional last)
-;;   (let* ((tp (get-return-type fn))
-;; 	 (sp (if (get fn 'no-sp-change) 0 1))
-;; 	 (info (make-info :type tp :sp-change sp))
-;; 	 (res (mi1a fn args last info)))
-;;     (setf (info-type (cadr res)) (type-and (info-type info) (info-type (cadr res))))
-;;     res))
 
 (defun local-fun-p (fname)
   (typecase fname

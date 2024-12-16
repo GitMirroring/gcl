@@ -251,82 +251,7 @@
     (unwind-exit in nil (cons 'values (length forms)))
     (close-inline-blocks)))
 
-;; (defun c2values (forms)
-;;   (if *mv-var*
-;;     (let* ((*inline-blocks* 0)
-;; 	   (types (mapcar (lambda (x) (let ((x (coerce-to-one-value (info-type (cadr x))))) (if (type>= #tboolean x) t x))) forms))
-;; 	   (i 0)
-;; 	   (s (mapcar (lambda (x &aux (x (when x (write-to-string (incf i))))) (strcat "@" x "(#" x ")@")) (cdr forms)))
-;; 	   (s (strcat "({" (apply 'strcat s) "#0;})"))
-;; 	   (s (cons s (mapcar 'inline-type (cdr types))))
-;; 	   (in (list (inline-type (car types)) (flags) s (inline-args forms types))))
-;;       (unwind-exit in nil (cons 'values (length forms)))
-;;       (close-inline-blocks))
-;;    (prog1 (c2expr (or (car forms) (c1nil)))
-;; 	  (let ((*value-to-go* 'trash))
-;; 	    (dolist (f (cdr forms)) (c2expr f))))))
 
-;; (defun c2values (forms)
-;;   (if *mv-var*
-;;     (let* ((*inline-blocks* 0)
-;; 	   (types (mapcar (lambda (x) (let ((x (info-type (cadr x)))) (if (type>= #tboolean x) t x))) forms))
-;; 	   (i 0)
-;; 	   (s (mapcar (lambda (x &aux (x (when x (write-to-string (incf i))))) (strcat "@" x "(#" x ")@")) (cdr forms)))
-;; 	   (s (strcat "({" (apply 'strcat s) "#0;})"))
-;; 	   (s (cons s (mapcar 'inline-type (cdr types))))
-;; 	   (in (list (inline-type (car types)) (flags) s (inline-args forms types))))
-;;       (unwind-exit in nil (cons 'values (length forms)))
-;;       (close-inline-blocks))
-;;    (c2expr (car forms))))
-
-;; (defun c2values (forms &aux (base *vs*) (*vs* *vs*))
-;;   (when (and (eq *value-to-go* 'return-object)
-;; 	     (cdr forms)
-;; 	     (consp *current-form*)
-;; 	     (eq 'defun (car *current-form*))
-;; 	     (single-type-p (get-return-type (cadr *current-form*))))
-;;     (cmpwarn "Trying to return multiple values. ~%;But ~a was proclaimed to have single value.~%;Only first one will assured."
-;; 	     (cadr *current-form*)))
-  
-;;   (cond 
-;;    (*mv-var*
-;;     (let* ((*inline-blocks* 0)
-;; 	   (types (mapcar (lambda (x) (let ((x (info-type (cadr x)))) (if (type>= #tboolean x) t x))) forms))
-;; 	   (in (list (inline-type (car types))
-;; 		     (flags)
-;; 		     (list* (si::string-concatenate 
-;; 			     "({"
-;; 			     (apply 'si::string-concatenate
-;; 				    (let ((i 0)) 
-;; 				      (mapcan (lambda (x) (declare (ignore x))
-;; 						(let ((s (write-to-string (incf i))))
-;; 						  (list (si::string-concatenate "@" s "(#" s ")@")))) (cdr forms))))
-;; 			     "#0;})")
-;; 			    (mapcar 'inline-type (cdr types)))
-;; 		    (inline-args forms types))))
-;;       (unwind-exit in nil (cons 'values (length forms)))
-;;       (close-inline-blocks)
-;;       (return-from c2values nil)))
-;;    ((null forms)
-;;     (wt-nl "vs_base=vs_top=base+" base ";")
-;;     (base-used)
-;;     (wt-nl "vs_base[0]=Cnil;"))
-;;    (t
-;;     (dolist** (form forms)
-;; 	      (let ((*value-to-go* (list 'vs (vs-push)))) (c2expr* form)));FIXME
-;;     (wt-nl "vs_top=(vs_base=base+" base ")+" (- *vs* base) ";")
-;;     (base-used)))
-;;   (unwind-exit 'fun-val nil (cons 'values (length forms))))
-
-
-(defun multiple-value-check (vrefs form)
-  (and (cdr vrefs)
-       (eq (car form) 'call-global)
-       (let ((fname (third form)))
-	 (cond ((and (symbolp fname)
-		     (single-type-p (get-return-type fname)))
-		(cmpwarn "~A was proclaimed to have only one return value. ~%;But you appear to want multiple values." fname))))))
-		
 (defun c1multiple-value-bind (args &aux (info (make-info))
                                    (vars nil) (vnames nil) init-form
                                    ss is ts body other-decls
@@ -397,8 +322,6 @@
 				   (*unwind-exit* *unwind-exit*)
 				   (*vs* *vs*) (*clink* *clink*) (*ccb-vs* *ccb-vs*)
 				   top-data lbs)
-
-  (multiple-value-check vars init-form)
 
   (let* ((mv (make-var :type #tfixnum :kind 'lexical :loc (cs-push #tfixnum t)))
 	 (nv (1- (length vars)))

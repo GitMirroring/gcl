@@ -42,65 +42,6 @@
     (add-info info (cadr body))
     (list 'catch info tag body)))
 
-;; (defun c1catch (args &aux (info (make-info :type #t* :sp-change 1)) tag)
-;;   (incf *setjmps*)
-;;   (when (endp args) (too-few-args 'catch 1 0))
-;;   (setq tag (c1arg (car args) info))
-;;   (let (vl (nt (tmpsym)))
-;;     (dolist (v *vars*) (when (var-p v) 
-;; 			 (push (list v (var-mt v) (var-tag v)) vl)
-;; 			 (setf (var-tag v) nt (var-mt v) (var-type v))))
-;;     (setq args
-;; 	  (unwind-protect
-;; 	      (do (nargs)
-;; 		  ((not 
-;; 		    (let* ((*catch-tags* (cons nt *catch-tags*))
-;; 			   (nv (with-restore-vars
-;; 				(catch nt
-;; 				  (setq nargs (c1progn (cdr args))) nil))))
-;; 		      (when nv
-;; 			(do nil ((not (setq nv (pop *tvc*))) t) (setf (var-type nv) (var-mt nv))))))
-;; 		   nargs))
-;; 	    (dolist (v vl) 
-;; 	      (when (caddr v)
-;; 		(unless (type>= (cadr v) (var-mt (car v)))
-;; 		  (pushnew (car v) *tvc*)))
-;; 	      (setf (var-mt (car v)) (type-or1 (var-mt (car v)) (cadr v))
-;; 		    (var-tag (car v)) (caddr v))))))
-
-;;   (add-info info (cadr args))
-;;   (list 'catch info tag args))
-
-;; (defun c1catch (args &aux (info (make-info :type #t* :sp-change 1)) tag)
-;;   (incf *setjmps*)
-;;   (when (endp args) (too-few-args 'catch 1 0))
-;;   (setq tag (c1expr (car args)))
-;;   (add-info info (cadr tag))
-;;   (let (vl (nt (tmpsym)))
-;;     (dolist (v *vars*) (when (var-p v) 
-;; 			 (push (list v (var-mt v) (var-tag v)) vl)
-;; 			 (setf (var-tag v) nt (var-mt v) (var-type v))))
-;;     (setq args
-;; 	  (unwind-protect
-;; 	      (do (nargs)
-;; 		  ((not 
-;; 		    (let* ((*catch-tags* (cons nt *catch-tags*))
-;; 			   (nv (with-restore-vars
-;; 				(catch nt
-;; 				  (setq nargs (c1progn (cdr args))) nil))))
-;; 		      (when nv
-;; 			(do nil ((not (setq nv (pop *tvc*))) t) (setf (var-type nv) (var-mt nv))))))
-;; 		   nargs))
-;; 	    (dolist (v vl) 
-;; 	      (when (caddr v)
-;; 		(unless (type>= (cadr v) (var-mt (car v)))
-;; 		  (pushnew (car v) *tvc*)))
-;; 	      (setf (var-mt (car v)) (type-or1 (var-mt (car v)) (cadr v))
-;; 		    (var-tag (car v)) (caddr v))))))
-
-;;   (add-info info (cadr args))
-;;   (list 'catch info tag args))
-
 (si:putprop 'push-catch-frame 'set-push-catch-frame 'set-loc)
 
 (defun c2catch (tag body &aux (*vs* *vs*))

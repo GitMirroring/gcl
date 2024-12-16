@@ -1169,8 +1169,3 @@
 (defun c-cast (aet)
   (or (cdr (assoc aet +c-type-string-alist+)) (baboon)))
 
-(defun default-init (type)
-  (let ((type (promoted-c-type type)))
-    (when (member type +c-local-var-types+)
-      (cmpwarn "The default value of NIL is not ~S." type)))
-  (c1nil))

@@ -198,9 +198,7 @@
        ((eq ue 'frame) (wt-nl "frs_pop();"))
        ((eq ue 'tail-recursion-mark)
         (cond ((eq exit 'tail-recursion-mark) (unwind-bds bds-cvar bds-bind)
-                                              (return))
-;              (t (baboon))
-)
+                                              (return)))
         ;;; Never reached
         )
        ((eq ue 'jump))
