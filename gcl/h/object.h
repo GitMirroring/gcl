@@ -472,7 +472,7 @@ ufmax(ufixnum a,ufixnum b) {
 }
 
 INLINE int
-emsg(const char *s,...) {
+oemsg(int fd,const char *s,...) {
   va_list args;
   ufixnum n=0;
   void *v=NULL;
@@ -483,8 +483,11 @@ emsg(const char *s,...) {
   va_start(args,s);
   vsnprintf(v,n,s,args);
   va_end(args);
-  return write(2,v,n-1) ? n : -1;
+  return write(fd,v,n-1) ? n : -1;
 }
+
+#define omsg(a_...) oemsg(1,a_)
+#define emsg(a_...) oemsg(2,a_)
 
 EXTER char *heap_end;			/*  heap end  */
 EXTER char *core_end;			/*  core end  */

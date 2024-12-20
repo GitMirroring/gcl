@@ -1123,12 +1123,12 @@ GBC(enum type t) {
       gc_time=0;
 
 #ifdef SGC
-    emsg("[%s for %ld %s pages..",
+    omsg("[%s for %ld %s pages..",
 	 (sgc_enabled ? "SGC" : "GC"),
 	 (sgc_enabled ? sgc_count_type(t) : tm_of(t)->tm_npage),
 	 (tm_table[(int)t].tm_name)+1);
 #else
-    emsg("[%s for %ld %s pages..",
+    omsg("[%s for %ld %s pages..",
 	 ("GC"),
 	 (tm_of(t)->tm_npage),
 	 (tm_table[(int)t].tm_name)+1);
@@ -1254,9 +1254,9 @@ GBC(enum type t) {
   if (sSAnotify_gbcA->s.s_dbind != Cnil) {
     
     if (gc_recursive)
-      emsg("(T=...).GC finished]\n");
+      omsg("(T=...).GC finished]\n");
     else
-      emsg("(T=%d).GC finished]\n",gc_start);
+      omsg("(T=%d).GC finished]\n",gc_start);
 
   }
   
