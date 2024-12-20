@@ -132,6 +132,12 @@
      i a b))
   (a (b c)) 2 1 2)
 
+(deftest macro-function.16
+    (progn (defmacro f nil nil)
+	   (prog1 (macrolet ((m (&environment env) (macro-function 'f env))) (macrolet ((f nil nil)) (flet ((f nil nil)) (m))))
+	     (fmakunbound 'f)))
+  nil)
+
 
 
 ;;; Error tests
