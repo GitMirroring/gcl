@@ -35,7 +35,7 @@
   (defmacro ?cons (f x &aux (s (sgen "?CONS"))) `(let ((,s ,x)) (if (cdr ,s) (cons ,f ,s) (car ,s))))
   (defmacro ?list (x &aux (s (sgen "?LIST"))) `(let ((,s ,x)) (when ,s (list ,s))))
   (defmacro zcollect (v r rp np &aux (s (sgen "ZCOLLECT")))
-    `(let ((,s ,v)) (setf rp (if rp (rplacd rp (list ,s)) (setq r ,s)) rp np)))
+    `(let ((,s ,v)) (setf ,rp (if ,rp (rplacd ,rp (list ,s)) (setq ,r ,s)) ,rp ,np)))
   (defmacro ?let (k kf r) `(let ((r ,r)) (if (eq ,k ,kf) r `(let ((,,k ,,kf)) (declare (ignorable ,,k)) ,r))))
   (defmacro ?key (x &aux (s (sgen "?KEY"))) `(if (or (constantp ,x) (symbolp ,x)) ,x ',s)))
 
