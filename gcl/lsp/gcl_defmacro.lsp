@@ -234,6 +234,7 @@
      (when nap
        (case kk
 	     ((nil &optional) (unless n (bind s +kev+ (let ((q (extra (na s)))) (if (eq nap t) q `(when ,nap ,q))))))
+	     (&allow-other-keys (bind s +kev+ nap))
 	     (&key
 	      (unless aok
 		(let ((aop (tsym)))
