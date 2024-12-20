@@ -341,7 +341,7 @@
 (defun update-sdata-included (name &aux r (i (sdata-includes (get name 's-data))))
   (when i
     (let ((to (cmp-norm-tp `(and ,(sdata-name i) (not (or ,@(sdata-included i))))))
-	  (tn (cmp-norm-tp name))(ntn (cmp-norm-tp `(not ,name))))
+	  (tn (cmp-norm-tp name)))
       (labels ((find-updates (x &aux (tp (car x)))
 		 (when (unless (tp<= #tstructure tp) (tp-and #tstructure tp))
 		   (let ((ntp (if (tp-and to tp) (tp-or tn tp) tp)));FIXME negative
@@ -353,6 +353,7 @@
 	(mapl #'find-updates (gethash (tsrch #tstructure) *uniq-tp*));FIXME more systematic
 	(mapl #'find-updates (gethash t *uniq-tp*))
 	(maphash (lambda (x y)
+		   (declare (ignore y))
 		   (mapl #'update-sig (car x))
 		   (if (cmpt (cadr x)) (mapl #'update-sig (cdadr x)) (update-sig (cdr x))))
 		 *uniq-sig*)))
@@ -674,12 +675,13 @@
 			      (vector `(copy-seq x)))))))
 	 ,@(mapcar (lambda (y) 
 		     (let* ((sn (pop y))
-			   (nm (if no-conc sn
-				 (intern (si:string-concatenate (string conc-name) (string sn)))))
-			   (di (pop y))
-			   (st (pop y))
-			   (ro (pop y))
-			   (offset (pop y)))
+			    (nm (if no-conc sn
+				    (intern (si:string-concatenate (string conc-name) (string sn)))))
+			    (di (pop y))
+			    (st (pop y))
+			    (ro (pop y))
+			    (offset (pop y)))
+		       (declare (ignore di ro))
 		       `(defun ,nm (x)
 			   (declare (optimize (safety 2)))
 			   (check-type x ,ctp)

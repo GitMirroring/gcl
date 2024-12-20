@@ -339,7 +339,7 @@
        (do ((,var 0 (1+ ,var)))
 	   ((>= ,var ,m)
 	    (when (> ,s most-positive-fixnum)
-	      (let ((,var ,var)) ,@body)
+	      (let ((,var ,var)) (declare (ignorable ,var)) ,@body);FIXME?
 	      (do ((,var (1+ most-positive-fixnum) (1+ ,var)))((>= ,var ,s)) ,@body))
 	    ,val)
 	 ,@body))))

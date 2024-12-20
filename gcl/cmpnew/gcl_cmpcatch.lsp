@@ -29,9 +29,8 @@
 (si:putprop 'throw 'c1throw 'c1special)
 (si:putprop 'throw 'c2throw 'c2)
 
-(defun c1catch (args &aux (info (make-info :type #t* :flags (iflags sp-change volatile))) tag)
+(defun c1catch (args &aux (info (make-info :type #t* :flags (iflags sp-change volatile))))
   (when (endp args) (too-few-args 'catch 1 0))
-  (setq tag (c1arg (car args) info))
   (let* ((tag (c1arg (pop args) info))
 	 (in (mch))
 	 (body (unwind-protect (c1progn args) 

@@ -135,6 +135,7 @@
 	l))
 
 (defun mch-z (z i &aux (f (cdr (assoc z *ft*))))
+  (declare (ignore i));FIXME
   (if f (mch-set z (or-mch f)) (mch)));FIXME ccb-ch (if i (or-mch f) f)
 ;; The right way to do this is to throw ccb assignments via tag-throw on go into something like *ft*
 

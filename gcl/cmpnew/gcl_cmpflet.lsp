@@ -98,13 +98,14 @@
 				      (var-name v) (cmp-unnorm-tp (var-type v)) (cmp-unnorm-tp tp))
 		       (setf (var-type v) tp (var-store v) st))
 		     (ldiff-nf *restore-vars* ,rv))))
-	     (prog1
-		 (let (*restore-vars* (*restore-vars-env* *vars*))
-		   (unwind-protect (progn ,@body) (pop-restore-vars)))
-	       (mapc (lambda (l)
-		       (when (member (car l) *restore-vars-env*)
-			 (pushnew l *restore-vars* :key 'car)))
-		     ,rv)))))
+       (declare (ignorable #'keep-vars))
+       (prog1
+	   (let (*restore-vars* (*restore-vars-env* *vars*))
+	     (unwind-protect (progn ,@body) (pop-restore-vars)))
+	 (mapc (lambda (l)
+		 (when (member (car l) *restore-vars-env*)
+		   (pushnew l *restore-vars* :key 'car)))
+	       ,rv)))))
 
 
 (defun ref-environment (&aux inner)
@@ -160,7 +161,7 @@
 (defun ref-funs (form funs)
   (ref-obs form funs 
 	   (lambda (x) (setf (fun-ref-ccb x) t))
-	   (lambda (x))
+	   (lambda (x) (declare (ignore x)))
 	   (lambda (x) (setf (fun-ref x) t))))
 
 (defun effective-safety-src (src &aux (n (pop src))(ll (pop src)))

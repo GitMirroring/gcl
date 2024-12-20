@@ -109,6 +109,7 @@
 				,ql ,(if inh `(cons ,p (package-use-list ,p)) p))
 			  (next-var))))
 	 (,name nil (let ((f (next-var))) (values f (car f) ,a ,p))))
+	 (declare (ignorable #'inh-match))
 	,@body))))
 
 ;; (defmacro with-package-iterator ((name packlist key &rest keys) &rest body

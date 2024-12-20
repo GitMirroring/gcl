@@ -36,13 +36,14 @@
 
 (defun msub (a x) (if a (msub (cdr a) (substitute (caar a) (cdar a) x)) x))
 
-(defconstant +glob-to-regexp-alist+ (list (cons #v"{[^}]*}" (lambda (x y) (msub '((#\| . #\,)(#\( . #\{)(#\) . #\})) x)))
+(defconstant +glob-to-regexp-alist+ (list (cons #v"{[^}]*}" (lambda (x y) (declare (ignore y)) (msub '((#\| . #\,)(#\( . #\{)(#\) . #\})) x)))
 					  (cons #v"\\[[^\\]*\\]"
 						(lambda (x y)
+						  (declare (ignore y))
 						  (string-concatenate "(" (substitute #\^ #\! (subseq x 0 2)) (subseq x 2) ")")))
-					  (cons #v"\\*" (lambda (x y) (if (plusp (length y)) (string-concatenate "([^" y "]*)") "(.*)")))
-					  (cons #v"\\?" (lambda (x y) (if (plusp (length y)) (string-concatenate "([^" y "])") "(.)")))
-					  (cons #v"\\." (lambda (x y) "\\."))))
+					  (cons #v"\\*" (lambda (x y) (declare (ignore x)) (if (plusp (length y)) (string-concatenate "([^" y "]*)") "(.*)")))
+					  (cons #v"\\?" (lambda (x y) (declare (ignore x)) (if (plusp (length y)) (string-concatenate "([^" y "])") "(.)")))
+					  (cons #v"\\." (lambda (x y) (declare (ignore x y))"\\."))))
 
 (defconstant +physical-pathname-defaults+ '(("" "" "" "")
 					    ("" "" "" "")

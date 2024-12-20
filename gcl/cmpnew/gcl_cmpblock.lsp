@@ -92,7 +92,7 @@
     (when (or (blk-ref-ccb blk) (blk-ref-clb blk))
       (set-volatile info))
     (when (info-type info)
-      (mapc (lambda (x &aux (y x)(v (pop x))(tp (pop x))(st (pop x))(m (car x))
+      (mapc (lambda (x &aux (v (pop x))(tp (pop x))(st (pop x))(m (car x))
 			 (tp (type-and tp (var-dt v))));FIXME, unnecessary?
 	      (unless (and (type= tp (var-type v))
 			   (subsetp st (var-store v)) (subsetp (var-store v) st)

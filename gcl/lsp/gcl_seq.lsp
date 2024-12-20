@@ -180,9 +180,11 @@
   (unless (member rs seqs) (when fp (setf (fill-pointer rs) lp)))
   (block exit
 	 (apply 'map nil
-		(lambda (x &rest r) 
+		(lambda (x &rest r)
+		  (declare (ignore x))
 		  (when (if lp (= j lp) (endp h)) (return-from exit))
 		  (let ((tmp (apply g r))) 
-		    (if lp (setf (aref rs j) tmp j (1+ j)) (setf (car h) tmp h (cdr h))))) rs seqs))
+		    (if lp (setf (aref rs j) tmp j (1+ j)) (setf (car h) tmp h (cdr h)))))
+		rs seqs))
   (when fp (setf (fill-pointer rs) j))
   rs)

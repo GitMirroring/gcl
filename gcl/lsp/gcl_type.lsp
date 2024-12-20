@@ -675,7 +675,7 @@
 	 (rs +rs+))
     (declare (special rs));FIXME to prevent unroll of +rs+
     (or (caar (member-if (lambda (x)
-			   (let* ((f (pop x))
+			   (let* ((x (cdr x))
 				  (z (mapcan
 				      (lambda (y)
 					(lremove-duplicates

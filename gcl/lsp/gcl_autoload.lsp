@@ -108,9 +108,9 @@
 
 ;;; C Interface.
 
-(defmacro Clines (&rest r) nil)
-(defmacro defCfun (&rest r) nil)
-(defmacro defentry (&rest r) nil)
+(defmacro Clines (&rest r) (declare (ignore r)) nil)
+(defmacro defCfun (&rest r) (declare (ignore r)) nil)
+(defmacro defentry (&rest r) (declare (ignore r)) nil)
 
 (defmacro defla (&rest r) (cons 'defun r))
 

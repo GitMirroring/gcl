@@ -127,7 +127,7 @@
 (defun cons-type-of (x);recurse?
   (if (improper-consp x) 'improper-cons 'proper-cons))
 
-(mapc (lambda (x &aux (z (caddr x)))
+(mapc (lambda (x)
 	(setf (aref +type-of-dispatch+ (tp7-ind (eval (cadr x))))
 	      (let* ((x (car x))(x (if (listp x) (car x) x)))
 		(case

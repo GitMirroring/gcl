@@ -51,8 +51,9 @@
 		:interactive (lambda nil
 			       (mapcar (lambda (x)
 					 (format *query-io* "~&type a form to be evaluated for ~s:~%" x)
-					 (eval (read *query-io*))) places))
-		:test (lambda (c) places)
+					 (eval (read *query-io*)))
+				       places))
+		:test (lambda (c) (declare (ignore c)) places)
 		(declare (dynamic-extent r))
 		(values-list r))))
 

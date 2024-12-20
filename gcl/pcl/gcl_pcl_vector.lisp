@@ -227,7 +227,6 @@
 
 (defun pv-table-lookup (pv-table pv-wrappers)
   (let* ((slot-name-lists (pv-table-slot-name-lists pv-table))
-	 (call-list (pv-table-call-list pv-table))
 	 (cache (or (pv-table-cache pv-table)
 		    (setf (pv-table-cache pv-table)
 			  (get-cache (- (length slot-name-lists)
@@ -237,7 +236,7 @@
 				     2)))))
     (or (probe-cache cache pv-wrappers)
 	(let* ((pv (compute-pv slot-name-lists pv-wrappers))
-	       (calls '#());(compute-calls call-list pv-wrappers)
+	       (calls '#())
 	       (pv-cell (cons pv calls))
 	       (new-cache (fill-cache cache pv-wrappers pv-cell)))
 	  (unless (eq new-cache cache)

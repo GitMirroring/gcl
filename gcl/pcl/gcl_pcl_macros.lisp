@@ -130,6 +130,7 @@
 
 (eval-when (compile load eval)
   (defun extract-declarations (body &optional environment)
+    (declare (ignore environment))
     (multiple-value-bind (doc decls ctps body) (si::parse-body-header body)
       (values doc decls (nconc ctps body)))))
 

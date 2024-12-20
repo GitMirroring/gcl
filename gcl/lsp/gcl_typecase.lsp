@@ -125,7 +125,7 @@
 (defun mkinfm (f tp z &aux (z (?-add 'progn z)))
   (if (tp>= tp #tt) z `(infer-tp ,f ,tp ,z)))
 
-(define-compiler-macro typecase (&whole w x &rest ff)
+(define-compiler-macro typecase (x &rest ff)
   (let* ((bind (unless (symbolp x) (list (list (gensym) x))));FIXME sgen?
 	 (f (or (caar bind) x))
 	 (o (member-if (lambda (x) (or (eq (car x) t) (eq (car x) 'otherwise))) ff));FIXME
@@ -162,7 +162,10 @@
 (defconstant +xi+ (let* ((a (type-and-list (list (cmp-norm-tp `(and number (not immfix))))))
 			 (rl (cdr (assoc 'tp8 +rs+)))
 			 (i (lremove-duplicates (mapcar (lambda (x) (cdr (assoc (cadr x) rl))) a)))
-			 (mi (apply 'min i))(xi (apply 'max i))(m (apply '+ i)))
+;			 (mi (apply 'min i))
+			 (xi (apply 'max i))
+;			 (m (apply '+ i))
+			 )
 ;		    (assert (= mi 1))
 ;		    (assert (= m (/ (* xi (1+ xi)) 2)))
 		    xi))

@@ -941,7 +941,7 @@ work during bootstrapping.
 	       (declare (dynamic-extent cnm-args))
 	       (call-next-method-body ,method-name-declaration cnm-args))
 	     (next-method-p () (next-method-p-body)))
-;	(declare (ignorable #'call-next-method #'next-method-p))
+	(declare (ignorable #'call-next-method #'next-method-p))
 	,@body)))
 
 (defmacro bind-args ((lambda-list args) &body body)

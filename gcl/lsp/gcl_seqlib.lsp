@@ -267,7 +267,7 @@
   (check-type sequence proper-sequence)
   (check-type start (or null seqind))
   (check-type end (or null seqind))
-  (nsubstitute-if item (lambda (x) t) sequence :start start :end end))
+  (nsubstitute-if item (lambda (x) (declare (ignore x)) t) sequence :start start :end end))
 
 (defun replace (s1 s2 &key (start1 0) end1 (start2 0) end2 &aux (os1 s1) s3)
   (declare (optimize (safety 1))(notinline make-list)(dynamic-extent s3))

@@ -826,9 +826,9 @@
 (defun c1bind-reg-clv (args)
   (declare (ignore args))
   (list 'bind-reg-clv (make-info :type #tt :flags (iflags side-effects))))
-(defun c2bind-reg-clv (&aux x clb var)
+(defun c2bind-reg-clv (&aux x var)
   (do nil
-      ((not (setq x (pop *reg-clv*) clb (pop x) var (car x))));FIXME ? eliminate clb var here
+      ((not (setq x (pop *reg-clv*) var (cadr x))))
       (wt-nl)
       (setf (var-ref var) (vs-push));FIXME ? clb and ccb vars just appear in info-ref-ccb, only need push clb
       (wt-vs (var-ref var)) (wt "= " `(gen-loc :object (cvar ,(var-loc var))) ";")

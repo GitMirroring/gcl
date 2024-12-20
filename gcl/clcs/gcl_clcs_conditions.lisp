@@ -28,6 +28,7 @@
   (let* ((report-function nil)
 	 (default-initargs nil)
 	 (documentation nil))
+    (declare (ignore documentation))
     (do ((o options (cdr o)))
 	((null o))
       (let ((option (car o)))

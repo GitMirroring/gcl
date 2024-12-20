@@ -49,7 +49,7 @@
 (defun c1declare (args)
   (cmperr "The declaration ~s was found in a bad place." (cons 'declare args)))
 
-(defun c1the (args &aux info form type dtype);FIXME rethink this whole function
+(defun c1the (args &aux info form dtype);FIXME rethink this whole function
   (when (or (endp args) (endp (cdr args)))
     (too-few-args 'the 2 (length args)))
   (unless (endp (cddr args))

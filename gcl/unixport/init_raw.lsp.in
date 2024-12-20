@@ -32,7 +32,7 @@
       (remprop s 'deftype-form)))
   (let* ((p (find-package "PCL"))(x (when p (find-symbol "DO-SATISFIES-DEFTYPE" p))))
     (when (and x (fboundp x))
-      (setf (symbol-function x) (lambda (x y) nil)))))
+      (setf (symbol-function x) (lambda (x y) (declare (ignore x y)) nil)))))
 
 (do-symbols (s)
   (when (get s 'proclaimed-function)

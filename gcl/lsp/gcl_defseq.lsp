@@ -49,16 +49,17 @@
 		       `((el (p i) (if l (if from-end (caar p) (car p)) (aref ,seq i)))
 			 (hd (p i) (if l (if from-end (car p) p) i))))
 		   ,@(unless nokey `((key (x) (if ,kf (funcall ,kf x) x))))
-                   (test-no-key (x y)
-		     (if (case ,tsc
-			   (0 (eq x y))
-			   (1 (eql x y))
-			   (2 (equal x y))
-			   (3 (equalp x y))
-			   (4 (funcall x y))
-			   (otherwise (funcall ,ts x y)))
-			 (not test-not) test-not))
+                     (test-no-key (x y)
+		       (if (case ,tsc
+			     (0 (eq x y))
+			     (1 (eql x y))
+			     (2 (equal x y))
+			     (3 (equalp x y))
+			     (4 (funcall x y))
+			     (otherwise (funcall ,ts x y)))
+			   (not test-not) test-not))
 		     (test (x y) (test-no-key x ,(if nokey 'y '(key y)))))
+	    (declare (ignorable #'test ,@(unless list `(#'el #'hd))))
 	    (when (case ,tsc
 		    ((1 2 3)
 		     (or ,@(unless list

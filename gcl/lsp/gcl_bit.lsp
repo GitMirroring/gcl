@@ -92,7 +92,7 @@
 (setf (get 'bit-array-op 'compiler::cmp-inline) t)
 
 (defun copy-bit-vector (a i b j n)
-  (bit-array-op (lambda (x y) y) a b t i j i n))
+  (bit-array-op (lambda (x y) (declare (ignore x)) y) a b t i j i n))
 
 
 ;FIXME array-dimensions allocates....
@@ -129,7 +129,7 @@
 (defbitfn bit-andc2 (lambda (x y) (& x (~ y))))
 (defbitfn bit-orc1  (lambda (x y) (\| (~ x) y)))
 (defbitfn bit-orc2  (lambda (x y) (\| x (~ y))))
-(defbitfn bit-not   (lambda (x y) (~ x)))
+(defbitfn bit-not   (lambda (x y) (declare (ignore y)) (~ x)))
 
 (defun baset (v x &rest r)
   (declare (optimize (safety 1))(dynamic-extent r))

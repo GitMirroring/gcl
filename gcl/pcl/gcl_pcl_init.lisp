@@ -139,7 +139,7 @@
   (when (eq slot-names 't)
     ;; FIXME this should be in the -t- and -nil- functions eventually
     ;; loop through initargs looking for errors
-    (doplist (initarg val) initargs)
+    (doplist (initarg val) initargs (declare (ignore val)))
     (return-from shared-initialize
 		 (progn 
 		   (call-initialize-function
@@ -150,7 +150,7 @@
   (when (eq slot-names 'nil)
     ;; FIXME this should be in the -t- and -nil- functions eventually
     ;; loop through initargs looking for errors
-    (doplist (initarg val) initargs)
+    (doplist (initarg val) initargs (declare (ignore val)))
     (return-from shared-initialize
 		 (progn
 		   (call-initialize-function
@@ -251,11 +251,12 @@
     ;; against the total set that we know are legal.
     (push :allow-other-keys legal)
     (doplist (key val) initargs
-       (unless (memq key legal)
-	 (if error-p
-	     (error 'program-error :format-control "Invalid initialization argument ~S for class ~S"
-		    :format-arguments (list key  (class-name class)))
-	     (return-from check-initargs-2-plist nil)))))
+	     (declare (ignore val))
+	     (unless (memq key legal)
+	       (if error-p
+		   (error 'program-error :format-control "Invalid initialization argument ~S for class ~S"
+			  :format-arguments (list key  (class-name class)))
+		   (return-from check-initargs-2-plist nil)))))
   t)
 
 (defun check-initargs-2-list (initkeys class legal &optional (error-p t))

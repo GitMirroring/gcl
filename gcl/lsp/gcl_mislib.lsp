@@ -75,19 +75,19 @@
   (check-type ut integer)
   (check-type tz rational)
   (let ((ut (- ut +secs-to-1970+  (* (- tz (this-tz)) 3600))))
-    (multiple-value-bind
-	(s n h d m y w yd dstp off) (localtime ut)
-    (when (when tzp (> dstp 0))
-      (multiple-value-setq (s n h d m y w yd dstp1) (localtime (- ut 3600))))
-    (values s
-	    n
-	    (+ h (- dstp (or dstp1 dstp)))
-	    d
-	    (1+ m)
-	    (+ 1900 y)
-	    (if (zerop w) 6 (1- w))
-	    (unless tzp (> dstp 0))
-	    (if tzp tz (+ (truncate (- off) 3600) dstp))))))
+    (multiple-value-bind (s n h d m y w yd dstp off) (localtime ut)
+      (declare (ignore yd))
+      (when (when tzp (> dstp 0))
+	(multiple-value-setq (s n h d m y w yd dstp1) (localtime (- ut 3600))))
+      (values s
+	      n
+	      (+ h (- dstp (or dstp1 dstp)))
+	      d
+	      (1+ m)
+	      (+ 1900 y)
+	      (if (zerop w) 6 (1- w))
+	      (unless tzp (> dstp 0))
+	      (if tzp tz (+ (truncate (- off) 3600) dstp))))))
 
 (defun encode-universal-time (s n h d m y &optional (tz (this-tz) tzp))
   (declare (optimize (safety 2)))

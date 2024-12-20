@@ -53,6 +53,7 @@
 
 (defun allocate-funcallable-instance-2 ()
   (let (dummy)
+    (declare (ignore dummy))
     (lambda (&rest args)
       (declare (ignore args))
       (setq dummy (make-dummy-var));use dummy to ensure freshly allocated closure

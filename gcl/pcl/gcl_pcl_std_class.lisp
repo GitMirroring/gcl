@@ -398,11 +398,12 @@
 		(loop for (option value . more) on slot by #'cddr
 		      when (and (member option '(:allocation :type :initform
 							     :documentation))
+				(progn value t)
 				(not (eq unsupplied
-					 (getf more option unsupplied)))) do
-					 (error 'program-error :format-control
-							 "Duplicate slot option ~S for slot ~S."
-							 :format-arguments (list option slot-name))))
+					 (getf more option unsupplied))))
+		      do (error 'program-error :format-control
+				"Duplicate slot option ~S for slot ~S."
+				:format-arguments (list option slot-name))))
 	  ;;
 	  ;; CLHS: signal PROGRAM-ERROR, if an initialization argument name
 	  ;; appears more than once in :DEFAULT-INITARGS class option.

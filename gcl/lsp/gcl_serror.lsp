@@ -74,8 +74,9 @@
 							(go ,tag))))
 					tcases)
 			       (return-from ,block ,form))
-		 ,@(mapcan (lambda (x &aux (tag (pop x))(type (pop x))(ll (pop x))(body x))
-			     (list tag `(return-from ,block (let ,(when ll `((,(car ll) ,var))) ,@body))))
+		  ,@(mapcan (lambda (x &aux (tag (pop x))(type (pop x))(ll (pop x))(body x))
+			      (declare (ignore type))
+			      (list tag `(return-from ,block (let ,(when ll `((,(car ll) ,var))) ,@body))))
 			   tcases))))))))
 
 (defmacro ignore-errors (&rest forms)

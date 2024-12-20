@@ -55,7 +55,7 @@
 	      (if (pprint-quit x h ,s -1)
 		  (return-from do-pref nil)
 		  (write-string ,prefix ,s)))
-	    (do-suf (x h) (write-string ,suffix ,s))
+	    (do-suf (x h) (declare (ignore x h)) (write-string ,suffix ,s));FIXME
 	    (do-pprint (x h &aux (,count 0))
 	      (macrolet
 		  ((pprint-pop nil
