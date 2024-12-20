@@ -42,8 +42,8 @@
 
 ;;Like macro-function except it searches the lexical environment,
 ;;to determine if the macro is shadowed by a function or a macro.
-(defun cmp-macro-function (name)
-  (or (c1local-fun name) (macro-function name)))
+(defun cmp-macro-function (name &aux (fun (local-fun-obj name)))
+  (if fun (unless (fun-src fun) (fun-fn fun)) (macro-function name)))
 
 ;; (defun sf (s)
 ;;   (declare (optimize (safety 1)))
