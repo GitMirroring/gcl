@@ -120,7 +120,7 @@
      ,@forms))
 
 (defun process-args (args &optional fc fa others);FIXME do this without consing, could be oom
-  (cond ((not args) (nconc (nreverse others) (when (and fc fa) (list (apply 'format nil fc fa)))))
+  (cond ((not args) (nconc (nreverse others) (when fc (list (apply 'format nil fc fa)))))
 	((eq (car args) :format-control)
 	 (process-args (cddr args) (cadr args) fa others))
 	((eq (car args) :format-arguments)
@@ -142,12 +142,12 @@
 	    #\^ #\~ 
 	    (coerce-to-string
 	     (if args
-		 (apply 'string-concatenate (cons datum (make-list (length args) :initial-element " ~s")))
+		 (apply 'string-concatenate (list* datum ": " (make-list (length args) :initial-element " ~a")))
 	       (string datum))
 	     args))))
 	("unknown error")))
 
-(defun warn (datum &rest arguments)
+(defun warn (datum &rest arguments);FIXME? &aux (*sig-fn-name* (or *sig-fn-name* (get-sig-fn-name))))
   (declare (optimize (safety 2)))
   (let ((c (process-error datum arguments 'simple-warning)))
     (check-type c (or string (satisfies warningp)) "a warning condition")
@@ -156,7 +156,8 @@
     (restart-case
      (signal c)
      (muffle-warning nil :report "Skip warning."  (return-from warn nil)))
-    (format *error-output* "~&Warning: ~a~%" c)
+    (format *error-output* "~&~a~%" c)
+    (finish-output *error-output*)
     nil))
 (putprop 'cerror t 'compiler::cmp-notinline)
 
