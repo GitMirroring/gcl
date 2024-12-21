@@ -176,7 +176,7 @@
 (defvar *local-fun-inline-limit* 200)
 
 (defun c1flet-labels (labels args &aux body ss ts is other-decl (info (make-info))
-			     defs1 fnames (ofuns *funs*) (*funs* *funs*))
+			     defs1 fnames (ofuns *funs*) (*funs* *funs*)(*top-level-src* *top-level-src*))
 
   (when (endp args) (too-few-args 'flet 1 0))
 
@@ -187,7 +187,7 @@
       (cmpck (member (car def) fnames) "The function ~s was already defined." (car def))
       (push (car def) fnames))
     (let* ((def (effective-safety-src def))
-	   (src (si::block-lambda (cadr def) (car def) (cddr def)))
+	   (src (mark-toplevel-src (si::block-lambda (cadr def) (car def) (cddr def))))
 	   (fun (make-fun :name (car def) :src src :info (make-info :type nil :flags (iflags sp-change)))))
       (push fun *funs*)
       (unless (< (cons-count src) *local-fun-inline-limit*)
@@ -218,6 +218,8 @@
 
   (add-info info (cadr body))
   (setf (info-type info) (info-type (cadr body)))
+
+  (mapc (lambda (x &aux (x (car x))) (unless (or (fun-ref x) (fun-ref-ccb x)) (eliminate-src (fun-src x)))) defs1)
 
   (let* ((funs (mapcar 'car defs1))
 	 (fns (mapcar (lambda (x) (caddr (fun-c1   x))) (remove-if-not 'fun-ref funs)))

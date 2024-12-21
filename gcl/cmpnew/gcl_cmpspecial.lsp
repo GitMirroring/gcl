@@ -266,7 +266,7 @@
   (unless (endp (cdr args)) (too-many-args 'function 1 (length args)))
   
   (let* ((funid (si::funid (car args)))
-	 (funid (if (consp funid) (effective-safety-src funid) funid))
+	 (funid (mark-toplevel-src (if (consp funid) (effective-safety-src funid) funid)))
 	 (fn (afe (cons 'ce (current-env)) (funid-to-fn funid)))
 	 (tp (if fn (object-type fn) #tfunction))
 	 (info (make-info :type tp)))
@@ -279,9 +279,11 @@
 	   `(function ,info (call-global ,info ,funid)))
 	  ((let* ((fun (or f (make-fun :name 'lambda :src funid :c1cb t :fn fn :info (make-info :type '*))))
 		  (fd (if *prov* (list fun) (process-local-fun b fun funid tp))))
-	   (add-info info (cadadr fd))
-	   (when *prov* (setf (info-flags info) (logior (info-flags info) (iflags provisional))))
-	   `(function ,info ,fd))))))
+	     (add-info info (cadadr fd))
+	     (when *prov*
+	       (pushnew funid *prov-src*)
+	       (setf (info-flags info) (logior (info-flags info) (iflags provisional))))
+	     `(function ,info ,fd))))))
 
 (defun update-closure-indices (cl)
   (mapc (lambda (x &aux (y (var-ref-ccb (car x))))

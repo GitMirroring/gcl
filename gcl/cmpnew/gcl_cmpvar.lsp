@@ -178,8 +178,16 @@
     (setf (var-dt var) (var-type var))
     var))
 
+(defvar *top-level-src* nil)
+(defvar *top-level-src-p* t)
+
+(defun mark-toplevel-src (src)
+  (when *top-level-src-p*
+    (pushnew src *top-level-src*))
+  src)
+
 (defun check-vref (var)
-  (unless *in-inline*
+  (when *top-level-src-p*
     (when (and (eq (var-kind var) 'LEXICAL)
 	       (not (var-reffed var))
 	       (not (var-ref var)));;; This field may be IGNORE or IGNORABLE here.

@@ -828,7 +828,6 @@
 ;; 	      (cons (bind-all-vars (caddr form))
 ;; 		    (if (cadddr form) (list (bind-all-vars (cadddr form))))))))
 		
-(defvar *in-inline* nil)
 ;(defvar *callees* nil)
 
 (defun maybe-reverse-type-prop (dt f)
@@ -1392,7 +1391,8 @@
 	(let* ((tag (make-ttl-tag));(tmpsym)
 	       (tsrc (ttl-tag-src src tag))
 	       (tagged-sir (make-tagged-sir sir tag (cadr src) ttag))
-	       (*src-inline-recursion* (maybe-cons-tagged-sir tagged-sir src env)))
+	       (*src-inline-recursion* (maybe-cons-tagged-sir tagged-sir src env))
+	       (*top-level-src-p* (member src *top-level-src*)))
 	  (catch tagged-sir (mi4 fun args la tsrc env inls)))))))
 
 
@@ -1734,7 +1734,7 @@
 ;; 	(foo (gethash (car (atomic-tp (info-type (cadr ff)))) *fun-ev-hash*))))
 ;  (when (member (car ff) '(foo location)) (gethash (car (atomic-tp (info-type (cadr ff)))) *fun-ev-hash*)))
 
-(defun mi1c (fun args last info &optional ff prov &aux (*in-inline* t)(*prov* prov))
+(defun mi1c (fun args last info &optional ff prov &aux (*prov* prov))
 
   (let* ((otp (info-type info))
 	 (fms (make-c1forms fun args last info))
@@ -1744,12 +1744,14 @@
     (or inl (mi5 (or (when (symbolp fun) fun) ff) info fms last))))
 
 
-(defun mi1b (fun args last info &optional ff)
+(defvar *prov-src* nil)
+
+(defun mi1b (fun args last info &optional ff &aux (ops *prov-src*)(*prov-src* *prov-src*))
   (with-restore-vars
    (let ((res (mi1c fun args last info ff t)))
      (cond ((iflag-p (info-flags (cadr res)) provisional)
 	    (keyed-cmpnote 'provisional "~s has provisional functions, res address ~s" fun (address res)))
-	   (t (keep-vars) res)))))
+	   (t (keep-vars) (mapc 'eliminate-src (ldiff *prov-src* ops)) res)))))
 
 (defun mi1a (fun args last info &optional ff &aux (i1 (copy-info info)));FIXME side-effects on info
   (or (mi1b fun args last info ff)

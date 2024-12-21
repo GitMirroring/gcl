@@ -969,7 +969,117 @@
       (when (symbol-package name) (unless (eq name 'lambda) (push (cons name (apply 'si::make-function-plist e)) si::*sig-discovery-props*))))
     l))
 
-(defun t1defun (args &aux *warning-note-stack*)
+;; top-level lex-ref walker
+
+;; (defvar *unused* nil)
+;; (defvar *lsyms* nil)
+
+
+;; (defun decl-ref (x decls)
+;;   (dolist (d decls (specialp x))
+;;     (dolist (c (cdr d))
+;;       (case (car c)
+;; 	((ignore ignorable special)
+;; 	 (when (member x (cdr c) :test 'equal)
+;; 	   (return-from decl-ref t)))))))
+
+;; (defun unused-bindings (form)
+;;   (if (atom form)
+;;       (let ((x (car (member-if (lambda (x) (when (car x) (eq (caar x) form))) *lsyms*)))) (when x (setf (cdar x) t)))
+;;       (case (car form)
+;; 	((let let* flet labels macrolet)
+;; 	 (multiple-value-bind (doc decls) (parse-body-header (cddr form))
+;; 	   (declare (ignore doc))
+;; 	   (let* ((c (mapcar (lambda (x) (if (atom x) (list x) x)) (cadr form)))
+;; 		  (b (mapcar (lambda (x)
+;; 			       (case (car form)
+;; 				 ((let let*) (list (cons (car x) (decl-ref (car x) decls)) nil))
+;; 				 ((flet labels) (list nil (cons (car x) (decl-ref `(function ,(car x)) decls))))
+;; 				 (macrolet (list nil x))))
+;; 			     c))
+;; 		  (d (cons *lsyms* (maplist 'identity b)))
+;; 		  (b (nreconc b *lsyms*)))
+;; 	     (mapc (lambda (x &aux (*lsyms* (case (car form) (let* (pop d))(labels b)(otherwise *lsyms*))))
+;; 		     (unused-bindings (case (car form)
+;; 					((let let*) (cadr x))
+;; 					(otherwise (cons 'lambda (cdr x))))))
+;; 		   c)
+;; 	     (let ((*lsyms* b)) (mapc 'unused-bindings (cddr form)))
+;; 	     (mapc (lambda (x) (unless (cdr (or (car x) (cadr x))) (push x *unused*)))
+;; 		   (ldiff b *lsyms*)))))
+;; 	((quote go declare))
+;; 	((block return-from eval-when) (mapc 'unused-bindings (cddr form)))
+;; 	(tagbody (mapc (lambda (x) (typecase x ((or integer symbol))(otherwise (unused-bindings x)))) (cdr form)))
+;; 	(the (unused-bindings (caddr form)))
+;; 	(setq (do ((form (cddr form) (cddr form)))((not form))(unused-bindings (car form))))
+;; 	(lambda (unused-bindings (blla (cadr form) nil '(foo) (cddr form))))
+;; 	(function (let ((x (cadr form)))
+;; 		    (etypecase x
+;; 		      ((or symbol (cons (member setf) (cons symbol null)))
+;; 		       (let ((x (car (member x *lsyms* :key 'caadr :test 'equal))))
+;; 			 (when x (unless (cdadr x) (setf (cdadr x) t)))))
+;; 		      ((cons (member lambda) t) (unused-bindings x)))))
+;; 	(otherwise (let* ((form (if (symbolp (car form)) form (cons 'funcall form)));?
+;; 			  (x (car (member (car form) *lsyms* :key 'caadr)))
+;; 			  (fd (or (let ((c (cadr x))) (when (consp (cdr c)) (eval (defmacro-lambda (pop c) (pop c) c))))
+;; 				  (unless x (macro-function (car form)))))
+;; 			  (f1 (if fd (funcall fd form nil) form)))
+;; 		     (cond ((eq form f1) (when x (setf (cdadr x) t)) (mapc 'unused-bindings (cdr form)))
+;; 			   ((unused-bindings f1))))))))
+
+
+
+;; (defun get-unused-bindings (form &aux *unused*)
+;;   (unused-bindings form)
+;;   (mapc (lambda (x)
+;; 	  (cmpwarn "The ~a ~s is not used.~%" (if (car x) "variable" "function") (car (or (car x) (cadr x)))))
+;; 	*unused*)
+;;   *unused*)
+
+;; The entire purpose of this function is to detect unused variables in eliminated code
+;; It could be expanded to support functions, blocks, and tags
+;; It could be eliminated if the unused variable warning is eliminated.
+(defun lex-refs (form)
+  (typecase form
+    (null)
+    (symbol
+     (let ((x (car (member form *vars* :key (lambda (x) (when (var-p x) (var-name x)))))))
+       (when x (set-var-reffed x))))
+    (cons
+     (case (car form)
+       ((let let*)
+	(let* ((b (mapcar (lambda (x) (make-var :name (if (consp x) (car x) x))) (cadr form)))
+	       (d (cons *vars* (maplist 'identity b)))
+	       (b (nreconc b *vars*)))
+	  (mapc (lambda (x &aux (*vars* (if (eq 'let* (car form)) (pop d) *vars*)))
+		  (when (consp x) (lex-refs (cadr x))))
+		(cadr form))
+	  (let ((*vars* b)) (mapc 'lex-refs (cddr form)))))
+       ((flet labels macrolet)
+	(let* ((m (eq (car form) 'macrolet))
+	       (b (mapcar (lambda (x) (make-fun :name (car x) :src (unless m (si::block-lambda (cadr x) (car x) (cddr x)))
+						:fn (if m (eval (defmacro-lambda (pop x) (pop x) x)) (lambda (&rest r) (declare (ignore r)) nil))))
+			  (cadr form)))
+	       (b (nreconc b *funs*)))
+	  (mapc (lambda (x &aux (*funs* (if (eq 'labels (car form)) b *funs*))) (lex-refs (cons 'lambda (cdr x)))) (cadr form))
+	  (let ((*funs* b)) (mapc 'lex-refs (cddr form)))))
+       ((quote go declare))
+       ((block return-from eval-when) (mapc 'lex-refs (cddr form)))
+       (tagbody (mapc (lambda (x) (typecase x ((or integer symbol))(otherwise (lex-refs x)))) (cdr form)))
+       (the (lex-refs (caddr form)))
+       (setq (do ((form (cddr form) (cddr form)))((not form))(lex-refs (car form))))
+       (lambda (lex-refs (blla (cadr form) nil '(foo) (cddr form))))
+       (function (let ((x (cadr form))) (typecase x ((cons (member lambda) t) (lex-refs x)))))
+       (otherwise (let* ((form (if (symbolp (car form)) form (cons 'funcall form)));?
+			 (fd (cmp-macro-function (car form)))
+			 (f1 (if fd (funcall fd form nil) form)))
+		    (if (eq form f1) (mapc 'lex-refs (cdr form)) (lex-refs f1))))))))
+
+(defun eliminate-src (src)
+  (when *top-level-src-p* (lex-refs src)))
+
+
+(defun t1defun (args &aux *warning-note-stack* *top-level-src*)
 
   (when (or (endp args) (endp (cdr args)))
     (too-few-args 'defun 2 (length args)))

@@ -376,7 +376,8 @@
 					    ((not skip)
 					     (when cs
 					       (setq st (type-and st (tp-not rt)) cs nil))
-					     t)))
+					     t)
+					    (t (eliminate-src b) nil)))
 				    body))
 	       (body (mapcar (lambda (x) (if (tgs-p x) (make-tag :name x :ref t :switch (if (typep x 'fixnum) x "default")) x)) body))
 	       trv

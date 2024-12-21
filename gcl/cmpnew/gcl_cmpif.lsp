@@ -33,8 +33,7 @@
 ;; (si:putprop 'case 'c2case 'c2)
 
 (defun note-branch-elimination (test-form val elim-form)
-;  (let ((*suppress-compiler-notes* t) (*suppress-compiler-warnings* t))
-;    (c1expr elim-form))
+  (eliminate-src elim-form)
   (keyed-cmpnote (list 'branch-elimination test-form)
 		 "Test form ~S is ~S,~%;; eliminating branch ~S~%" test-form val elim-form))
 
