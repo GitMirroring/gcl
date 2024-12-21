@@ -1778,31 +1778,48 @@
     res))
 
 
-(defun local-fun-p (fname)
+(defun local-fun-obj (fname)
   (typecase fname
     (function (fn-get fname 'fun))
     (fun fname)
-    (symbol (car (member-if (lambda (x) (when (fun-p x) (when (eq fname (fun-name x)) (not (member x *lexical-env-mask*))))) *funs*)))))
+    (symbol (car (member-if (lambda (x)
+			      (when (fun-p x)
+				(unless (member x *lexical-env-mask*)
+				  (eq fname (fun-name x)))))
+			    *funs*)))))
+
+(defun local-fun-p (fname &aux (fun (local-fun-obj fname)))
+  (when (and fun (fun-src fun)) fun))
+
+(defun local-macro-p (fname &aux (fun (local-fun-obj fname)))
+  (when fun (unless (fun-src fun) fun)))
+
+(defun funs-to-macrolet-env nil
+  `(nil ,(mapcan (lambda (x)
+		   (when (fun-p x)
+		     (unless (member x *lexical-env-mask*)
+		       `(,(if (fun-src x) `(,(fun-name x) function ,(lambda (&rest r) (declare (ignore r)) nil)) `(,(fun-name x) macro ,(fun-fn x)))))))
+		 *funs*)
+	nil))
+
 
 (defun cmp-expand-macro-w (fd x)
   (macroexpand-helper
    (and *record-call-info* (add-macro-callee (car x)))
-   `(funcall *macroexpand-hook* ',fd ',x ',*macrolet-env*)
+   `(funcall *macroexpand-hook* ',fd ',x ',(funs-to-macrolet-env))
    x))
 
 (defun c1symbol-fun (whole &aux (fname (car whole)) (args (cdr whole)) fd)
   (values
    (cond ((setq fd (get fname 'c1special)) (funcall fd args))
 	 ((and (setq fd (get fname 'co1special)) (funcall fd fname args)))
-	 ((setq fd (caddar (member fname (cadr *macrolet-env*) :key 'car)))
-	  (c1expr (cmp-expand-macro-w fd whole)));FIXME scope level with local funs
+	 ((setq fd (local-macro-p fname))
+	  (c1expr (cmp-expand-macro-w (fun-fn fd) whole)))
 	 ((local-fun-p fname) (mi1 fname args))
-	 ((let ((fn (get fname 'si::compiler-macro-prop)) (res (cons fname args)))
-	    (and fn
-		 (not (member fname *notinline*))
-		 (let ((fd (funcall fn res nil)));(cmp-eval `(funcall ',fn ',res nil))))
-		   (and (not (eq res fd))
-			(c1expr fd))))))
+	 ((unless (member fname *notinline*)
+	    (let* ((fn (compiler-macro-function fname))
+		   (res (if fn (funcall fn whole nil) whole)));FIXME cmp-expand-macro-w?
+	      (unless (eq whole res) (c1expr res)))))
 	 ((and (setq fd (get fname 'co1))
 	       (inline-possible fname)
 	       (funcall fd fname args)))

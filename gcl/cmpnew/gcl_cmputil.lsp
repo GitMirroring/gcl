@@ -204,7 +204,7 @@
        ,@(when pre `(,pre))
        (cond ((not ,c) ,form)
 	     ((not (symbolp ,c)) ,form)
-	     ((and (not (assoc ,c (cadr *macrolet-env*))) (not (macro-function ,c))) ,form)
+	     ((not (cmp-macro-function ,c)) ,form);FIXME needed?
 	     ((let* ((,x (multiple-value-list (cmp-toplevel-eval `,,meth)))
 		     (,e (car ,x)))
 		(cond ((not ,e) (cadr ,x))
@@ -215,16 +215,16 @@
 			 `(error "Macro-expansion of ~s failed at compile time." ',,form))))))))))
 
 (defun cmp-macroexpand (form)
-  (macroexpand-helper nil `(macroexpand ',form ',*macrolet-env*) form))
+  (macroexpand-helper nil `(macroexpand ',form ',(funs-to-macrolet-env)) form))
 
 (defun cmp-macroexpand-1 (form)
-  (macroexpand-helper nil `(macroexpand-1 ',form ',*macrolet-env*) form))
+  (macroexpand-helper nil `(macroexpand-1 ',form ',(funs-to-macrolet-env)) form))
 
 (defun cmp-expand-macro (fd fname args)
   (let ((x (cons fname args)))
     (macroexpand-helper
      (and *record-call-info* (add-macro-callee fname))
-     `(funcall *macroexpand-hook* ',fd ',x ',*macrolet-env*)
+     `(funcall *macroexpand-hook* ',fd ',x ',(funs-to-macrolet-env))
      x)))
 
 (defvar *compiler-break-enable* nil)

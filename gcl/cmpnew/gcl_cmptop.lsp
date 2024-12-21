@@ -1614,16 +1614,9 @@
 ;;   (maybe-eval (not (macro-function n)) (cons 'defmacro w));FIXME?
 ;;   (push `(mflag ,n) *top-level-forms*))
 
-(defun t1macrolet (args &aux env (*funs* *funs*) (*vars* *vars*) (*macrolet-env* *macrolet-env*))
+(defun t1macrolet (args &aux  (*funs* *funs*))
   (when (endp args) (too-few-args 'macrolet 1 0))
-  (dolist (def (car args))
-    (let* ((x (car def))(y (si::funid-sym x))) (unless (eq x y) (setq def (cons y (cdr def)))))
-    (cmpck (or (endp def) (endp (cdr def)))
-           "The macro definition ~s is illegal." def)
-    (let* ((n (car def))
-	   (b (eval (si::defmacro-lambda n (cadr def) (cddr def)))))
-      (push (list n 'macro b) env)))
-  (when env (setq *macrolet-env* (list nil (append (cadr *macrolet-env*) (nreverse env)) nil)))
+  (push-macrolet-env (car args))
   (mapc 't1expr (cdr args)))
 
 (defun t1defmacro (args &aux (w args)(n (pop args))

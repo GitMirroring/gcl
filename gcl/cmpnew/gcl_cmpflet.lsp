@@ -290,17 +290,16 @@
 
 (defvar *macrolet-env* nil)
 
-(defun c1macrolet (args &aux body ss ts is other-decl env
-                        (*funs* *funs*) (*vars* *vars*) (*macrolet-env* *macrolet-env*))
-  (when (endp args) (too-few-args 'macrolet 1 0))
-  (dolist (def (car args))
-    (let* ((x (car def))(y (si::funid-sym x))) (unless (eq x y) (setq def (cons y (cdr def)))))
-    (cmpck (or (endp def) (endp (cdr def)))
+(defun push-macrolet-env (defs)
+  (dolist (def defs)
+    (cmpck (or (endp def) (not (symbolp (car def))) (endp (cdr def)))
            "The macro definition ~s is illegal." def)
-    (let* ((n (car def))
-	   (b (eval (si::defmacro-lambda n (cadr def) (cddr def)))))
-      (push (list n 'macro b) env)))
-  (when env (setq *macrolet-env* (list nil (append (cadr *macrolet-env*) (nreverse env)) nil)))
+    (push (make-fun :name (car def) :fn (eval (si::defmacro-lambda (pop def) (pop def) def)))
+	  *funs*)))
+
+(defun c1macrolet (args &aux body ss ts is other-decl (*funs* *funs*))
+  (when (endp args) (too-few-args 'macrolet 1 0))
+  (push-macrolet-env (car args))
   (multiple-value-setq (body ss ts is other-decl) (c1body (cdr args) t))
   (c1add-globals ss)
   (check-vdecl nil ts is)
@@ -415,11 +414,10 @@
 
 
 
-
-(defun c1local-fun (fname &optional cl &aux ccb inner)
+(defun c1local-fun (fname &optional cl &aux ccb inner (lf (local-fun-p fname)))
   (dolist (fun *funs*)
     (cond ((not (fun-p fun)) (setq ccb (or (eq fun 'cb) ccb) inner (or inner fun)))
-	  ((when (eq (fun-name fun) fname) (not (member fun *lexical-env-mask*)))
+	  ((eq fun lf)
 	   (let* ((cl (or ccb cl))
 		  (env (fn-get (fun-fn fun) 'df))
 		  (fm (make-fun-c1 fun cl env))
