@@ -1495,7 +1495,7 @@
 	     `(<= ,n ,s ,x))))))
 
 (define-compiler-macro case (&whole form &rest args)
-  (if (type>= #tfixnum (nil-to-t (info-type (cadr (with-restore-vars (c1arg (car args)))))))
+  (if (when *compiler-in-use* (type>= #tfixnum (nil-to-t (info-type (cadr (with-restore-vars (c1arg (car args))))))))
       (let* ((s (pop args))
 	     (oth (member-if (lambda (x &aux (x (car x))) (or (eq x t) (eq x 'otherwise))) args))
 	     (rem (ldiff args oth))
