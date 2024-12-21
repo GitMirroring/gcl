@@ -1802,13 +1802,6 @@
 		 *funs*)
 	nil))
 
-
-(defun cmp-expand-macro-w (fd x)
-  (macroexpand-helper
-   (and *record-call-info* (add-macro-callee (car x)))
-   `(funcall *macroexpand-hook* ',fd ',x ',(funs-to-macrolet-env))
-   x))
-
 (defun c1symbol-fun (whole &aux (fname (car whole)) (args (cdr whole)) fd)
   (values
    (cond ((setq fd (get fname 'c1special)) (funcall fd args))
