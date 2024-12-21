@@ -325,7 +325,8 @@
 		      (push var ss)))
 		   ((ignore ignorable)
 		    (dolist (var (cdr decl))
-		      (cmpck (not (symbolp var)) "The ignore declaration ~s contains a non-symbol ~s."
+		      (cmpck (not (typep var '(or symbol (cons (member function) (cons function-name null)))))
+			     "The ignore declaration ~s is illegal ~s."
 			     decl var)
 		      (when (eq stype 'ignorable)
 			(push 'ignorable is))
@@ -686,7 +687,7 @@
 		     "free type declaration ~s ~s" (car d) (cdr d))
       (c1infer-tp (list (car d) (cdr d)))))
   (dolist (x is)
-    (unless (or (eq x 'ignorable) (member x vnames))
+    (unless (or (eq x 'ignorable) (member x vnames :test 'equal))
       (cmpwarn "Ignore/ignorable declaration was found for not bound variable ~s." x))))
 
 

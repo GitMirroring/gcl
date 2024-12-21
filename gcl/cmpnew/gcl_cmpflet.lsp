@@ -202,7 +202,7 @@
   (multiple-value-setq (body ss ts is other-decl) (c1body (cdr args) t))
   
   (c1add-globals ss)
-  (check-vdecl nil ts is)
+  (check-vdecl (mapcar (lambda (x) `(function ,(fun-name (car x)))) defs1) ts is)
   (setq body (c1decl-body other-decl body))
   
   (let ((nf (mapcar 'car defs1)))
