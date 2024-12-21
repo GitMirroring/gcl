@@ -125,14 +125,14 @@
 		(caddr x)))
 	si::*sig-discovery-props*))
 
-(defun compile-file (fn &rest l &aux w e)
+(defun compile-file (fn &rest l &aux w e v)
   (values
    (handler-bind
        ((style-warning (lambda (c) (declare (ignore c)) (setq w t)))
 	(warning (lambda (c) (declare (ignore c)) (setq w t e t)))
 	(error (lambda (c) (declare (ignore c)) (setq w t e t))))
-       (apply 'compile-file2 fn l))
-   w e))
+       (setq v (apply 'compile-file2 fn l)))
+   w (or e (not v))))
 
 (defun compile-file2  (filename &rest args
 		       &aux (*print-pretty* nil)
@@ -530,37 +530,35 @@ Cannot compile ~a.~%" (namestring (merge-pathnames input-pathname *compiler-defa
 	     (st gaz :direction :output)
 	     (prin1-cmp tem st))
 	   (let (*fasd-data*)
-	     (compile-file gaz 
-			   :h-file t 
-			   :c-file t
-			   :data-file t
-			   :o-file t))
-	   (let ((cn (get-output-pathname gaz "c" gaz ))
-		 (dn (get-output-pathname gaz "data" gaz ))
-		 (hn (get-output-pathname gaz "h" gaz ))
-		 (on (get-output-pathname gaz "o" gaz )))
-	     (with-open-file (st cn)
-			     (do () ((let ((a (read-line st)))
-				       (when (>= (si::string-match 
-						  #v"gazonk_[0-9]*_[0-9]*.h" a) 0)
-					 (format t "~%~d~%" a)
-					 a))))
-			     (si::copy-stream st *standard-output*))
-	     (with-open-file (st dn)
-			     (princ
-			      (let (f) (do nil ((eq 'eof (car (push (read st nil 'eof) f))) 
-						(vec-to-list (nreverse (cdr f))))))))
-	     (with-open-file (st hn)
-			     (si::copy-stream st *standard-output*))
-	     (when *disassemble-objdump*
-	       (si::copy-stream (open (concatenate 'string "|objdump --source " (namestring on)))
-				*standard-output*))
-	     (delete-file cn)
-	     (delete-file dn)
-	     (delete-file hn)
-	     (delete-file on)
-	     (unless *keep-gaz* (delete-file gaz))
-	     nil)))))
+	     (multiple-value-bind (f w e)
+		 (compile-file gaz :h-file t :c-file t :data-file t :o-file t)
+	       (unless e
+		 (let ((cn (get-output-pathname gaz "c" gaz ))
+		       (dn (get-output-pathname gaz "data" gaz ))
+		       (hn (get-output-pathname gaz "h" gaz ))
+		       (on (get-output-pathname gaz "o" gaz )))
+		   (with-open-file (st cn)
+		     (do () ((let ((a (read-line st)))
+			       (when (>= (si::string-match
+					  #v"gazonk_[0-9]*_[0-9]*.h" a) 0)
+				 (format t "~%~d~%" a)
+				 a))))
+		     (si::copy-stream st *standard-output*))
+		   (with-open-file (st dn)
+		     (princ
+		      (let (f) (do nil ((eq 'eof (car (push (read st nil 'eof) f)))
+					(vec-to-list (nreverse (cdr f))))))))
+		   (with-open-file (st hn)
+		     (si::copy-stream st *standard-output*))
+		   (when *disassemble-objdump*
+		     (si::copy-stream (open (concatenate 'string "|objdump --source " (namestring on)))
+				      *standard-output*))
+		   (delete-file cn)
+		   (delete-file dn)
+		   (delete-file hn)
+		   (delete-file on)
+		   (unless *keep-gaz* (delete-file gaz))
+		   nil))))))))
 
 (defun compiler-pass2 (c-pathname h-pathname system-p
 				  &aux 
