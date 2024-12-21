@@ -591,13 +591,10 @@
 (defmacro inlinable-fn (a) 
   `(or (constantp ,a) (and (consp ,a) (member (car ,a) '(function lambda)))))
 
-	   
-(defun or-compiler-macro (form env)
-  (declare (ignore env))
+(define-compiler-macro or (&whole form)
   (cond ((endp (cdr form)) nil)
 	((endp (cddr form)) (cadr form))
-	((cmp-macroexpand `(,(car form) ,(cadr form) (or ,@(cddr form)))))))
-(si::putprop 'or 'or-compiler-macro 'si::compiler-macro-prop)
+	((cmp-macroexpand `(,(pop form) ,(pop form) (or ,@form))))))
 
 (defvar *basic-inlines* nil)
 
