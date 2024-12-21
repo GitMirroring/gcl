@@ -158,14 +158,7 @@
 
 (defun fix-opt (opt)
   (let ((a (cddr opt)))
-    (unless (typep (car a ) 'fixnum)
-      (if *compiler-in-use*
-	  (cmpwarn "Obsolete optimization: use fix-opt ~s"  opt))
-      
-      (setf (cddr opt)
-	    (cons (logior (if (car a) 2 0)
-			  (if (cadr a) 1 0))
-		  (cddr a))))
+    (cmpck (not (typep (car a ) 'fixnum)) "Obsolete optimization: use fix-opt ~s"  opt)
     (when (listp (car opt))
       (unless (flag-p (caddr opt) nt)
 	(let ((s (uniq-sig (list (mapcar 'cmp-norm-tp (car opt)) (cmp-norm-tp (cadr opt))))))
