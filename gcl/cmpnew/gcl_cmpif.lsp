@@ -24,10 +24,6 @@
 
 (si:putprop 'if 'c1if 'c1special)
 (si:putprop 'if 'c2if 'c2)
-(si:putprop 'and 'c1and 'c1)
-(si:putprop 'and 'c2and 'c2)
-(si:putprop 'or 'c1or 'c1)
-(si:putprop 'or 'c2or 'c2)
 
 (si:putprop 'jump-true 'set-jump-true 'set-loc)
 (si:putprop 'jump-false 'set-jump-false 'set-loc)
