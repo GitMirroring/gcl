@@ -26,7 +26,7 @@
    ((setq tem (coerce-to-standard-class ctp)) (normalize-instance tem));FIXME don't want to normalize a nil type, redundant code
    ((si-classp ctp) (si-class-name ctp));built-in
    ((setq tem (get ctp 's-data)) (or (sdata-type tem) `(structure ,ctp)))
-   (t (print (list 'bad-type type)) nil)))
+   (t (warn 'warning :format-control "Expanding unknown type ~s to nil:" :format-arguments (list type)) nil)))
 
 (defun expand-deftype (type &aux (e (just-expand-deftype type)))
   (unless (eq type e)
