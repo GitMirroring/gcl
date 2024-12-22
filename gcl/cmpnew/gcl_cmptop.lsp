@@ -519,7 +519,7 @@
     (dolist (bb (cdr l))
       (let ((b (if (member (car bb) '(type ftype)) (cdr bb) bb)))
 	(cond ((eq (car b) 'optimize) (if ro (push `(declare ,b) dd) (push `(declare ,b) ad)))
-	      ((eq (car b) 'class)
+	      ((eq (car b) 'class);FIXME pcl
 	       (unless (<= (length b) 3)
 		 (cmperr "Unknown class declaration: ~s" b))
 	       (if (member (cadr b) auxs) (push `(declare ,b) ad) (push `(declare ,b) dd)))

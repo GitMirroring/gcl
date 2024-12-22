@@ -342,7 +342,7 @@
 			  (cond ((unless (get var 'tmp) (eq stype 'hint)) (push (cons var type) cps) ;FIXME
 				 (push (cons var (global-type-bump type)) ts))
 				((push (cons var type) ts)))))))
-		   (class
+		   (class ;FIXME pcl
 		    (cmpck (cdddr decl) "The type declaration ~s is illegal." decl)
 		    (let ((type (max-vtp (or (caddr decl) (car decl)))))
 		      (when type
