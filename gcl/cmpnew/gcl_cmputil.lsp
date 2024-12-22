@@ -129,13 +129,6 @@
   `(when *note-keys*
      (do-keyed-cmpnote ,key ,string ,@args)))
 
-;; (defun keyed-cmpnote (key string &rest args &aux (*print-case* :upcase))
-;;   (when *note-keys*
-;;     (let ((keys (if (atom key) (list key) key)))
-;;       (when (intersection keys *note-keys* :test (lambda (x y) (or (eq x y) (eq 'all y))))
-;; 	(apply 'cmpnote string args)))))
-;; (declaim (inline keyed-cmpnote))
-
 (defun print-current-form (&optional (strm t)
 			   &aux (*print-length* 2)(*print-level* 2)(f *current-form*))
   (when (or (eq *first-error* t)
