@@ -45,27 +45,15 @@
 (defmacro cmpck (condition string &rest args)
   `(if ,condition (cmperr ,string ,@args)))
 
-(defun too-many-args (name upper-bound n &aux (*print-case* :upcase))
-  (print-current-form)
-  (format t
-          ";;; ~S requires at most ~R argument~:p, ~
-          but ~R ~:*~[were~;was~:;were~] supplied.~%"
-          name
-          upper-bound
-          n)
-  (incf *error-count*)
-  (throw *cmperr-tag* '*cmperr-tag*))
+(defun too-many-args (name upper-bound n)
+  (cmperr "~S requires at most ~R argument~:p, ~
+           but ~R ~:*~[were~;was~:;were~] supplied.~%"
+          name upper-bound n))
 
-(defun too-few-args (name lower-bound n &aux (*print-case* :upcase))
-  (print-current-form)
-  (format t
-          ";;; ~S requires at least ~R argument~:p, ~
-          but only ~R ~:*~[were~;was~:;were~] supplied.~%"
-          name
-          lower-bound
-          n)
-  (incf *error-count*)
-  (throw *cmperr-tag* '*cmperr-tag*))
+(defun too-few-args (name lower-bound n)
+  (cmperr "~S requires at least ~R argument~:p, ~
+           but only ~R ~:*~[were~;was~:;were~] supplied.~%"
+          name lower-bound n))
 
 (defvar *warning-note-stack*)
 
@@ -149,27 +137,16 @@
            ;; The compiler will assume this variable is a global.~%"
    sym))
 
-(defun baboon (&aux (*print-case* :upcase))
-  (print-current-form)
-  (format t ";;; A bug was found in the compiler.  Contact Taiichi.~%")
-  (incf *error-count*)
-  (break)
-;  (throw *cmperr-tag* '*cmperr-tag*)
-)
+(defun baboon nil (cmperr "A bug was found in the compiler.  Contact Taiichi.~%"))
 
 (defun cmp-eval (form)
   (multiple-value-bind 
    (x y) (cmp-toplevel-eval `(eval ',form))
-   (if x
-       (let ((*print-case* :upcase))
-	 (incf *error-count*)
-	 (print-current-form)
-	 (format t
-		 ";;; The form ~s was not evaluated successfully.~%~
-                  ;;; You are recommended to compile again.~%"
-		 form)
-	 nil)
-     y)))
+    (cond (x
+	   (cmpwarn "The form ~s was not evaluated successfully.  You are recommended to compile again.~%"
+		    form)
+	   `(error "Evaluation of ~s failed at compile time." ',form))
+	  (y))))
 
 ;(si::putprop 'setf 'c1setf 'c1special)
 
@@ -189,20 +166,17 @@
 ;				   args)))))
 
 (defmacro macroexpand-helper (pre meth form)
-  (let ((c (sgen "MHC"))(x (sgen "MHX"))(e (sgen "MHE")))
+  (let ((c (sgen "MHC"))(x (sgen "MHX")))
     `(let ((,c (when (consp ,form) (car ,form))))
        ,@(when pre `(,pre))
        (cond ((not ,c) ,form)
 	     ((not (symbolp ,c)) ,form)
 	     ((not (cmp-macro-function ,c)) ,form);FIXME needed?
-	     ((let* ((,x (multiple-value-list (cmp-toplevel-eval `,,meth)))
-		     (,e (car ,x)))
-		(cond ((not ,e) (cadr ,x))
-		      ((let ((*print-case* :upcase))
-			 (incf *error-count*)
-			 (print-current-form)
-			 (format t ";;; The macro form ~s was not expanded successfully.~%" ,form)
-			 `(error "Macro-expansion of ~s failed at compile time." ',,form))))))))))
+	     ((let* ((,x (multiple-value-list (cmp-toplevel-eval `,,meth))))
+		(cond ((car ,x)
+		       (cmpwarn "The macro form ~s was not expanded successfully.~%" ,form)
+		       `(error "Macro-expansion of ~s failed at compile time." ',,form))
+		      ((cadr ,x)))))))))
 
 (defun cmp-macroexpand (form)
   (macroexpand-helper nil `(macroexpand ',form ',(funs-to-macrolet-env)) form))
