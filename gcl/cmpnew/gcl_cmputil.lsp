@@ -35,10 +35,11 @@
 (defconstant *cmperr-tag* (cons nil nil))
 
 (defun cmperr (string &rest args &aux (*print-case* :upcase))
-  (print-current-form)
-  (format t "~&;;; ")
-  (apply #'format t string args)
-  (incf *error-count*)
+  (print-current-form *error-output*)
+  (si::error-format "ERROR: ")
+  (apply #'si::error-format string args)
+  (force-output *error-output*)
+  (incf *error-count*);(setq *error-p* t)
   (throw *cmperr-tag* '*cmperr-tag*))
 
 (defmacro cmpck (condition string &rest args)
@@ -98,11 +99,8 @@
 (defun cmpwarn (string &rest args &aux (*print-case* :upcase))
   (unless *suppress-compiler-warnings*
     (maybe-to-wn-stack
-     (print-current-form)
-     (print-sri-stack)
-     (format t ";; Warning: ")
-     (apply #'format t string args)
-     (terpri)))
+     (print-current-form *error-output*)
+     (warn 'style-warning  :format-control "~?" :format-arguments (list string args))))
   nil)
 
 (defvar *suppress-compiler-notes* t)
@@ -114,11 +112,10 @@
 
 (defun cmpnote (string &rest args &aux (*print-case* :upcase))
   (maybe-to-wn-stack
-   (print-current-form)
-   (print-sri-stack)
-   (format t ";; Note: ")
-   (apply #'format t string args)
-   (terpri))
+   (print-current-form *debug-io*)
+   (format *debug-io* ";; Note: ")
+   (apply #'format *debug-io* string args)
+   (terpri *debug-io*))
   nil)
 
 (defun do-keyed-cmpnote (k string &rest args &aux (*print-case* :upcase))
@@ -139,19 +136,19 @@
 ;; 	(apply 'cmpnote string args)))))
 ;; (declaim (inline keyed-cmpnote))
 
-(defun print-current-form ()
-  (when *first-error*
-    (setq *first-error* nil)
-    (fresh-line)
-    (cond
-     ((and (consp *current-form*)
-	   (eq (car *current-form*) 'si:|#,|))
-      (format t "; #,~s is being compiled.~%" (cdr *current-form*)))
-     (t
-      (let ((*print-length* 2)
-	    (*print-level* 2))
-	(format t "; ~s is being compiled.~%" *current-form*)))))
-  nil)
+(defun print-current-form (&optional (strm t)
+			   &aux (*print-length* 2)(*print-level* 2)(f *current-form*))
+  (when (or (eq *first-error* t)
+	    (not (eq (car *first-error*) *current-form*))
+	    (not (eq (cdr *first-error*) *src-inline-recursion*)))
+    (setq *first-error* (cons *current-form* *src-inline-recursion*))
+    (let ((args (list ";; When compiling ~s~%~{~&;;   inlining ~s~}"
+		      (if (and (consp f) (eq (car f) '|#,|)) (cdr f) f)
+		      (mapcan (lambda (s) (unless (eq (caar s) f) (list (cons (name-sir (car s)) (cdr s)))))
+			      (butlast *src-inline-recursion*)))))
+      (if (eq *error-output* strm)
+	  (apply 'si::error-format args)
+	  (apply 'format strm args)))))
 
 (defun undefined-variable (sym &aux (*print-case* :upcase))
   (cmpwarn

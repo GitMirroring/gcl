@@ -168,7 +168,6 @@
 		      (terpri))
 		    nil))
 	      (setq *evalhook* nil *applyhook* nil)
-	      (terpri *error-output*)
 	      (break-current)))
 	   nil)
        (emergency-reset)))))

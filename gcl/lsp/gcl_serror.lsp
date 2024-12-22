@@ -147,6 +147,17 @@
 	     args))))
 	("unknown error")))
 
+(defun put-control-string (strm strng &aux (pos (c-stream-int strm)))
+  (format strm strng)
+  (c-set-stream-int strm pos))
+
+(defvar *error-color* "92")
+
+(defun error-format (control &rest arguments)
+  (put-control-string *error-output* (concatenate 'string (string 27) "[1;" *error-color* "m"))
+  (apply 'format *error-output* control arguments)
+  (put-control-string *error-output* (concatenate 'string (string 27) "[0m")))
+
 (defun warn (datum &rest arguments);FIXME? &aux (*sig-fn-name* (or *sig-fn-name* (get-sig-fn-name))))
   (declare (optimize (safety 2)))
   (let ((c (process-error datum arguments 'simple-warning)))
@@ -156,8 +167,8 @@
     (restart-case
      (signal c)
      (muffle-warning nil :report "Skip warning."  (return-from warn nil)))
-    (format *error-output* "~&~a~%" c)
-    (finish-output *error-output*)
+    (error-format "~&~a~%" c)
+    (force-output *error-output*)
     nil))
 (putprop 'cerror t 'compiler::cmp-notinline)
 
@@ -210,17 +221,18 @@
 	(*print-length* *debug-print-level*)
 	(*print-case* :upcase))
     (terpri *error-output*)
-    (format *error-output* (if (and correctable *break-enable*) "~&Correctable error: " "~&Error: "))
+    (error-format (if (and correctable *break-enable*) "Correctable error:" "Error:"))
     (let ((*indent-formatted-output* t))
-      (when (stringp condition) (format *error-output* condition)))
+      (when (stringp condition) (error-format condition)))
     (terpri *error-output*)
     (if (> (length *link-array*) 0)
-	(format *error-output* "Fast links are on: do (si::use-fast-links nil) for debugging~%"))
-    (format *error-output* "Signalled by ~:@(~S~).~%" (or *sig-fn-name* "an anonymous function"))
+	(error-format "Fast links are on: do (si::use-fast-links nil) for debugging~%"))
+    (error-format "Signalled by ~:@(~S~).~%" (or *sig-fn-name* "an anonymous function"))
     (when (and correctable *break-enable*)
-      (format *error-output* "~&If continued: ")
-      (funcall (restart-report-function correctable) *error-output*))
+      (error-format "~&If continued: "))
     (force-output *error-output*)
+    (when (and correctable *break-enable*)
+      (funcall (restart-report-function correctable) *debug-io*))
     (when *break-enable* (break-level condition))))
 
 
@@ -243,7 +255,6 @@
 	    (if p-e-p "" "dbl:")
 	    (if (eq *package* (find-package 'user)) "" (package-name *package*))
 	    *break-level*))
-  (force-output *error-output*)
 
   (setq - (dbl-read *debug-io* nil *top-eof*))
   (when (eq - *top-eof*) (bye -1))
@@ -315,13 +326,14 @@
 	(*print-case* :upcase))
     (terpri *error-output*)
     (cond (format-string
-	   (format *error-output* "~&Break: ")
+	   (error-format "~&Break: ")
 	   (let ((*indent-formatted-output* t))
-	     (apply 'format *error-output* format-string args))
+	     (apply 'error-format format-string args))
 	   (terpri *error-output*)
 	   (setq message (apply 'format nil format-string args)))
-	  (t (format *error-output* "~&Break.~%")
-	     (setq message ""))))
+	  (t (error-format "~&Break.~%")
+	     (setq message "")))
+    (force-output *error-output*))
   (with-simple-restart 
    (continue "Return from break.")
    (break-level message))
