@@ -129,7 +129,7 @@
   (values
    (handler-bind
        ((style-warning (lambda (c) (declare (ignore c)) (setq w t)))
-	(warning (lambda (c) (declare (ignore c)) (setq w t e t)))
+	((and warning (not style-warning)) (lambda (c) (declare (ignore c)) (setq w t e t)))
 	(error (lambda (c) (declare (ignore c)) (setq w t e t))))
        (setq v (apply 'compile-file2 fn l)))
    w (or e (not v))))
