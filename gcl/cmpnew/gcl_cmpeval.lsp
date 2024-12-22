@@ -81,14 +81,14 @@
       res))
 
 (defun c1expr (form)
-  (setq form (catch *cmperr-tag*
+  (catch *cmperr-tag*
     (cond ((symbolp form)
            (cond ((constantp form) 
 		  (let ((val (symbol-value form)))
 		    (or 
 		     (c1constant-value val nil)
 		     `(location ,(make-info :type (object-type val)) (VV ,(add-constant form))))))
-;                 ((c1var form))))
+					;                 ((c1var form))))
                  ((c1expr-avct (c1var form))))) ;FIXME pcl
           ((consp form)
            (let ((fun (car form)))
@@ -100,7 +100,6 @@
 				 (cmperr "Sharp-comma-macro was found in a bad place."))
 				(t (cmperr "The function ~s is illegal." fun))))))
           (t (c1constant-value form t)))))
-  (if (eq form '*cmperr-tag*) (c1nil) form))
 
 (si::putprop 'si:|#,| 'c1sharp-comma 'c1special)
 (si::putprop 'load-time-value 'c1load-time-value 'c1special)

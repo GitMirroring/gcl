@@ -40,7 +40,7 @@
   (apply #'si::error-format string args)
   (force-output *error-output*)
   (incf *error-count*);(setq *error-p* t)
-  (throw *cmperr-tag* '*cmperr-tag*))
+  (throw *cmperr-tag* (c1nil)))
 
 (defmacro cmpck (condition string &rest args)
   `(if ,condition (cmperr ,string ,@args)))
