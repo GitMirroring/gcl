@@ -87,7 +87,7 @@ DEFUN("INIT-FUNCTION",object,fSinit_function,SI,7,7,NONE,OO,OO,OI,II, \
   d=data!=Cnil ? data : m;
   i=sSPinit;
   i=i ? i->s.s_dbind : i;
-  if (is_text_addr(addr)||get_pageinfo(addr)||!i||i==OBJNULL)
+  if (is_text_addr(addr)||(get_pageinfo(addr)&&!is_bigger_fixnum(addr))||!i||i==OBJNULL)
     s=addr;
   else {
     massert(type_of(addr)==t_fixnum);
