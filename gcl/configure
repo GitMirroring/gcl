@@ -8382,12 +8382,16 @@ printf "%s\n" "#define CSTACK_ALIGNMENT $cstack_alignment" >>confdefs.h
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $cstack_alignment" >&5
 printf "%s\n" "$cstack_alignment" >&6; }
 
+cstack_max=-1;
 # Check whether --enable-cstackmax was given.
 if test ${enable_cstackmax+y}
 then :
-  enableval=$enable_cstackmax; cstack_max=-1;if test "$enableval" != "" ; then cstack_max=$enableval;
+  enableval=$enable_cstackmax; if test "$enableval" != "" ; then
+	         cstack_max=$enableval;
+
 printf "%s\n" "#define CSTACKMAX $enableval" >>confdefs.h
- fi
+
+	       fi
 fi
 
 
@@ -8733,19 +8737,19 @@ main (void)
 		FILE *fp = fopen("conftest1","w");
 
 		for (i=2,k=1;i;k=i,i<<=1);
-		    l=$cstack_address;
-		    l=$cstack_direction==1 ? (l<k ? k-1 : $cstack_max) : l;
-		    for (i=j=k;j && i<l;j>>=1,i|=j);
-			if (j<(k>>3)) i=0;
-			   j=1;
-			   j<<=$PAGEWIDTH;
-			   j<<=4;
-			   j--;
-			   i+=j;
-			   i&=~j;
-			   fprintf(fp,"0x%lx",i);
-			   fclose(fp);
-			   return 0;
+		l=$cstack_address;
+		l=$cstack_direction==1 ? (l<k ? k-1 : $cstack_max) : l;
+		for (i=j=k;j && i<l;j>>=1,i|=j);
+		if (j<(k>>3)) i=0;
+		j=1;
+		j<<=$PAGEWIDTH;
+		j<<=4;
+		j--;
+		i+=j;
+		i&=~j;
+		fprintf(fp,"0x%lx",i);
+		fclose(fp);
+		return 0;
 
   ;
   return 0;
