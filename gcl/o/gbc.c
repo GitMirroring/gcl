@@ -304,7 +304,6 @@ enter_mark_origin(object *p) {
 
 /* Whenever two arrays are linked together by displacement,
    if one is live, the other will be made live */
-#define mark_displaced_field(ar) mark_object(ar->a.a_displaced)
 
 #define LINK_ARRAY_MARKED(x_) ((*(unsigned long *)(x_))&0x1)
 #define MARK_LINK_ARRAY(x_) ((*(unsigned long *)(x_))|=1UL)
