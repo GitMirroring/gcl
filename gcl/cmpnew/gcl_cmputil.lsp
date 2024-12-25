@@ -76,19 +76,14 @@
 	((not *warning-note-stack*))
       (funcall (pop *warning-note-stack*)))))
   
-(defun print-sri-stack nil
-  (let ((*print-length* 2)
-	(*print-level* 2)
-	(f (cadr *current-form*)))
-    (dolist (s *src-inline-recursion*)
-      (unless (eq (caar s) f)
-	(format t ";   inlining ~s~%" (cons (name-sir (car s)) (cdr s)))))))
 
 (defun cmpwarn (string &rest args &aux (*print-case* :upcase))
   (unless *suppress-compiler-warnings*
     (maybe-to-wn-stack
-     (print-current-form *error-output*)
-     (warn 'style-warning  :format-control "~?" :format-arguments (list string args))))
+     (warn 'style-warning
+	   :function-name (print-current-form nil)
+	   :format-control "~?"
+	   :format-arguments (list string args))))
   nil)
 
 (defvar *suppress-compiler-notes* t)
@@ -123,7 +118,7 @@
 	    (not (eq (car *first-error*) *current-form*))
 	    (not (eq (cdr *first-error*) *src-inline-recursion*)))
     (setq *first-error* (cons *current-form* *src-inline-recursion*))
-    (let ((args (list ";; When compiling ~s~%~{~&;;   inlining ~s~}"
+    (let ((args (list ";; When compiling ~s~%~{;;   inlining ~s~%~}"
 		      (if (and (consp f) (eq (car f) '|#,|)) (cdr f) f)
 		      (mapcan (lambda (s) (unless (eq (caar s) f) (list (cons (name-sir (car s)) (cdr s)))))
 			      (butlast *src-inline-recursion*)))))

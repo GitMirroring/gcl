@@ -139,12 +139,12 @@
 	((symbolp datum)
 	 (let ((args (process-args args)))
 	   (substitute 
-	    #\^ #\~ 
-	    (coerce-to-string
-	     (if args
-		 (apply 'string-concatenate (list* datum ": " (make-list (length args) :initial-element " ~a")))
-	       (string datum))
-	     args))))
+	    #\^ #\~
+	    (let* ((fn (member :function-name args))
+		   (args (if fn (nconc (ldiff args fn) (cddr fn)) args)))
+	      (coerce-to-string
+	       (apply 'string-concatenate (or (cadr fn) "") datum (if args ": " "") (make-list (length args) :initial-element " ~a"))
+	       args)))))
 	("unknown error")))
 
 (defun put-control-string (strm strng)

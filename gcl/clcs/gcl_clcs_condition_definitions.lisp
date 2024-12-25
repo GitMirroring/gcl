@@ -113,10 +113,11 @@
   ((function-name :initarg :function-name
 		  :reader internal-condition-function-name
 		  :initform nil))
-  (:report (lambda (condition stream)
-	     (when (internal-condition-function-name condition)
-	       (format stream "Condition in ~S [or a callee]: "
-		       (internal-condition-function-name condition)))
+  (:report (lambda (condition stream &aux (x (internal-condition-function-name condition)))
+	     (when x
+	       (if (stringp x);FIXME compiler context
+		   (format stream x)
+		   (format stream "Condition in ~S [or a callee]: " x)))
 	     (call-next-method))))
 
 
