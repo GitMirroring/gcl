@@ -282,7 +282,7 @@
   (do-all-symbols (s) (let ((x (needs-recompile s))) (when x (pushnew (caar x) q))))
   (when q
     (format t "~%Pass 1 signature discovery on ~s functions ..." (length q))
-    (mapc (lambda (x) (format t "~s " x) (compile x)) q)
+    (mapc (lambda (x) (format t "~s~%" x) (compile x)) q)
     (gen-discovery-props)))
 
 (defun do-recomp2 (sp fl &aux *sig-discovery-props* *compile-verbose* r)
