@@ -709,6 +709,53 @@ fSmake_string_input_stream_int(object x,fixnum y,fixnum z) {
 }
 #endif
 
+static bool
+tty_stream_p(object strm) {
+
+  if (type_of(strm)!=t_stream)
+    return(FALSE);
+
+  switch (strm->sm.sm_mode) {
+  case smm_input:
+  case smm_output:
+  case smm_io:
+    return(strm->sm.sm_fp && isatty(fileno(strm->sm.sm_fp)) ? TRUE : FALSE);
+
+  case smm_socket:
+  case smm_probe:
+  case smm_string_input:
+  case smm_string_output:
+    return(FALSE);
+
+  case smm_broadcast:
+  case smm_concatenated:
+    {
+      object x;
+      for (x=strm->sm.sm_object0;!endp(x);x=x->c.c_cdr)
+	if (!tty_stream_p(x->c.c_car))
+	  return(FALSE);
+      return(TRUE);
+    }
+
+  case smm_file_synonym:
+  case smm_synonym:
+    return(tty_stream_p(symbol_value(strm->sm.sm_object0)));
+
+  case smm_two_way:
+  case smm_echo:
+    return(tty_stream_p(STREAM_INPUT_STREAM(strm)) && tty_stream_p(STREAM_OUTPUT_STREAM(strm)));
+
+  default:
+    FEerror("Illegal stream mode for ~S.",1,strm);
+    return(FALSE);
+
+  }
+
+}
+
+DEFUN("TTY-STREAM-P",object,fStty_stream_p,SI,1,1,NONE,OO,OO,OO,OO,(object x),"") {
+  return tty_stream_p(x)  ? Ct : Cnil;
+}
 DEFUN("STRING-INPUT-STREAM-P",object,fSstring_input_stream_p,SI,1,1,NONE,OO,OO,OO,OO,(object x),"") {
   return type_of(x)==t_stream && x->sm.sm_mode == (short)smm_string_input ? Ct : Cnil;
 }

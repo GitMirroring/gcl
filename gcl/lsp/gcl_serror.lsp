@@ -147,9 +147,11 @@
 	     args))))
 	("unknown error")))
 
-(defun put-control-string (strm strng &aux (pos (c-stream-int strm)))
-  (format strm strng)
-  (c-set-stream-int strm pos))
+(defun put-control-string (strm strng)
+  (when (tty-stream-p strm)
+    (let ((pos (c-stream-int strm)))
+      (format strm strng)
+      (c-set-stream-int strm pos))))
 
 (defvar *error-color* "92")
 
