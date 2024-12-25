@@ -191,36 +191,29 @@
 
 
 ;; c2apply alters argument order
-(let ((l (gensym "LV")))
-  (defun apply-bind (form args &aux (la (car (last args))))
-    (if (eq l la)
-	form
-      (let* ((b (mapcar (lambda (x) (list (gensym) x)) (butlast args)))
-	     (v (mapcar 'car b)))
-	`(let (,@b (,l ,la))
-	   (apply ,@v ,l))))))
 
-(defun fn-bind (form args)
-  (if (or (symbolp (car args)) (constantp (car args))) form
-    (let ((s (sgen "FN-BIND")));sgen?
-      `(let ((,s ,(pop args))) (,(car form) ,s ,@args)))))
-
-(define-compiler-macro funcall (&whole form &rest args) (fn-bind form args))
-;(define-compiler-macro apply (&whole form &rest args) (apply-bind form args))
-(define-compiler-macro apply (&whole form &rest args) (fn-bind form args))
+;FIXME c1symbol-fun, eliminate mi1b
+(defmacro try-provisional-functions (&rest body);ensure body has no side-effects for double eval
+  `(or
+    (with-restore-vars
+	(let* ((*prov* t)(ops *prov-src*)(*prov-src* *prov-src*)(res (progn ,@body)))
+	  (unless (iflag-p (info-flags (cadr res)) provisional)
+	    (keep-vars) (mapc 'eliminate-src (ldiff *prov-src* ops)) res)))
+    (progn ,@body)))
 
 (defun c1apply (args)
   (when (or (endp args) (endp (cdr args)))
     (too-few-args 'apply 2 (length args)))
-  (let* ((ff (c1arg (pop args)))
-	 (fid (coerce-ff ff)))
-    (if (eq fid 'funcall) (c1apply args) (mi1 fid (butlast args) (car (last args)) ff))))
-	
+  (try-provisional-functions
+   (let* ((ff (c1arg (car args)))(args (cdr args))(fid (coerce-ff ff)))
+     (if (eq fid 'funcall) (c1apply args) (mi1 fid (butlast args) (car (last args)) ff)))))
+
 (defun c1funcall (args)
   (when (endp args) (too-few-args 'funcall 1 0))
-  (let* ((ff (c1arg (pop args)))
-	 (fid (coerce-ff ff)))
-    (case fid (funcall (c1funcall args))(apply (c1apply args)) (otherwise (mi1 fid args nil ff)))))
+  (try-provisional-functions
+   (let* ((ff (c1arg (car args)))(args (cdr args))(fid (coerce-ff ff)))
+     (case fid (funcall (c1funcall args))(apply (c1apply args)) (otherwise (mi1 fid args nil ff))))))
+
 
 ;; (defun c1funcall-apply (args &optional last)
 ;;   (mi1 (if last 'apply 'funcall) args (car last)))
