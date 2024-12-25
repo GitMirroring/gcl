@@ -137,14 +137,16 @@
 	       (apply 'format nil datum args))
 	   datum))
 	((symbolp datum)
-	 (let ((args (process-args args)))
-	   (substitute 
-	    #\^ #\~
-	    (let* ((fn (member :function-name args))
-		   (args (if fn (nconc (ldiff args fn) (cddr fn)) args)))
-	      (coerce-to-string
-	       (apply 'string-concatenate (or (cadr fn) "") datum (if args ": " "") (make-list (length args) :initial-element " ~a"))
-	       args)))))
+	 (let* ((args (process-args args))
+		(fn (member :function-name args))
+		(args (if fn (nconc (ldiff args fn) (cddr fn)) args)))
+	   (string-concatenate
+	    (or (cadr fn) "")
+	    (substitute
+	     #\^ #\~
+	     (coerce-to-string
+	      (apply 'string-concatenate  datum (if args ": " "") (make-list (length args) :initial-element " ~a"))
+	      args)))))
 	("unknown error")))
 
 (defun put-control-string (strm strng)
