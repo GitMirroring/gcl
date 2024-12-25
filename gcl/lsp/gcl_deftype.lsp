@@ -493,11 +493,8 @@
 (deftype not (&whole w &rest r)
   (and-or-norm 'not w r));x and-or-flatten
 
-(deftype satisfies (&whole w pred &aux (tp (get pred 'predicate-type)))
-  (cond ((not tp) w)
-	((eq 'satisfies (car (expand-deftype tp))) w)
-	((normalize-type tp))))
-
+(deftype satisfies (&whole w pred &aux (tp (get pred 'predicate-type)));Note: guard against infinite recursion
+  (if tp (normalize-type tp) w))
 
 (deftype eql (&rest r)
   (when r
