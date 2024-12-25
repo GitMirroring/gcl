@@ -1738,9 +1738,13 @@
   (let* ((otp (info-type info))
 	 (fms (make-c1forms fun args last info))
 	 (last (when (and last (nth (length args) fms)) last))
-	 (tp (type-from-args fun fms last info))
-	 (inl (when (or tp (eq otp tp)) (mi2 fun args last fms (ff-env (or ff fun))))))
-    (or inl (mi5 (or (when (symbolp fun) fun) ff) info fms last))))
+	 (tp (type-from-args fun fms last info)))
+    (or
+     (when (or tp (eq otp tp))
+       (mi2 fun args last fms (ff-env (or ff fun))))
+     (when (member-if-not 'identity fms :key (lambda (x) (info-type (cadr x))))
+       (c1progn args fms))
+     (mi5 (or (when (symbolp fun) fun) ff) info fms last))))
 
 
 (defvar *prov-src* nil)
@@ -1932,58 +1936,9 @@
     (cond ((cdr r)
 	   (setf (info-type info) (info-type (cadar rp)))
 	   (list 'progn info r))
-	  ((car r))
+	  ((the list (car r)));FIXME
 	  ((c1nil)))))
 
-
-;; (defun c1progn (forms &aux r rp)
-;;   (cond ((endp forms) (c1nil))
-;; 	((endp (cdr forms)) (c1expr (car forms)))
-;; 	((let ((info (make-info)))
-;; 	   (flet ((collect 
-;; 		   (f i) 
-;; 		   (setq rp (last (if rp (rplacd rp f) (setq r f))))
-;; 		   (add-info info i)))
-;; 		 (do ((forms forms (cdr forms))) ((not forms))
-;; 		     (let ((form (if (cdr forms) (c1arg (car forms)) (c1expr (car forms)))))
-;; 		       (cond ((and (cdr forms) (ignorable-form form)))
-;; 			     ((eq (car form) 'progn) (collect (third form) (cadr form)))
-;; 			     ((collect (cons form nil) (cadr form))))))
-;; 		 (cond ((cdr r)
-;; 			(setf (info-type info) (info-type (cadar rp)))
-;; 			(list 'progn info r))
-;; 		       ((car r))
-;; 		       ((c1nil))))))))
-
-;; (defun c1progn (forms &aux r rp)
-;;   (cond ((endp forms) (c1nil))
-;; 	((endp (cdr forms)) (c1expr (car forms)))
-;; 	((let ((info (make-info)))
-;; 	   (flet ((collect 
-;; 		   (f i) 
-;; 		   (setq rp (last (if rp (rplacd rp f) (setq r f))))
-;; 		   (add-info info i)))
-;; 		 (do ((forms forms (cdr forms))) ((not forms))
-;; 		     (let* ((*c1exit* (unless (cdr forms) *c1exit*))
-;; 			    (form (c1expr (car forms))))
-;; 		       (cond ((and (cdr forms) (ignorable-form form)))
-;; 			     ((eq (car form) 'progn) (collect (third form) (cadr form)))
-;; 			     ((collect (cons form nil) (cadr form))))))
-;; 		 (cond ((cdr r)
-;; 			(setf (info-type info) (info-type (cadar rp)))
-;; 			(list 'progn info r))
-;; 		       ((car r))
-;; 		       ((c1nil))))))))
-
-;(defun c1progn (forms &aux (fl nil))
-;  (let ((info (make-info)))
-;    (dolist (form forms)
-;      (setq form (c1expr form))
-;      (push form fl)
-;      (add-info info (cadr form)))
-;    (unless fl (push (c1nil) fl))
-;    (setf (info-type info) (info-type (cadar fl)))
-;    (list 'progn info (reverse fl))))
 
 ;;; Should be deleted.
 (defun c1progn* (forms info)
@@ -2442,7 +2397,7 @@
   form)
 
 
-(define-compiler-macro typep (&whole form &rest args)
+(define-compiler-macro typep (&whole form &rest args);FIXME compiler-in-use
   (with-restore-vars
    (let* ((info (make-info))
 	  (nargs (c1args args info))
@@ -2458,7 +2413,7 @@
 	   (form)))));FIXME hash here
 
 
-(define-compiler-macro vector-push-extend (&whole form &rest args)
+(define-compiler-macro vector-push-extend (&whole form &rest args);FIXME compiler-in-use
   (let* ((vref (when (symbolp (cadr args)) (c1vref (cadr args))));FIXME local-aliases
 	 (var (car vref)))
     (when vref
