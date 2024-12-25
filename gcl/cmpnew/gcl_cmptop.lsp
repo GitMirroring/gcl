@@ -1470,34 +1470,19 @@
 
 
 (defun if1 (f)
-  (flet ((tbp (l) (member-if (lambda (x) (or (tag-p x) (blk-p x))) l)))
-	(not (or (info-ch f) 
-		 (tbp (info-ref     f))
-		 (tbp (info-ref-ccb f))
-		 (tbp (info-ref-clb f))
-		 (/= 0 (logand (info-flags f) (iflags side-effects compiler)))))))
-
-;; (defun if1 (f)
-;;   (not (or (info-ch f) (info-blocks f) (info-tags f)
-;; 	   (iflag-p (info-flags f) side-effects))))
+  (when (info-type f)
+    (flet ((tbp (l) (member-if (lambda (x) (or (tag-p x) (blk-p x))) l)))
+      (not (or (info-ch f)
+	       (tbp (info-ref     f))
+	       (tbp (info-ref-ccb f))
+	       (tbp (info-ref-clb f))
+	       (/= 0 (logand (info-flags f) (iflags side-effects compiler))))))))
   
-(defun ignorable-form-old (f)
-  (cond ((> (changed-length (cadr f)) 0) nil)
-	((side-effects-p f) nil)
-	(t)))
-
 (defun ignorable-form (f)
   (case (car f)
 	(function t)
 	((cadd-dladdress infer-tp) nil)
 	(otherwise (if1 (cadr f)))))
-
-;; (defun ignorable-form (f)
-;;   (or (eq (car f) 'function)
-;;       (if1 (cadr f))))
-
-;; (defun ignorable-form (f)
-;;   (if1 (cadr f)))
 
 
 ;;Checks the register slots of variables, and finds which
