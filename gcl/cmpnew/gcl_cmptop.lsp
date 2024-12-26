@@ -1103,8 +1103,8 @@
     (keyed-cmpnote (list 'return-type fname) "~s return type ~s" fname (c1retnote lambda-expr))
     
     (unless (or (equal osig sig) (eq fname 'cmp-anon));FIXME
-      (cmpwarn "signature change on function ~s,~%   ~s -> ~s~%"
-	       fname (si::readable-sig osig) (si::readable-sig sig))
+      (cmpstyle-warn "signature change on function ~s,~%   ~s -> ~s~%"
+		     fname (si::readable-sig osig) (si::readable-sig sig))
       (setq *new-sigs-in-file* 
 	    (some
 	     (lambda (x) 

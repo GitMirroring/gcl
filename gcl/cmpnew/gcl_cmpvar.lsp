@@ -191,7 +191,7 @@
     (when (and (eq (var-kind var) 'LEXICAL)
 	       (not (var-reffed var))
 	       (not (var-ref var)));;; This field may be IGNORE or IGNORABLE here.
-      (cmpwarn "The variable ~s is not used." (var-name var)))))
+      (cmpstyle-warn "The variable ~s is not used." (var-name var)))))
 
 (defun var-cb (v)
   (or (var-ref-ccb v) (eq 'clb (var-loc v))))
