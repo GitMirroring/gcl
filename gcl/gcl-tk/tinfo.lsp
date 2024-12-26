@@ -503,7 +503,7 @@
 
 (defun insert-string (win string beg end)
   (and (> end beg)
-  (let ((ar (make-array  (- end beg) :element-type 'string-char
+  (let ((ar (make-array  (- end beg) :element-type 'character
 			:displaced-to string :displaced-index-offset beg)))
     (funcall win :insert 'insert ar))))
 

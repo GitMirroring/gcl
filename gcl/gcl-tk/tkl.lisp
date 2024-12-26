@@ -188,9 +188,8 @@
 (defvar *string-streams* (list (make-string-input-stream "") (make-string-input-stream "")))
 
 (defmacro with-tk-command (&body body)
-  `(let (tk-command (*command-strings* *command-strings*))
-     (declare (type string tk-command))
-     (setq tk-command (grab-tk-command))
+  `(let ((tk-command (grab-tk-command)) (*command-strings* *command-strings*))
+     (declare (string tk-command))
      ,@ body))
 
 (defun grab-tk-command( &aux x)
@@ -199,11 +198,11 @@
    ((cdr *command-strings*))
    (t 
     (setq x (list (make-array 70
-			      :element-type 'standard-char
+			      :element-type 'character
 			      :fill-pointer 0 :adjustable t))
 	  )
     (or *command-strings* (error "how??"))
-  
+
     (setq *command-strings* (nconc *command-strings* x))))
   (let ((x (car *command-strings*)))
     (setq  *command-strings* (cdr *command-strings*))

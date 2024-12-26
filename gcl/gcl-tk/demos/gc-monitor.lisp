@@ -38,12 +38,12 @@
   (setf (fill-pointer *values-array*) 0)
   (let ((max-size 0) (ar *values-array*) (i 0) (width 7.0s0)
 	(ht ".15c"))
-    (declare (seqind max-size) (short-float width)(type (array (t)) ar))
+    (declare (si::seqind max-size) (short-float width)(type (array (t)) ar))
     (dolist (v *gc-monitor-types*)
       (let ((fp (fill-pointer *values-array*))
 	    )
 	(multiple-value-call 'push-multiple-values (si::allocated v))
-	(setq max-size (max max-size (aref ar (the seqind (+ fp 1)))))))
+	(setq max-size (max max-size (aref ar (the si::seqind (+ fp 1)))))))
 					;  (nfree npages maxpage nppage gccount nused)
     (dolist (v *gc-monitor-types*)
       (let* ((nfree (aref ar i))
@@ -56,11 +56,11 @@
 	     (tot (* npages nppage))
 	     (width-used (the short-float
 			      (/ (the short-float
-				      (* wid (the seqind
+				      (* wid (the si::seqind
 						  (- tot
-						     (the seqind nfree)))))
+						     (the si::seqind nfree)))))
 				 tot))))
-	(declare (seqind nppage npages  tot)
+	(declare (si::seqind nppage npages  tot)
 		 (short-float  wid))
 	(setq i (+ i 1))
     	(funcall (get v 'canvas) :delete "graph")
@@ -152,7 +152,3 @@
     (draw-status nil))
   (setq si::*after-gbc-hook* 'draw-status)
   )
-
-
-
-  
