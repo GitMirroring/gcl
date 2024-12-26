@@ -532,12 +532,7 @@
     (unless (type>= type it)
       (let ((nt (type-and type it)))
 	(unless nt
-	  (unless type
-	    (cmpwarn "NOT setting form type from ~s to ~s" (cmp-unnorm-tp it) (cmp-unnorm-tp type))
-	    (return-from sft nil))
-	  (cmpwarn "Setting form type ~s to orthogonal type ~s"
-		   (cmp-unnorm-tp it) (cmp-unnorm-tp type))
-	  (setq nt type))
+	  (keyed-cmpnote (list 'nil-arg) "Setting form type ~s to nil" (cmp-unnorm-tp it)))
 	(when (or (eq form (c1nil)) (eq form (c1t)));FIXME
 	  (unless (type= it nt)
 	    (return-from sft nil)))
