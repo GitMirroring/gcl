@@ -358,7 +358,7 @@
 (defun get-var (o &aux (vp (var-p o)))
   (or (get-top-var-binding (if vp (get-vbind o) o)) (when vp o)))
 
-(defun c1vref (name &aux ccb clb)
+(defun c1vref (name &optional setq &aux ccb clb)
   (dolist (var *vars*
                (let ((var (sch-global name)))
                  (unless var
@@ -374,6 +374,10 @@
       (cond ((eq var 'cb) (setq ccb t))
             ((eq var 'lb) (setq clb t))
             ((or (when (eq (var-name var) name) (not (member var *lexical-env-mask*))) (eq var name))
+	     (unless setq
+	       (when (eq (var-ref var) 'IGNORE)
+		 (unless (var-reffed var)
+		   (cmpstyle-warn "The ignored variable ~s is used." name))))
 	     (set-var-reffed var)
 	     (keyed-cmpnote (list 'var-ref (var-name var))
 			    "Making variable ~s reference with barrier ~s" (var-name var) (if ccb 'cb (if clb 'lb)))
@@ -564,7 +568,7 @@
 (defun c1setq1 (name form &aux (info (make-info)) type form1 name1)
   (cmpck (not (symbolp name)) "The variable ~s is not a symbol." name)
   (cmpck (constantp name) "The constant ~s is being assigned a value." name)
-  (setq name1 (c1vref name))
+  (setq name1 (c1vref name t))
   (when (member (var-kind (car name1)) '(special global));FIXME
     (setf (info-flags info) (logior (iflags side-effects) (info-flags info))))
 ;  (push-changed (car name1) info)
