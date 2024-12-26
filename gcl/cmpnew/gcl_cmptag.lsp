@@ -214,7 +214,9 @@
                        (*value-to-go* 'trash))
                   (c2expr (car l))
                   (wt-label *exit*))
-                (unless (type>= #tnil (info-type (cadar l))) (unwind-exit nil)))));(eq (caar l) 'go)
+		;gcc lintian, lacking noreturn attributes prevents
+		;(unless (type>= #tnil (info-type (cadar l))) (unwind-exit nil))
+		(unwind-exit nil))))
     (cond (written (setq written nil))
           ((typep (car l) 'tag)
 	   (wt-switch-case (tag-switch (car l)))
