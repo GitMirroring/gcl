@@ -36,7 +36,11 @@
 	  (var-type v) (ensure-known-type (if *compiler-new-safety* (var-type v) (type-and t1 (var-dt v))))
 	  (var-mt v) (var-type v)
 	  (var-loc v) (unless (and (eq (var-loc v) 'object)
-				   (unless (eq t (var-type v)) (var-type v))) (var-loc v)))
+				   (unless (eq t (var-type v)) (var-type v)))
+			(var-loc v)))
+    (unless (var-type v)
+      (cmpwarn "Type mismatches binding declared ~s variable ~s to type ~s."
+	       (cmp-unnorm-tp (var-dt v)) (var-name v) (cmp-unnorm-tp t1)))
     (keyed-cmpnote (list (var-name v) 'type-propagation 'type 'init-type)
 		   "Setting init type of ~s to ~s" (var-name v) (cmp-unnorm-tp (var-type v)))))
 
@@ -116,8 +120,8 @@
 	      (when (eq (car fm) 'var) (pushnew (caaddr fm) (var-aliases v)))
 	      (maybe-reverse-type-prop (var-type v) fm)
 	      (when star (push-var v fm))
-	      (cons v fm))) args))
-
+	      (cons v fm)))
+	  args))
 
 (defun push-var (var form)
   (push var *vars*)
