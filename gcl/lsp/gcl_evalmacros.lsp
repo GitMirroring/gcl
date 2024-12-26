@@ -339,7 +339,8 @@
        (do ((,var 0 (1+ ,var)))
 	   ((>= ,var ,m)
 	    (when (> ,s most-positive-fixnum)
-	      (let ((,var ,var)) (declare (ignorable ,var)) ,@body);FIXME?
+	      (let ((,var most-positive-fixnum)) (declare (ignorable ,var)) ,@body)
+	      ;; non-negative-bignum a bumped type
 	      (do ((,var (1+ most-positive-fixnum) (1+ ,var)))((>= ,var ,s)) ,@body))
 	    ,val)
 	 ,@body))))
