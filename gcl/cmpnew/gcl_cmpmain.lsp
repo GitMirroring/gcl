@@ -533,6 +533,7 @@ Cannot compile ~a.~%" (namestring (merge-pathnames input-pathname *compiler-defa
 	   (let (*fasd-data*)
 	     (multiple-value-bind (f w e)
 		 (compile-file gaz :h-file t :c-file t :data-file t :o-file t)
+	       (declare (ignore f w))
 	       (unless e
 		 (let ((cn (get-output-pathname gaz "c" gaz ))
 		       (dn (get-output-pathname gaz "data" gaz ))

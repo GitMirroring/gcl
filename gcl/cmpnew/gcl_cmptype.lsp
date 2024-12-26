@@ -622,11 +622,9 @@
 	    (mapcar (lambda (x) (real-imag-tp (si::tp-type (cdr x)) rp))
 		    (range-decomp t1)))))
 (defun complex-real-type-propagator (f t1)
-  (declare (ignore f))
   (complex-real-imag-type-propagator f t1 t))
 
 (defun complex-imag-type-propagator (f t1)
-  (declare (ignore f))
   (complex-real-imag-type-propagator f t1 nil))
 (si::putprop 'si::complex-real 'complex-real-type-propagator 'type-propagator)
 (si::putprop 'si::complex-imag 'complex-imag-type-propagator 'type-propagator)

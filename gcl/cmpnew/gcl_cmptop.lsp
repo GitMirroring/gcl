@@ -625,6 +625,9 @@
 (defun effective-safety (decls)
   (max (decl-safety decls) (this-safety-level)))
 
+(defun remove-ignore-decls (decls)
+  (mapcar (lambda (x) (remove-if (lambda (y) (when (consp y) (eq (car y) 'ignore))) x)) decls))
+
 (defun new-defun-args (args tag)
   (let* ((nm (si::funid-to-sym (car args)))
 	 (args (ttl-tag-src args tag nm))
@@ -639,7 +642,7 @@
 	    (sl (effective-safety decls))
 	    (s (> sl 0))
 	    (od (split-decls regs decls))
-	    (rd (pop od))
+	    (rd (remove-ignore-decls (pop od)))
 	    (oc (split-ctps regs ctps))
 	    (rc (pop oc))
 	    ;FIXME check-type must refer to top regular variable binding, but must be beneath argument number logic
@@ -650,7 +653,7 @@
 	    (nr (length regs))
 	    (regs (or regs (when narg (list +first+))))
 	    (m (min 63 (mll ll)))
-	    (args `(,@(car od) ,@oc ,@args))
+	    (args `(,@(remove-ignore-decls (car od)) ,@oc ,@args))
 	    (opts (if narg (cons narg opts) opts))
 	    (args (if narg (cons `(declare ((integer ,(- m) ,m) ,narg)) args) args))
 	    (rc (if narg (cons `(declare (hint (integer ,(- m) ,m) ,narg)) rc) rc))
@@ -1268,8 +1271,6 @@
 		      (*current-form* (list 'defun fname))
 		      (*volatile* (volatile (second lambda-expr))))
 
-  (declare (ignore doc))
-
   (let ((*compiler-check-args* *compiler-check-args*)
         (*safe-compile* *safe-compile*)
         (*compiler-push-events* *compiler-push-events*)
@@ -1371,7 +1372,6 @@
 ;;Macros for conditionally writing vs_base ..preamble, and for setting
 ;;up the return.
 (defun wt-V*-macros (cm return-type)
-  (declare (ignore return-type))
 
   (push (cons cm *max-vs*) *reservations*)
   
