@@ -1917,9 +1917,10 @@
 ;; 	   (list 'progn info (nreverse fl))))))
 
 
-(defun truncate-progn-at-nil-return-p (rp forms)
+(defun truncate-progn-at-nil-return-p (rp forms c1forms)
   (when (and rp (not (info-type (cadar rp))))
     (keyed-cmpnote 'nil-return "progn truncated at nil return, eliminating ~s" forms)
+    (eliminate-src (cons 'progn (nthcdr (length c1forms) forms)))
     t))
 
 
@@ -1928,7 +1929,7 @@
   (flet ((collect (f i)
 	   (setq rp (last (if rp (rplacd rp f) (setq r f))))
 	   (add-info info i)))
-    (do ((forms forms (cdr forms))) ((or (not forms) (truncate-progn-at-nil-return-p rp forms)))
+    (do ((forms forms (cdr forms))) ((or (not forms) (truncate-progn-at-nil-return-p rp forms c1forms)))
       (let ((form (or (pop c1forms) (if (cdr forms) (c1arg (car forms)) (c1expr (car forms))))))
 	(cond ((and (cdr forms) (ignorable-form form)))
 	      ((eq (car form) 'progn) (collect (third form) (cadr form)))
