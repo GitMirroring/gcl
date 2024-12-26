@@ -59,12 +59,15 @@
       (setq dummy (make-dummy-var));use dummy to ensure freshly allocated closure
       (called-fin-without-function))))
 
+(defun fun-to-funcallable-instance (fin);This cannot be inlines
+  (c-set-t-tt fin (logior 1 (c-t-tt fin)))
+  (the si::funcallable-std-instance fin))
+
 (defun allocate-funcallable-instance-1 ()
   (let ((fin (allocate-funcallable-instance-2))
 	(env (make-list funcallable-instance-closure-size :initial-element nil)))
     (si::set-function-environment fin env)
-    (c-set-t-tt fin (logior 1 (c-t-tt fin)))
-    (the si::funcallable-std-instance fin)))
+    (fun-to-funcallable-instance fin)))
 
 (defun funcallable-instance-p (x) (typep x 'funcallable-std-instance))
 (defun std-instance-p (x) (typep x 'std-instance))
