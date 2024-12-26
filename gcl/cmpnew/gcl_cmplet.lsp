@@ -106,40 +106,6 @@
 		 (if nf (setf (car nf) np) (setf body np)))))
 	    ((push var nv) (when star (ref-vars form (cdr vs))) (push form nf))))))
 
-;; (defun trim-vars (vars forms body &optional star &aux (bp (have-provfn body)))
-
-;;   (do* (nv nf (vs vars (cdr vs)) (fs forms (cdr fs)) 
-;; 	   (av (append vars *vars*)) (fv (cdr av) (cdr fv)))
-;;       ((or (endp vs) (endp fs)) (list nv nf body))
-;;       (let ((var (car vs)) (form (car fs)))
-;; 	(cond ((and (eq (var-kind var) 'LEXICAL)
-;; 		    (not (eq t (var-ref var))) ;;; This field may be IGNORE.
-;; 		    (not (var-ref-ccb var))
-;; 		    (not (provisional-block-trim (var-name var) bp fs star)))
-;; 	       (unless (ignorable-form form) 
-;; 		 (let* ((*vars* (if nf (if star fv *vars*) av))
-;; 			(f (if nf (car nf) body))
-;; 			(np (new-c1progn form f)))
-;; 		   (if nf (setf (car nf) np) (setf body np)))))
-;; 	      ((push var nv) (push form nf))))))
-
-;; (defun trim-vars (vars forms body &optional star)
-
-;;   (do* (nv nf (vs vars (cdr vs)) (fs forms (cdr fs)) 
-;; 	   (av (append vars *vars*)) (fv (cdr av) (cdr fv)))
-;;       ((or (endp vs) (endp fs)) (list nv nf body))
-;;       (let ((var (car vs)) (form (car fs)))
-;; 	(cond ((and (eq (var-kind var) 'LEXICAL)
-;; 		    (not (eq t (var-ref var))) ;;; This field may be IGNORE.
-;; 		    (not (var-ref-ccb var))
-;; 		    (not *provisional-inline*));FIXME
-;; 	       (unless (ignorable-form form) 
-;; 		 (let* ((*vars* (if nf (if star fv *vars*) av))
-;; 			(f (if nf (car nf) body))
-;; 			(np (new-c1progn form f)))
-;; 		   (if nf (setf (car nf) np) (setf body np)))))
-;; 	      ((push var nv) (push form nf))))))
-
 (defun mvars (args ss is ts star inls)
   (mapcar (lambda (x)
 	    (let* ((n (if (atom x) x (pop x)))
@@ -152,96 +118,6 @@
 	      (when star (push-var v fm))
 	      (cons v fm))) args))
 
-;; (defun mvars (args ss is ts star inls)
-;;   (mapcar (lambda (x)
-;; 	    (let* ((n (if (atom x) x (pop x)))
-;; 		   (f (unless (atom x) (car x)))
-;; 		   (v (c1make-var n ss is ts))
-;; 		   (fm (if (and inls (eq f (caar inls))) (cdr (pop inls)) (c1arg f))));FIXME check
-;; 	      (set-var-init-type v (info-type (cadr fm)))
-;; 	      (when (eq (car fm) 'var) (pushnew (caaddr fm) (var-aliases v)))
-;; 	      (maybe-reverse-type-prop (var-type v) fm)
-;; 	      (when star (push v *vars*))
-;; 	      (cons v fm))) args))
-
-;; (defun mvars (args ss is ts star inls &aux *c1exit*)
-;;   (mapcar (lambda (x)
-;; 	    (let* ((n (if (atom x) x (pop x)))
-;; 		   (f (unless (atom x) (car x)))
-;; 		   (v (c1make-var n ss is ts))
-;; 		   (fm (if (and inls (eq f (caar inls))) (cdr (pop inls)) (c1expr f))));FIXME check
-;; 	      (set-var-init-type v (info-type (cadr fm)))
-;; 	      (when (eq (car fm) 'var) (pushnew (caaddr fm) (var-aliases v)))
-;; 	      (maybe-reverse-type-prop (var-type v) fm)
-;; 	      (when star (push v *vars*))
-;; 	      (cons v fm))) args))
-
-;; (defun mvars (args ss is ts info star &aux *c1exit* (ov *vars*))
-;;   (mapcar (lambda (x)
-;; 	    (let* ((n (if (atom x) x (pop x)))
-;; 		   (f (unless (atom x) (car x)))
-;; 		   (v (c1make-var n ss is ts))
-;; 		   (fm (if (and *inline-forms* 
-;; 				(eq f (caar *inline-forms*))) (cdr (pop *inline-forms*)) (c1expr f))))
-;; 	      (let ((*vars* ov)) (add-info info (cadr fm)));FIXME?  top-level info
-;; 	      (set-var-init-type v (info-type (cadr fm)))
-;; 	      (when (eq (car fm) 'var) (pushnew (caaddr fm) (var-aliases v)))
-;; 	      (maybe-reverse-type-prop (var-type v) fm)
-;; 	      (when star (push v *vars*))
-;; 	      (cons v fm))) args))
-
-;; (defun fsl (sl)
-;;   (labels ((m (tg q &aux (v (member tg q :key 'car))) (if v (m (cdar v) (cdr v)) tg)))
-;; 	  (mapl (lambda (x) (setf (cdar x) (m (cdar x) (cdr x)))) sl)))
-
-;; (defun c1replace-check (sl f)
-;;   (cond ((atom f) (assert (not (assoc f sl))))
-;; 	(t (c1replace-check sl (car f)) (c1replace-check sl (cdr f)))))
-
-;; (defun c1replace-body (sl f);FIXME push refs to slot of var to avoid walk
-;;   (unless (atom f)
-;;     (labels ((set (v &aux (s (assoc (car v) sl))) (when s (setf (car v) (cdr s)))))
-;; 	    (case (car f)
-;; 		  (var (if (info-p (cadr f)) (set (third f)) (c1replace-body sl (cdr f))))
-;; 		  (infer-tp  (set (cddr f));FIXME
-;; 			     (c1replace-body sl (cdddr f)))
-;; 		  (otherwise (c1replace-body sl (car f)) (c1replace-body sl (cdr f)))))))
-  
-;; (defun c1replace (form)
-;;   (let* ((nm (pop form)) (info (pop form)) (vars (pop form)) (fms (pop form))
-;; 	 (q (mapcar 'cons vars fms))
-;; 	 (nf (append fms form))
-;; 	 (ch (reduce 'nunion (mapcar (lambda (x &aux (x (cadr x))) (union (info-ch x) (union (info-ref-ccb x) (info-ref-clb x)))) nf)))
-;; 	 (sl (remove-if (lambda (x) (not (eq (cadr x) 'var))) q))
-;; 	 (sl (mapcar (lambda (x) (cons (car x) (car (third (cdr x))))) sl))
-;; 	 (sl (labels ((bad (x) (or (member x ch) (member (var-kind x) '(global special)))))
-;; 		     (remove-if (lambda (x) (or (bad (car x)) (bad (cdr x)))) sl)))
-;; 	 (sl (remove-if-not (lambda (x) (type>= (var-type (car x)) (var-type (cdr x)))) sl))
-;; 	 (sl (fsl (nreverse sl)))
-;; 	 (q (remove-if (lambda (x) (assoc (car x) sl)) q)))
-
-;;     (mapc (lambda (x) (mapc (lambda (y) (setf (car y) (cdr x))(push y (var-store (cdr x)))) (var-store (car x)))) sl)
-;; ;    (c1replace-check sl nf)
-     
-;;     (list* nm info (mapcar 'car q) (mapcar 'cdr q) form)))
-
-;; (defun c1replace (form)
-;;   (let* ((nm (pop form)) (info (pop form)) (vars (pop form)) (fms (pop form))
-;; 	 (q (mapcar 'cons vars fms))
-;; 	 (nf (append fms form))
-;; 	 (ch (reduce 'nunion (mapcar (lambda (x &aux (x (cadr x))) (union (info-ch x) (union (info-ref-ccb x) (info-ref-clb x)))) nf)))
-;; 	 (sl (remove-if (lambda (x) (not (eq (cadr x) 'var))) q))
-;; 	 (sl (mapcar (lambda (x) (cons (car x) (car (third (cdr x))))) sl))
-;; 	 (sl (labels ((bad (x) (or (member x ch) (member (var-kind x) '(global special)))))
-;; 		     (remove-if (lambda (x) (or (bad (car x)) (bad (cdr x)))) sl)))
-;; 	 (sl (remove-if-not (lambda (x) (type>= (var-type (car x)) (var-type (cdr x)))) sl))
-;; 	 (sl (fsl (nreverse sl)))
-;; 	 (q (remove-if (lambda (x) (assoc (car x) sl)) q)))
-    
-;;     (when sl (c1replace-body sl nf));FIXME push refs to slot of var to avoid walk
-;; ;      (c1replace-check sl nf)
-    
-;;     (list* nm info (mapcar 'car q) (mapcar 'cdr q) form)))
 
 (defun push-var (var form)
   (push var *vars*)

@@ -108,11 +108,6 @@
   `(lambda ,info ,(list (nreverse requireds) narg) ,doc ,body))
 
 
-(defun the-parameter (name)
-  (cmpck (not (symbolp name)) "The parameter ~s is not a symbol." name)
-  (cmpck (constantp name) "The constant ~s is being bound." name)
-  name)
-
 (defvar *rest-on-stack* nil)  ;; non nil means put rest arg on C stack.
 
 (defun need-to-set-vs-pointers (lambda-list)
