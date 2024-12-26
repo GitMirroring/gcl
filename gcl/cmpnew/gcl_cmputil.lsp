@@ -80,6 +80,15 @@
 (defun cmpwarn (string &rest args &aux (*print-case* :upcase))
   (unless *suppress-compiler-warnings*
     (maybe-to-wn-stack
+     (warn 'warning
+	   :function-name (print-current-form nil)
+	   :format-control "~?"
+	   :format-arguments (list string args))))
+  nil)
+
+(defun cmpstyle-warn (string &rest args &aux (*print-case* :upcase))
+  (unless *suppress-compiler-warnings*
+    (maybe-to-wn-stack
      (warn 'style-warning
 	   :function-name (print-current-form nil)
 	   :format-control "~?"
