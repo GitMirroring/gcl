@@ -276,6 +276,10 @@
 
   (setq init-form (c1arg (cadr args) info))
 
+  (unless (info-type (cadr init-form))
+    (eliminate-src body)
+    (return-from c1multiple-value-bind init-form))
+
   (setq vars (nreverse vars))
   (let* ((tp (info-type (second init-form)))
 	 (tp (if (cmpt tp) (unless (member nil tp) tp) tp));FIXME
