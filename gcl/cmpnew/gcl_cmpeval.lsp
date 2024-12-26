@@ -1496,19 +1496,25 @@
     (mapc (lambda (x) (setf (info-type (cadr x)) (coerce-to-one-value (info-type (cadr x))))) nargs)
 
     (unless (or last (local-fun-p fn) (eq fn (when (consp *current-form*) (cadr *current-form*))));FIXME
-      (when (do (p ;n
-		 (a at (if (eq (car a) '*) a (cdr a)))
-		 (r args (cdr r))
-		 (f nargs (cdr f)))
-		((or p (endp f) (endp a))
-		 (or p f (and a (not (eq (car a) '*))))) ; (when (setq nargs (nreverse n)) nil)))
-	      (unless (or (eq '* (car a)) (type-and (car a) (info-type (cadar f))))
-		(cmpwarn "The type of the form ~s is not ~s, but ~s."
-			 (car r) (cmp-unnorm-tp (car a)) (cmp-unnorm-tp (info-type (cadar f))))
-		(setq p t)))
-	(cmpwarn "inlining of ~a prevented due to argument type mismatch: ~a ~a~%" 
-		 fn (mapcar 'cmp-unnorm-tp at) (mapcar 'cmp-unnorm-tp nat))
-	(setf (info-type info) nil)))
+      (let* (p
+	     (m (do ((a at (if (eq (car a) '*) a (cdr a)))
+		     (r args (cdr r))
+		     (f nargs (cdr f)))
+		    ((or (endp f) (endp a))
+		     (or f (and a (not (eq (car a) '*)))))
+		  (unless (or (eq '* (car a)) (type-and (car a) (info-type (cadar f))))
+		    (setq p t)))))
+	(when m
+	  (funcall (if (eq (symbol-package fn) #.(find-package 'cl)) 'cmpwarn 'cmpstyle-warn)
+		   "Wrong number of args in call to ~s:~% ~a ~a ~a~%"
+		   fn (cons fn args) (mapcar 'cmp-unnorm-tp at) (mapcar 'cmp-unnorm-tp nat)))
+	(when p
+	  (keyed-cmpnote
+	   (list fn 'inline)
+	   "inlining of ~a prevented due to argument type mismatch:~% ~a ~a ~a~%"
+	   fn (cons fn args) (mapcar 'cmp-unnorm-tp at) (mapcar 'cmp-unnorm-tp nat)))
+	(when (or p m)
+	  (setf (info-type info) nil))))
 
     (do ((a at (if (eq '* (car a)) a (cdr a)))
 	 (r args (cdr r))
@@ -1684,7 +1690,7 @@
       (setf (info-flags info) (logior (info-flags info) (iflags side-effects)))));FIXME
   (cond ((setq x (member-if-not 'identity fms :key (lambda (x) (info-type (cadr x)))))
 	 (keyed-cmpnote (list fun 'nil-arg)
-			"Setting return type on call to ~s to nil due to nil-typed form ~s"
+			"Setting return type on call to ~s to nil due to nil-typed form:~%~s"
 			fun x)
 	 (setf (info-type info) nil))
 	(last)
