@@ -628,15 +628,15 @@ work during bootstrapping.
          (bind-args (,lambda-list ,method-args)
 	   ,@body)))))
 
-(defmacro fast-lexical-method-functions 
-  ((lambda-list next-method-call args rest-arg &rest lmf-options)
-   &body body)
- `(bind-fast-lexical-method-macros (,args ,rest-arg ,next-method-call)
-    (bind-lexical-method-functions (,@lmf-options)
-      (let ,(mapcar (lambda (x) (list x x)) args)
-	(declare (ignorable ,@args))
-        (bind-args (,(nthcdr (length args) lambda-list) ,rest-arg)
-		   ,@body)))))
+(defmacro fast-lexical-method-functions ((lambda-list next-method-call args rest-arg &rest lmf-options)
+					 &body body)
+  `(bind-fast-lexical-method-macros
+    (,args ,rest-arg ,next-method-call)
+    (bind-lexical-method-functions
+     (,@lmf-options)
+     (bind-args
+      (,lambda-list (list* ,@args ,rest-arg))
+      ,@body))))
 
 (defun call-no-next-method (method-name-declaration &rest args)
   (destructuring-bind (name qualifiers specializers)

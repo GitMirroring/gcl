@@ -983,15 +983,29 @@
 	  (make-method-initargs-form-internal1
 	   initargs (cddr lmf) args lmf-params restp)))))
 
+(defun split-declarations-moving-ignores (body req-args &aux r)
+  (multiple-value-bind (outer-decls inner-decls body)
+      (split-declarations body req-args)
+    (values
+     (mapcar (lambda (x)
+	       (cons 'declare
+		     (remove-if (lambda (y)
+				  (when (and (consp y) (member (car y) '(ignore ignorable)))
+				    (push y r)))
+				(cdr x))))
+	     outer-decls)
+     (cons (cons 'declare r) inner-decls)
+     body)))
+
 (defun make-method-initargs-form-internal1 
     (initargs body req-args lmf-params restp)
   (multiple-value-bind (outer-decls inner-decls body)
-      (split-declarations body req-args)
+      (split-declarations-moving-ignores body req-args)
     (let* ((rest-arg (when restp '.rest-arg.))
 	   (args+rest-arg (if restp (append req-args (list rest-arg)) req-args)))
       `(list* :fast-function
 	#'(lambda (.pv-cell. .next-method-call. ,@args+rest-arg)
-	    ,@(mapcar (lambda (x) (cons 'declare (remove-if (lambda (y) (when (consp y) (eq (car y) 'ignore))) (cdr x)))) outer-decls)
+	    ,@outer-decls
 	    (declare (ignorable .pv-cell. .next-method-call. ,@(when rest-arg (list rest-arg))))
 	    (macrolet ((pv-env ((pv calls pv-table-symbol pv-parameters)
 				&rest forms)
