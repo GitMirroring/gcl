@@ -255,9 +255,7 @@
 (defun c1multiple-value-bind (args &aux (info (make-info))
                                    (vars nil) (vnames nil) init-form
                                    ss is ts body other-decls
-                                   (*vars* *vars*)
-;				   (ov *vars*)
-				   )
+                                   (*vars* *vars*))
   (when (or (endp args) (endp (cdr args)))
     (too-few-args 'multiple-value-bind 2 (length args)))
 
@@ -276,21 +274,22 @@
 
   (setq init-form (c1arg (cadr args) info))
 
-  (unless (info-type (cadr init-form))
+  (unless (let ((x (info-type (cadr init-form))))
+	    (if (cmpt x) (not (member nil x)) x))
     (eliminate-src body)
     (return-from c1multiple-value-bind init-form))
 
+  (when (single-type-p (info-type (cadr init-form)))
+    (return-from c1multiple-value-bind
+      (c1let-* (cons (cons (list (caar args) (cadr args)) (cdar args)) (cddr args)) t
+	       (cons init-form (mapcar (lambda (x) (declare (ignore x)) (c1nil)) (cdar args))))))
+
   (setq vars (nreverse vars))
   (let* ((tp (info-type (second init-form)))
-	 (tp (if (cmpt tp) (unless (member nil tp) tp) tp));FIXME
-	 (def (when tp #tnull))
-	 (tp (cond ((not tp) tp)
-		   ((single-type-p tp) (list tp))
-		   ((eq tp '*) (make-list (length vars) :initial-element t))
-		   ((cdr tp)))))
+	 (tp (if (eq tp '*) (make-list (length vars) :initial-element t) (cdr tp))))
     (do ((v vars (cdr v)) (t1 tp (cdr t1)))
 	((not v))
-	(set-var-init-type (car v) (if t1 (car t1) def))))
+	(set-var-init-type (car v) (if t1 (car t1) #tnull))))
 
   (dolist (v vars) (push-var v init-form))
 
