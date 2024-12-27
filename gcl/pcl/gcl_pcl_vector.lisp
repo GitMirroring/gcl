@@ -318,6 +318,8 @@
 		     cache))))))
 
 (defun update-slots-in-pv (wrappers pv cwrapper pv-size pv-map)
+  (declare (optimize (safety 1)))
+  (check-type pv-size si::seqbnd)
   (if (not (if (atom wrappers)
 	       (eq cwrapper wrappers)
 	       (dolist (wrapper wrappers nil)
@@ -989,7 +991,7 @@
 	   (args+rest-arg (if restp (append req-args (list rest-arg)) req-args)))
       `(list* :fast-function
 	#'(lambda (.pv-cell. .next-method-call. ,@args+rest-arg)
-	    ,@outer-decls
+	    ,@(mapcar (lambda (x) (cons 'declare (remove-if (lambda (y) (when (consp y) (eq (car y) 'ignore))) (cdr x)))) outer-decls)
 	    (declare (ignorable .pv-cell. .next-method-call. ,@(when rest-arg (list rest-arg))))
 	    (macrolet ((pv-env ((pv calls pv-table-symbol pv-parameters)
 				&rest forms)
