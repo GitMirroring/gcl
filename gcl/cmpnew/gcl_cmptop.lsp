@@ -931,7 +931,7 @@
 	 (sig (lam-e-to-sig l))
 	 (rd (cdar *recursion-detected*))
 	 (rep (when rd (not (type<= (cadr sig) (cadr osig)))))
-	 (sig (if (and osig rep)  (list (car sig) (bbump-tp (cadr sig))) sig)))
+	 (sig (if (and osig rep)  (list (car sig) (bbump-tp (type-or1 (cadr osig) (cadr sig)))) sig)))
     (setf (car e) sig); (cadr e) *callees*)
     (cond (rep
 	   (keyed-cmpnote (list name 'recursion) "Reprocessing ~s: ~s ~s" name osig sig)
