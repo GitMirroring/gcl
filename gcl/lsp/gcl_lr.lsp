@@ -164,12 +164,9 @@
 	(not (zerop (mpz_tstbit x y))))
     (minusp x)))
 
+(declaim (inline immfixp))
 (defun immfixp (x)
   (lit :boolean "is_imm_fixnum(" (:object x) ")"))
-(putprop 'immfixp t 'compiler::cmp-inline)
-;(declaim (inline immfixp))
-(setf (get 'immfix 'si::type-predicate) 'immfixp)
-(setf (get 'immfixp 'si::predicate-type) 'immfix)
 
 (defun mpz_sgn (x)
   (declare (optimize (safety 1)))

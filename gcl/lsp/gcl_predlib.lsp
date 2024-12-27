@@ -257,6 +257,7 @@
           (random-state . random-state-p)
           (structure . structurep)
           (function . functionp)
+          (immfix . immfixp)
 	  (improper-cons . improper-consp)
           ;; (compiled-function . compiled-function-p)
           ;; (non-generic-compiled-function . non-generic-compiled-function-p)
@@ -264,7 +265,6 @@
 	  ))
 
 (dolist (l +type-alist+)
-  (putprop (car l) (cdr l) 'type-predicate)
   (when (symbolp (cdr l)) 
     (putprop (cdr l) (car l) 'predicate-type)))
 
