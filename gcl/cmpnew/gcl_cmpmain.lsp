@@ -30,7 +30,6 @@
 
 (export '(*compile-print* *compile-verbose*));FIXME
 (import 'si::(*tmp-dir* *cc* *ld* *objdump*))
-(import 'si::*error-p* 'compiler)
 
 ;;; This had been true with Linux 1.2.13 a.out or even older
 ;;; #+linux   (push :ld-not-accept-data  *features*)
@@ -82,8 +81,7 @@
     (unless (and (zerop code) (zerop result))
       (cerror "Continues anyway."
               "(SYSTEM ~S) returned a non-zero value ~D ~D."
-              string code result)
-      (setq *error-p* t))
+              string code result))
     (values result)))
 
 ;; If this is t we use fasd-data on all but system-p files.   If it
@@ -218,19 +216,18 @@
   (declare (ignore external-format))
 ;  (declare (special *c-debug* system-p))
 
-  (cond (*compiler-in-use*
-         (format t "~&The compiler was called recursively.~%~
-Cannot compile ~a.~%" (namestring (merge-pathnames input-pathname *compiler-default-type*)))
-         (setq *error-p* t)
-         (return-from compile-file1 (values)))
-        (t (setq *error-p* nil)
-           (setq *compiler-in-use* t)))  
+  (when *compiler-in-use*
+    (catch *cmperr-tag*
+      (cmperr "~&The compiler was called recursively.~%~
+Cannot compile ~a.~%" (namestring (merge-pathnames input-pathname *compiler-default-type*))))
+    (return-from compile-file1 (values)))
+  (setq *compiler-in-use* t)
   
   (unless (probe-file (merge-pathnames input-pathname *compiler-default-type*))
-    (format t "~&The source file ~a is not found.~%" (namestring (merge-pathnames input-pathname *compiler-default-type*)))
-    (setq *error-p* t)
+    (catch *cmperr-tag*
+      (cmperr "~&The source file ~a is not found.~%" (namestring (merge-pathnames input-pathname *compiler-default-type*))))
     (return-from compile-file1 (values)))
-  
+
   (when *compile-verbose*
     (format t "~&;; Compiling ~a.~%" (namestring (merge-pathnames input-pathname *compiler-default-type*))))
   
@@ -352,20 +349,17 @@ Cannot compile ~a.~%" (namestring (merge-pathnames input-pathname *compiler-defa
 	 (cond (*record-call-info*
 		(dump-fn-data (get-output-pathname output-file "fn" name dir device))))
 	 (cond (o-file
-		(compiler-cc c-pathname o-pathname  )
+		(compiler-cc c-pathname o-pathname)
 		(cond ((probe-file o-pathname)
 		       (compiler-build o-pathname data-pathname)
 		       (when load (load o-pathname))
                        (when *compile-verbose*
 			 (print-compiler-info)
 			 (format t "~&;; Finished compiling ~a.~%" (namestring output-file))))
-		      (t 
-		       (format t "~&Your C compiler failed to compile the intermediate file.~%")
-		       (setq *error-p* t))))
+		      ((catch *cmperr-tag* (cmperr "~&Your C compiler failed to compile the intermediate file.~%")))))
 	       (*compile-verbose*
 		(print-compiler-info)
-		(format t "~&;; Finished compiling ~a.~%" (namestring output-file)
-			)))
+		(format t "~&;; Finished compiling ~a.~%" (namestring output-file))))
 	 (unless c-file (delete-file c-pathname))
 	 (unless h-file (delete-file h-pathname))
 	 (unless (or data-file #+ld-not-accept-data t system-p) (delete-file data-pathname))
@@ -375,8 +369,7 @@ Cannot compile ~a.~%" (namestring (merge-pathnames input-pathname *compiler-defa
 	 (when (probe-file c-pathname) (delete-file c-pathname))
 	 (when (probe-file h-pathname) (delete-file h-pathname))
 	 (when (probe-file data-pathname) (delete-file data-pathname))
-	 (format t "~&No FASL generated.~%")
-	 (setq *error-p* t)
+	 (catch *cmperr-tag* (cmperr "No FASL generated.~%"))
 	 (values))))))
 
 (defun gazonk-name ()

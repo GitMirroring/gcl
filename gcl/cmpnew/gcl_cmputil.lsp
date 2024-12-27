@@ -39,7 +39,7 @@
   (si::error-format "ERROR: ")
   (apply #'si::error-format string args)
   (force-output *error-output*)
-  (incf *error-count*);(setq *error-p* t)
+  (incf *error-count*)
   (throw *cmperr-tag* (c1nil)))
 
 (defmacro cmpck (condition string &rest args)

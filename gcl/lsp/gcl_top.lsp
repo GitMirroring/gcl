@@ -27,7 +27,7 @@
 
 (in-package :si)
 
-(export '(loc *tmp-dir* *error-p* *debug-print-level* *break-readtable* *break-enable*
+(export '(loc *tmp-dir* *debug-print-level* *break-readtable* *break-enable*
 	      vs ihs-vs ihs-fun frs-vs frs-bds frs-ihs bds-var bds-val super-go))
 
 ;FIXME ?
@@ -206,8 +206,6 @@
    (let ((tem (or val (and (boundp sym) (symbol-value sym)))))
       (if tem (set sym (coerce-slash-terminated tem)))))
 
-(defvar *error-p* nil)
-
 (defun process-some-args (args &optional compile &aux *load-verbose*)
   (when args
     (let ((x (pop args)))
@@ -234,9 +232,10 @@
 	   (file (cdr (assoc :compile compile)))
 	   (o (cdr (assoc :o compile)))
 	   (compile (remove :o (remove :compile compile :key 'car) :key 'car))
-+	   (compile (cons (cons :output-file (or o (merge-pathnames ".o" file))) compile))
-	   (result (system:error-set `(apply 'compile-file ,file ',(mapcan (lambda (x) (list (car x) (cdr x))) compile)))))
-      (bye (if (or *error-p* (equal result '(nil))) 1 0)))))
+	   (compile (cons (cons :output-file (or o (merge-pathnames ".o" file))) compile)))
+      (multiple-value-bind (r w e) (apply 'compile-file file (mapcan (lambda (x) (list (car x) (cdr x))) compile))
+	(declare (ignore r w))
+	(bye (if e 1 0))))))
 
 (defun dbl-read (&optional (stream *standard-input*) (eof-error-p t) (eof-value nil))
 
