@@ -330,21 +330,44 @@
 	,@body))
 
 ;FIXME try labels
-(defmacro dotimes ((var form &optional val) &rest body
-		   &aux (s (sgen "DOTIMES"))(m (sgen "DOTIMES")))
-  (declare (optimize (safety 1)))
-  `(let ((,s (block nil ,form)))
-     (check-type ,s integer)
-     (let ((,m (min (max 0 ,s) most-positive-fixnum)))
-       (do ((,var 0 (1+ ,var)))
-	   ((>= ,var ,m)
-	    (when (> ,s most-positive-fixnum)
-	      (let ((,var most-positive-fixnum)) (declare (ignorable ,var)) ,@body)
-	      ;; non-negative-bignum a bumped type
-	      (do ((,var (1+ most-positive-fixnum) (1+ ,var)))((>= ,var ,s)) ,@body))
-	    ,val)
-	 ,@body))))
+(defconstant +nontype-declare-keywords+ ;FIXME sync c1body
+  '(special ignore ignorable optimize ftype inline notinline hint
+    class object :register :dynamic-extent dynamic-extent))
 
+(defmacro dotimes ((var form &optional val) &rest body
+		   &aux (s (sgen "DOTIMES"))(m (sgen "DOTIMES"))
+		     (t1 (load-time-value (list nil)))(t2 (load-time-value (list nil))))
+  (declare (optimize (safety 1)))
+  (unless (car t1)
+    (setf (car t1) (object-tp most-positive-fixnum)))
+  (unless (car t2)
+    (setf (car t2) (cmp-norm-tp `(integer ,(1+ most-positive-fixnum)))))
+  (multiple-value-bind
+	(doc decls) (parse-body-header body)
+    (declare (ignore doc))
+    (let* ((dtypes (mapcan (lambda (x)
+			     (mapcan (lambda (y)
+				       (when (consp y)
+					 (unless (member (car y) +nontype-declare-keywords+)
+					   (when (member var (cdr y))
+					     (list (if (eq (car y) 'type) (cadr y) (car y)))))))
+				     (cdr x)))
+			   decls))
+	   (dtypes (if dtypes (cmp-norm-tp (cons 'and dtypes)) t)))
+
+      `(let ((,s (block nil ,form)))
+	 (check-type ,s integer)
+	 (let ((,m (min (max 0 ,s) most-positive-fixnum)))
+	   (do ((,var 0 (1+ ,var)))
+	       ((>= ,var ,m)
+		(when (> ,s most-positive-fixnum)
+		  ,@(when (tp-and (car t1) dtypes)
+		      `((let ((,var most-positive-fixnum)) (declare (ignorable ,var)) ,@body)))
+		  ;; non-negative-bignum a bumped type
+		  ,@(when (tp-and (car t2) dtypes)
+		      `((do ((,var (1+ most-positive-fixnum) (1+ ,var)))((>= ,var ,s)) ,@body))))
+		,val)
+	     ,@body))))))
 
 (defmacro declaim (&rest l)
   (declare (optimize (safety 2)))
