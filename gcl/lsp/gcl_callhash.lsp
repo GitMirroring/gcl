@@ -300,7 +300,7 @@
 	 (fl (remove-duplicates (mapcar (lambda (x &aux (f (file x))) (when f (namestring f))) fl) :test 'string=))
 	 (fl (set-difference fl excl :test (lambda (x y) (search y x)))))
     (when cdebug (compiler::cdebug))
-    (format t "~%Recompiling original source files ...")
+    (format t "~%Recompiling original source files ...~%")
     (mapc (lambda (x) (format t "~s~%" x) (compile-file x)) (remove nil fl))))
 
 (defun gen-all-ftype-symbols (&aux r)
