@@ -123,15 +123,15 @@
 		(caddr x)))
 	si::*sig-discovery-props*))
 
-(defun compile-file (fn &rest l &aux w e v)
+(defun compile-file (fn &rest l &aux w e (*error-count* 0))
   (values
    (handler-bind
        ((style-warning
 	 (lambda (c) (declare (ignore c)) (setq w t)))
 	((or error (and warning (not style-warning)))
 	 (lambda (c) (declare (ignore c)) (setq w t e t))))
-       (setq v (apply 'compile-file2 fn l)))
-   w (or e (not v))))
+       (apply 'compile-file2 fn l))
+   w (or e (plusp *error-count*))))
 
 (defun compile-file2  (filename &rest args
 		       &aux (*print-pretty* nil)
@@ -176,7 +176,7 @@
 					(unless (member :output-file args)
 					  (list :output-file
 						(get-output-pathname filename "o" nil nil nil)))))))
-		(unless *keep-gaz* (mdelete-file gaz))
+		(unless *keep-gaz* (delete-file gaz))
 		(when tem (truename tem))))))
 	 ((setf (car *split-files*) (+ (third *split-files*) section-length))))))
 
@@ -210,7 +210,6 @@
 			   (*DEFAULT-PATHNAME-DEFAULTS* #p"")
 			   *data*
 			   (*fasd-data* *fasd-data*)
-                           (*error-count* 0)
 			   (*init-name* *init-name*)
 			   (*function-filename* *function-filename*))
   (declare (ignore external-format))
