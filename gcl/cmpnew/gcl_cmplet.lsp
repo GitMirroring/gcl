@@ -110,7 +110,7 @@
 		 (if nf (setf (car nf) np) (setf body np)))))
 	    ((push var nv) (when star (ref-vars form (cdr vs))) (push form nf))))))
 
-(defun mvars (args ss is ts star inls)
+(defun mvars (args ss is ts star inls);FIXME truncate this and make-c1forms at nil type
   (mapcar (lambda (x)
 	    (let* ((n (if (atom x) x (pop x)))
 		   (f (unless (atom x) (car x)))
@@ -146,8 +146,7 @@
 
     (when (member-if-not 'identity forms :key (lambda (x) (info-type (cadr x))))
       (eliminate-src body)
-      (let ((*vars* ov))
-	(return-from c1let-* (c1progn (mapcar (lambda (x) (when (listp x) (cadr x))) (car args)) forms))))
+      (setq body nil))
 
     (c1add-globals (set-difference ss vnames))
     (check-vdecl vnames ts is)
