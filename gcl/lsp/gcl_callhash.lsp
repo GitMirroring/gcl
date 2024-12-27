@@ -294,6 +294,7 @@
 	(push (list s sig) r))))
   (write-sys-proclaims1 sp r))
 
+;;FIXME not always idempotent
 (defun do-recomp (&optional cdebug &rest excl &aux *sig-discovery-props* *compile-verbose*)
   (gen-discovery-props)
   (let* ((fl (mapcar 'car *sig-discovery-props*))
