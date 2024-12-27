@@ -8,6 +8,9 @@
 
 (dolist (l '((((stream) string) . get-output-stream-string)
 	     (((simple-vector seqind) t) . svref)
+	     (((t *) string) . print)
+	     (((t *) string) . prin1)
+	     (((t *) string) . princ)
 	     (((si::function-identifier) boolean) . fboundp)
 	     (((structure) structure) . si::structure-def)
 	     (((t t t t t t t) pathname) . si::init-pathname)
