@@ -144,6 +144,11 @@
 
     (unless star (mapc (lambda (x) (push-var (car x) (cdr x))) vs))
 
+    (when (member-if-not 'identity forms :key (lambda (x) (info-type (cadr x))))
+      (eliminate-src body)
+      (let ((*vars* ov))
+	(return-from c1let-* (c1progn (mapcar (lambda (x) (when (listp x) (cadr x))) (car args)) forms))))
+
     (c1add-globals (set-difference ss vnames))
     (check-vdecl vnames ts is)
     (setq body (c1decl-body other-decls body))

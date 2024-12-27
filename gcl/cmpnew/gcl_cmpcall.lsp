@@ -213,6 +213,8 @@
 	 (sl (sublis s ll)))
     (blla sl args last `((tail-recur ,tag ,s)))))
 
+(defmacro tail-recur (&rest r) (declare (ignore r)))
+
 (defun c1tail-recur (args)
   (let* ((s (cadr args))
 	 (ts (or (car (member (car args) *ttl-tags* :key 'car)) (baboon)))
