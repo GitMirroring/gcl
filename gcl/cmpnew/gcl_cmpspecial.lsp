@@ -97,55 +97,6 @@
 (defvar *fun-tp-hash* (make-hash-table :test 'eq))
 
 (defvar *fn-src-fn* (make-hash-table :test 'eq))
-;; (defun funid-to-fn1 (funid)
-;;   (cond ((symbolp funid)
-;; 	 (cond ((local-fun-fn funid))
-;; 	       ((when (fboundp funid) (symbol-function funid)))
-;; 	       (funid (cmp-eval `(function (lambda (&rest r) 
-;; 					     (declare (:dynamic-extent r))
-;; 					     (apply ',funid r)))))))
-;; 	((gethash funid *fn-src-fn*))
-;; 	((setf (gethash funid *fn-src-fn*) (cmp-eval `(function ,funid))))))
-
-;; (defun funid-to-fn1 (funid)
-;;   (cond ((symbolp funid)
-;; 	 (cond ((local-fun-fn funid))
-;; 	       ((when (fboundp funid) (symbol-function funid)))
-;; 	       (funid (cmp-eval `(function (lambda (&rest r) 
-;; 					     (declare (:dynamic-extent r))
-;; 					     (apply ',funid r)))))))
-;; 	((cmp-eval `(function ,funid)))))
-
-;; (defun funid-to-fn (funid)
-;;   (let ((fn (funid-to-fn1 funid)))
-;;     (setf (gethash fn *fun-id-hash*) funid)
-;;     fn))
-
-;; (defun funid-to-fun1 (id)
-;;   (cond ((let ((id (si::funid-sym-p id)))
-;; 	   (cond ((local-fun-fun id))
-;; 		 ((when (fboundp id) (symbol-function id)))
-;; 		 (id (cmp-eval `(function (lambda (&rest r) 
-;; 					    (declare (:dynamic-extent r))
-;; 					    (apply ',id r))))))))
-;; 	((functionp id) id)
-;; 	((cmp-eval `(function ,id)))))
-
-;; (defun funid-to-fun (id)
-;;   (let ((fun (funid-to-fun1 id)))
-;;     (setf (gethash fun *fun-id-hash*) id)
-;;     fun))
-
-;; (defun portable-closure-src (fn) ;FIXME
-;;   (let* ((lam nil); (when (si::interpreted-function-p fn) (si::interpreted-function-lambda fn)))
-;; 	 (src (when lam (function-lambda-expression fn)))
-;; 	 (p (car (member-if-not 
-;; 		 (lambda (x) 
-;; 		   (eq x (car (member (var-name x) *vars* :key (lambda (x) (when (var-p x) (var-name x)))))))
-;; 		 (cadr lam)))))
-;;     (if p (keyed-cmpnote '(closure inline)
-;; 			 "Not inlining ~s due to redefinition of closure variable ~s." src (var-name p))
-;;       src)))
 
 (defun coerce-to-funid (fn)
   (cond ((symbolp fn) fn)
@@ -163,19 +114,6 @@
       (let* (car (member-if f (third l)))))))
 
 
-;; (defun find-special-var (l f &aux v)
-;;   (labels ((ccar (x) (when (listp x) (car x))))
-;; 	(cond ((funcall f l) l)
-;; 	      ((atom l) nil)
-;; 	      ((setq v (cadr (member 'bind-reg-clv l :key #'ccar)))
-;; 	       (when (eq 'let* (ccar v)) (find-special-var (caddr v) f)))
-;; 	      ((or (find-special-var (car l) f) (find-special-var (cdr l) f))))))
-
-;; (defun find-special-var (l f)
-;;   (cond ((funcall f l) l)
-;; 	((atom l) nil)
-;; 	((eq (car l) 'block) nil)
-;; 	((or (find-special-var (car l) f) (find-special-var (cdr l) f)))))
 
 (defun is-narg-le (l) (caadr (caddr l)))
 
@@ -214,10 +152,6 @@
 
 
 
-;; (defun process-local-fun-env (env b f fun tp)
-;;   (under-env env (process-local-fun b f fun tp)))
-
-
 (defun mc nil (let ((env (cons nil nil))) (lambda nil env)))
 
 (defun afe (a f)
@@ -227,11 +161,6 @@
 (defun fn-get (fn prop)
   (cdr (assoc prop (car (funcall fn)))))
 
-;; (defun mc nil (let (env) (lambda nil env)))
-
-;; (defun afe (a f)
-;;   (push a (car (fn-env f)))
-;;   f)
 
 (defun mf (id &optional fun)
   (let* ((f (mc)))
@@ -243,8 +172,6 @@
       (afe (cons 'df (current-env)) f))
     f))
 
-;; (defun fn-get (fn prop)
-;;   (cdr (assoc prop (car (fn-env fn)))))
 
 (defun funid-to-fn (funid &aux fun)
   (cond ((setq fun (local-fun-p funid)) (fun-fn fun))
@@ -253,9 +180,6 @@
 	((symbolp funid) (or (gethash funid *fn-src-fn*) (setf (gethash funid *fn-src-fn*) (mf funid))))
 	((mf funid))
 	))
-
-;; (defun funid-to-fn (funid)
-;;   (or (local-fun-fn funid) (gethash funid *fn-src-fn*) (setf (gethash funid *fn-src-fn*) (mf funid))))
 
 
 (defvar *prov* nil)
