@@ -113,7 +113,7 @@
   ((function-name :initarg :function-name
 		  :reader internal-condition-function-name
 		  :initform nil))
-  (:report (lambda (condition stream &aux (x (slot-value condition 'function-name)))
+  (:report (lambda (condition stream &aux (x (pcl::slot-value-normal condition 'function-name)));FIXME
 	     (when x
 	       (if (stringp x);FIXME compiler context
 		   (format stream x)
