@@ -131,9 +131,10 @@
 (defun slot-value (object slot-name)
   (let* ((class (class-of object))
 	 (slot-definition (find-slot-definition class slot-name)))
-    (if (null slot-definition)
-	(slot-missing class object slot-name 'slot-value)
-	(slot-value-using-class class object slot-definition))))
+    (values
+     (if (null slot-definition)
+	 (slot-missing class object slot-name 'slot-value)
+	 (slot-value-using-class class object slot-definition)))))
 
 (setf (gdefinition 'slot-value-normal) #'slot-value)
 
@@ -141,7 +142,7 @@
   (if (and (constantp slot-name-form)
 	   (let ((slot-name (eval slot-name-form)))
 	     (and (symbolp slot-name) (symbol-package slot-name))))
-      `(accessor-slot-value ,object-form ,slot-name-form)
+      `(values (accessor-slot-value ,object-form ,slot-name-form))
       `(slot-value-normal ,object-form ,slot-name-form)))
 
 (defun set-slot-value (object slot-name new-value)
@@ -159,7 +160,7 @@
   (if (and (constantp slot-name-form)
 	   (let ((slot-name (eval slot-name-form)))
 	     (and (symbolp slot-name) (symbol-package slot-name))))
-      `(accessor-set-slot-value ,object-form ,slot-name-form ,new-value-form)
+      `(values (accessor-set-slot-value ,object-form ,slot-name-form ,new-value-form))
       `(set-slot-value-normal ,object-form ,slot-name-form ,new-value-form)))
 
 ;(defconstant *optimize-slot-boundp* nil)
@@ -178,7 +179,7 @@
   (if (and (constantp slot-name-form)
 	   (let ((slot-name (eval slot-name-form)))
 	     (and (symbolp slot-name) (symbol-package slot-name))))
-      `(accessor-slot-boundp ,object-form ,slot-name-form)
+      `(values (accessor-slot-boundp ,object-form ,slot-name-form))
       `(slot-boundp-normal ,object-form ,slot-name-form)))
 
 (defun slot-makunbound (object slot-name)
