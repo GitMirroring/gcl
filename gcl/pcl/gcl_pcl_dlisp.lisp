@@ -219,8 +219,8 @@
 (defun emit-miss (miss-fn args &optional applyp)
   (let ((restl (when applyp '(.lap-rest-arg.))))
     (if restl
-	`(values (apply ,miss-fn ,@args ,@restl))
-	`(values (funcall ,miss-fn ,@args ,@restl)))))
+	`(apply ,miss-fn ,@args ,@restl)
+	`(funcall ,miss-fn ,@args ,@restl))))
 
 (defun emit-checking-or-caching (cached-emf-p return-value-p metatypes applyp)
   (when (and (null *precompiling-lap*) *emit-function-p*)
