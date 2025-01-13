@@ -1000,12 +1000,23 @@
 	  ((when (consp tp) (eq (car tp) 'or))
 	   (not (member-if-not (lambda (x) (discrete-tp x (incf i))) (cdr tp)))))))
 
+;; This function regulates the heuristic balance between compiler
+;; speed and type precision primarily via tagbody iteration.  The
+;; algorithm is essentially a guess at a surrounding type which might
+;; not be overflowed on subsequent compilation iteration.  More
+;; sophisticated ideas include bumping based on the type increment
+;; instead of the type-or, and collecting bounding information during
+;; the compilation pass.  Type inferencing on the branch pivot is not
+;; currently effective mostly because they are frequently not
+;; available on the first pass e.g. with atomic integer types.
+;; Several GCL programs nest tagbodys very deeply (e.g. axiom/fricas),
+;; so even a single extra iteration can be exponentially expensive.
 (defun bbump-tp (tp)
   (cond ((car (member tp '(#tnull
-			   #t(and seqbnd (not (integer 0 0)))
-			   #tseqbnd
-			   #t(or null (and seqbnd (not (integer 0 0))))
-			   #t(or null seqbnd))
+			   #t(and fixnum (integer 1))
+			   #t(and fixnum (integer 0))
+			   #t(or null (and fixnum (integer 1)))
+			   #t(or null (and fixnum (integer 0))))
 		      :test 'type<=)))
 	((discrete-tp tp) tp)
 	((bump-tp tp))))

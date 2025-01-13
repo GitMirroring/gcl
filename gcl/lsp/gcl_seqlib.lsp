@@ -39,11 +39,8 @@
   (declare (optimize (safety 1)))
   (check-type seq sequence)
   (check-type n seqind)
-  (labels ((err nil (error 'type-error :datum n :expected-type `(integer 0 (,(length seq))))))
-	  (if (listp seq)
-	      (let ((r (nthcdr n seq)))
-		(if r (car r) (err)))
-	    (if (< n (length seq)) (aref seq n) (err)))))
+  (assert (< n (length seq)) () 'type-error :datum n :expected-type `(integer 0 (,(length seq))))
+  (if (listp seq) (nth n seq) (aref seq n)))
 
 (defun nreverse (s)
   (declare (optimize (safety 1)))

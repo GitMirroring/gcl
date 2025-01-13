@@ -1150,7 +1150,7 @@
   (do* ((type (f-type return) (f-type (pop args)))
 	(i 0 (+ 2 i))
 	(ans type (logior ans (ash type i))))
-       ((or (>= i 32) (null args)) ans)))
+       ((or (>= i 32) (null args)) (the (unsigned-byte 32) ans))))
 
 (defun type-f (x)
   (declare (fixnum x))

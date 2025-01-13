@@ -150,15 +150,16 @@
     bit))
 (declaim (inline set-0-byte-array-self))
 
-(defun array-row-major-index (array &rest indices)
-  (declare (dynamic-extent indices)(optimize (safety 2)))
+(defun array-row-major-index (array &rest indices &aux (k 0))
+  (declare (optimize (safety 1))(inline array-dimension)(rnkind k))
   (check-type array array)
-  (assert (apply 'array-in-bounds-p array indices));FIXME type-error??
-  (labels ((cpt (i j k l) (the seqind (if (zerop k) i (c+ i (c* j l)))));FIXME
-	   (armi-loop (s &optional (j 0) (k 0)) 
-		      (declare (rnkind k));FIXME
-		      (if s (armi-loop (cdr s) (cpt (car s) j k (array-dimension array k)) (1+ k)) j)))
-	  (armi-loop indices)))
+  (the seqind
+       (reduce (lambda (y x &aux (z (array-dimension array k)))
+		 (check-type x seqind)
+		 (assert (< x z) () 'type-error :datum x :expected-type `(integer 0 (,z)))
+		 (incf k)
+		 (if (zerop y) x (+ x (the seqind (c* y z)))))
+	       indices :initial-value 0)))
 
 (defun aref (a &rest q)
   (declare (optimize (safety 1)) (dynamic-extent q))

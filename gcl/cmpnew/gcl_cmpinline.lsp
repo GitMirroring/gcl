@@ -67,11 +67,12 @@
     (unless i (baboon))
     `(logbitp ,i ,flags)))
 
-(defmacro iflags (&rest flags &aux (r 0))
-  (dolist (flag flags r)
-    (let ((i (position flag +iflags+)))
-      (unless i (baboon))
-      (setq r (logior r (ash 1 i))))))
+(defmacro iflags (&rest flags)
+  (the (unsigned-byte #.(length +iflags+))
+       (reduce (lambda (y x &aux (i (position x +iflags+)))
+		 (unless i (baboon))
+		 (logior y (ash 1 i)))
+	       flags :initial-value 0)))
 
 (defmacro copy-ht (ht)
   `(copy-list ,ht));nil ?

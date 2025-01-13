@@ -438,20 +438,21 @@
 
 
 (defun read-sequence (seq strm &key (start 0) end
-			  &aux (l (listp seq))(seqp (when l (nthcdr start seq)))
-			  (cp (eq (stream-element-type strm) 'character)))
+		      &aux (l (listp seq))(seqp (when l (nthcdr start seq)))
+			(cp (eq (stream-element-type strm) 'character)))
   (declare (optimize (safety 1)));FIXME
   (check-type seq sequence)
   (check-type strm stream)
   (check-type start (integer 0))
   (check-type end (or null (integer 0)))
   (labels ((set-cons (x z) (check-type x cons) (setf (car x) z) (cdr x)))
-    (reduce (lambda (y x &aux (z (if cp (read-char strm nil 'eof) (read-byte strm nil 'eof))))
-		     (declare (seqind y)(ignorable x))
-		     (when (eq z 'eof) (return-from read-sequence y))
-		     (if l (setq seqp (set-cons seqp z)) (setf (aref seq y) z))
-		     (1+ y))
-	    seq :initial-value start :start start :end end)))
+    (the seqbnd
+	 (reduce (lambda (y x &aux (z (if cp (read-char strm nil 'eof) (read-byte strm nil 'eof))))
+		   (declare (seqind y)(ignorable x))
+		   (when (eq z 'eof) (return-from read-sequence y))
+		   (if l (setq seqp (set-cons seqp z)) (setf (aref seq y) z))
+		   (1+ y))
+		 seq :initial-value start :start start :end end))))
 
 
 (defun write-sequence (seq strm &key (start 0) end

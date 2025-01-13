@@ -71,7 +71,9 @@
 	 (do ((i1 start1 (1+ i1))
 	      (i2 start2 (1+ i2)))
 	     ((or (>= i1 end1) (>= i2 end2) (not (,= (setq c1 (aref s1 i1)) (setq c2 (aref s2 i2)))))
-	      ,@body))))))
+	      ,@body)
+	   (declare (seqbnd i1 i2)))))));FIXME
+
 
  (defmacro defchr (n (comp key))
    `(defun ,n (c1 &optional (c2 c1 c2p) &rest r) 
