@@ -154,7 +154,7 @@
   (declare (optimize (safety 1))(inline array-dimension)(rnkind k))
   (check-type array array)
   (the seqind
-       (reduce (lambda (y x &aux (z (array-dimension array k)))
+       (lreduce (lambda (y x &aux (z (array-dimension array k)))
 		 (check-type x seqind)
 		 (assert (< x z) () 'type-error :datum x :expected-type `(integer 0 (,z)))
 		 (incf k)
