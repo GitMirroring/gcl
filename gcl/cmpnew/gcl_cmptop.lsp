@@ -970,7 +970,7 @@
 			     (info-ref (cadr l)))
 	  (third e) (list src clv name)
 	  (fourth e) *function-filename*
-	  (fifth e) (if (= (length clv) 0) 1 0)
+	  (fifth e) (logior (if (iflag-p (info-flags (cadr l)) side-effects) 0 2) (if (= (length clv) 0) 1 0))
 	  (sixth e) name)
     (when *sig-discovery*
       (when (symbol-package name) (unless (eq name 'lambda) (push (cons name (apply 'si::make-function-plist e)) si::*sig-discovery-props*))))
