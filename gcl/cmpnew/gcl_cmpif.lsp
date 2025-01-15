@@ -239,10 +239,12 @@
 	       (let ((y (fmla-infer-tp (seventh fmla))))
 		 (setf (cdr x) (fmla-if1 nil (cdr x) y))))))
 	  (infer-tp (let* ((tp (info-type (cadr (fifth fmla))))
-			   (vl (third fmla))
+			   (vl (remove-if-not 'llvar-p (third fmla)))
 			   (i (cond ((type>= #tnull tp) (cons nil (fourth fmla)));FIXME nil tp
 				    ((type>= #t(not null) tp) (cons (fourth fmla) nil)))))
 		      (nconc (when i (mapcar (lambda (x) (cons x i)) vl)) (fmla-infer-tp (fifth fmla)))));FIXME
+	  (lit (mapcar (lambda (x) (list* x #t(not null) #tnull))
+		       (local-aliases (get-top-var-binding (lit-bind fmla)) nil)))
 	  (if (apply 'fmla-if (cddr fmla)))
 	  (var (when (llvar-p (car (third fmla)))
 		 (list (cons (car (third fmla)) (cons #t(not null) #tnull)))))

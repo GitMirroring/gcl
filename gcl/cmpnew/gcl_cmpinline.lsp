@@ -440,14 +440,22 @@
     (coerce-loc *value-to-go* type)))
     
 
-(defun lit-loc (tp inl args stores)
-  (declare (ignore stores))
+(defun lit-loc (tp inl args bind stores)
+  (declare (ignore bind stores))
   (let ((sig (list (mapcar (lambda (x) (info-type (cadr x))) args) tp))) 
     (get-inline-loc (list (car sig) (cadr sig) (flags rfa) inl) args)))
 
 ;; (defun lit-loc (tp inl args)
 ;;   (let* ((sig (list (mapcar (lambda (x) (info-type (cadr x))) args) tp))) 
 ;;     (get-inline-loc (list (car sig) (cadr sig) (flags rfa) inl) args)))
+
+(defun ub-loc (v &aux (c (car v)))
+  (ecase c
+      (var (cons c (caddr v)))
+      (lit (apply 'lit-loc (cddr v)))
+      (location (caddr v))
+      ((decl-body inline) (ub-loc (car (last v))))));FIXME
+
 
 (defun inline-args (forms types &optional fun &aux locs ii)
   (do ((forms forms (cdr forms))
@@ -496,12 +504,7 @@
 		      ((push (coerce-loc loc type) locs))))
 		 (push (wt-push-loc form type t) locs)))
 	      (lit (push (coerce-loc (apply 'lit-loc (cddr form)) type) locs))
-	      (ub (push (list 'gen-loc (caddr form) 
-			      (let* ((v (fourth form))(c (car v)))
-				(ecase c
-				       (var (cons c (caddr v)))
-				       (lit (apply 'lit-loc (cddr v)))
-				       (location (caddr v))))) locs))
+	      (ub (push (list 'gen-loc (caddr form) (ub-loc (fourth form))) locs))
               (structure-ref (push (coerce-loc-structure-ref (cdr form) type) locs))
               (SETQ
 	       (let* ((vref (caddr form))

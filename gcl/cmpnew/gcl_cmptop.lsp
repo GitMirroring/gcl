@@ -893,14 +893,17 @@
 				args)))
 	    (when (eq tp :opaque) (baboon))
 	    (when (find #\= inl)
+	      (c1side-effects nil)
 	      (setf (info-flags info) (logior (iflags side-effects) (info-flags info))))
-	    (list 'lit info (info-type info) inl nargs (make-vs info))))))
+	    (let ((form (list 'lit info (info-type info) inl nargs nil (make-vs info))))
+	      (setf (sixth form) (new-bind form))
+	      form)))))
 
 
-(defun c2lit (tp inl args stores)
+(defun c2lit (tp inl args bind stores)
   (let* ((*inline-blocks* 0)
 	 (*restore-avma*  *restore-avma*))
-    (unwind-exit (lit-loc tp inl args stores) nil (cons 'values (if (equal tp #t(returns-exactly)) 0 1)))
+    (unwind-exit (lit-loc tp inl args bind stores) nil (cons 'values (if (equal tp #t(returns-exactly)) 0 1)))
     (close-inline-blocks)))
 
 ;; (defun c2lit (tp inl args)

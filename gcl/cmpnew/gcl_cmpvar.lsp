@@ -210,6 +210,11 @@
 			    (bind-match x v))))
 		      vs)))
 
+(defun find-vs (form)
+  (case (car form)
+    ((var lit) (car (last form)))
+    ((inline decl-body) (find-vs (car (last form))))))
+
 (defun c1var (name)
   (let* ((info (make-info))
 	 (vref (c1vref name))
@@ -229,7 +234,7 @@
 	    ((when fmla (type>= #t(not null) (info-type info))) (c1t))
 	    ((let ((tmp (get-vbind-form (local-var vref))))
 	       (when (and tmp );FIXME (type>= (var-mt (car vref)) (var-mt (caaddr tmp)))
-		 (when (check-vs (when (eq 'var (car tmp)) (car (last tmp))))
+		 (when (check-vs (find-vs tmp));(when (eq 'var (car tmp)) (car (last tmp)))
 		   (let* ((f (pop tmp))(i (copy-info (pop tmp))))
 ;		     (setf (info-type i) (if (eq f 'var) (var-type (caar tmp)) (type-and (info-type i) (info-type info))));FIXME
 		     (setf (info-type i) (type-and (info-type i) (info-type info)))
@@ -286,20 +291,21 @@
     ((cons (eql var) t) (when (check-vs (car (last form)))  (local-var (caddr form))))
     (var form))))
 
+(defun lit-bind (x) (sixth x))
+
 (defun get-bind (x)
   (typecase
    x
    ((cons (eql var) t) (when (check-vs (car (last x))) (var-bind (local-var (caddr x)))))
+   ((cons (member inline decl-body) t) (get-bind (car (last x))))
+   ((cons (eql lit) t) (when (check-vs (car (last x))) (lit-bind x)))
    (var (var-bind x))
    (binding x)))
 
 (defun repeatable-var-binding (form)
   (case (car form)
-	(var form)
-	(location form)
-	;; (lit (unless (member-if (lambda (x) (when (stringp x) (>= (si::string-match #v"[a-zA-Z0-9]+\\(" x) 0))) form)
-	;;        form))
-	))
+	((var location lit) form)
+	((decl-body inline) (when (repeatable-var-binding (car (last form))) form))))
 
 (defun repeatable-binding-p (form &aux (i (cadr (repeatable-var-binding form))))
   (when i

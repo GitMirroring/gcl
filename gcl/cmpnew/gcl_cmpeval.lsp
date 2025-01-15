@@ -1627,6 +1627,8 @@
 
 
 (defun mi5 (fn info fms la &aux (ll (when la (list (length fms)))) fd)
+  (when (iflag-p (info-flags info) side-effects)
+    (c1side-effects nil))
   (mi6 fn fms)
   (let ((r (assoc fn *recursion-detected*))) (when r (setf (cdr r) t)))
   (cond	((consp fn) 
