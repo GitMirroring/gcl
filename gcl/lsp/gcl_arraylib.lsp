@@ -273,7 +273,11 @@
 (defun sbit (bit-array &rest indices)
   (declare (dynamic-extent indices)(optimize (safety 1)))
   (check-type bit-array simple-bit-array)
-  (apply 'aref bit-array indices))
+  (cond ((and indices (not (cdr indices)))
+	 (let ((x bit-array))
+	   (check-type x simple-bit-vector)
+	   (aref x (car indices))))
+	((apply 'aref bit-array indices))))
 
 
 (defun vector-push (new-element vector)
