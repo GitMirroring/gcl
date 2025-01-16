@@ -514,6 +514,7 @@
 		     (cond ;((get-vbind x))
 			   (atp (car atp));FIXME
 			   ((get-vbind x))
+			   ((lit-bind x))
 			   ((new-bind))))
 		    nargs)))
 ;    (when dot (setf (cdr (last y 2)) (car (last y)))) ;FIXME bump-pcons -- get rid of pcons entirely

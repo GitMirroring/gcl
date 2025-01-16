@@ -291,7 +291,11 @@
     ((cons (eql var) t) (when (check-vs (car (last form)))  (local-var (caddr form))))
     (var form))))
 
-(defun lit-bind (x) (sixth x))
+(defun lit-bind (x)
+  (when (consp x)
+    (case (car x)
+      (lit (sixth x))
+      ((inline decl-body) (lit-bind (car (last x)))))))
 
 (defun get-bind (x)
   (typecase

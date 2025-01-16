@@ -799,15 +799,24 @@
     (lit (carcdr-c1form-narg (car (fifth fm))))
     (ub (fourth fm))))
 
+(defun get-binding-form (b &aux (v (get-var b)))
+  (if v
+      (c1var v);FIXME? go through c1var when possible to pick up var-type
+      (let ((f (when (and (binding-p b) (binding-repeatable b)) (binding-form b))))
+	(when (check-vs (find-vs f))
+	  f))))
+
+
 (defun co1carcdr (f x);FIXME c1 prop?
   (let* ((c1form (mi1 f x))
 	 (narg (carcdr-c1form-narg c1form))
-	 (tp (when (and narg (ignorable-form narg)) (car (atomic-tp (info-type (cadr narg))))))
-	 (tp (when (consp tp) (funcall f tp)))
-	 (tp (get-var tp)))
-    (if tp (c1var tp) c1form)))
-
-
+	 (atp (when (and narg (ignorable-form narg)) (atomic-tp (info-type (cadr narg)))))
+	 (tp (car atp))
+	 (b (when (consp tp) (funcall f tp))))
+    (typecase b
+      (null c1form)
+      (binding (or (get-binding-form b) c1form))
+      (otherwise (atomic-type-constant-value atp)))))
 (setf (get 'car 'co1) 'co1carcdr)
 (setf (get 'cdr 'co1) 'co1carcdr)
 
