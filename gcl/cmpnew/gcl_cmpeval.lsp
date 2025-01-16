@@ -600,9 +600,11 @@
 (defun comment (x) x)
 (defun c1comment (args)
   (list 'comment (make-info :type t  :flags (iflags side-effects))
-	(with-output-to-string (s) (princ (car args) s))))
-(defun c2comment (comment)
-  (wt-nl "/*" (mysub (mysub comment "/*" "_*") "*/" "*_") "*/"))
+	(let ((x (car args)))
+	  (if (constantp x) (cmp-eval x) x))))
+(defun c2comment (comment &aux (comment-string (comment-string comment)))
+  (when *annotate*
+    (wt-nl "/*")(princ comment-string *compiler-output1*)(wt "*/")))
 (si::putprop 'comment 'c1comment 'c1)
 (si::putprop 'comment 'c2comment 'c2)
 
@@ -617,10 +619,14 @@
 
 (defvar *annotate* nil)
 
-(defun c2inline (comment expr &aux (comment (mysub (mysub (write-to-string comment :length 3 :level 3) "/*" "") "*/" "")))
-  (when *annotate* (wt-nl "/*")(princ comment *compiler-output1*)(wt "*/"))
+(defun comment-string (comment)
+  (when *annotate*
+    (mysub (mysub (write-to-string comment :length 3 :level 3) "/*" "_*") "*/" "*_")))
+
+(defun c2inline (comment expr &aux (comment-string (comment-string comment)))
+  (when *annotate* (wt-nl "/*")(princ comment-string *compiler-output1*)(wt "*/"))
   (c2expr expr)
-  (when *annotate* (wt-nl "/* END ")(princ comment *compiler-output1*)(wt "*/")))
+  (when *annotate* (wt-nl "/* END ")(princ comment-string *compiler-output1*)(wt "*/")))
 (si::putprop 'inline 'c1inline 'c1)
 (si::putprop 'inline 'c2inline 'c2)
 
