@@ -154,12 +154,18 @@
   (declare (optimize (safety 1))(inline array-dimension)(rnkind k))
   (check-type array array)
   (the seqind
-       (lreduce (lambda (y x &aux (z (array-dimension array k)))
+       (cond ((not indices) 0);FIXME breakout to avoid setq k for inline-args
+	     ((not (cdr indices));FIXME breakout to avoid setq k for inline-args
+	      (let ((x (car indices))(z (array-dimension array 0)))
+		(check-type x seqind)
+		(assert (< x z) () 'type-error :datum x :expected-type `(integer 0 (,z)))
+		x))
+	     ((lreduce (lambda (y x &aux (z (array-dimension array k)))
 		 (check-type x seqind)
 		 (assert (< x z) () 'type-error :datum x :expected-type `(integer 0 (,z)))
 		 (incf k)
 		 (if (zerop y) x (+ x (the seqind (c* y z)))))
-	       indices :initial-value 0)))
+	       indices :initial-value 0)))))
 
 (defun aref (a &rest q)
   (declare (optimize (safety 1)) (dynamic-extent q))
