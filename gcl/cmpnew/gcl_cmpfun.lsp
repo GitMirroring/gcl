@@ -231,7 +231,6 @@
 		 (c1t)))))
 	  (t (unless (and t1 t2) (setf (info-type info) nil)) `(call-global ,info ,nfn ,nargs)))))
 
-	   
 (dolist (l `(eq eql equal equalp))
   (si::putprop l 'do-eq-et-al 'c1g))
 
@@ -294,6 +293,40 @@
 
 (dolist (l `(>= > < <= = /=))
   (si::putprop l 'do-num-relations 'c1g))
+
+(defun do-+- (fn args)
+  (let* ((info (make-info :type #tnumber))
+	 (nargs (c1args args info))
+	 (i1 (info-type (cadar nargs)))
+	 (t1 (car (atomic-tp i1)))
+	 (i2 (info-type (cadadr nargs)))
+	 (t2 (car (atomic-tp i2))))
+    (cond ((and (eq fn 'number-plus) (eql t1 0) (ignorable-form (car nargs))) (cadr nargs));contagion
+	  ((and (eql t2 0) (ignorable-form (cadr nargs))) (car nargs))
+	  (t (setf (info-type info)
+		   (type-and (info-type info)
+			     (funcall (get fn 'type-propagator) fn i1 i2)))
+	     `(call-global ,info ,fn ,nargs)))))
+(setf (get 'number-plus 'c1g) 'do-+-)
+(setf (get 'number-minus 'c1g) 'do-+-)
+
+
+(defun do-*/ (fn args)
+  (let* ((info (make-info :type #tnumber))
+	 (nargs (c1args args info))
+	 (i1 (info-type (cadar nargs)))
+	 (t1 (car (atomic-tp i1)))
+	 (i2 (info-type (cadadr nargs)))
+	 (t2 (car (atomic-tp i2))))
+    (cond ((and (eq fn 'number-times) (eql t1 1) (ignorable-form (car nargs))) (cadr nargs));contagion
+	  ((and (eql t2 1) (ignorable-form (cadr nargs))) (car nargs))
+	  (t (setf (info-type info)
+		   (type-and (info-type info)
+			     (funcall (get fn 'type-propagator) fn i1 i2)))
+	     `(call-global ,info ,fn ,nargs)))))
+(setf (get 'number-times 'c1g) 'do-*/)
+(setf (get 'number-divide 'c1g) 'do-*/)
+
 
 (dolist (l `(eq eql equal equalp > >= < <= = /= length + - / * min max;FIXME get a good list here
 		car cdr caar cadr cdar cddr caaar caadr cadar cdaar caddr cdadr cddar cdddr 
