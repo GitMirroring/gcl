@@ -1640,7 +1640,6 @@ object putprop(object,object,object);
 object read_object(object);
 object read_object_non_recursive(object);
 object make_symbol(object);
-object elt_set(object,int,object);
 object reverse(object);
 object alloc_bitvector(fixnum);
 object alloc_simple_bitvector(fixnum);

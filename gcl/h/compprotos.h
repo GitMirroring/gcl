@@ -19,7 +19,6 @@ object call_proc_cs2(object,...);
 object call_proc_new(object,ufixnum,ufixnum,void **,ufixnum,object,va_list);
 object call_proc_new_nval(object,ufixnum,ufixnum,void **,ufixnum,object,...);
 object coerce_to_string();
-object elt(object,int);
 object fixnum_big_shift(fixnum,fixnum);
 object fixnum_times(fixnum,fixnum);
 object fSgensym0(void);
