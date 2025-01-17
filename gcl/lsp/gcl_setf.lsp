@@ -217,7 +217,7 @@
 (defsetf tenth (x) (y) `(progn (rplaca (nthcdr 9 ,x) ,y) ,y))
 (defsetf rest (x) (y) `(progn (rplacd ,x ,y) ,y))
 (defsetf svref si:svset)
-(defsetf elt si:elt-set)
+(defsetf elt si::elt-set)
 (defsetf symbol-value set)
 (defsetf symbol-function si::fset)
 (defsetf macro-function (s &optional env) (v) `(let ((env ,env)) (declare (ignorable env)) (si:fset ,s (cons 'macro ,v)) ,v))
@@ -232,8 +232,8 @@
   `(si::sputprop ,a ,b (progn ,@l)))
 ;  `(si::sputprop ,a ,b ,(car (last l))))
 (defsetf nth (n l) (v) `(progn (rplaca (nthcdr ,n ,l) ,v) ,v))
-(defsetf char si:char-set)
-(defsetf schar si:schar-set)
+(defsetf char si::char-set)
+(defsetf schar si::schar-set)
 ;(defsetf bit aset-wrap)
 ;(defsetf sbit aset-wrap)
 (defsetf bit (x &rest r) (v) `(baset ,v ,x ,@r))
@@ -389,7 +389,7 @@
   (case type
     (list `(setf (nth ,index ,struct) ,newvalue))
 ;    (list `(si:rplaca-nthcdr ,struct ,index ,newvalue))
-    (vector `(si:elt-set ,struct ,index ,newvalue))
+    (vector `(si::elt-set ,struct ,index ,newvalue))
     (t `(si::structure-set ,struct ',type ,index ,newvalue))))
 
 (defun setf-expand (l env)

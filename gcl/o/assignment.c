@@ -310,17 +310,9 @@ static object
 setf(object place, object form)
 {
 	object fun;
-	object *vs = vs_top;
-	void (*f)();
 	object args;
 	object x,result,y;
-	int i,nka=0;
-/*  	extern void siLaset(void); */
-/*  	extern void siLsvset(void); */
-	extern void siLelt_set();
-	extern void siLchar_set();
-/*  	extern void siLfill_pointer_set(void); */
-	extern void siLhash_set();
+	int i;
 
 	if (!consp(place)) {
 	  setq(place, result=Ieval1(form));
@@ -368,9 +360,12 @@ setf(object place, object form)
 	  return Ieval1(MMcons(find_symbol(str("ASET"),system_package),MMcons(form,args)));
 	if (fun == sLsvref)
 	  return Ieval1(MMcons(find_symbol(str("SVSET"),system_package),append(args,MMcons(form,Cnil))));
-	if (fun == sLelt) { f = siLelt_set; goto EVAL; }
-	if (fun == sLchar) { f = siLchar_set; goto EVAL; }
-	if (fun == sLschar) { f = siLchar_set; goto EVAL; }
+	if (fun == sLelt)
+	  return Ieval1(MMcons(find_symbol(str("ELT-SET"),system_package),append(args,MMcons(form,Cnil))));
+	if (fun == sLchar)
+	  return Ieval1(MMcons(find_symbol(str("CHAR-SET"),system_package),append(args,MMcons(form,Cnil))));
+	if (fun == sLschar)
+	  return Ieval1(MMcons(find_symbol(str("SCHAR-SET"),system_package),append(args,MMcons(form,Cnil))));
 	if (fun == sLfill_pointer) 
 	  return Ieval1(MMcons(find_symbol(str("FILL-POINTER-SET"),system_package),append(args,MMcons(form,Cnil))));
 	if (fun == sLgethash) 
@@ -418,18 +413,6 @@ setf(object place, object form)
 	}
 	return result;
 
-EVAL:
-	for (;!endp(args);args=args->c.c_cdr)
-	  eval_push(args->c.c_car);
-	/* if (f!=siLaset) eval_push(form); */
-	if (nka && vs_top-vs>nka) {
-	  vs[nka]=vs_base[0];
-	  vs_top=vs+nka+1;
-	}
-	nka=0;
-	vs_base = vs;
-	(*f)();
-	return vs_base[0];
 
 OTHERWISE:
 	vs_base = vs_top;

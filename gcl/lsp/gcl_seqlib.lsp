@@ -42,6 +42,14 @@
   (assert (< n (length seq)) () 'type-error :datum n :expected-type `(integer 0 (,(length seq))))
   (if (listp seq) (nth n seq) (aref seq n)))
 
+(declaim (inline elt-set))
+(defun elt-set (seq n v)
+  (declare (optimize (safety 1)))
+  (check-type seq sequence)
+  (check-type n seqind)
+  (assert (< n (length seq)) () 'type-error :datum n :expected-type `(integer 0 (,(length seq))))
+  (if (listp seq) (setf (nth n seq) v) (setf (aref seq n) v)))
+
 (defun nreverse (s)
   (declare (optimize (safety 1)))
   (check-type s proper-sequence)

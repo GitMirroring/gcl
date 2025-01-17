@@ -118,115 +118,6 @@ alloc_bitvector(fixnum l) {
 
 }
 
-LFD(Lelt)()
-{
-	check_arg(2);
-	vs_base[0] = elt(vs_base[0], fixint(vs_base[1]));
-	vs_popp;
-}
-
-object
-elt(object seq, int index) {
-
-  int i;
-
-  if (index < 0) {
-    TYPE_ERROR(make_fixnum(index),sSnon_negative_fixnum);
-    return Cnil;
-  }
-  switch (type_of(seq)) {
-  case t_cons:
-    for (i=index;i>0 && !endp(seq);i--,seq=seq->c.c_cdr);
-    if (endp(seq))
-      break;
-    return(seq->c.c_car);
-
-  case t_vector:
-  case t_bitvector:
-  case t_simple_vector:
-  case t_simple_bitvector:
-    if (index>=(i=VLEN(seq)))
-      break;
-    return(aref(seq, index));
-
-  case t_simple_string:
-  case t_string:
-    if (index>=(i=VLEN(seq)))
-      break;
-    return(code_char(seq->ust.ust_self[index]));
-
-  case t_symbol:
-    if (seq==Cnil) {
-      i=0;
-      break;
-    }
-  default:
-    TYPE_ERROR(seq,sLsequence);
-    return(Cnil);
-  }
-
-  TYPE_ERROR(make_fixnum(index),MMcons(sLinteger,MMcons(make_fixnum(0),MMcons(MMcons(make_fixnum(i),Cnil),Cnil))));
-  return(Cnil);
-
-}
-
-LFD(siLelt_set)()
-{
-	check_arg(3);
-	vs_base[0] = elt_set(vs_base[0], fixint(vs_base[1]), vs_base[2]);
-	vs_popp;
-	vs_popp;
-}
-
-object
-elt_set(object seq,int index,object val) {
-
-  int i;
-
-  if (index < 0) {
-    TYPE_ERROR(make_fixnum(index),sSnon_negative_fixnum);
-    return Cnil;
-  }
-  switch (type_of(seq)) {
-  case t_cons:
-    for (i=index;i>0 && !endp(seq);i--,seq=seq->c.c_cdr);
-    if (endp(seq))
-      break;
-    return(seq->c.c_car = val);
-
-  case t_vector:
-  case t_bitvector:
-  case t_simple_vector:
-  case t_simple_bitvector:
-    if (index>=(i=VLEN(seq)))
-      break;
-    return(aset(seq, index, val));
-
-  case t_simple_string:
-  case t_string:
-    if (index>=(i=VLEN(seq)))
-      break;
-    if (type_of(val) != t_character)
-      TYPE_ERROR(val,sLcharacter);
-    seq->st.st_self[index] = val->ch.ch_code;
-    return(val);
-
-  case t_symbol:
-    if (seq==Cnil) {
-      i=0;
-      break;
-    }
-
-  default:
-    TYPE_ERROR(seq,sLsequence);
-    return Cnil;
-
-  }
-
-  TYPE_ERROR(make_fixnum(index),MMcons(sLinteger,MMcons(make_fixnum(0),MMcons(MMcons(make_fixnum(i),Cnil),Cnil))));
-  return(Cnil);
-
-}
 
 @(defun subseq (sequence start &optional end &aux x)
 	int s, e;
@@ -669,8 +560,6 @@ object seq;
 void
 gcl_init_sequence_function()
 {
-	make_function("ELT", Lelt);
-	make_si_function("ELT-SET", siLelt_set);
 	make_function("SUBSEQ", Lsubseq);
 	make_function("COPY-SEQ", Lcopy_seq);
 	make_function("LENGTH", Llength);

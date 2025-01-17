@@ -278,21 +278,6 @@
   (check-type c character)
   (or (graphic-char-p c) (char= c #\Newline)))
 
-(defun char (x i)
-  (declare (optimize (safety 2)))
-  (check-type x string)
-  (check-type i seqind)
-  (aref x i))
-
-(defun schar (x i)
-  (declare (optimize (safety 1)))
-  (check-type x simple-string)
-  (check-type i seqind)
-  (aref x i))
-
-
-
-
 (defun string (x)
   (declare (optimize (safety 1)))
   (check-type x string-designator)
@@ -403,13 +388,13 @@
 ;; (defun seqindp (x)
 ;;   (typecase x (seqind t)))
 
+(declaim (inline fixnump))
 (defun fixnump (x)
   (typecase x (fixnum t)))
-(si::putprop 'fixnump t 'compiler::cmp-inline)
 
+(declaim (inline spicep))
 (defun spicep (x)
   (typecase x (spice t)))
-(si::putprop 'spicep t 'compiler::cmp-inline)
 
 
 (defun constantp (x &optional env)

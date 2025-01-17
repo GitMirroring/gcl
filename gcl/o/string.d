@@ -274,31 +274,6 @@ object x;
 	return(Cnil);
 }
 
-@(defun char (s i)
-	int j;
-@
-	check_type_string(&s);
-	if (type_of(i) != t_fixnum)
-		illegal_index(s, i);
-	if ((j = fix(i)) < 0 || j >= s->st.st_dim)
-		illegal_index(s, i);
-	@(return `code_char(s->ust.ust_self[j])`)
-@)
-
-LFD(siLchar_set)()
-{
-	int j;
-
-	check_arg(3);
-	check_type_string(&vs_base[0]);
-	if (type_of(vs_base[1]) != t_fixnum)
-		illegal_index(vs_base[0], vs_base[1]);
-	if ((j = fix(vs_base[1])) < 0 || j >= vs_base[0]->st.st_dim)
-		illegal_index(vs_base[0], vs_base[1]);
-	check_type_character(&vs_base[2]);
-	vs_base[0]->st.st_self[j] = char_code(vs_base[2]);
-	vs_base += 2;
-}
 
 void
 get_string_start_end(str, start, end, ps, pe)
@@ -701,10 +676,6 @@ gcl_init_string_function()
 	sKstart = make_keyword("START");
 	sKend = make_keyword("END");
 
-	make_function("CHAR", Lchar);
-	make_si_function("CHAR-SET", siLchar_set);
-	make_function("SCHAR", Lchar);
-	make_si_function("SCHAR-SET", siLchar_set);
 	make_function("STRING=", Lstring_eq);
 	make_function("STRING-EQUAL", Lstring_equal);
 	make_function("STRING<", Lstring_l);

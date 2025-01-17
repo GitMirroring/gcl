@@ -281,6 +281,33 @@
   (check-type bit-array simple-bit-array)
   (apply 'aref bit-array indices))
 
+(defun char (x i)
+  (declare (optimize (safety 2)))
+  (check-type x string)
+  (check-type i seqind)
+  (aref x i))
+
+(defun schar (x i)
+  (declare (optimize (safety 1)))
+  (check-type x simple-string)
+  (check-type i seqind)
+  (aref x i))
+
+(declaim (inline char-set))
+(defun char-set (x i v)
+  (declare (optimize (safety 1)))
+  (check-type x string)
+  (check-type i seqind)
+  (check-type v character)
+  (aset v x i))
+
+(declaim (inline schar-set))
+(defun schar-set (x i v)
+  (declare (optimize (safety 1)))
+  (check-type x simple-string)
+  (check-type i seqind)
+  (check-type v character)
+  (aset v x i))
 
 (defun vector-push (new-element vector)
   (declare (optimize (safety 1)))
