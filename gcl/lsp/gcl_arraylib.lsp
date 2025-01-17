@@ -192,15 +192,15 @@
   (declare (optimize (safety 1)) (dynamic-extent i))
   (check-type a array)
   (unless (member-if-not (lambda (x) (<= 0 x (1- (array-dimension a (prog1 j (incf j)))))) i)
-       (= j (c-array-rank a))))
+       (eql j (c-array-rank a))))
 
 (defun array-dimension (x i)
   (declare (optimize (safety 2)))
   (check-type x array)
   (check-type i rnkind)
   (let ((r (c-array-rank x)));FIXME
-    (assert (< i r) (i) 'type-error :datum i :expected-type `(integer 0 (,r)))
-    (if (= 1 r) (c-array-dim x) (array-dims x i))));(the seqind (*fixnum (c-array-dims x) i nil nil))
+    (assert (< i r) () 'type-error :datum i :expected-type `(integer 0 (,r)))
+    (if (eql 1 r) (c-array-dim x) (array-dims x i))));(the seqind (*fixnum (c-array-dims x) i nil nil))
 
 (defun array-displacement (x)
   (declare (optimize (safety 1)))
@@ -430,7 +430,8 @@
   (cond
     ((tp>= #tvector x) #t(member 1))
     ((let ((d (atomic-tp-array-rank x)))
-      (when d (object-tp d))))
+       (when d (object-tp d))))
+    ((tp>= #tmatrix x) #t(and rnkind (not (eql 1))))
     ((tp>= #tarray x) #trnkind)))
 (setf (get 'c-array-rank 'type-propagator) 'array-rank-propagator)
 
