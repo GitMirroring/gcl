@@ -170,12 +170,18 @@
 (defun aref (a &rest q)
   (declare (optimize (safety 1)) (dynamic-extent q))
   (check-type a array)
+  (if (and q (not (cdr q)))
+      (let ((x a))(check-type x vector))
+      (let ((x a))(check-type x matrix)))
   (row-major-aref a (apply 'array-row-major-index a q)))
 
 #-(and pre-gcl raw-image)
-(defun si::aset (v a &rest q)
+(defun aset (v a &rest q)
   (declare (optimize (safety 1)) (dynamic-extent q))
   (check-type a array)
+  (if (and q (not (cdr q)))
+      (let ((x a))(check-type x vector))
+      (let ((x a))(check-type x matrix)))
   (row-major-aset v a (apply 'array-row-major-index a q)))
 (declaim (inline si::aset))
 
@@ -273,11 +279,7 @@
 (defun sbit (bit-array &rest indices)
   (declare (dynamic-extent indices)(optimize (safety 1)))
   (check-type bit-array simple-bit-array)
-  (cond ((and indices (not (cdr indices)))
-	 (let ((x bit-array))
-	   (check-type x simple-bit-vector)
-	   (aref x (car indices))))
-	((apply 'aref bit-array indices))))
+  (apply 'aref bit-array indices))
 
 
 (defun vector-push (new-element vector)
