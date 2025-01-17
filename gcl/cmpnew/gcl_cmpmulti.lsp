@@ -218,6 +218,9 @@
   (unwind-exit 'fun-val nil (if top-data (car top-data))))
 
 (defun c1values (args &aux (info (make-info))(a (mapcar (lambda (x) (c1expr* x info)) args)))
+
+  (when (and a (not (cdr a)) (single-type-p (info-type (cadar a))))
+      (return-from c1values (car a)))
   (setf (info-type info)
 	(let ((x (mapcar (lambda (x) (coerce-to-one-value (info-type (cadr x)))) a)))
 	  (if (unless (cdr x) x) (car x) (cons 'returns-exactly x))));FIXME
