@@ -183,27 +183,6 @@
 ;;   "@1;(#1)->lfa.lfa_self[(#2)*(#1)->a.a_dims[1]+#3]= (#0)")
 ;;    (get 'system:aset 'inline-unsafe))
 
-;;SYSTEM:CHAR-SET
- (push '((t t t) t #.(flags set)"elt_set(#0,fixint(#1),#2)")
-   (get 'system:char-set 'inline-always))
-(push '((t fixnum t) t #.(flags set)"elt_set(#0,#1,#2)")
-   (get 'system:char-set 'inline-always))
-(push '((t t t) t #.(flags set)
-  "@2;((#0)->ust.ust_self[fix(#1)]=char_code(#2),(#2))")
-   (get 'system:char-set 'inline-unsafe))
-(push '((t fixnum character) character #.(flags rfa set)"(code_char((#0)->ust.ust_self[#1]= char_code(#2)))")
-   (get 'system:char-set 'inline-unsafe))
-
-;;SYSTEM:ELT-SET
- (push '((t t t) t #.(flags set)"elt_set(#0,fixint(#1),#2)")
-   (get 'system:elt-set 'inline-always))
-(push '((t fixnum t) t #.(flags set)"elt_set(#0,#1,#2)")
-   (get 'system:elt-set 'inline-always))
-(push '((t t t) t #.(flags set)"elt_set(#0,fix(#1),#2)")
-   (get 'system:elt-set 'inline-unsafe))
-(push '((t fixnum t) t #.(flags set)"elt_set(#0,#1,#2)")
-   (get 'system:elt-set 'inline-unsafe))
-
 ;;SYSTEM:FILL-POINTER-SET
  (push '((t fixnum) seqind #.(flags rfa set)"(((#0)->st.st_fillp)=(((#0)->st.st_hasfillp) ? (#1) : ((#0)->st.st_fillp)))")
    (get 'system:fill-pointer-set 'inline-unsafe))
@@ -235,17 +214,6 @@
 ;;SYSTEM:PUTPROP
  (push '((t t t) t #.(flags set)"putprop(#0,#1,#2)")
    (get 'system:putprop 'inline-always))
-
-;;SYSTEM:SCHAR-SET
- (push '((t t t) t #.(flags set)"elt_set(#0,fixint(#1),#2)")
-   (get 'system:schar-set 'inline-always))
-(push '((t fixnum t) t #.(flags set)"elt_set(#0,#1,#2)")
-   (get 'system:schar-set 'inline-always))
-(push '((t t t) t #.(flags set)
-  "@2;((#0)->ust.ust_self[fix(#1)]=char_code(#2),(#2))")
-   (get 'system:schar-set 'inline-unsafe))
-(push '((t fixnum character) character #.(flags set rfa)"(code_char((#0)->ust.ust_self[#1]= char_code(#2)))")
-   (get 'system:schar-set 'inline-unsafe))
 
 ;;SYSTEM:SET-MV
  (push '((fixnum t) t #.(flags)"(MVloc[(#0)]=(#1))")
@@ -428,14 +396,6 @@
 ;;CONS-CDR
 ; (push '((list) t #.(flags rfa)"(#0)->c.c_cdr") (get 'si::cons-cdr 'inline-always))
 
-;;CHAR
- (push '((t t) t #.(flags ans)"elt(#0,fixint(#1))")
-   (get 'char 'inline-always))
-(push '((t fixnum) t #.(flags ans)"elt(#0,#1)")
-   (get 'char 'inline-always))
-(push '((t t) character #.(flags rfa)"code_char((#0)->ust.ust_self[fix(#1)])")
-   (get 'char 'inline-unsafe))
-
 ;;CHAR-CODE
 ; (push '((character) fixnum #.(flags rfa)"(#0)")
 ;   (get 'char-code 'inline-always))
@@ -505,14 +465,6 @@
 ;;DIGIT-CHAR-P
 ; (push '((character) (or null (integer 0 9)) #.(flags rfa)"@0; ((#0) <= '9' && (#0) >= '0')")
 ;   (get 'digit-char-p 'inline-always))
-
-;;ELT
- (push '((t t) t #.(flags ans)"elt(#0,fixint(#1))")
-   (get 'elt 'inline-always))
-(push '((t fixnum) t #.(flags ans)"elt(#0,#1)")
-   (get 'elt 'inline-always))
-;(push '((t t) t #.(flags ans)"elt(#0,fix(#1))")
-;   (get 'elt 'inline-unsafe))
 
 ;;ENDP
  (push '((t) boolean #.(flags rfa)"endp(#0)")
@@ -868,16 +820,6 @@
 #+intdiv
 (push '((fixnum fixnum) fixnum #.(flags rfa)"((#0)%(#1))")
    (get 'rem 'inline-always))
-
-;;SCHAR
- (push '((t t) t #.(flags ans)"elt(#0,fixint(#1))")
-   (get 'schar 'inline-always))
-(push '((t fixnum) t #.(flags ans)"elt(#0,#1)")
-   (get 'schar 'inline-always))
-(push '((t t) character #.(flags rfa)"code_char((#0)->ust.ust_self[fix(#1)])")
-   (get 'schar 'inline-unsafe))
-(push '((t fixnum) character #.(flags rfa)"code_char((#0)->ust.ust_self[#1])")
-   (get 'schar 'inline-unsafe))
 
 ;;SECOND
 ;;  (push '((t) t #.(flags)"cadr(#0)")
