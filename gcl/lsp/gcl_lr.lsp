@@ -45,7 +45,7 @@
 	   (s (cdr (assoc f '((eqv . &)(and . &)(ior . \|)(xor . ^)))))
 	   (f `(,s n1 n2))
 	   (f (if c `(~ ,f) f))
-	   (q `(if (and (typep n1 'fixnum) (typep n2 'fixnum)) ,f (the integer (,fb n1 n2))))
+	   (q `(if (and (typep n1 'fixnum) (typep n2 'fixnum)) ,f (the integer (,fb n1 n2 ,c))))
 	   (q (if r `(if r (apply ',ls ,q (car r) (cdr r)) ,q) q)))
       `(defun ,ls ,(if r `(&optional (n1 ,d) (n2 ,d) &rest r) `(n1 n2))
 	 ,@(when r `((declare (dynamic-extent r))))
