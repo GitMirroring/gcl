@@ -22,8 +22,7 @@
       (declare (optimize (safety 1)))
       (check-type n1 number)
       (check-type n2 number)
-      (let ((z (,fn2 n1 n2)))
-	(if r (apply ',fn z (car r) (cdr r)) z))))
+      (if r (apply ',fn (,fn2 n1 n2) (car r) (cdr r)) (,fn2 n1 n2))))
 
  (defmacro defmm ((fn c))
    `(defun ,fn (n1 &optional (n2 n1) &rest r) 
@@ -31,8 +30,7 @@
       (declare (optimize (safety 1)))
       (check-type n1 real)
       (check-type n2 real)
-      (let ((z (if (,c n1 n2) n1 n2)))
-	(if r (apply ',fn z (car r) (cdr r)) z))))
+      (if r (apply ',fn (if (,c n1 n2) n1 n2) (car r) (cdr r)) (if (,c n1 n2) n1 n2))))
 
   (defmacro defmd ((fn fn2 fn3))
    `(defun ,fn (n1 &optional (n2 n1 n2p) &rest r) 
@@ -41,8 +39,7 @@
       (check-type n1 number)
       (check-type n2 number)
       (if n2p
-	  (let ((z (,fn2 n1 n2)))
-	    (if r (apply ',fn z (car r) (cdr r)) z))
+	  (if r (apply ',fn (,fn2 n1 n2) (car r) (cdr r)) (,fn2 n1 n2))
 	(,fn ,fn3 n1)))))
 
 (defcomp (<  <2))
