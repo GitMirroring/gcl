@@ -61,28 +61,6 @@
 		      :from-end t :initial-value `(funcall ,(car args) ,@syms)))))
 	  ((list 'multiple-value-call info (pop nargs) nargs)))))
 
-;; (defun c1multiple-value-call (args)
-;;   (when (endp args) (too-few-args 'multiple-value-call 1 0))
-;;   (let* ((nargs (c1args (cdr args) (make-info)))
-;; 	 (tps (mapcar (lambda (x) (info-type (cadr x))) nargs)))
-;;     (cond ((endp (cdr args)) (c1funcall args))
-;; 	  ((and (not (member-if-not 'nval tps))
-;; 		(inline-possible 'multiple-value-bind))
-;; 	   (let* ((n (reduce '+ (mapcar 'nval tps)))
-;; 		  (syms (mapcar (lambda (x) (declare (ignore x)) (tmpsym)) (make-list n)))
-;; 		  (r syms))
-;; 	     (c1expr
-;; 	      (reduce (lambda (x y) 
-;; 			(cond ((= 1 (length (car x)))
-;; 			       `(let ((,(caar x) ,(cadr x))) ,y))
-;; 			      (`(multiple-value-bind ,@x ,y))))
-;; 		      (mapcar (lambda (x y) (let* ((n (nval x)) syms)
-;; 					      (dotimes (i n) (push (pop r) syms))
-;; 					      (list (nreverse syms) y))) tps (cdr args))
-;; 		      :from-end t :initial-value `(funcall ,(car args) ,@syms)))))
-;; 	  ((let* ((info (make-info))
-;; 		  (nargs (c1args args info)))
-;; 	     (list 'multiple-value-call info (pop nargs) nargs))))))
 
 (defun c2multiple-value-call (funob forms &aux (*vs* *vs*) (loc (list 'vs (vs-push))) top sup)
 

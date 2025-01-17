@@ -45,67 +45,6 @@
 (defun cmp-macro-function (name &aux (fun (local-fun-obj name)))
   (if fun (unless (fun-src fun) (fun-fn fun)) (macro-function name)))
 
-;; (defun sf (s)
-;;   (declare (optimize (safety 1)))
-;;   (check-type s symbol)
-;;   (or (let ((x (c::symbol-sfdef s)))
-;; 	(unless (= x (si::address nil)) (cons 'special x)))
-;;       (let ((x (c::symbol-gfdef s)))
-;; 	(when (= 0 (si::address x))
-;; 	  (error 'undefined-function s))
-;; 	(if (= (c::symbol-mflag s) 0) x (cons 'macro x)))))
-
-;; (defun funcallable-symbol-p (s)
-;;   (and (symbolp s)
-;;        (/= (si::address (c::symbol-gfdef s)) 0)
-;;        (= (c::symbol-mflag s) 0)
-;;        (= (c::symbol-sfdef s) (si::address nil))))
-;; (declaim (inline funcallable-symbol-p))
-;; (deftype funcallable-symbol nil `(satisfies funcallable-symbol-p))
-
-;; (defun fsf (s)
-;;   (declare (optimize (safety 1)))
-;;   (check-type s funcallable-symbol)
-;;   (c::symbol-gfdef s))
-;; (declaim (inline fsf))
-
-;; (defun c1funob (fun &aux sym)
-;;   ;;; NARGS is the number of arguments.  If the number is unknown, (e.g.
-;;   ;;; in case of APPLY), then NARGS should be NIL.
-;;   (cond ((and (consp fun)
-;; 	      (symbolp (car fun))
-;; 	      (cmp-macro-function (car fun)))
-;; 	 (setq fun (cmp-macroexpand fun))))
-;;   (or
-;;    (and
-;;     (consp fun)
-;;     (or (and (eq (car fun) 'quote)
-;;              (not (endp (cdr fun)))
-;;              (endp (cddr fun))
-;;              (or 
-;;                  (and (symbolp (cadr fun))
-;;                       (or (c1local-fun (cadr fun))
-;;                           (list 'call-global
-;;                                 (make-info :type (get-return-type (cadr fun))
-;;                                  :sp-change (if (null (get (cadr fun) 'no-sp-change)) 1 0))
-;;                                 (cadr fun)))
-;;                       )))
-;;         (and (eq (car fun) 'function)
-;;              (not (endp (cdr fun)))
-;;              (endp (cddr fun))
-;;              (or 
-;;                  (and (setq sym (si::funid-sym-p (cadr fun)))
-;;                       (or (c1local-fun sym)
-;;                           (list 'call-global
-;;                                 (make-info :type (get-return-type sym)
-;;                                  :sp-change (if (null (get sym 'no-sp-change)) 1 0))
-;;                                 sym))
-;;                       )))))
-;;    (let* ((x (c1expr (let ((x (tmpsym))) `(let ((,x ,fun)) (if (symbolp ,x) (fsf ,x) ,x)))))
-;; 	  (info (make-info :type (get-return-type fun) :sp-change 1)))
-;;         (add-info info (cadr x))
-;;         (list 'ordinary info x))))
-
 
 (defun c2funcall-aux(form &aux (funob (caddr form)) (args (cadddr form)))
   (c2funcall funob args))
