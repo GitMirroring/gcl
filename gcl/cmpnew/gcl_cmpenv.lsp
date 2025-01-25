@@ -474,25 +474,6 @@
 	  (inline (setq *notinline* (remove (cadr decl) *notinline*)))
 	  (otherwise (baboon)))))
 
-;; (defun local-compile-decls (decls)
-;;   (dolist (decl decls)
-;;     (unless (consp decl) (setq decl (list decl 3)))
-;;     (case (car decl)
-;; 	  (debug (setq *debug* (cadr decl)))
-;; 	  (safety
-;; 	   (let ((level (cadr decl)))
-;; 	     (declare (fixnum level))
-;; 	     (setq *compiler-check-args* (or *compiler-check-args* (>= level 1))
-;; 		   *safe-compile* (or *safe-compile* (>= level 2))
-;; 		   *compiler-new-safety* (or *compiler-new-safety* (>= level 3))
-;; 		   *compiler-push-events* (or *compiler-push-events* (>= level 4)))));FIXME
-;; 	  (space (setq *space* (cadr decl)))
-;; 	  (notinline (push (cadr decl) *notinline*))
-;; 	  (speed) ;;FIXME
-;; 	  (compilation-speed) ;;FIXME
-;; 	  (inline (setq *notinline* (remove (cadr decl) *notinline*)))
-;; 	  (otherwise (baboon)))))
-
 (defun c2decl-body (decls body)
   (let ((*compiler-check-args* *compiler-check-args*)
         (*safe-compile* *safe-compile*)

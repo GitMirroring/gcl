@@ -980,22 +980,6 @@
 (defun mi4 (fn args la src env inls)
   (c1inline (list (cons fn (append args la)) (blla (cadr src) args la (cddr src))) env inls))
 
-;; (defun mi4 (fn args la src env inls &aux *callees*)
-;;   (let* (;(*compiler-check-args* (>= (this-safety-level) 2))
-;; 	 (src (assert-safety fn (blla (cadr src) args la (cddr src)))))
-;;       (c1inline (list (cons fn (append args la)) src) env inls)))
-
-;; (defun mi4 (fn args la src env inls &aux *callees*)
-;;   (let* ((*compiler-check-args* (>= (this-safety-level) 2))
-;; 	 (src (assert-safety (blla (cadr src) args la (cddr src)))))
-;;       (c1inline (list (cons fn (append args la)) src) env inls)))
-
-;; (defun mi4 (fn args la src env &aux *callees*)
-;;   (let* ((*compiler-check-args* (>= (this-safety-level) 2))
-;; 	 (src (blla (cadr src) args la (cddr src))))
-;;       (assert-safety src)
-;;       (under-env env (c1inline (list (cons fn (append args la)) src)))))
-
 (defun sir-tag (sir)
   (cadar (member-if (lambda (x) (and (eq (caar x) (car sir)) (cdddr x)))
 		    (reverse *src-inline-recursion*))))
