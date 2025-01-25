@@ -100,15 +100,17 @@
    ((++ (x &optional (n 1)) `(prog1 ,x (incf ,x ,n))));FIXME immnum
    (let* ((rs (make-sequence rt (reduce '+ seqs :key 'length :initial-value 0)))
 	  (rt (unless (listp rs) (array-element-type rs)))(rh rs)(i 0))
-     (dolist (seq seqs rs)
-       (let* ((st (unless (listp seq) (array-element-type seq)))(sh seq)(j 0)
-	      (ls (if st (length seq) array-dimension-limit)))
-	 (if (when rt (eq rt st))
-	     (set-array-n rs (++ i ls) seq (++ j ls) ls)
-	     (do nil ((or (>= j ls) (unless st (endp sh))))
-	       (let ((tmp (if st (aref seq (++ j)) (pop sh))))
-		 (if rt (setf (aref rs (++ i)) tmp)
-		     (setf (car rh) tmp rh (cdr rh)))))))))))
+     (mapc ;FIXME dolist does not unroll seqs
+      (lambda (seq &aux (sh seq)(j 0)(st (unless (listp seq) (array-element-type seq)))
+		     (ls (if st (length seq) array-dimension-limit)))
+	(if (when rt (eq rt st))
+	    (set-array-n rs (++ i ls) seq (++ j ls) ls)
+	    (do nil ((or (>= j ls) (unless st (endp sh))))
+	      (let ((tmp (if st (aref seq (++ j)) (pop sh))))
+		(if rt (setf (aref rs (++ i)) tmp)
+		    (setf (car rh) tmp rh (cdr rh)))))))
+      seqs)
+     rs)))
 
 (eval-when
  (compile eval)
