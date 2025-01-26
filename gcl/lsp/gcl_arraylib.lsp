@@ -118,7 +118,7 @@
 		   `(,(pop y)
 		     (check-type v ,x)
 		     ,(case x
-			(character `(progn (*uchar (c-array-self a) i t (char-code v)) v))
+			(character `(code-char (*uchar (c-array-self a) i t (char-code v))))
 			(bit `(set-0-byte-array-self v a i))
 			(otherwise `(,(caddr y) (c-array-self a) i t v)))))
 		 *array-type-info*)))

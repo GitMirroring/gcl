@@ -70,7 +70,7 @@
 				      (lit :fixnum "((" (:fixnum x) "&(sizeof(fixnum)-1)) ? "
 					   "({fixnum _t;unsigned char *p1=(void *)(((fixnum *)" (:fixnum x) ")+" (:fixnum o) "),*p2=(void *)&_t,*pe=p1+sizeof(fixnum);for (;p1<pe;) *p2++=*p1++;_t;}) : "
 					   "((fixnum *)" (:fixnum x) ")[" (:fixnum o) "])"))
-				 `(if s (lit ,x "((" ,(strcat x) "*)" (:fixnum x) ")[" (:fixnum o) "]=" (,x y))
+				 `(if s (lit ,x "(((" ,(strcat x) "*)" (:fixnum x) ")[" (:fixnum o) "]=" (,x y) ")")
 				      (lit ,x "((" ,(strcat x) "*)" (:fixnum x) ")[" (:fixnum o) "]"))))) +ks+)))
   (defmacro mfff nil
    `(progn
