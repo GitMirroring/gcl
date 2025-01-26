@@ -608,14 +608,145 @@
 (si::putprop 'comment 'c1comment 'c1)
 (si::putprop 'comment 'c2comment 'c2)
 
+
+
+(defvar *inl-hash* (make-hash-table :test 'eq))
+
+(defun ibtp (t1 t2 &aux (a1 (atomic-tp t1))(a2 (atomic-tp t2)))
+  (if (unless (type-and t1 t2) (and a1 a2 (listp t1) (listp t2) (equal (car t1) (car t2))))
+      (car t1) (type-or1 t1 t2)))
+
+(defun coalesce-inl (cl inl tps rt &aux (lev (this-safety-level)))
+  (when (> lev (third inl))
+    (keyed-cmpnote (list (car cl) 'inl-hash 'inl-hash-coalesce)
+		   "Coalescing safety ~s: ~s ~s" (car cl) (third inl) lev)
+    (setf (third inl) lev))
+  (unless (type<= rt (cdr (fifth inl)))
+    (let ((n (ibtp (cdr (fifth inl)) rt)))
+      (keyed-cmpnote (list (car cl) 'inl-hash 'inl-hash-coalesce)
+		     "Coalescing return-type ~s: ~s ~s" (car cl) (cdr (fifth inl)) n)
+      (setf (cdr (fifth inl)) n)))
+  (mapl (lambda (x y &aux (cx (car x))(cy (car y)))
+	  (unless (type<= cy cx)
+	    (let ((n (ibtp cx cy)))
+	      (keyed-cmpnote (list (car cl) 'inl-hash 'inl-hash-coalesce)
+			     "Coalescing arg-type ~s: ~s ~s" (car cl) cx n)
+	      (setf (car x) n))))
+	(car inl) tps))
+
+(defun can-coalesce (x tr inl tps)
+  (and (equal tr (second x))
+       (string= (car (last inl)) (car (last x)))
+       (>= (car inl) (third x))
+       (eql (length tps) (length (car x)))
+       (every 'type>= tps (car x))))
+
+(defun remove-comment (s &aux (b (string-match #v"/\\*" s))(e (string-match #v"\\*/" s)))
+  (if (< -1 b e) (string-concatenate (subseq s 0 b) (remove-comment (subseq s (+ e 2)))) s))
+
+(defun lit-inl2 (form &aux (lf (eq 'lit (car form))))
+  (list (this-safety-level)
+	(mapcar (lambda (x) (assert (eq (car x) 'ub)) (third x)) (when lf (fifth form)))
+	(cons (when lf (third form)) (info-type (cadr form)))
+	(if lf (remove-comment (fourth form)) "")))
+
+(defun cl-to-fn (cl)
+  (when (null (cdr (last cl)))
+    (let ((fn (car cl)))
+      (when (symbolp fn)
+	(unless (local-fun-p fn)
+	  fn)))))
+
+(defun get-inl-list (cl &optional set &aux (fn (cl-to-fn cl)))
+  (when fn
+    (or (gethash fn *inl-hash*)
+	(when set
+	  (setf (gethash fn *inl-hash*) (list nil))))))
+
+(defun inls-match (cl fms &aux (lev (this-safety-level)))
+  (car (member (mapcar (lambda (x) (info-type (caddr x))) fms) (car (get-inl-list cl))
+	       :test (lambda (x y &aux (cy (car y)))
+		       (when (<= lev (third y))
+			 (when (eql (length x) (length cy))
+			   (every 'type<= x cy)))))))
+
+(defun ?add-inl (cl fms fm)
+  (unless (or (member-if 'functionp fms :key (lambda (x) (car (atomic-tp (info-type (caddr x))))))
+	      (atomic-tp (info-type (cadr fm))) (exit-to-fmla-p) (inls-match cl fms))
+    (let* ((vf (eq (car fm) 'var))
+	   (tps (mapcar (lambda (x) (info-type (caddr x))) fms))
+	   (tr (mapcar (lambda (x &aux (v (car (last x))))
+			 (when (and (consp v) (eq (car v) 'var))
+			   (position (cddr v) fms :key 'cdddr :test 'equalp)));FIXME
+		       (if vf (list (list fm)) (fifth fm))))
+	   (nat (let ((i -1)) (mapcan (lambda (x &aux (y (incf i))) (unless (atomic-tp x) (list y))) tps))))
+      (unless (or (member nil tr) (set-difference nat tr))
+	(let* ((pl (get-inl-list cl t))
+	       (inl (lit-inl2 fm))
+	       (z (member-if (lambda (x) (can-coalesce x tr inl tps)) (car pl))))
+	  (cond (z (coalesce-inl cl (car z) tps (cdr (third inl)))
+		   (setf (cdr z) (remove-if (lambda (x) (can-coalesce x tr inl tps)) (cdr z))))
+		(pl
+		 (let ((x (list* tps tr inl)))
+		   (keyed-cmpnote (list (car cl) 'inl-hash 'inl-hash-add)
+				  "Adding inl-hash ~s: ~s" (car cl) x)
+		   (push x (car pl))))))))))
+
+(defun prepend-comment (form s)
+  (si::string-concatenate "/* " (princ-to-string form) " */" (remove-comment s)))
+
+(defun apply-inl (cl fms &aux (inl (inls-match cl fms)))
+  (when inl
+    (let* ((c1fms (mapcar (lambda (x) (cdr (nth x fms))) (second inl))))
+      (unless (member-if-not (lambda (x)
+			       (case (car x)
+				 (var (eq (var-kind (caaddr x)) 'lexical))
+				 ((lit location) t)))
+			     c1fms)
+	(cond ((zerop (length (car (last inl))))
+	       (let* ((x (car c1fms))(h (pop x))
+		      (i (copy-info (pop x))))
+		 (setf (info-type i) (type-and (cdr (fifth inl)) (info-type i)))
+		 (keyed-cmpnote (list (car cl) 'inl-hash 'inl-hash-apply)
+				"Applying var inl-hash ~s" (car cl))
+		 (list* h i x)))
+	      ((let ((x (c1lit (list (car (fifth inl)) (prepend-comment (cons 'applied cl) (car (last inl)))) (mapcar 'list  (fourth inl) c1fms))))
+		 (setf (info-type (cadr x)) (type-and (cdr (fifth inl)) (info-type (cadr x))))
+		 (keyed-cmpnote (list (car cl) 'inl-hash 'inl-hash-apply)
+				"Applying inl-hash ~s: ~s: ~s" (car cl) (fourth x))
+		 x)))))))
+
+(defun dump-inl-hash (f)
+  (with-open-file (s f :direction :output)
+    (prin1 '(in-package :compiler) s)
+    (terpri s)
+    (maphash (lambda (x y)
+	       (prin1
+		`(setf (gethash ',x *inl-hash*)
+		       (list
+			(list
+			 ,@(mapcar (lambda (z)
+				     `(list (mapcar 'uniq-tp ',(pop z))
+					    ',(pop z) ',(pop z) ',(pop z)
+					    (cons ',(caar z) (uniq-tp ',(cdar z)))
+					    ,(cadr z)))
+				   (car y)))))
+		      s)
+	       (terpri s))
+	     *inl-hash*))
+  nil)
+
+
 (defun c1inline (args env inls)
-  (let* ((cl (pop args))
-	 (fm (pop args))
-	 (nargs (under-env env (c1let-* (cdr fm) t inls)))
-	 (s cl))
-    (assert (and (eq (car fm) 'let*) (not args)))
-    (cond ((eq (car nargs) 'var) nargs)
-	  ((list 'inline (copy-info (cadr nargs)) s nargs)))))
+  (let* ((cl (pop args))(fm (pop args)))
+    (or (apply-inl cl inls)
+	(let* ((nargs (under-env env (c1let-* (cdr fm) t inls))))
+	  (case (car nargs)
+	    ((var lit)
+	     (?add-inl cl inls nargs)
+	     (when (stringp (fourth nargs)) (setf (fourth nargs) (prepend-comment cl (fourth nargs))))
+	     nargs)
+	    (otherwise (list 'inline (copy-info (cadr nargs)) cl nargs)))))))
 
 (defvar *annotate* nil)
 
@@ -836,7 +967,7 @@
 ;(defvar *callees* nil)
 
 (defun maybe-reverse-type-prop (dt f)
-  (unless (or *safe-compile* (when (consp f) (eq (car f) 'lit)));FIXME push-vbind/c1var copy
+  (unless *safe-compile*;FIXME push-vbind/c1var copy  (when (consp f) (eq (car f) 'lit))
     (set-form-type f (coerce-to-one-value dt))))
 
 ;; (defun maybe-reverse-type-prop (dt f)

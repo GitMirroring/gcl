@@ -8,6 +8,10 @@ APPEND=../xbin/append
 
 all: $(addsuffix .c,$(FILES)) $(addsuffix .h,$(FILES)) $(addsuffix .data,$(FILES)) $(addsuffix .o,$(FILES))
 
+$(addsuffix .c,$(FILES)) $(addsuffix .h,$(FILES)) $(addsuffix .data,$(FILES)) $(addsuffix .o,$(FILES)):	$(addsuffix .lisp,$(FILES)) ./saved_clcs_gcl
+	echo "(progn (compiler::cdebug) (mapc (quote compile-file) (mapcar (quote string-downcase) (quote ($(addsuffix .lisp,$(FILES)))))) (compiler::dump-inl-hash \"../cmpnew/gcl_cmpnopt.lsp\"))" | ./saved_clcs_gcl
+
+
 gprof_objs: $(addprefix ../gprof/,$(addsuffix .o,$(FILES)))
 
 ../gprof/%.o: %.c #$(DECL)

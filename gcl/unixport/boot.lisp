@@ -58,3 +58,13 @@
   (si::chdir "../xgcl-2")
   (load "sysdef.lisp")(load "sys-proclaim.lisp")(compiler::cdebug))
 #+(and pre-gcl xgcl)(xlib::compile-xgcl)
+
+(dolist (l '(sbit svref schar char));ensure in *inl-hash*
+  (compile nil `(lambda (x y) (,l x y))))
+(compile nil '(lambda (x y z) (setf (sbit x y) z)))
+(compile nil '(lambda (x y z) (setf (svref x y) z)))
+(compile nil '(lambda (x y z) (setf (schar x y) z)))
+(compile nil '(lambda (x y z) (setf (char x y) z)))
+
+(when (fboundp 'compiler::dump-inl-hash)
+  (compiler::dump-inl-hash "../cmpnew/gcl_cmpnopt.lsp"))

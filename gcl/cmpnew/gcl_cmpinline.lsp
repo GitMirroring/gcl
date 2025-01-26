@@ -440,22 +440,22 @@
     (coerce-loc *value-to-go* type)))
     
 
-(defun lit-loc (tp inl args bind stores)
-  (declare (ignore bind stores))
+(defun lit-loc (key inl args bind safety stores &aux (tp (get key 'cmp-lisp-type)))
+  (declare (ignore bind safety stores))
   (let ((sig (list (mapcar (lambda (x) (info-type (cadr x))) args) tp))) 
     (get-inline-loc (list (car sig) (cadr sig) (flags rfa) inl) args)))
-
-;; (defun lit-loc (tp inl args)
-;;   (let* ((sig (list (mapcar (lambda (x) (info-type (cadr x))) args) tp))) 
-;;     (get-inline-loc (list (car sig) (cadr sig) (flags rfa) inl) args)))
 
 (defun ub-loc (v &aux (c (car v)))
   (ecase c
       (var (cons c (caddr v)))
       (lit (apply 'lit-loc (cddr v)))
-      (location (caddr v))
-      ((decl-body inline) (ub-loc (car (last v))))));FIXME
+      (location (caddr v))));FIXME
 
+(defun args-info-changed-info (i forms)
+  (do-referred (v i)
+    (when (var-p v)
+      (when (args-info-changed-vars v forms)
+	(return-from args-info-changed-info t)))))
 
 (defun inline-args (forms types &optional fun &aux locs ii)
   (do ((forms forms (cdr forms))
@@ -503,7 +503,11 @@
 		       (push (wt-push-loc loc type) locs))
 		      ((push (coerce-loc loc type) locs))))
 		 (push (wt-push-loc form type t) locs)))
-	      (lit (push (coerce-loc (apply 'lit-loc (cddr form)) type) locs))
+	      (lit
+	       (let* ((loc (apply 'lit-loc (cddr form)))
+		      (loc (if (args-info-changed-info (cadr form) (cdr forms))
+			       (wt-push-loc loc type) (coerce-loc loc type))))
+		 (push loc locs)))
 	      (ub (push (list 'gen-loc (caddr form) (ub-loc (fourth form))) locs))
               (structure-ref (push (coerce-loc-structure-ref (cdr form) type) locs))
               (SETQ
@@ -521,6 +525,7 @@
 		       ((setq forms (list* form form1 (cdr forms))
 			      types (list* type  types))))));; want (setq types (list* type type (cdr  types))) but type is first of types
               (otherwise (push (wt-push-loc form type t) locs))))))
+
 
 ;; (defun inline-args (forms types &optional fun &aux locs ii)
 ;;   (do ((forms forms (cdr forms))

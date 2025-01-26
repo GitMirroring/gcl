@@ -62,7 +62,7 @@ remake-sys-files:
 		| $(LISP) ../unixport/ $(LISPFLAGS)
 	$(MAKE) clean
 	$(MAKE)
-	echo $(SETUP) '(pcl::load-pcl)(si::all-conflicts)' \
+	echo $(SETUP) '(pcl::load-pcl)(si::all-conflicts)(compiler::dump-inl-hash "../cmpnew/gcl_cmpnopt.lsp")' \
 		| $(LISP) ../unixport/ $(LISPFLAGS)
 
 tar:

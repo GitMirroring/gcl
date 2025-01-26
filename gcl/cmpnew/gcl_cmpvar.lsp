@@ -212,8 +212,7 @@
 
 (defun find-vs (form)
   (case (car form)
-    ((var lit) (car (last form)))
-    ((inline decl-body) (find-vs (car (last form))))))
+    ((var lit) (car (last form)))))
 
 (defun c1var (name)
   (let* ((info (make-info))
@@ -292,24 +291,20 @@
     (var form))))
 
 (defun lit-bind (x)
-  (when (consp x)
-    (case (car x)
-      (lit (sixth x))
-      ((inline decl-body) (lit-bind (car (last x)))))))
+  (case (car x)
+    (lit (sixth x))))
 
 (defun get-bind (x)
   (typecase
    x
    ((cons (eql var) t) (when (check-vs (car (last x))) (var-bind (local-var (caddr x)))))
-   ((cons (member inline decl-body) t) (get-bind (car (last x))))
    ((cons (eql lit) t) (when (check-vs (car (last x))) (lit-bind x)))
    (var (var-bind x))
    (binding x)))
 
 (defun repeatable-var-binding (form)
   (case (car form)
-	((var location lit) form)
-	((decl-body inline) (when (repeatable-var-binding (car (last form))) form))))
+	((var location lit) form)))
 
 (defun repeatable-binding-p (form &aux (i (cadr (repeatable-var-binding form))))
   (when i
@@ -555,6 +550,8 @@
 	     (sft (car (last form)) type)
 	     (mapc (lambda (x y) (sft y (var-type x)))
 		   (caddr form) (cadddr form)))
+	    (lit (mapc (lambda (x) (do-setq-tp x nil (type-and nt (var-type x))))
+		       (local-aliases (get-top-var-binding (lit-bind form)) nil)))
 	    (var (do-setq-tp (caaddr form) nil (type-and nt (var-type (caaddr form)))))
 	    (progn (sft (car (last (third form))) type))))))))
 	  ;; (if

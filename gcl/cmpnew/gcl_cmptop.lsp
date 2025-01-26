@@ -762,40 +762,111 @@
   
 (defun c1ub (args)
   (let* ((key (pop args))
-;	 (info (make-info :type #topaque :flags (iflags side-effects)));FIXME
 	 (info (make-info :type #topaque))
-	 (nargs (c1args args info)))
-    (list* 'ub info key nargs)))
+	 (c1?form (car args))
+	 (narg (cond ((when (consp c1?form) (info-p (cadr c1?form)));FIXME is this dangerous?
+		      (add-info info (cadr c1?form))
+		      c1?form)
+		     ((c1arg c1?form info)))))
+    (list* 'ub info key (list narg))))
 (setf (get 'ub 'c1) 'c1ub)
 (setf (get 'unbox 'c1) 'c1ub)
 
 
-(let ((ars (let ((i -1))
-	     (mapl (lambda (x)
-		     (setf (car x) (concatenate 'string "#" (write-to-string (incf i)))))
-		   (make-list call-arguments-limit)))))
-  (defun c1lit (args &aux (as ars))
-    (flet ((as nil (assert as) (pop as)))
-	  (let* ((tp (get (pop args) 'cmp-lisp-type :opaque))
-		 (info (make-info :type tp)) ;FIXME boolean
-		 (inl (apply 'concatenate 'string
-			     (mapcar (lambda (x) (if (stringp x) x (as))) args)))
-		 (nargs (mapcan (lambda (x)
-				  (unless (stringp x) (list (c1arg (cons 'ub x) info))))
-				args)))
-	    (when (eq tp :opaque) (baboon))
-	    (when (find #\= inl)
-	      (c1side-effects nil)
-	      (setf (info-flags info) (logior (iflags side-effects) (info-flags info))))
-	    (let ((form (list 'lit info (info-type info) inl nargs nil (make-vs info))))
-	      (setf (sixth form) (new-bind form))
-	      form)))))
+(defvar *ars* (let ((i -1))
+		(mapl (lambda (x)
+			(setf (car x) (concatenate 'string "#" (write-to-string (incf i)))))
+		      (make-list call-arguments-limit))))
 
+(defun arg-n (n) (the string (nth n *ars*)));FIXME assert
 
-(defun c2lit (tp inl args bind stores)
+(defun lit-string-merge (s ns i n j &aux (ns (lit-string-move ns 0 (1+ j) i)))
+  (if (< j 0)
+      (lit-string-move (mysub s (arg-n i) ns) (1+ i) (1+ n) j)
+      (mysub (lit-string-move s (1+ i) (1+ n) j) (arg-n i) ns)))
+
+(defun lit-string-move (s i n j)
+  (if (> n i)
+      (cond ((eql j 0) s)
+	    ((< j 0) (lit-string-move (mysub s (arg-n i) (arg-n (+ i j))) (1+ i) n j))
+	    ((mysub (lit-string-move s (1+ i) n j) (arg-n i) (arg-n (+ i j)))))
+      s))
+
+(defun ml (x &optional key)
+  (case (car x)
+    (ub (ml (car (last x)) (third x)))
+    (location (let* ((fvt (or (car (assoc (info-type (cadr x)) +value-types+ :test 'type<=)) t))
+		     (str (fm-to-string (caddr x))))
+		(when str
+		  (c1lit (list key (loc-str str key fvt))))))
+    (lit (let* ((fvt (get (third x) 'cmp-lisp-type)))
+	   (list* (pop x) (pop x) (pop x) (loc-str (pop x) key fvt) x)))))
+
+(defun fm-to-string (form)
+  (typecase form
+;    (null "Cnil")
+;    (true "Ct")
+    ((cons (eql vv) t) (fm-to-string (cadr form)))
+    ((cons (member char-value fixnum-value character-value) t) (fm-to-string (caddr form)))
+    ((eql most-negative-fixnum)  #.(string-concatenate "(" (write-to-string (1+ most-negative-fixnum)) "- 1)"))
+    (integer (format nil "~a" form)); string character
+    (float (format nil "~10,,,,,,'eG" form))
+    ((complex float)
+     (string-concatenate "(" (fm-to-string (realpart form)) " + I * " (fm-to-string (realpart form)) ")"))))
+
+(defun loc-str (x key ft &aux p (tt (get key 'cmp-lisp-type))(cast (strcat "(" key ")"))(pp (find #\* cast)))
+  (string-concatenate
+   (cond ((member key '(:cnum :creal)) "")
+	 ((eq ft tt) "")
+	  ((equal ft t)
+	   (if *compiler-new-safety*
+	       (let ((v (member key '(:char :int :fixnum))))
+		 (if v (si::string-concatenate (setq p "object_to_") (strcat key))
+		   (si::string-concatenate cast (setq p "object_to_") (if pp "pointer" "dcomplex"))))
+	       (or (setq p (cdr (assoc tt +to-c-var-alist+ :test 'type<=))) cast)))
+	  ((eq tt t) (or (setq p (cdr (assoc ft +wt-c-var-alist+))) ""))
+	 ((and (type>= #tint tt) (type>= tt ft)))
+	 ((and (type>= #tcnum tt) (type>= #t(or character cnum) ft)) cast)
+	 ((baboon) ""))
+   (if p "(" "")
+   x
+   (if p ")" "")))
+
+(defun c1lit (args &optional c1args
+	      &aux (lev (this-safety-level))
+		(key (pop args))(tp (get key 'cmp-lisp-type :opaque)))
+  (when (eq tp :opaque) (baboon))
+  (let* ((as *ars*)
+	 (inl (apply 'concatenate 'string
+		     (mapcar (lambda (x) (if (stringp x) x (if as (pop as) (baboon)))) args)))
+	 (info (make-info :type tp));FIXME boolean
+	 (nargs (mapcan (lambda (x) (unless (stringp x) (list (c1arg (cons 'ub x) info))))
+			(or c1args args)))
+	 (lna (length nargs))(i 0)
+	 (nargs (mapcan (lambda (x &aux (f (ml x))(ff (fifth f))(lff (length ff)))
+			  (cond (f (setq inl (lit-string-merge inl (fourth f) i lna (1- lff)))
+				   (setq lev (min lev 1));FIXME?
+;				   (when (> lev (seventh f)) (setq lev (seventh f))); (break)
+				   (incf i lff)(copy-list ff));FIXME?
+				((incf i)(list x))))
+			nargs))
+	 (form (list 'lit info key inl nargs nil lev (make-vs info))))
+    (when (find #\= inl)
+      (c1side-effects nil)
+      (setf (info-flags info) (logior (iflags side-effects) (info-flags info))))
+    (setf (sixth form) (new-bind form))
+    form))
+
+(defun c2lit (key inl args bind safety stores &aux (tp (get key 'cmp-lisp-type :opaque)))
   (let* ((*inline-blocks* 0)
-	 (*restore-avma*  *restore-avma*))
-    (unwind-exit (lit-loc tp inl args bind stores) nil (cons 'values (if (equal tp #t(returns-exactly)) 0 1)))
+	 (*restore-avma*  *restore-avma*)
+	 (*compiler-check-args* *compiler-check-args*)
+	 (*safe-compile* *safe-compile*)
+	 (*compiler-new-safety* *compiler-new-safety*)
+	 (*compiler-push-events* *compiler-push-events*))
+    (local-compile-decls `((safety ,safety)))
+    (unwind-exit (lit-loc key inl args bind safety stores) nil
+		 (cons 'values (if (equal tp #t(returns-exactly)) 0 1)))
     (close-inline-blocks)))
 
 ;; (defun c2lit (tp inl args)
