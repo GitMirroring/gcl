@@ -448,8 +448,7 @@
 	       (cmpwarn "The declaration specifier ~s is unknown." (car decl))))))
     (let ((c1b (c1progn body)))
       (cond ((null dl) c1b)
-	    ((eq (car c1b) 'lit) c1b)
-	    ((unless *safe-compile* (eq (car c1b) 'var)) c1b);FIXME
+	    ((member (car c1b) '(var lit)) c1b)
 	    ((eq (car c1b) 'decl-body) (setf (third c1b) (nunion dl (third c1b))) c1b)
 	    ((list 'decl-body (copy-info (cadr c1b)) dl c1b))))))
 
