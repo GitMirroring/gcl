@@ -693,7 +693,9 @@
 		   (push x (car pl))))))))))
 
 (defun prepend-comment (form s)
-  (si::string-concatenate "/* " (princ-to-string form) " */" (remove-comment s)))
+  (if *annotate*
+      (si::string-concatenate "/* " (princ-to-string form) " */" (remove-comment s))
+      s))
 
 (defun apply-inl (cl fms &aux (inl (inls-match cl fms)))
   (when inl
