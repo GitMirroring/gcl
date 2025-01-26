@@ -778,18 +778,32 @@
 			(setf (car x) (concatenate 'string "#" (write-to-string (incf i)))))
 		      (make-list call-arguments-limit))))
 
+(defvar *arps* (mapcar (lambda (x)
+			 (compile-regexp (concatenate 'string "(" x ")([^0-9]|$)")))
+		       *ars*))
+
 (defun arg-n (n) (the string (nth n *ars*)));FIXME assert
+(defun arg-pat (n) (nth n *arps*))
+
+(defun argsub (str pat new)
+  (declare (string str pat new))
+  (let ((x (string-match pat str)))
+    (if (eql x -1) str
+	(concatenate 'string
+		     (subseq str 0 (match-beginning 1))
+		     new
+		     (argsub (subseq str (match-end 1)) pat new)))))
 
 (defun lit-string-merge (s ns i n j &aux (ns (lit-string-move ns 0 (1+ j) i)))
   (if (< j 0)
-      (lit-string-move (mysub s (arg-n i) ns) (1+ i) (1+ n) j)
-      (mysub (lit-string-move s (1+ i) (1+ n) j) (arg-n i) ns)))
+      (lit-string-move (argsub s (arg-pat i) ns) (1+ i) (1+ n) j)
+      (argsub (lit-string-move s (1+ i) (1+ n) j) (arg-pat i) ns)))
 
 (defun lit-string-move (s i n j)
   (if (> n i)
       (cond ((eql j 0) s)
-	    ((< j 0) (lit-string-move (mysub s (arg-n i) (arg-n (+ i j))) (1+ i) n j))
-	    ((mysub (lit-string-move s (1+ i) n j) (arg-n i) (arg-n (+ i j)))))
+	    ((< j 0) (lit-string-move (argsub s (arg-pat i) (arg-n (+ i j))) (1+ i) n j))
+	    ((argsub (lit-string-move s (1+ i) n j) (arg-pat i) (arg-n (+ i j)))))
       s))
 
 (defun ml (x &optional key)
@@ -825,7 +839,7 @@
 		   (si::string-concatenate cast (setq p "object_to_") (if pp "pointer" "dcomplex"))))
 	       (or (setq p (cdr (assoc tt +to-c-var-alist+ :test 'type<=))) cast)))
 	  ((eq tt t) (or (setq p (cdr (assoc ft +wt-c-var-alist+))) ""))
-	 ((and (type>= #tint tt) (type>= tt ft)))
+	 ((and (type>= #tint tt) (type>= tt ft)) "")
 	 ((and (type>= #tcnum tt) (type>= #t(or character cnum) ft)) cast)
 	 ((baboon) ""))
    (if p "(" "")
