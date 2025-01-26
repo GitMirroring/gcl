@@ -796,8 +796,7 @@
   (case (car fm)
     (inline (carcdr-c1form-narg (fourth fm)))
     (let* (carcdr-c1form-narg (fifth fm)))
-    (lit (carcdr-c1form-narg (car (fifth fm))))
-    (ub (fourth fm))))
+    (lit (fourth (car (eighth fm))))))
 
 (defun get-binding-form (b &aux (v (get-var b)))
   (if v
@@ -808,14 +807,14 @@
 
 
 (defun co1carcdr (f x);FIXME c1 prop?
-  (let* (;(c1form (mi1 f x))
-	 (narg (with-restore-vars (c1arg (car x))));(carcdr-c1form-narg c1form))
+  (let* ((c1form (mi1 f x));NOTE this cannot be exponential/double eval, esp. for ACL2!
+	 (narg (carcdr-c1form-narg c1form))
 	 (atp (when (and narg (ignorable-form narg)) (atomic-tp (info-type (cadr narg)))))
 	 (tp (car atp))
-	 (b (when (consp tp) (funcall f tp))))
+	 (b (when (consp tp) (funcall f tp))));FIXME nil
     (typecase b
-      (null (mi1 f x))
-      (binding (or (get-binding-form b) (mi1 f x)))
+      (null c1form)
+      (binding (or (get-binding-form b) c1form))
       (otherwise (atomic-type-constant-value atp)))))
 (setf (get 'car 'co1) 'co1carcdr)
 (setf (get 'cdr 'co1) 'co1carcdr)
