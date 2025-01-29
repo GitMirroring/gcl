@@ -100,7 +100,7 @@
 	   (typecase
 	    object
 	    (function object) 
-	    ((and symbol (not boolean)) 
+	    (symbol
 	     (let* ((f (c-symbol-gfdef object))(fi (address f))(m (c-symbol-mflag object)))
 	       (check-type fi (and fixnum (not (integer #.+objnull+ #.+objnull+))))
 	       (check-type m  (integer 0 0))
