@@ -786,7 +786,7 @@
 (defun arg-pat (n) (nth n *arps*))
 
 (defun argsub (str pat new)
-  (declare (string str pat new))
+  (declare (string str new))
   (let ((x (string-match pat str)))
     (if (eql x -1) str
 	(concatenate 'string

@@ -59,12 +59,21 @@
   (load "sysdef.lisp")(load "sys-proclaim.lisp")(compiler::cdebug))
 #+(and pre-gcl xgcl)(xlib::compile-xgcl)
 
+(in-package :compiler)
+;FIXME safety 2
 (dolist (l '(sbit svref schar char));ensure in *inl-hash*
-  (compile nil `(lambda (x y) (,l x y))))
-(compile nil '(lambda (x y z) (setf (sbit x y) z)))
-(compile nil '(lambda (x y z) (setf (svref x y) z)))
-(compile nil '(lambda (x y z) (setf (schar x y) z)))
-(compile nil '(lambda (x y z) (setf (char x y) z)))
+  (compile nil `(lambda (x y) (declare (optimize (safety 1))) (,l x y)))
+  (compile nil `(lambda (x y z) (declare (optimize (safety 1))) (setf (,l x y) z))))
+
+(dolist (l si::+array-types+)
+  (compile nil `(lambda (x y) (declare (optimize (safety 1))((vector ,l) x)) (aref x y)))
+  (compile nil `(lambda (x y z) (declare (optimize (safety 1))((vector ,l) x)(,l z)) (setf (aref x y) z)))
+  (compile nil `(lambda (x y z) (declare (optimize (safety 1))((vector ,l) x)) (setf (aref x y) z))))
+
+(compile nil `(lambda (x) (declare (optimize (safety 1))((or simple-vector simple-string simple-bit-vector) x)) (length x)))
+
+(compile nil `(lambda (x) (declare (optimize (safety 2))) (address x)))
+(compile nil `(lambda (x) (declare (optimize (safety 2))) (nani x)))
 
 (when (fboundp 'compiler::dump-inl-hash)
   (compiler::dump-inl-hash "../cmpnew/gcl_cmpnopt.lsp"))

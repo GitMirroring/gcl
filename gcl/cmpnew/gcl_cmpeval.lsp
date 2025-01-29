@@ -663,22 +663,23 @@
 	(when set
 	  (setf (gethash fn *inl-hash*) (list nil))))))
 
-(defun inls-match (cl fms &aux (lev (this-safety-level)))
-  (car (member (mapcar (lambda (x) (info-type (caddr x))) fms) (car (get-inl-list cl))
-	       :test (lambda (x y &aux (cy (car y)))
-		       (when (<= lev (third y))
-			 (when (eql (length x) (length cy))
-			   (every 'type<= x cy)))))))
+(defun inls-match (cl fms &aux (lev (this-safety-level))
+			    (tps (mapcar (lambda (x) (info-type (caddr x))) fms)))
+  (when (member-if-not 'atomic-tp tps)
+    (car (member tps (car (get-inl-list cl))
+		 :test (lambda (x y &aux (cy (car y)))
+			 (when (<= lev (third y))
+			   (when (eql (length x) (length cy))
+			     (every 'type<= x cy))))))))
 
 (defun ?add-inl (cl fms fm)
-  (unless (or (member-if 'functionp fms :key (lambda (x) (car (atomic-tp (info-type (caddr x))))))
-	      (atomic-tp (info-type (cadr fm))) (exit-to-fmla-p) (inls-match cl fms))
-    (let* ((vf (eq (car fm) 'var))
-	   (tps (mapcar (lambda (x) (info-type (caddr x))) fms))
+  (unless (or (member-if 'atomic-tp fms :key (lambda (x) (info-type (caddr x))))
+	      (atomic-tp (info-type (cadr fm))) (exit-to-fmla-p)); (inls-match cl fms)
+    (let* ((tps (mapcar (lambda (x) (info-type (caddr x))) fms))
 	   (tr (mapcar (lambda (x &aux (v (car (last x))))
 			 (when (and (consp v) (eq (car v) 'var))
 			   (position (cddr v) fms :key 'cdddr :test 'equalp)));FIXME
-		       (if vf (list (list fm)) (fifth fm))))
+		       (if (eq (car fm) 'var) (list (list fm)) (fifth fm))))
 	   (nat (let ((i -1)) (mapcan (lambda (x &aux (y (incf i))) (unless (atomic-tp x) (list y))) tps))))
       (unless (or (member nil tr) (set-difference nat tr))
 	(let* ((pl (get-inl-list cl t))
@@ -694,7 +695,7 @@
 
 (defun prepend-comment (form s)
   (if *annotate*
-      (si::string-concatenate "/* " (princ-to-string form) " */" (remove-comment s))
+      (si::string-concatenate "/* " (prin1-to-string form) " */" (remove-comment s))
       s))
 
 (defun apply-inl (cl fms &aux (inl (inls-match cl fms)))
@@ -738,6 +739,9 @@
 	     *inl-hash*))
   nil)
 
+(defun show-inls (fn)
+  (mapcar (lambda (x) (list (mapcar 'cmp-unnorm-tp (car x)) (third x) (car (last x))))
+	  (car (gethash fn *inl-hash*))))
 
 (defun c1inline (args env inls)
   (let* ((cl (pop args))(fm (pop args)))
