@@ -1160,17 +1160,20 @@
 
 (defun kingdoms-with-individuals (tp)
   (when (consp tp)
-    (ntp-kingdoms-with-individuals (caddr tp))))
+    (let ((ntp (caddr tp)))
+      (if (caddr ntp)
+	  (mapcar 'car (car (si::ntp-and (caar ntp) (si::ntp-not (cadar ntp)))))
+	  (ntp-kingdoms-with-individuals ntp)))))
 
 
 (declaim (inline bump-individuals))
 (defun bump-individuals (f tp)
   (cond ((cmpt tp) (cons (car tp) (mapcar (lambda (x) (bump-individuals f x)) (cdr tp))))
 	((let* ((x (kingdoms-with-individuals tp))
-		(x (remove-if-not f x :key 'cdr))
-		(x (remove-duplicates (mapcar 'car x))))
+		(x (remove-if-not (lambda (x) (if (consp x) (funcall f (cdr x)) t)) x))
+		(x (remove-duplicates (mapcar (lambda (x) (if (consp x) (car x) x)) x))))
 	   (if x
-	       (compiler::type-or1 (cmp-norm-tp (cons 'or x)) tp)
+	       (type-or1 (cmp-norm-tp (cons 'or x)) tp)
 	       tp)))))
 
 (declaim (inline unprintable-individual-p))
