@@ -74,16 +74,16 @@
       (list (make-list (length all) :initial-element t)
 	    '* #.(flags ans set svt) 
 	    (concatenate 'string
-	    "({object _z;fixnum _v=(fixnum)#v;
-        fcall.fun=#0;fcall.valp=_v;fcall.argd=#n-1;
-        _z=Rset && !(#0)->fun.fun_argd && 
-        fcall.argd>=(#0)->fun.fun_minarg && fcall.argd<=((#0)->fun.fun_maxarg) ? 
+	    "({object _z,_f=#0;fixnum _v=(fixnum)#v;
+        fcall.fun=_f;fcall.valp=_v;fcall.argd=#n-1;
+        _z=Rset && !(_f)->fun.fun_argd &&
+        fcall.argd>=(_f)->fun.fun_minarg && fcall.argd<=((_f)->fun.fun_maxarg) ?
         "
 	    (if args
-		"(#0)->fun.fun_self(#*)"
-	      "((#0)->fun.fun_maxarg ? (#0)->fun.fun_self(#?) : (#0)->fun.fun_self(#*))")
+		"(_f)->fun.fun_self(#*)"
+	      "((_f)->fun.fun_maxarg ? (_f)->fun.fun_self(#?) : (_f)->fun.fun_self(#*))")
 	    " : call_proc_cs2(#?);
-           if (!(#0)->fun.fun_neval && !(#0)->fun.fun_vv) vs_top=_v ? (object *)_v : sup;
+           if (!(_f)->fun.fun_neval && !(_f)->fun.fun_vv) vs_top=_v ? (object *)_v : sup;
            _z;})")) all))
     (close-inline-blocks)))
 
