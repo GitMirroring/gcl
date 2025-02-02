@@ -505,7 +505,8 @@
 		 (push (wt-push-loc form type t) locs)))
 	      (lit
 	       (let* ((loc (apply 'lit-loc (cddr form)))
-		      (loc (if (args-info-changed-info (cadr form) (cdr forms))
+		      (loc (if (or (args-info-changed-info (cadr form) (cdr forms))
+				   (member-if (lambda (x) (iflag-p (info-flags (cadr x)) side-effects)) (cdr forms)))
 			       (wt-push-loc loc type) (coerce-loc loc type))))
 		 (push loc locs)))
 	      (ub (push (list 'gen-loc (caddr form) (ub-loc (fourth form))) locs))
