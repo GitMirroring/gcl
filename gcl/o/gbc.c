@@ -478,7 +478,7 @@ mark_object_array(object *o,object *oe) {
 static void
 mark_object1(object x) {
 
-  fixnum i,j=0;/*FIXME*/
+  fixnum i,j;
 
   if (is_marked_or_free(x))
     return;
@@ -555,43 +555,20 @@ mark_object1(object x) {
 
   case t_simple_vector:
   case t_simple_bitvector:
+  case t_simple_string:
   case t_vector:
   case t_bitvector:
+  case t_string:
 
-    switch(j ? j : (enum aelttype)x->v.v_elttype) {
+    if (x->v.v_elttype==aet_object && ADISP(x)->c.c_car==Cnil)
+      mark_object_array(x->v.v_self,x->v.v_self+x->v.v_dim);
 
-    case aet_lf:
-      j= sizeof(longfloat)*x->v.v_dim;
-      if ((COLLECT_RELBLOCK_P) &&  (void *)x->v.v_self>=(void *)heap_end)
-	rb_pointer=PCEI(rb_pointer,sizeof(double));		/*FIXME GC space violation*/
-      break;
+    j=x->v.v_eltsize ? (1<<(x->v.v_eltsize-1)) : x->v.v_eltsize;
 
-    case aet_bit:
-      j=ceil(BV_OFFSET(x)+x->bv.bv_dim,BV_ALLOC)*sizeof(*x->bv.bv_self);
-      break;
+    if ((COLLECT_RELBLOCK_P) && (void *)x->v.v_self>=(void *)heap_end && j>sizeof(long))
+      rb_pointer=PCEI(rb_pointer,j); /*FIXME GC space violation*/
 
-    case aet_char:
-    case aet_uchar:
-      j=sizeof(char)*x->v.v_dim;
-      break;
-
-    case aet_short:
-    case aet_ushort:
-      j=sizeof(short)*x->v.v_dim;
-      break;
-
-    case aet_object:
-      if (ADISP(x)->c.c_car==Cnil)
-	mark_object_array(x->v.v_self,x->v.v_self+x->v.v_dim);
-
-    default:
-      j=sizeof(fixnum)*x->v.v_dim;
-
-    }
-
-  case t_simple_string:
-  case t_string:/*FIXME*/
-    j=j ? j : x->st.st_dim;
+    j=j ? j*x->v.v_dim : ceil(BV_OFFSET(x)+x->bv.bv_dim,BV_ALLOC)*sizeof(*x->bv.bv_self);
 
     if (ADISP(x)->c.c_car==Cnil)
       MARK_LEAF_DATA(x,x->v.v_self,j);

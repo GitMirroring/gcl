@@ -770,19 +770,8 @@ int line_length;
 	object strng, strm;
 	vs_mark;
 
-	strng = alloc_object(t_string);
-	strng->st.st_hasfillp = TRUE;
-	strng->st.st_adjustable = TRUE;
-	/* strng->st.tt= */strng->st.st_elttype = aet_ch;
-	/* strng->st.st_eltsize = elt_size(aet_ch); */
-	strng->st.st_rank = 1;
-	SET_ADISP(strng,Cnil);
-	strng->st.st_dim = line_length;
+	strng = alloc_string(line_length);
 	strng->st.st_fillp = 0;
-	strng->st.st_self = NULL;
-		/*  For GBC not to go mad.  */
-	vs_push(strng);
-		/*  Saving for GBC.  */
 	strng->st.st_self = alloc_relblock(line_length);
 	strm = alloc_object(t_stream);
 	strm->sm.tt=strm->sm.sm_mode = (short)smm_string_output;
