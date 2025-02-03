@@ -1141,6 +1141,7 @@
 	     (:dcomplex   "make_dcomplex"        dcomplex        cnum)
 	     (:string     "make_simple_string"   string)
 	     (:object     ""                     t)
+	     (:char*      nil                    nil             (array character)   "->st.st_self")
 	     (:float*     nil                    nil             (array short-float) "->sfa.sfa_self")
 	     (:double*    nil                    nil             (array long-float)  "->lfa.lfa_self")
 	     (:long*      nil                    nil             (array fixnum)      "->fixa.fixa_self")
