@@ -484,6 +484,8 @@ bool shortp;
 	write_decimal(exp);
 }
 
+static object circle_table=Cnil;
+
 static void
 call_structure_print_function(x, level)
 object x;
@@ -569,12 +571,15 @@ ONCE_MORE:
 		goto L;
 	}
 
+	if (PRINTcircle) circle_table=PRINTvs_top[0];
+
 	ifuncall3(S_DATA(x->str.str_def)->print_function,
 		  x, PRINTstream, vs_head);
 	vs_popp;
 	eflag = FALSE;
 
 L:
+	circle_table=Cnil;
 	frs_pop();
 	bds_unwind(old_bds_top);
 
@@ -1524,6 +1529,11 @@ setupPRINTcircle(object x,int dogensyms) {
 
   object *vp=vs_top,*v=vp,h;
   fixnum j;
+
+  if (circle_table!=Cnil) {
+    vs_push(circle_table);
+    return;
+  }
 
   travel(x,dogensyms,PRINTarray);
 
