@@ -2360,7 +2360,12 @@
     (let ((l (c1constant-value-object val (or always (when *compiler-compile* (not *keep-gaz*))))))
       (when l 
 	`(location 
-	  ,(make-info :type (or (ltvp val) (object-type (if (functionp val) (afe (cons 'df nil) (mf (fle val))) val))))
+	  ,(make-info :type (or (ltvp val)
+				(object-type
+				 (typecase val
+				   (function  (afe (cons 'df nil) (mf (fle val))))
+				   (list (copy-tree val))
+				   (t val)))))
 	  ,l))))))
 
 (defvar *compiler-temps*
