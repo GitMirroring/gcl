@@ -2211,6 +2211,9 @@
     (list* 'str-ref info nargs)))
 (setf (get 'str-ref 'c1) 'c1str-ref)
 
+(defun sinline-type (tp);FIXME STREF STSET handled as aref
+  (if (type= tp #tcharacter) 'inline-character (inline-type tp)))
+
 (defun c2str-ref (loc nm off)
   (let* ((nm (car (atomic-tp (info-type (cadr nm)))))
 	 (sd (get nm 'si::s-data))
@@ -2218,7 +2221,7 @@
 	 (off (car (atomic-tp (info-type (cadr off))))))
     (unless (and off sd (not *compiler-push-events*)) (baboon))
     (unwind-exit
-     (list (inline-type (nth (aref (si::s-data-raw sd) off) +cmp-array-types+))
+     (list (sinline-type (nth (aref (si::s-data-raw sd) off) +cmp-array-types+));FIXME STREF STSET handled as aref
 	   (flags) 'my-call (list loc nil off sd)))
     (close-inline-blocks)))
 (setf (get 'str-ref 'c2) 'c2str-ref)
@@ -2246,8 +2249,11 @@
            (si:fixnump (caddr args))
            (not (endp (cdddr args)))
            (endp (cddddr args)))
-      (let ((x (c1arg (car args) info))
-            (y (c1arg (cadddr args) info)))
+      (let* ((x (c1arg (car args) info))
+	     (sd (get (cadadr args) 'si::s-data))
+	     (raw (si::s-data-raw sd))
+	     (type (nth (aref raw (caddr args)) +cmp-array-types+))
+             (y (c1arg (if (type= #tcharacter type) `(char-code ,(cadddr args)) (cadddr args)) info)));FIXME STREF STSET handled as aref
         (setf (info-type info) (info-type (cadr y)))
         (list 'structure-set info x
               (cadadr args) ;;; remove QUOTE.
@@ -2289,6 +2295,7 @@
   (declare (ignore name-vv))
   (let* ((raw (si::s-data-raw sd))
 	 (type (nth (aref raw ind) +cmp-array-types+))
+	 (type (if (type= #tcharacter type) #tchar type);FIXME STREF STSET handled as aref)
 	 (spos (si::s-data-slot-position sd))
 	 (tftype type)
 	 ix iy)
@@ -2301,8 +2308,8 @@
     (setq ix (car locs))
     (setq iy (cadr locs))
     (if *safe-compile* (wfs-error))
-    (wt-nl "STSET(" (aet-c-type type )"," ix "," (aref spos ind) ", " iy ");")
-    (unwind-exit (list (inline-type tftype) (flags) 'wt-loc (list iy)))
+    (wt-nl "STSET(" (aet-c-type type) "," ix "," (aref spos ind) ", " iy ");");FIXME STREF STSET handled as aref
+    (unwind-exit (list (sinline-type tftype) (flags) 'wt-loc (list iy)))
     (close-inline-blocks)))
 
 (defun sv-wrap (x) `(symbol-value ',x))
