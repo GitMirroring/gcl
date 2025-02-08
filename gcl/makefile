@@ -402,12 +402,12 @@ $(HDIR)mstdint.h:
 
 $(HDIR)mcompdefs.h: $(HDIR)compdefs.h $(HDIR)new_decl.h
 	$(AWK) 'BEGIN {print "#include \"include.h\"";print "#include \"page.h\"";print "---"} {a=$$1;gsub("\\.\\.\\.","",a);print "\"#define " $$1 "\" " a}' $< |\
-	$(CC) -E -P -I./$(HDIR) - |\
+	$(CC) $(CFLAGS) -E -P -I./$(HDIR) - |\
 	$(AWK) '/^\-\-\-$$/ {i=1;next} {if (!i) next} {gsub("\"","");print}' >$@
 
 $(HDIR)cmpinclude.h: $(HDIR)mcompdefs.h $(CMPINCLUDE_FILES) $(HDIR)config.h $(HDIR)cmponly_last.h
 	cp $< $(@F)
-	cat $(CMPINCLUDE_FILES) | $(CC) -E -I./$(HDIR) - | $(AWK) '/^# |^$$|^#pragma/ {next}{print}' >> $(@F)
+	cat $(CMPINCLUDE_FILES) | $(CC) $(CFLAGS) -E -I./$(HDIR) - | $(AWK) '/^# |^$$|^#pragma/ {next}{print}' >> $(@F)
 	cat $(HDIR)cmponly_last.h >>$(@F)
 	./xbin/move-if-changed mv $(@F) $@
 	./xbin/move-if-changed cp $@ o/$(@F)
