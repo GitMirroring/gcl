@@ -363,7 +363,7 @@ gcl_init_let(void)
 	make_special_form("LET", Flet);
 	make_special_form("LET*", FletA);
 	make_special_form("MULTIPLE-VALUE-BIND", Fmultiple_value_bind);
-	make_si_function("COMPILER-LET", Fcompiler_let);
+	make_si_special_form("COMPILER-LET", Fcompiler_let);
 	make_special_form("FLET",Fflet);
 	make_special_form("LABELS",Flabels);
 	make_special_form("MACROLET",Fmacrolet);

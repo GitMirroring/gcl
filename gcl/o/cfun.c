@@ -213,6 +213,15 @@ make_special_form_internal(char *s,void *f)
 }
 
 object
+make_si_special_form_internal(char *s,void *f)
+{
+	object x;
+	x = make_si_ordinary(s);
+	x->s.s_sfdef = (fixnum)f;
+	return(x);
+}
+
+object
 make_macro_internal(char *s, void (*f)())
 {
 	object x;
