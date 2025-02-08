@@ -1086,15 +1086,14 @@
     (unless (or (equal osig sig) (eq fname 'cmp-anon));FIXME
       (cmpstyle-warn "signature change on function ~s,~%   ~s -> ~s~%"
 		     fname (si::readable-sig osig) (si::readable-sig sig))
-      (setq *new-sigs-in-file* 
-	    (some
-	     (lambda (x) 
-	       (unless (eq x fname)
-		 (multiple-value-bind 
-		  (s f) (gethash x *sigs*) 
-		  (declare (ignore s))
-		  (when f (list x fname osig sig)))))
-	     (si::callers fname))))
+      (setq *new-sigs-in-file*
+	    (block nil
+	      (maphash (lambda (x y)
+			 (unless (eq x fname)
+			   (when (member fname (second y) :key 'car)
+			     (return (list x fname osig sig)))))
+		       *sigs*)
+	      nil)))
     
     (push (let* ((at (car sig))
 		 (al (mapcar (lambda (x) (link-rt x nil)) at))
