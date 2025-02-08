@@ -306,7 +306,12 @@
       (with-restore-vars ;FIXME eliminate if any variable restricts to nil
 	(dolist (l r) (restrict-type (car l) (cadr l) (let ((l (caddr l))) (if tf (car l) (cdr l)))))
 	(let (trv (b (c1expr* (if tf (cadr args) (caddr args)) info)))
-	  (dolist (l *restore-vars*) (push (list (car l) (var-type (car l)) (var-store (car l))) trv));)
+	  (dolist (l *restore-vars*)
+	    (push (if (var-p (car l))
+		      (list (car l) (var-type (car l)) (var-store (car l)))
+		      (progn (keyed-cmpnote (list 'type-mod-unwind) "Winding type ~s at end of branch" (car l))
+			     (list (car l) (mcpt (car l)))))
+		  trv))
 	  (keep-warnings)
 	  (list b trv)))))
 
@@ -402,13 +407,17 @@
 			     (do-setq-tp (car rv) nil (type-and (car (caddr rv)) (var-type (car rv)))))))
 
 		     (do (rv) ((not (setq rv (pop trv))))
-			 (unless (subsetp (caddr rv) (var-store (car rv)))
-			   (keyed-cmpnote
-			    (list (var-name (car rv)) 'var-store 'binding '+opaque+)
-			    "~s store set to +opaque+ from ~s/~s across if branches"
-			    (var-name (car rv)) (caddr rv) (var-store (car rv)))
-			   (push-vbinds (car rv) (caddr rv)))
-			 (do-setq-tp (car rv) (list args nil) (type-or1 (var-type (car rv)) (cadr rv))))
+		       (cond ((var-p (car rv))
+			      (unless (subsetp (caddr rv) (var-store (car rv)))
+				(keyed-cmpnote
+				 (list (var-name (car rv)) 'var-store 'binding '+opaque+)
+				 "~s store set to +opaque+ from ~s/~s across if branches"
+				 (var-name (car rv)) (caddr rv) (var-store (car rv)))
+				(push-vbinds (car rv) (caddr rv)))
+			      (do-setq-tp (car rv) (list args nil) (type-or1 (var-type (car rv)) (cadr rv))))
+			     (t
+			      (keyed-cmpnote (list 'type-mod-unwind) "Unwinding type ~s ~s" (car rv) (cadr rv))
+			      (repl-tp (car rv) (cadr rv) t))))
 
 		     (list 'if info fmla tb fb))
 

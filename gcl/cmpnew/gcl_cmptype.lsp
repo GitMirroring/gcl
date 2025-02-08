@@ -752,6 +752,9 @@
     (c1side-effects nil)
     (cond
       ((and c1 atp2 (not (eq c1 a2)) (if (typep c1 'proper-cons) (typep a2 'proper-list) (typep a2 '(not proper-list))))
+       (when *restore-vars-env*
+	 (keyed-cmpnote (list 'type-mod-unwind) "Winding type ~s for rplacd" tp1)
+	 (pushnew (list tp1 (mcpt tp1)) *restore-vars* :key 'car))
        (setf (cdr c1) a2 itp tp1))
       ((and (typep c1 'proper-cons) (type<= tp2 #tproper-list))
        (bump-cons-tp-if (lambda (x &aux (c (car (atomic-tp x)))) (when (consp c) (tailp c1 c))) #tproper-cons))
@@ -768,12 +771,16 @@
 (defun c1rplaca (args)
   (let* ((info (make-info :flags (iflags side-effects)))
 	 (nargs (c1args args info))
-	 (atp (car (atomic-tp (info-type (cadar nargs)))))
+	 (tp1 (info-type (cadar nargs)))
+	 (atp (car (atomic-tp tp1)))
 ;	 (atp1 (car (atomic-tp (narg-list-type (cdr nargs))))))
 	 (atp1 (car (atomic-tp (info-type (cadadr nargs))))))
     (c1side-effects nil)
     (when (consp atp) 
       (when (eq atp atp1) (setq atp1 (copy-list atp1)))
+      (when *restore-vars-env*
+	(keyed-cmpnote (list 'type-mod-unwind)	"Winding type ~s for rplaca" tp1)
+	(let ((tp (info-type (cadar nargs)))) (pushnew (list tp (mcpt tp)) *restore-vars* :key 'car)))
       (setf (car atp) (or atp1 (new-bind))))
     (when (eq (caar nargs) 'var)
       (bump-pconsa (caaddr (car nargs)) (info-type (cadadr nargs))))

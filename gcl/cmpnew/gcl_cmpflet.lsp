@@ -85,6 +85,18 @@
 ;;; is a list ( macro-name expansion-function).
 
 (defvar *restore-vars-env* nil)
+(defun repl-lst (l m &optional o)
+  (typecase l
+    (cons (cond ((consp m) (setf (car l) (repl-lst (car l) (car m) o) (cdr l) (repl-lst (cdr l) (cdr m) o)) l)(m)))
+    (t (if (eql l m) l (if o (new-bind) m)))))
+
+(defun repl-tp (tp m &optional o)
+  (unless (equal tp m)
+    (let* ((atp (atomic-tp tp))(am (atomic-tp m)))
+      (when (and atp am);FIXME redundant?
+	(repl-lst (car atp) (car am) o))))
+  tp)
+
 (defmacro with-restore-vars (&rest body &aux (rv (sgen "WRV-"))(wns (sgen "WRVW-")))
   `(let (,rv (,wns *warning-note-stack*))
      (declare (ignorable ,rv))
@@ -92,11 +104,15 @@
 	      (keep-warnings nil (setq ,wns *warning-note-stack*))
 	      (pop-restore-vars nil
 	       (setq *warning-note-stack* ,wns)
-	       (mapc (lambda (l &aux (v (pop l))(tp (pop l))(st (car l)))
-		       (keyed-cmpnote (list (var-name v) 'type-propagation 'type)
-				      "Restoring var type on ~s from ~s to ~s"
-				      (var-name v) (cmp-unnorm-tp (var-type v)) (cmp-unnorm-tp tp))
-		       (setf (var-type v) tp (var-store v) st))
+	       (mapc (lambda (l &aux (v (pop l))(tp (pop l))(st (pop l)))
+		       (cond ((var-p v)
+			      (keyed-cmpnote (list (var-name v) 'type-propagation 'type)
+					     "Restoring var type on ~s from ~s to ~s"
+					     (var-name v) (cmp-unnorm-tp (var-type v)) (cmp-unnorm-tp tp))
+			      (setf (var-type v) tp (var-store v) st))
+			     (t
+			      (keyed-cmpnote (list 'type-mod-unwind)	"Unwinding type ~s ~s" v tp)
+			      (repl-tp v tp))))
 		     (ldiff-nf *restore-vars* ,rv))))
        (declare (ignorable #'keep-vars))
        (prog1
