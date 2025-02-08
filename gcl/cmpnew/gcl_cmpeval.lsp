@@ -2310,7 +2310,7 @@
     (if *safe-compile* (wfs-error))
     (wt-nl "STSET(" (aet-c-type type) "," ix "," (aref spos ind) ", " iy ");");FIXME STREF STSET handled as aref
     (unwind-exit (list (sinline-type tftype) (flags) 'wt-loc (list iy)))
-    (close-inline-blocks)))
+    (close-inline-blocks))))
 
 (defun sv-wrap (x) `(symbol-value ',x))
 
