@@ -116,7 +116,7 @@
   (:report (lambda (condition stream &aux (x (pcl::slot-value-normal condition 'function-name)));FIXME
 	     (when x
 	       (if (stringp x);FIXME compiler context
-		   (format stream x)
+		   (format stream "~a" x)
 		   (format stream "Condition in ~S [or a callee]: " x)))
 	     (call-next-method))))
 
