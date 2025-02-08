@@ -36,7 +36,9 @@
 #include <stdlib.h>
 #include <tcl.h>
 #include <tk.h>
-
+#if TCL_MAJOR_VERSION >= 9
+#include <wordexp.h>
+#endif
 
 
 #if (TK_MINOR_VERSION==0 && TK_MAJOR_VERSION==4)
@@ -67,12 +69,12 @@ struct connection_state *dsfd;
  * file out of the Tk source directory to make their own modified versions).
  */
 
-/* extern void		exit _ANSI_ARGS_((int status)); */
+/* extern void		exit _ANSI_ARGS_((int status));
 extern int		isatty _ANSI_ARGS_((int fd));
-/*
 extern int		read _ANSI_ARGS_((int fd, char *buf, size_t size));
-*/
 extern char *		strrchr _ANSI_ARGS_((CONST char *string, int c));
+*/
+extern int Tcl_AppInit(Tcl_Interp *interp);
 
 /*
  * Global variables used by the main program:
@@ -331,11 +333,17 @@ TkX_Wish (argc, argv)
 	 */
 
 	if (tcl_RcFileName != NULL) {
-	    Tcl_DString buffer;
 	    char *fullName;
 	    FILE *f;
+#if TCL_MAJOR_VERSION >= 9
+	    wordexp_t exp_result;
+	    wordexp(tcl_RcFileName, &exp_result, WRDE_NOCMD);
+	    fullName = exp_result.we_wordv[0];
+#else
+	    Tcl_DString buffer;
     
 	    fullName = Tcl_TildeSubst(interp, tcl_RcFileName, &buffer);
+#endif
 	    if (fullName == NULL) {
 		fprintf(stderr, "%s\n", INTERP_RESULT(interp));
 	    } else {
@@ -348,12 +356,16 @@ TkX_Wish (argc, argv)
 		    fclose(f);
 		}
 	    }
+#if TCL_MAJOR_VERSION >= 9
+	    wordfree(&exp_result);
+#else
 	    Tcl_DStringFree(&buffer);
+#endif
 	}
 
 	dfprintf(stderr, "guis : Creating file handler for %d\n", dsfd->fd);
 #ifndef __MINGW32__	
-	Tk_CreateFileHandler(dsfd->fd, TK_READABLE, StdinProc, (ClientData) 0);
+	Tcl_CreateFileHandler(dsfd->fd, TCL_READABLE, StdinProc, (ClientData) 0);
 #endif        
     }
     fflush(stdout);
@@ -466,7 +478,7 @@ StdinProc(clientData, mask)
    */
   dfprintf(stderr, "\nguis : Disabling file handler for %d\n", dsfd->fd);
 
-/*  Tk_CreateFileHandler(dsfd->fd, 0, StdinProc, (ClientData) 0); */
+/*  Tcl_CreateFileHandler(dsfd->fd, 0, StdinProc, (ClientData) 0); */
 
   do
     { 
@@ -478,7 +490,7 @@ StdinProc(clientData, mask)
 	  /*dfprintf(stderr, "Yoo !!! Empty command\n"); */
 	  if (debug)perror("zero message");
 #ifndef __MINGW32__          
-	  Tk_CreateFileHandler(dsfd->fd, TK_READABLE, StdinProc, (ClientData) 0);
+	  Tcl_CreateFileHandler(dsfd->fd, TCL_READABLE, StdinProc, (ClientData) 0);
 #endif          
 	  return;
 	}
@@ -580,7 +592,7 @@ StdinProc(clientData, mask)
     } while (fNotDone > 0);
 
 
-  /* Tk_CreateFileHandler(dsfd->fd, TK_READABLE, StdinProc, (ClientData) 0); */
+  /* Tcl_CreateFileHandler(dsfd->fd, TCL_READABLE, StdinProc, (ClientData) 0); */
   if ((void *)msg != (void *) buf)
     free ((void *) msg);
 }
