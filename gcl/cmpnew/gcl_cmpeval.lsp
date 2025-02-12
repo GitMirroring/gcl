@@ -2295,7 +2295,7 @@
   (declare (ignore name-vv))
   (let* ((raw (si::s-data-raw sd))
 	 (type (nth (aref raw ind) +cmp-array-types+))
-	 (type (if (type= #tcharacter type) #tchar type));FIXME STREF STSET handled as aref)
+	 (type (if (type= #tcharacter type) (car (assoc #tchar +c-type-string-alist+ :test 'type=)) type));FIXME STREF STSET handled as aref)
 	 (spos (si::s-data-slot-position sd))
 	 (tftype type)
 	 ix iy)
