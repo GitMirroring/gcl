@@ -25,24 +25,21 @@
 
 (in-package :system)
 
-(eval-when 
- (compile eval)
-
- (defun proto-array (tp) (make-vector tp 1 t nil nil 0 nil nil))
-
- (defun af (x) (cdr (assoc x '((character . *char) (bit . *char) (non-negative-char . *char);fixme
-			       (unsigned-char . *uchar) (signed-char . *char)
-			       #+64bit (non-negative-int . *int) #+64bit (unsigned-int . *uint) #+64bit (signed-int . *int)
-			       (non-negative-short . *short) (unsigned-short . *ushort)
-			       (signed-short . *short) (short-float . *float) (long-float . *double)
-			       (t . *object) (non-negative-fixnum . *fixnum) (fixnum . *fixnum)))))
- 
- (defvar *array-type-info* (mapcar (lambda (x &aux (y (proto-array x))) 
-				     (list x (c-array-elttype y) (c-array-eltsize y) (c-array-eltmode y) (af x)))
-				   +array-types+))
-
- (defun maybe-cons (car cdr)
-   (if (cdr cdr) (cons car cdr) (car cdr))))
+(defconstant +array-type-info+
+  (mapcar (lambda (x &aux (y (make-vector x 1 t nil nil 0 nil nil)))
+	    (list x (c-array-elttype y) (c-array-eltsize y) (c-array-eltmode y)
+		  (ecase x
+		    (signed-char '*char)
+		    ((character unsigned-char non-negative-char bit) '*uchar)
+		    (signed-short '*short)
+		    ((unsigned-short non-negative-short) '*ushort)
+		    (signed-int '*int)
+		    ((unsigned-int non-negative-int) '*uint)
+		    (short-float '*float)
+		    (long-float '*double)
+		    (t '*object)
+		    ((non-negative-fixnum fixnum) '*fixnum))))
+	  +array-types+))
 
 #.`(defun set-array (r i s j &optional sw);assumes arrays of same type and indices in bounds
      (declare (optimize (safety 1))(seqind i j))
@@ -66,7 +63,7 @@
 		  (lreduce (lambda (y x &aux (sz (caddr x))(fn (fifth x))(z (assoc sz y))(tp (cmp-norm-tp `(array ,(car x)))))
 			     (cond (z (setf (cadr z) (tp-or (cadr z) tp) (caddr z) fn) y)
 				   ((cons (list sz tp fn) y))))
-			   si::*array-type-info* :initial-value nil)))))
+			   +array-type-info+ :initial-value nil)))))
 (declaim (inline set-array))
 
 (defun set-array-n (r i s j n);assumes arrays of same type and indices in bounds
@@ -86,7 +83,7 @@
      (check-type x array)
      (case
 	 (c-array-elttype x)
-       ,@(mapcar (lambda (x &aux (tp (pop x))) `(,(car x) ',tp)) *array-type-info*)))
+       ,@(mapcar (lambda (x &aux (tp (pop x))) `(,(car x) ',tp)) +array-type-info+)))
 
 #.`(defun row-major-aref-int (a i)
      (ecase
@@ -97,7 +94,7 @@
 			(character `(code-char (*uchar (c-array-self a) i nil nil)))
 			(bit `(0-byte-array-self a i))
 			(otherwise `(,(caddr y) (c-array-self a) i nil nil)))))
-		 *array-type-info*)))
+		 +array-type-info+)))
 (declaim (inline row-major-aref-int))
 
 (defun row-major-aref (a i)
@@ -121,7 +118,7 @@
 			(character `(code-char (*uchar (c-array-self a) i t (char-code v))))
 			(bit `(set-0-byte-array-self v a i))
 			(otherwise `(,(caddr y) (c-array-self a) i t v)))))
-		 *array-type-info*)))
+		 +array-type-info+)))
 (setf (get 'row-major-aset 'compiler::consider-inline) t)
 
 
@@ -177,7 +174,7 @@
       (let ((x a))(check-type x vector))
       (let ((x a))(check-type x matrix)))
   (row-major-aset v a (apply 'array-row-major-index a q)))
-(declaim (inline si::aset))
+(declaim (inline aset))
 
 (setf (symbol-function 'array-rank) (symbol-function 'c-array-rank)
       (symbol-function 'array-total-size) (symbol-function 'c-array-dim))
@@ -428,7 +425,7 @@
 		   (lreduce (lambda (y z)
 			      (if (tp<= x (car z)) y (cons (cdr z) y)))
 			    '#.(mapcar (lambda (x) (cons (cmp-norm-tp `(not (array ,(pop x)))) x))
-				       *array-type-info*)
+				       +array-type-info+)
 			    :initial-value nil))))))
 
 (defun array-elttype-propagator (f x)
@@ -483,3 +480,32 @@
 		 +array-types+)
 	t)))
 (declaim (inline array-eql-is-eq))
+
+(defun msdata-ref (d s)
+  (structure-ref1 d (fifth (assoc s (structure-ref1 d 7)))));FIXME 7
+
+(defmacro str-refset (x s n &optional (v nil vp))
+  (assert (and (constantp s) (constantp n)))
+  (let* ((s (eval s))(n (eval n))(?sd (eq s 's-data))
+	 (d (get s 's-data))
+	 (k (aref (if ?sd (msdata-ref d 'raw) (s-data-raw d)) n))
+	 (pos (aref (if ?sd (msdata-ref d 'slot-position) (s-data-slot-position d)) n))
+	 (l (nth k +array-type-info+))
+	 (cp (eq (car l) 'character))
+	 (v (when vp (if cp `(char-code ,v) v)))
+	 (res `(,(fifth l) (c-strstd-sself ,x) ,(ash pos (min 0 (- (1- (third l))))) ,(when vp t) ,v))
+	 (tp (car (last (nth n (if ?sd (msdata-ref d 'slot-descriptions) (s-data-slot-descriptions d))))))
+	 (res (if cp `(code-char ,res) res)))
+    (if (unless (eq tp t) tp) `(the ,tp ,res) res)))
+
+(defun *-propagator (f t1 t2 t3 t4)
+  (declare (ignore t1 t2))
+  (when (tp<= t3 #t(not null))
+    (tp-and t4
+	    (reduce 'tp-or
+		    (mapcar (lambda (x) (unless (eq (car x) 'character) (cmp-norm-tp (car x))));FIXME
+			    (remove f +array-type-info+ :test-not 'eq :key 'fifth))
+		    :initial-value nil))))
+(dolist (l (mapcar 'fifth +array-type-info+))
+  (setf (get l 'type-propagator) '*-propagator))
+

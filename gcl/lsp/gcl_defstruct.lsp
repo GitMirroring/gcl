@@ -39,8 +39,8 @@
 (defun make-access-function (name conc-name no-conc type named include no-fun
 				  ;; from apply
 				  slot-name default-init slot-type read-only
-				  offset &optional predicate) 
-  (declare (ignore named default-init predicate no-fun))
+				  offset &optional predicate ost)
+  (declare (ignore named default-init predicate no-fun ost))
   (let ((access-function (if no-conc slot-name
 			   (intern (si:string-concatenate conc-name slot-name)))))
     (record-fn access-function 'defun '(t) slot-type)
@@ -216,7 +216,7 @@
                (t
                 (error "~S is an illegal structure slot option."
                          os))))))
-    (list slot-name default-init slot-type read-only offset)))
+    (list slot-name default-init slot-type read-only offset nil slot-type)))
 
 
 ;;; OVERWRITE-SLOT-DESCRIPTIONS overwrites the old slot-descriptions
@@ -240,12 +240,12 @@
 	       (when (not  (equal (normalize-type (or (caddr (car sds)) t))
 				 (normalize-type (or (caddr (car olds)) t))))
 		     (error "Type mismmatch for included slot ~a" (car sds)))
-		     (cons (list (caar sds)
-                           (cadar sds)
-                           (caddar sds)
-                           (cadddr (car sds))
-                           ;; The offset if from the old.
-                           (car (cddddr (car olds))))
+		     (cons (list* (caar sds)
+				  (cadar sds)
+				  (caddar sds)
+				  (cadddr (car sds))
+				  ;; The rest from the old.
+				  (cddddr (car olds)))
                      (overwrite-slot-descriptions news (cdr olds))))
               (t
                (cons (car olds)
@@ -644,14 +644,14 @@
 	   new-slot-descriptions
 	   (new-slot-descriptions ;(copy-list slot-descriptions)))
 	    (dolist (sd slot-descriptions (nreverse new-slot-descriptions))
-	      (if (and (consp sd) (eql (length sd) 5))
+	      (if (and (consp sd) (eql (length sd) 7))
 		(let* ((csd (car sd))
 		       (sym (when (or (constantp csd) (keywordp csd) (si::specialp csd)) 
 			      (make-symbol (symbol-name csd))))
 		       (nsd (if (or (constantp csd) (si::specialp csd))
 				(cons (intern (symbol-name csd) 'keyword) (cdr sd))
 			      sd)))
-		  (push (append nsd (list sym)) new-slot-descriptions)
+		  (push (append (butlast nsd 2) (list sym (car (last nsd)))) new-slot-descriptions)
 		  (when sym
 		    (setf (car sd) sym)))
 		(push sd new-slot-descriptions)))))
@@ -687,7 +687,7 @@
 			   (check-type x ,ctp)
 			   (the ,(or (not st) st)
 				,(ecase tp
-					((nil) `(str-ref x ',name ,offset))
+					((nil) `(str-refset x ',name ,offset));FIXME possibly macroexpand here, include?
 					(list `(let ((c (nthcdr ,offset x))) (check-type c cons) (car c)));(list-nth ,offset x))
 					(vector `(aref x ,offset)))))))
 		   slot-descriptions)

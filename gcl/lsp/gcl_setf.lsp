@@ -390,7 +390,7 @@
     (list `(setf (nth ,index ,struct) ,newvalue))
 ;    (list `(si:rplaca-nthcdr ,struct ,index ,newvalue))
     (vector `(si::elt-set ,struct ,index ,newvalue))
-    (t `(si::structure-set ,struct ',type ,index ,newvalue))))
+    (t `(str-refset ,struct ',type ,index ,newvalue))));si::structure-set
 
 (defun setf-expand (l env)
   (cond ((endp l) nil)
