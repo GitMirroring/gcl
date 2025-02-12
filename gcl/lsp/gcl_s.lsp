@@ -2,7 +2,7 @@
 (in-package :cstruct)
 
 (export '(lisp-type defdlfun +ks+ +fl+ strcat adjustable-vector adjustable-array matrix))
-(si::import-internal 'si::(\| & ^ ~ c+ c* << >> object double end-shft
+(si::import-internal 'si::(\| & ^ ~ c+ c* << >> object double end-shft std-instance
 			   c-object-== c-fixnum-== c-float-== c-double-== c-fcomplex-== c-dcomplex-== fcomplex dcomplex
 			   string-concatenate lit seqind seqbnd fixnum-length char-length cref address nani short int
 			   cnum unsigned-char unsigned-short unsigned-int
@@ -25,6 +25,7 @@
 	     (:object     ""                     t)
 
 ;	     (:stdesig    ""                     (or symbol string character))
+	     (:strstd     ""                     (or structure std-instance))
 	     (:matrix     ""                     matrix)
 	     (:adjvector  ""                     adjustable-vector)
 	     (:adjarray   ""                     adjustable-array)
@@ -71,7 +72,8 @@
 					   "({fixnum _t;unsigned char *p1=(void *)(((fixnum *)" (:fixnum x) ")+" (:fixnum o) "),*p2=(void *)&_t,*pe=p1+sizeof(fixnum);for (;p1<pe;) *p2++=*p1++;_t;}) : "
 					   "((fixnum *)" (:fixnum x) ")[" (:fixnum o) "])"))
 				 `(if s (lit ,x "(((" ,(strcat x) "*)" (:fixnum x) ")[" (:fixnum o) "]=" (,x y) ")")
-				      (lit ,x "((" ,(strcat x) "*)" (:fixnum x) ")[" (:fixnum o) "]"))))) +ks+)))
+				      (lit ,x "((" ,(strcat x) "*)" (:fixnum x) ")[" (:fixnum o) "]")))))
+		 +ks+)))
   (defmacro mfff nil
    `(progn
       (idefun address (x) (lit :fixnum "((fixnum)" (:object x) ")"))

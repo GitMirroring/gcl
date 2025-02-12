@@ -413,6 +413,16 @@ struct structure {  /*  structure header  */
 
 };
 
+struct strstd {  /*  structure header  */
+
+  FIRSTWORD;
+
+  structure  strstd_sdef;  /*  structure definition (a structure)  */
+  object    *strstd_sself; /*  structure self  */
+  SPAD;
+
+};
+
 struct stream {
 
   FIRSTWORD;
@@ -552,6 +562,7 @@ union lispunion {
  struct matrix             mt; /*  matrix  */
  struct adjarray         aadj; /*  adjustable array  */
  struct structure         str; /*  structure  */
+ struct strstd         strstd; /*  structure  */
  struct stream             sm; /*  stream  */
  struct random            rnd; /*  random-states  */
  struct readtable          rt; /*  read table  */
