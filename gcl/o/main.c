@@ -290,6 +290,9 @@ get_gc_environ(void) {
   }
 
   multiprocess_memory_pool=getenv("GCL_MULTIPROCESS_MEMORY_POOL");
+  if (multiprocess_memory_pool &&
+      (*multiprocess_memory_pool=='t' || *multiprocess_memory_pool=='T'))/*GCL 2.6 compatability*/
+    multiprocess_memory_pool=getenv("HOME");
 
   wait_on_abort=0;
   if ((e=getenv("GCL_WAIT_ON_ABORT")))
