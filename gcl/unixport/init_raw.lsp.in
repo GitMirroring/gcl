@@ -64,7 +64,9 @@
   (load (make-pathname :name "tk-package" :type "lsp" :directory gtk))
   (load (make-pathname :name "gcl_lfun_list" :type "lsp" :directory cmpnew))
   (load (make-pathname :name "gcl_cmpopt" :type "lsp" :directory cmpnew))
-  (let ((x (make-pathname :name "gcl_cmpnopt" :type "lsp" :directory cmpnew)))
+  (let* ((b "gcl_cmpnopt")
+	 (e #+pre-gcl "_pre" #+(not (or pre-gcl pcl)) "" #+(and pcl (not ansi-cl)) "_pcl" #+ansi-cl "_ansi")
+	 (x (make-pathname :name (string-concatenate b e) :type "lsp" :directory cmpnew)))
     (when (probe-file x) (load x)))
   (load (make-pathname :name "gcl_auto_new" :type "lsp" :directory lsp))
   

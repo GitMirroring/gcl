@@ -20,6 +20,9 @@ SETUP='(load "../clcs/package.lisp")(load "../clcs/myload1.lisp")(load "sys-pack
 	'(setq compiler::*assert-ftype-proclamations* t)' \
 	'(setq compiler::*tmp-dir* "" si::*disable-recompile* t)'
 
+DINLH:='(compile nil (quote (lambda (x) (declare (si::std-instance x)) (class-of x))))' \
+       '(compiler::dump-inl-hash "../cmpnew/gcl_cmpnopt_pcl.lsp")'
+
 LISP?=../unixport/saved_mod_gcl
 APPEND=../xbin/append
 
@@ -41,7 +44,7 @@ $(addsuffix .c,$(AFILES)) $(addsuffix .data,$(AFILES))\
 	$(addsuffix .h,$(AFILES)): \
 	$(addsuffix .lisp,$(FILES))
 	cp ../h/cmpinclude.h .
-	echo ${SETUP} '(pcl::compile-pcl)' | $(LISP)
+	echo ${SETUP} '(pcl::compile-pcl)' ${DINLH}  | $(LISP)
 
 %.o: %.c %.h %.data
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -62,7 +65,7 @@ remake-sys-files:
 		| $(LISP) ../unixport/ $(LISPFLAGS)
 	$(MAKE) clean
 	$(MAKE)
-	echo $(SETUP) '(pcl::load-pcl)(si::all-conflicts)(compiler::dump-inl-hash "../cmpnew/gcl_cmpnopt.lsp")' \
+	echo $(SETUP) '(pcl::load-pcl)(si::all-conflicts)' \
 		| $(LISP) ../unixport/ $(LISPFLAGS)
 
 tar:
