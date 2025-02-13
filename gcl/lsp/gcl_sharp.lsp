@@ -1,28 +1,29 @@
 (in-package :si)
 
-(defstruct
-  context
+(defstruct context
+  (first 1 :type seqind)
   (vec (make-array 0 :adjustable t :fill-pointer t) :type (vector t))
   (hash nil :type (or null hash-table))
   (spice (make-hash-table :test 'eq :rehash-size 2.0) :type hash-table))
 
-(defun get-context (i)
-  (declare (fixnum i))
-  (when *sharp-eq-context*
-    (let ((v (context-vec *sharp-eq-context*)))
-      (if (< i (length v)) (aref v i)
-	(let ((h (context-hash *sharp-eq-context*)))
+(defun get-context (i &aux (ctxt *sharp-eq-context*))
+  (declare (seqind i))
+  (when ctxt
+    (let ((v (context-vec ctxt))(i (- i (context-first ctxt))))
+      (if (< -1 i (length v)) (aref v i)
+	(let ((h (context-hash ctxt)))
 	  (when h (gethash1 i h)))))))
 
 (defun push-context (i)
-  (declare (fixnum i))
-  (unless *sharp-eq-context* (setq *sharp-eq-context* (make-context)))
-  (let* ((v (context-vec *sharp-eq-context*))(l (length v))(x (cons nil nil)))
-    (cond ((< i l) (error "#~s= multiply defined" i))
-	  ((= i l) (vector-push-extend x v (1+ l)) x)
-	  ((let ((h (context-hash *sharp-eq-context*)))
+  (declare (seqind i))
+  (unless *sharp-eq-context* (setq *sharp-eq-context* (make-context :first i)))
+  (let* ((ctxt *sharp-eq-context*)(v (context-vec ctxt))
+	 (l (length v))(x (cons nil nil))(i (- i (context-first ctxt))))
+    (cond ((< -1 i l) (error "#~s= multiply defined" i))
+	  ((eql i l) (vector-push-extend x v (1+ l)) x)
+	  ((let ((h (context-hash ctxt)))
 	     (if h (when (gethash1 i h) (error "#~s= multiply defined" i)) 
-	       (setf (context-hash *sharp-eq-context*) (setq h (make-hash-table :test 'eql :rehash-size 2.0))))
+	       (setf (context-hash ctxt) (setq h (make-hash-table :test 'eql :rehash-size 2.0))))
 	     (setf (gethash i h) x))))))
 
 (defconstant +nil-proxy+ (cons nil nil))
