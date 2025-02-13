@@ -49,11 +49,11 @@
 (defvar *cmpinclude* "\"cmpinclude.h\"")
 ;;If the following is a string, then it is inserted instead of
 ;; the include file cmpinclude.h, EXCEPT for system-p calls.
-(defvar *cmpinclude-string* t)
-  ;; (si::file-to-string
-  ;;  (namestring
-  ;;   (make-pathname :directory (append (pathname-directory si::*system-directory*) (list :back "h"))
-  ;; 		   :name "cmpinclude" :type "h"))))
+(defvar *cmpinclude-string* ;t)
+  (si::file-to-string
+   (namestring
+    (make-pathname :directory (append (pathname-directory si::*system-directory*) (list :back "h"))
+		   :name "cmpinclude" :type "h"))))
 (defvar *compiler-default-type* #p".lsp")
 (defvar *compiler-normal-type* #p".lsp")
 (defvar *compile-file-truename* nil)
