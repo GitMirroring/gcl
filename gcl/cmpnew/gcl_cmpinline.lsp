@@ -927,33 +927,31 @@
 	((append arg-type (make-list (max 0 (- (length type) (length arg-type))))))))
 
 (defun inline-type-matches (fname inline-info arg-types return-type &optional apnarg
-                                        &aux rts (flags (third inline-info)))
+                            &aux rts (flags (third inline-info)))
   (declare (ignore fname))
 
   (fix-opt inline-info)
 
-  (when (< (length arg-types) call-arguments-limit)
+  (when (let ((x (flag-p flags aa))) (if apnarg x (not x)))
 
-    (when (let ((x (flag-p flags aa))) (if apnarg x (not x)))
-
-      (when (flag-p flags itf)
-	(let ((restp (apply (car inline-info) arg-types)))
-	  (return-from inline-type-matches (when restp `(,(car restp) ,(cadr restp) ,@(cddr inline-info))))))
-      (let* ((t1 (mapcar (lambda (x) (or x #tnull)) (cons return-type arg-types)))
-	     (t2 (cons (cadr inline-info) (car inline-info)))
-	     (last #tt) (ret t))
-	(when (dolist (arg-type t1 (or (equal t2 '(*)) (endp t2)))
-		(when (endp t2) (return nil))
-		(let* ((s (unless ret (and (eq (car t2) '*) (not (cdr t2)))))
-		       (lst (if (unless (type<= last #topaque) s) #tt last));FIXME (cmp-norm-tp 'opaque)
-		       (type (if s lst (pop t2)))
-		       (arg-type (if ret (mv-cast arg-type type) (coerce-to-one-value arg-type)));FIXME
-		       (tp (adj-cnum-tp type arg-type)))
-		  (unless (type>= tp arg-type) (return nil))
-		  (setq last type ret nil)
-		  (push tp rts)))
-	  (setq rts (nreverse rts))
-	  (cons (cdr rts) (cons (car rts) (cddr inline-info))))))))
+    (when (flag-p flags itf)
+      (let ((restp (apply (car inline-info) arg-types)))
+	(return-from inline-type-matches (when restp `(,(car restp) ,(cadr restp) ,@(cddr inline-info))))))
+    (let* ((t1 (mapcar (lambda (x) (or x #tnull)) (cons return-type arg-types)))
+	   (t2 (cons (cadr inline-info) (car inline-info)))
+	   (last #tt) (ret t))
+      (when (dolist (arg-type t1 (or (equal t2 '(*)) (endp t2)))
+	      (when (endp t2) (return nil))
+	      (let* ((s (unless ret (and (eq (car t2) '*) (not (cdr t2)))))
+		     (lst (if (unless (type<= last #topaque) s) #tt last));FIXME (cmp-norm-tp 'opaque)
+		     (type (if s lst (pop t2)))
+		     (arg-type (if ret (mv-cast arg-type type) (coerce-to-one-value arg-type)));FIXME
+		     (tp (adj-cnum-tp type arg-type)))
+		(unless (type>= tp arg-type) (return nil))
+		(setq last type ret nil)
+		(push tp rts)))
+	(setq rts (nreverse rts))
+	(cons (cdr rts) (cons (car rts) (cddr inline-info)))))))
 
 (defun need-to-protect (forms types &aux ii)
   (do ((forms forms (cdr forms))
@@ -1150,6 +1148,9 @@
 	  ((dolist (x x (wt-nl "_p[-1].c_cdr=" l ";_b;})"))
 	     (wt-nl "_p->c_car=" x ";_p->c_cdr=(object)(_p+1);_p++;"))))))
 
+; FIXME these functions can only accept call-arguments-limit variables
+; when fast links are off, bur ACL2 currently relies on this working
+; with more.  Break up in c1list/*
 (defun list-inline (&rest x &aux (*values-to-go* nil))
   (assert x)
   (cond ((can-allocate-on-stack) (wt-stack-list* x nil))
