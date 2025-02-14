@@ -112,7 +112,7 @@ close_pool(void) {
   if (pool!=-1) {
     f.l_type=F_WRLCK;
     if (!fcntl(pool,F_SETLK,&f))
-      massert(!unlink(gcl_pool) || errno=ENOENT);
+      massert(!unlink(gcl_pool) || errno==ENOENT);
     register_pool(-1);
     massert(!close(pool));
     massert(!munmap(Pool,sizeof(struct pool)));
