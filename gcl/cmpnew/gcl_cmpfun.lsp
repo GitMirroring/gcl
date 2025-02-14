@@ -574,3 +574,6 @@
 	   `(call-global ,info ,(if (cddr nargs) 'list* 'cons) ,nargs)))))
 (si::putprop 'list* 'c1list* 'c1)
 (si::putprop 'cons  'c1list* 'c1)
+
+(define-compiler-macro list  (&whole form) (limit-list-call-args form))
+(define-compiler-macro list* (&whole form) (limit-list-call-args form))

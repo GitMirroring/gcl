@@ -1148,9 +1148,6 @@
 	  ((dolist (x x (wt-nl "_p[-1].c_cdr=" l ";_b;})"))
 	     (wt-nl "_p->c_car=" x ";_p->c_cdr=(object)(_p+1);_p++;"))))))
 
-; FIXME these functions can only accept call-arguments-limit variables
-; when fast links are off, bur ACL2 currently relies on this working
-; with more.  Break up in c1list/*
 (defun list-inline (&rest x &aux (*values-to-go* nil))
   (assert x)
   (cond ((can-allocate-on-stack) (wt-stack-list* x nil))
