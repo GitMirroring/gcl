@@ -2,7 +2,7 @@
 
 (defstruct context
   (first 1 :type seqind)
-  (vec (make-array 0 :adjustable t :fill-pointer t) :type (vector t))
+  (vec (make-array 10 :adjustable t :fill-pointer 0) :type (vector t))
   (hash nil :type (or null hash-table))
   (spice (make-hash-table :test 'eq :rehash-size 2.0) :type hash-table))
 
