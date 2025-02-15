@@ -392,9 +392,9 @@
 	 (otherwise x))))))
 
 (defun limit-list-call-args (form &aux (of form)(fn (pop of))
-				    (x (nthcdr (1- call-arguments-limit) of)))
-  (if x
-      `(nconc (list ,@(ldiff of x)) ,(limit-list-call-args (cons fn x)))
+				    (x (nthcdr (- call-arguments-limit 2) of)))
+  (if (cdr x)
+      `(list* ,@(ldiff of x) ,(limit-list-call-args (cons fn x)))
       form))
 
 (defun co1cons (f args &aux (tem (cons-to-listc args)))
