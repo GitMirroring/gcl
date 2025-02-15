@@ -353,9 +353,18 @@
   (cond (x (wt-nl (if (typep x 'fixnum) "case " "") x ":"))))
 
 (defun or-branches (trv)
-  (mapc (lambda (x &aux (v (pop x))) 
-	  (do-setq-tp v (list 'or-branches nil) (type-or1 (var-type v) (car x)))
-	  (push-vbinds v (cadr x)))
+  (mapc (lambda (x &aux (v (pop x))(tp (pop x))(st (car x)))
+	  (cond ((var-p v)
+		 (unless (subsetp st (var-store v))
+		   (keyed-cmpnote
+		    (list (var-name v) 'var-store 'binding '+opaque+)
+		    "~s store set to +opaque+ from ~s/~s across if branches"
+		    (var-name v) st (var-store v))
+		   (push-vbinds v st))
+		 (do-setq-tp v (list 'or-branches nil) (type-or1 (var-type v) tp)))
+		(t
+		 (keyed-cmpnote (list 'type-mod-unwind) "Unwinding type ~s ~s" v tp)
+		 (repl-tp v tp t))))
 	trv))
 
 (defun c1switch (body)

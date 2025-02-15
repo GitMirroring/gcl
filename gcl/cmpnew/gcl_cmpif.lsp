@@ -414,19 +414,7 @@
 			   (when tret
 			     (do-setq-tp (car rv) nil (type-and (car (caddr rv)) (var-type (car rv)))))))
 
-		     (do (rv) ((not (setq rv (pop trv))))
-		       (cond ((var-p (car rv))
-			      (unless (subsetp (caddr rv) (var-store (car rv)))
-				(keyed-cmpnote
-				 (list (var-name (car rv)) 'var-store 'binding '+opaque+)
-				 "~s store set to +opaque+ from ~s/~s across if branches"
-				 (var-name (car rv)) (caddr rv) (var-store (car rv)))
-				(push-vbinds (car rv) (caddr rv)))
-			      (do-setq-tp (car rv) (list args nil) (type-or1 (var-type (car rv)) (cadr rv))))
-			     (t
-			      (keyed-cmpnote (list 'type-mod-unwind) "Unwinding type ~s ~s" (car rv) (cadr rv))
-			      (repl-tp (car rv) (cadr rv) t))))
-
+		     (or-branches trv)
 		     (list 'if info fmla tb fb))
 
 		 (dolist (l r)
