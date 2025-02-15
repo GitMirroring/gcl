@@ -826,7 +826,7 @@
     (integer (format nil "~a" form)); string character
     (float (format nil "~10,,,,,,'eG" form))
     ((complex float)
-     (string-concatenate "(" (fm-to-string (realpart form)) " + I * " (fm-to-string (realpart form)) ")"))))
+     (string-concatenate "(" (fm-to-string (realpart form)) " + I * " (fm-to-string (imagpart form)) ")"))))
 
 (defun loc-str (x key ft &aux p (tt (get key 'cmp-lisp-type))(cast (strcat "(" key ")"))(pp (find #\* cast)))
   (string-concatenate
