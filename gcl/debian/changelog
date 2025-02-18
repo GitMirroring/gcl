@@ -1,3 +1,11 @@
+gcl27 (2.7.0-34) unstable; urgency=medium
+
+  * Version_2_7_0pre37
+  * Bug fix: "outdated debconf version constraint; inhibits support for
+    debconf-2.0/cdebconf", thanks to Gioele Barabucci (Closes: #1096166).
+
+ -- Camm Maguire <camm@debian.org>  Tue, 18 Feb 2025 12:50:30 -0500
+
 gcl27 (2.7.0-33) unstable; urgency=medium
 
   * Version_2_7_0pre36
