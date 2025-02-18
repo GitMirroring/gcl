@@ -613,13 +613,13 @@ FFN(siLrun_process)() {
     FEwrong_no_args("RUN-PROCESS requires two arguments",make_fixnum(vs_top-vs_base));
   check_type_string(&vs_base[0]);
 
-  massert(snprintf(FN1,sizeof(FN1),"%.*s%n",vs_base[0]->st.st_fillp,vs_base[0]->st.st_self,&i)>=0);
+  massert(snprintf(FN1,sizeof(FN1),"%.*s%n",VLEN(vs_base[0]),vs_base[0]->st.st_self,&i)>=0);
 
   x=vs_base[1];
   for (;x!=Cnil;x=x->c.c_cdr,i+=j) {
     check_type_list(&x);
     check_type_string(&x->c.c_car);
-    massert(snprintf(FN1+i,sizeof(FN1)-i," %.*s %n",x->c.c_car->st.st_fillp,x->c.c_car->st.st_self,&j)>=0);
+    massert(snprintf(FN1+i,sizeof(FN1)-i," %.*s %n",VLEN(x->c.c_car),x->c.c_car->st.st_self,&j)>=0);
   }
 
   for (pp=p1=(void *)FN2,c=FN1;(*pp=strtok(c,spc));c=NULL,pp++)
