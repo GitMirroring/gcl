@@ -1707,10 +1707,12 @@
 ;; 		(do-setq-tp v '(ccb-ref) (type-or1 (var-type v) (get (var-store v) 'ccb-tp)))
 ;; 		(setf (var-store v) +opaque+))))) *vars*))
 
+(defun bump-cons-tp (tp &aux (c (type-and tp #tcons))(p (type-and tp #tproper-cons)))
+  (type-or1 tp (if (type>= p c) #tproper-cons #tcons)))
 
 (defun do-ccb-ch (ccb-ch)
   (mapc (lambda (x &aux (v (pop x)))
-	  (do-setq-tp v '(ccb-ch) (type-or1 (var-type v) (info-type (cadr x))))
+	  (do-setq-tp v '(ccb-ch) (type-or1 (var-type v) (bump-cons-tp (info-type (cadr x)))))
 	  (push-vbind v x t))
 	ccb-ch))
 
