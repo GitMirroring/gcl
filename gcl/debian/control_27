@@ -9,7 +9,7 @@ Standards-Version: 4.5.0
 
 Package: gcl27
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, debconf (>= 1.2.0), ucf, libtirpc-dev
+Depends: ${shlibs:Depends}, ${misc:Depends}, ucf, libtirpc-dev
 Suggests: gcl27-doc
 Description: GNU Common Lisp compiler
  GNU Common Lisp (GCL) is a Common Lisp compiler and interpreter
