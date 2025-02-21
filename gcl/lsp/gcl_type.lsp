@@ -265,11 +265,9 @@
 
 (defun object-tp1 (x)
   (when *cmp-verbose* (print (list 'object-type x)))
-  (if (isnan x)
-      (cmp-norm-tp (car (member x '(long-float short-float) :test 'typep)));FIXME
-    (let* ((i (object-index x))(z (caddr (svref *btpa* i))))
+  (let* ((i (object-index x))(z (caddr (svref *btpa* i))))
       (if (assoc i *atomic-btp-alist*) z
-	(copy-tp z *nil-tp* (nprocess-type (normalize-type `(member ,x))) 0)))))
+	(copy-tp z *nil-tp* (nprocess-type (normalize-type `(member ,x))) 0))))
 
 (defvar *atomic-type-hash* (make-hash-table :test 'eql))
 
