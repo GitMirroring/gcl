@@ -288,7 +288,7 @@ LFD(Lall_different)(void)
 DEFUN("<2",object,fSl2,SI
 	  ,2,2,NONE,OO,OO,OO,OO,(object x,object y),"") {
   
-  RETURN1(number_compare(x,y)<0 ? Ct : Cnil);
+  RETURN1(!gcl_isnan(x) && !gcl_isnan(y) && number_compare(x,y)<0 ? Ct : Cnil);
 
 }
 
@@ -296,7 +296,7 @@ DEFUN("<2",object,fSl2,SI
 DEFUN("<=2",object,fSle2,SI
 	  ,2,2,NONE,OO,OO,OO,OO,(object x,object y),"") {
   
-  RETURN1(number_compare(x,y)<1 ? Ct : Cnil);
+  RETURN1(!gcl_isnan(x) && !gcl_isnan(y) && number_compare(x,y)<1 ? Ct : Cnil);
 
 }
 
@@ -304,7 +304,7 @@ DEFUN("<=2",object,fSle2,SI
 DEFUN(">2",object,fSg2,SI
 	  ,2,2,NONE,OO,OO,OO,OO,(object x,object y),"") {
   
-  RETURN1(number_compare(x,y)>0 ? Ct : Cnil);
+  RETURN1(!gcl_isnan(x) && !gcl_isnan(y) && number_compare(x,y)>0 ? Ct : Cnil);
 
 }
 
@@ -312,7 +312,7 @@ DEFUN(">2",object,fSg2,SI
 DEFUN(">=2",object,fSge2,SI
 	  ,2,2,NONE,OO,OO,OO,OO,(object x,object y),"") {
   
-  RETURN1(number_compare(x,y)>-1 ? Ct : Cnil);
+  RETURN1(!gcl_isnan(x) && !gcl_isnan(y) && number_compare(x,y)>-1 ? Ct : Cnil);
 
 }
 
@@ -320,7 +320,7 @@ DEFUN(">=2",object,fSge2,SI
 DEFUN("=2",object,fSe2,SI
 	  ,2,2,NONE,OO,OO,OO,OO,(object x,object y),"") {
   
-  RETURN1(number_compare(x,y)==0 ? Ct : Cnil);
+  RETURN1(!gcl_isnan(x) && !gcl_isnan(y) && number_compare(x,y)==0 ? Ct : Cnil);
 
 }
 
@@ -328,7 +328,7 @@ DEFUN("=2",object,fSe2,SI
 DEFUN("/=2",object,fSne2,SI
 	  ,2,2,NONE,OO,OO,OO,OO,(object x,object y),"") {
   
-  RETURN1(number_compare(x,y)!=0 ? Ct : Cnil);
+  RETURN1(gcl_isnan(x) || gcl_isnan(y) || number_compare(x,y)!=0 ? Ct : Cnil);
 
 }
 
