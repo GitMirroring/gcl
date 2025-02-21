@@ -288,7 +288,8 @@
 	     (c1progn (append args (list r)) (nconc nargs (list (if r (c1t) (c1nil)))))))
 	  ((let ((x (get-vbind (car nargs)))(y (get-vbind (cadr nargs))))
 	     (when (or (when x (eq x y)) (and (symbolp (car args)) (eq (car args) (cadr args))))
-	       (if (member fn '(= >= <=)) (c1t) (c1nil)))));FIXME nan
+	       (unless (type-and (type-or1 t1 t2) #t(or (short-float unordered) (long-float unordered)))
+		 (if (member fn '(= >= <=)) (c1t) (c1nil))))))
 	  ((list 'call-global info fn nargs)))))
 
 (dolist (l `(>= > < <= = /=))
