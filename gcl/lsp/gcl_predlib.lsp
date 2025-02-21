@@ -331,9 +331,6 @@
 (setf (symbol-function 'rationalize) (symbol-function 'rational))
 
 
-(defun nc (x)
-  (let ((x (car (resolve-type x))))
-    (if (when (listp x) (eq (car x) 'or)) (cdr x) (list x))))
 
 (defun ordered-intersection-eq (l1 l2)
   (let (z zt)

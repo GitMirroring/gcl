@@ -8,7 +8,7 @@
 	  positive-float non-positive-float non-negative-float negative-real
 	  positive-real non-positive-real non-negative-real complex*
 	  complex-integer complex-integer-ratio complex-ratio-integer seqind seqbnd
-	  complex-ratio complex-short-float complex-long-float make-complex));FIXME
+	  complex-ratio complex-short-float complex-long-float make-complex unordered));FIXME
 
 (defun default-to-* (x)
   (let* ((z (member-if (lambda (x) (member x lambda-list-keywords)) x))
@@ -301,11 +301,14 @@
 (deftype ratio (&whole w &optional low high)
   (bnd-exp 'ratio w low high))
 
-(deftype short-float (&whole w &optional low high)
-  (bnd-exp 'short-float w low high))
+(deftype short-float (&whole w &optional low (high '* hp))
+  (if (and (eq low 'unordered) (not hp)) w ;This unnecessary extension is simpler than
+                                           ;(and short-float (not (or (short-float 0) (short-float * 0))))
+      (bnd-exp 'short-float w low high)))
 
-(deftype long-float (&whole w &optional low high)
-  (bnd-exp 'long-float w low high))
+(deftype long-float (&whole w &optional low (high '* hp))
+  (if (and (eq low 'unordered) (not hp)) w
+      (bnd-exp 'long-float w low high)))
 
 
 (deftype zero nil `(integer 0 0))
@@ -396,24 +399,17 @@
 
 (deftype complex (&optional rp) `(complex* ,rp))
 
+(defun ncs (rp &aux (rp (if (eq rp '*) 'real rp)))
+  (mapcar (lambda (x) (cons x (car (resolve-type `(and ,x ,rp))))) +range-types+))
+
 (defun make-complex* (r i)
-  (when (and (cdr r) (cdr i)) `((complex* ,(?or (cdr r)) ,(?or (cdr i))))))
+  (when (and (cdr r) (cdr i)) `((complex* ,(cdr r) ,(cdr i)))))
 
-(defun group-real-types (y)
-  (mapcar (lambda (x)
-	    (cons x (lremove-if-not (lambda (y) (eq x (if (eq (car y) 'or) (caadr y) (car y)))) y)))
-	  +range-types+))
-
-(deftype complex* (&optional rp (ip rp)
-			  &aux (r (nc (if (eq rp '*) 'real rp)))
-			  (i (nc (if (eq ip '*) 'real ip))));FIXME upgraded
-  (let* ((qr (group-real-types r))
-	 (qi (group-real-types i))
-	 (x (?or (nconc
-		  (make-complex* (assoc 'integer qr) (assoc 'ratio qi))
-		  (make-complex* (assoc 'ratio qr) (assoc 'integer qi))
-		  (mapcan (lambda (x) (make-complex* (assoc x qr) (assoc x qi)))  +range-types+)))))
-    x))
+(deftype complex* (&optional rp (ip rp) &aux (rr (ncs rp))(ri (ncs ip)));FIXME upgraded
+  (?or (nconc
+	(make-complex* (assoc 'integer rr) (assoc 'ratio ri))
+	(make-complex* (assoc 'ratio rr) (assoc 'integer ri))
+	(mapcan (lambda (x) (make-complex* (assoc x rr) (assoc x ri)))  +range-types+))))
 ;; &whole w
 ;; (if (or (equal w x) (member w x :test 'equal));FIXME
 ;; 	w x)))

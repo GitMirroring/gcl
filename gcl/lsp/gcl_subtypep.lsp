@@ -52,12 +52,14 @@
   (defconstant +atps+ (mapcar (lambda (x) (list x (intern (string-concatenate "ARRAY-"   (string x))))) +array-types+));FIXME
 
   (defconstant +k-ops+
-    `((integer int^ int~ rng-recon)
-      ((ratio short-float long-float) rng^ rng~ rng-recon)
-      (complex-integer cmpi^ cmpi~ cmp-recon)
+    `((integer int^ int~ urng-recon)
+      (ratio   rng^ rng~ urng-recon)
+      ((short-float long-float) urng^ urng~ urng-recon)
+      (complex-integer       cmpi^  cmpi~  cmp-recon)
       (complex-integer-ratio cmpir^ cmpir~ cmp-recon)
       (complex-ratio-integer cmpri^ cmpri~ cmp-recon)
-      ((complex-ratio complex-short-float complex-long-float) cmp^ cmp~ cmp-recon)
+      (complex-ratio         cmpr^  cmpr~  cmp-recon)
+      ((complex-short-float complex-long-float) cmp^ cmp~ cmp-recon)
       ((std-instance structure funcallable-std-instance) std^ std~ std-recon)
       ((proper-cons improper-cons) cns^ cns~ cns-recon)
       (,(mapcar 'cdr *all-array-types*) ar^ ar~ ar-recon)
@@ -204,7 +206,7 @@
 
 
 
-(defun range-cons (range &aux (a (pop range))(d (car range)))
+(defun range-cons (range &aux (a (pop range))(a (or (eq a 'unordered) a))(d (car range)))
   (if (and (eq '* a) (eq '* d)) t (cons a d)))
 
 (defun rngnum (x)
@@ -217,10 +219,18 @@
 
 (defun ncons (a d &aux (na (rngnum a))(nd (rngnum d)))
   (when (or (eq a '*) (eq d '*) (< na nd) (and (eql a d) (eql na nd) (eql a na)))
-    (if (and (eq a '*) (eq d '*)) t (cons a d))))
+    (cons a d)))
 
 (defun rng^ (x y)
   (ncons (rngcmp (car x) (car y) '<) (rngcmp (cdr x) (cdr y) '>)))
+
+(defun unord^ (x y &aux (cx (car x))(cy (car y))
+		     (z (if (eq cx t) cy (if (eq cy t) cx (rd^ cx cy)))))
+  (when z (list z)))
+
+(defun urng^ (x y)
+  (cond ((and (cdr x) (cdr y)) (rng^ x y))
+	((and (null (cdr x)) (null (cdr y))) (unord^ x y))))
 
 (defun rngi (x)
   (if (listp x) (if (integerp (car x)) x (car x)) (list x)))
@@ -230,38 +240,63 @@
 	((eq (cdr x) '*) (list (cons '* (rngi (car x)))))
 	((nconc (rng~ (cons (car x) '*)) (rng~ (cons '* (cdr x)))))))
 
+(defun unord~ (x &aux (cx (car x)))
+  (unless (eq cx t)
+    (if (listp cx) (mapcar (lambda (x) (list x)) cx) (list (list x)))))
+
+(defun urng~ (x)
+  (cond ((null (cdr x)) (nconc (unord~ x) (list (cons '* '*))))
+	((and (eq (car x) '*) (eq (cdr x) '*)) (list (cons t nil)))
+	((nconc (list (cons t nil)) (rng~ x)))))
+
 (defun rng-ld (type) (list (pop type) (range-cons type)))
 
-(defun rng-recon (x &aux (c (pop x)))
+(defun urng-recon (x &aux (c (pop x)))
   (if (eq (car x) t)
       (list c '* '*)
-      (?or (mapcar (lambda (x) (list c (car x) (cdr x))) x))))
+      (?or (mapcar (lambda (x &aux (o (list c (car x) (cdr x))))
+		     (cond ((and (eq (car x) '*) (eq (cdr x) '*)) `(and ,o (not (,c unordered))))
+			   ((cdr x) o)
+			   ((listp (car x)) `(and (,c unordered) (not (member ,@(car x)))))
+			   ((eq (car x) t) `(,c unordered))
+			   (`(member ,(car x)))))
+		   x))))
   
 
 ;;; COMPLEX
 
-(defun cmp-fk (x) (if (eq (car x) 'or) (caadr x) (car x)))
 
-(defun cmp-k (x y &aux (kx (cmp-fk x))(ky (cmp-fk y)) )
-  (cadr (assoc (if (eq kx ky) kx (list kx ky)) +ctps+ :test 'equal)))
 
-(defun cmp-rng (x)
-  (mapcar (lambda (x) (range-cons (cdr x))) (if (eq (car x) 'or) (cdr x) (list x))))
 
-(defun cmp-rng2 (x y &aux (rx (cmp-rng x))(ry (cmp-rng y)))
-  (or (and (eq (car rx) t) (eq (car ry) t))
-      (cons rx ry)))
 
-(defun cmp-ld (type &aux (rtp (cadr type))(itp (or (caddr type) rtp)))
-  `(,(cmp-k rtp itp) ,(cmp-rng2 rtp itp)))
+
+(defun sking (tp &aux (tp (nprocess-type tp)))
+  (unless (or (cadr tp) (caddr tp) (cdar tp))
+    (caar tp)))
+
+(defun lookup-cmp-k (rk ik)
+  (cadr (assoc (if (eq rk ik) rk (list rk ik))	+ctps+ :test 'equal)))
+
+(defun cmp-k (x y &aux (rk (car (sking x)))(ik (car (sking y))))
+  (lookup-cmp-k (car (sking x)) (car (sking y))))
+
+(defun cmp-ld (type &aux (r (sking (cadr type)))(rk (pop r))
+		      (i (sking (or (caddr type) (cadr type))))(ik (pop i)))
+  (let ((k (lookup-cmp-k rk ik)))
+    (when k
+      `(,k ,(if (and (eq (car r) t) (eq (car i) t)) t (cons r i))))))
+
+(defun irange (x)
+  (if (isnan x) (list x) (cons x x)))
 
 (defun cmp-irange (x &aux (r (realpart x))(i (imagpart x)))
-  `(((,r . ,r)) . ((,i . ,i))))
+  `((,(irange r)) . (,(irange i))))
+
 
 (defun rng-ip (x)
   (unless (cdr x)
     (when (consp (car x))
-      (when (atom (caar x))
+      (when (realp (caar x))
 	(eql (caar x) (cdar x))))))
 
 (defun cmp-cons (a d)
@@ -277,10 +312,11 @@
 	   (nconc (cmp-cons a (cdr x)) (cmp-cons (car x) d) (cmp-cons a d))))
 	((cmpg~ kr ki (cmp-irange x)))))
 
-(defun cmpi~ (x)  (cmpg~ 'integer 'integer x))
-(defun cmpir~ (x) (cmpg~ 'integer 'ratio x))
-(defun cmpri~ (x) (cmpg~ 'ratio   'integer x))
-(defun cmp~ (x)   (cmpg~ 'ratio   'ratio x))
+(defun cmpi~  (x) (cmpg~ 'integer    'integer x))
+(defun cmpir~ (x) (cmpg~ 'integer    'ratio   x))
+(defun cmpri~ (x) (cmpg~ 'ratio      'integer x))
+(defun cmpr~  (x) (cmpg~ 'ratio      'ratio   x))
+(defun cmp~   (x) (cmpg~ 'long-float 'long-float x))
 
 (defun cmpg^ (kr ki x y)
   (cond ((and (consp x) (consp y))
@@ -290,10 +326,11 @@
 	((rd^ x y))))
 
 
-(defun cmpi^ (x y)  (cmpg^ 'integer 'integer x y))
-(defun cmpir^ (x y) (cmpg^ 'integer 'ratio x y))
-(defun cmpri^ (x y) (cmpg^ 'ratio   'integer x y))
-(defun cmp^ (x y)   (cmpg^ 'ratio   'ratio x y))
+(defun cmpi^  (x y) (cmpg^ 'integer    'integer x y))
+(defun cmpir^ (x y) (cmpg^ 'integer    'ratio x y))
+(defun cmpri^ (x y) (cmpg^ 'ratio      'integer x y))
+(defun cmpr^  (x y) (cmpg^ 'ratio      'ratio x y))
+(defun cmp^   (x y) (cmpg^ 'long-float 'long-float x y))
 
 
 (defun cmp-recon (x &optional (c (car (rassoc (pop x) +ctps+ :key 'car)) cp))
@@ -302,8 +339,8 @@
 	((eq x t) (if (consp c) `(complex* (,(pop c) * *) (,(car c) * *))
 		    `(complex (,c * *))))
 	((consp x)
-	 (let* ((rx (rng-recon (cons (if (consp c) (pop c) c) (car x))))
-		(ry (rng-recon (cons (if (consp c) (car c) c) (cdr x)))))
+	 (let* ((rx (k-recon (cons (if (consp c) (pop c) c) (car x))))
+		(ry (k-recon (cons (if (consp c) (car c) c) (cdr x)))))
 	   (if (equal rx ry)
 	       `(complex ,rx)
 	     `(complex* ,rx ,ry))))
@@ -482,7 +519,7 @@
 #.`(defun kmem (x &aux (z (ktype-of x)))
      (case z
 	   ((proper-cons improper-cons) (mcns-ld z x))
-	   (,+range-types+ `(,z (,x . ,x)))
+	   (,+range-types+ `(,z (,x . ,(unless (isnan x) x))))
 	   (null `(,z t))
 	   (otherwise `(,z ,x))))
 

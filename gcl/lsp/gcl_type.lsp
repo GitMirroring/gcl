@@ -55,6 +55,7 @@
 					 (mapcar (lambda (y) (cons x y))
 						 '((* (-1))(-1 -1) ((-1) (0)) (0 0) ((0) (1)) (1 1) ((1) *))))
 				       '(ratio short-float long-float))
+			     short-float long-float
 			     proper-cons improper-cons (vector nil) (array nil);FIXME
 			     ,@(lremove 'gsym (mapcar 'car +r+))))))
 		     (q2 (mapcar
@@ -358,13 +359,14 @@
 	  ((and (eql rm my) (eql rx xy)) y)
 	  ((cons rm rx)))))
 
-(defun rng-bnd (y x) (if y (rng-bnd2 y x) x))
+(defun rng-bnd (y x) (if (cdr x) (if y (rng-bnd2 y x) x) y))
 
 (defvar *btp-bnds*
   (let ((i -1))
     (mapcan (lambda (x)
 	      (incf i)
-	      (when (member (when (listp x) (car x)) +range-types+)
+	      (when (and (member (when (listp x) (car x)) +range-types+)
+			 (caddr x));unordered
 		`((,i ,(cons (cadr x) (caddr x))))))
 	    +btp-types+)))
 

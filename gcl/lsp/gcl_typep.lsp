@@ -5,7 +5,7 @@
   (let* ((a (atom l))
 	 (l (if a l (car l)))
 	 (l (unless (eq '* l) l)))
-    (or (not l) (if f (if a (<= l o) (< l o)) (if a (<= o l) (< o l))))))
+    (or (not l) (if (eq l 'unordered) (isnan o) (if f (if a (<= l o) (< l o)) (if a (<= o l) (< o l)))))))
 (setf (get 'ib 'cmp-inline) t)
 
 (defun db (o tp)
