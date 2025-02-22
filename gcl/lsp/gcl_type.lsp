@@ -710,7 +710,7 @@
 				  seqind seqbnd
 				  non-negative-immfix immfix
 				  non-negative-fixnum non-negative-bignum non-negative-integer
-				  tractable-fixnum fixnum bignum integer
+				  tractable-fixnum fixnum bignum integer rational
 				  negative-short-float positive-short-float
 				  non-negative-short-float non-positive-short-float
 				  short-float
