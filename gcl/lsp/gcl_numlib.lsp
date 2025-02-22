@@ -244,3 +244,36 @@
 
 (dolist (l '(integer-decode-float decode-float scale-float));float-radix float-digits float-precision float-sign
   (setf (get l 'type-propagator) 'atomic-tp-propagator (get l 'compiler::c1no-side-effects) t))
+
+(declaim (inline fryi))
+(defun fryi (x a)
+  (labels ((fryn (x a) (abs (- (* x (denominator a)) (numerator a))))
+	   (fryk (x a b &aux (c (fryn x a))(d (fryn x b))
+		    (kf 0.8);heuristic guard against overshoot
+		    (cf (* c kf))(df (* d kf)))
+	     (cond ((> cf d 0) (values (truncate (/ cf d))))
+		   ((> df c 0) (values (truncate (/ df c))))
+		   (1)))
+	   (med (a b k)
+	     (/ (+ (numerator a)   (* k (numerator b)))
+		(+ (denominator a) (* k (denominator b)))))
+	   (fry (x a b)
+	     (cond ((= (float a x) x) a)
+		   ((= (float b x) x) b)
+		   ((< (med a b 1) x) (fry x (med a b (fryk x a b)) b))
+		   ((fry x a (med b a (fryk x a b)))))))
+    (fry x a (1+ a))))
+
+(defun rationalize (x)
+  (declare (optimize (safety 1)))
+  (check-type x real)
+  (typecase x
+    (rational x)
+    (float
+     (if (isnan x)
+	 (rational x)
+	 (multiple-value-bind
+	       (f r) (truncate x)
+	   (cond ((minusp r) (fryi x (1- f)))
+		 ((zerop r) f)
+		 ((fryi x f))))))))
