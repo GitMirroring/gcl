@@ -23,7 +23,8 @@
 	 (l (if a l (car l)))
 	 (l (unless (eq '* l) l)))
     (when l
-      (if f (if a `((<= ,l ,o)) `((< ,l ,o))) (if a `((<= ,o ,l)) `((< ,o ,l)))))))
+      (if (eq l 'unordered) `((isnan ,o))
+	  (if f (if a `((<= ,l ,o)) `((< ,l ,o))) (if a `((<= ,o ,l)) `((< ,o ,l))))))))
 
 
 (defun ?and-or (op x)
