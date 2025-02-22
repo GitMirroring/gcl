@@ -277,7 +277,7 @@
 (defun lookup-cmp-k (rk ik)
   (cadr (assoc (if (eq rk ik) rk (list rk ik))	+ctps+ :test 'equal)))
 
-(defun cmp-k (x y &aux (rk (car (sking x)))(ik (car (sking y))))
+(defun cmp-k (x y)
   (lookup-cmp-k (car (sking x)) (car (sking y))))
 
 (defun cmp-ld (type &aux (r (sking (cadr type)))(rk (pop r))
