@@ -491,6 +491,7 @@
 	 (sig (list (mapcar  (lambda (x) (link-rt x t)) (car sig)) (link-rt (cadr sig) t)))
 	 (mv (not (single-type-p (cadr sig))))
 	 (nm (c-function-name "L" (fun-cfun fun) (fun-name fun)))
+	 (nm (concatenate 'string "(" (rep-type (coerce-to-one-value (cadr sig))) ")" nm))
 	 (clp (when clp (ccb-vs-str (fun-ref-ccb fun))))
 	 (nm (if clp (ms clp "->fun.fun_self") nm))
 	 (inl (g1 clp nm sig ap clp (if clp -1 (fun-level fun)))))
