@@ -509,7 +509,7 @@ integer_quotient_remainder_1(object x, object y, object *qp, object *rp,fixnum d
 
   if (type_of(x)==t_fixnum && type_of(y)==t_fixnum) {
     fixnum fx=fix(x),fy=fix(y);
-    if (fx!=-fx) {/*MOST_NEGATIVE_FIX*/
+    if (fx!=MOST_NEGATIVE_FIX) {
       if (qp) {
 	fixnum z=fixnum_div(fx,fy,d);
 	if (rp) *rp=make_fixnum(fx-fy*z);
@@ -521,9 +521,9 @@ integer_quotient_remainder_1(object x, object y, object *qp, object *rp,fixnum d
   }
 
   {
-    
+
     __mpz_struct *b1=INTEGER_TO_MP(x,big_fixnum1),*b2=INTEGER_TO_MP(y,big_fixnum2);
-    
+
     if (qp) {
       if (rp) {
 	void (*f)()=d<0 ? mpz_fdiv_qr : (d>0 ? mpz_cdiv_qr : mpz_tdiv_qr);
