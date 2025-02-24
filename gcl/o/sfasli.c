@@ -125,7 +125,11 @@ LFD(build_symbol_table)(void) {
   {
     fixnum i;
 
+#ifndef DARWIN
     min_text=etext;
+#else
+    min_text=get_etext();
+#endif
     for (i=0;i<c_table.alloc_length;i++) {
       void *p=(void *)c_table.ptable[i].address;
       min_text=p<min_text ? p : min_text;
