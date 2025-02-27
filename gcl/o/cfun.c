@@ -83,10 +83,23 @@ DEFUN("DLSYM",object,fSdlsym,SI,2,2,NONE,OI,OO,OO,OO,(fixnum h,object name),"") 
   name=coerce_to_string(name);
   ch=name->st.st_self[VLEN(name)];
   name->st.st_self[VLEN(name)]=0;
+#ifndef __CYGWIN__
   ad=dlsym(h ? (void *)h : RTLD_DEFAULT,name->st.st_self);
   ad=ad ? ad : dlsym(RTLD_DEFAULT,name->st.st_self);
-#ifndef __CYGWIN__
   ad=is_text_addr(ad) ? dlsym(RTLD_NEXT,name->st.st_self) : ad;
+#else
+  ad=0;
+  if (h) ad=dlsym((void *)h,name->st.st_self);
+  {
+    static void *n,*u,*c;
+    n=n ? n : dlopen("ntdll.dll",RTLD_LAZY|RTLD_GLOBAL);
+    u=u ? u : dlopen("ucrtbase.dll",RTLD_LAZY|RTLD_GLOBAL);
+    c=c ? c : dlopen("cygwin1.dll",RTLD_LAZY|RTLD_GLOBAL);
+    ad=ad ? ad : dlsym(n,name->st.st_self);
+    ad=ad ? ad : dlsym(u,name->st.st_self);
+    ad=ad ? ad : dlsym(c,name->st.st_self);
+    ad=ad ? ad : dlsym(RTLD_DEFAULT,name->st.st_self);
+  }
 #endif
   name->st.st_self[VLEN(name)]=ch;
   if (!ad) {
