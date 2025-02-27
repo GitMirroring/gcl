@@ -85,7 +85,9 @@ DEFUN("DLSYM",object,fSdlsym,SI,2,2,NONE,OI,OO,OO,OO,(fixnum h,object name),"") 
   name->st.st_self[VLEN(name)]=0;
   ad=dlsym(h ? (void *)h : RTLD_DEFAULT,name->st.st_self);
   ad=ad ? ad : dlsym(RTLD_DEFAULT,name->st.st_self);
+#ifndef __CYGWIN__
   ad=is_text_addr(ad) ? dlsym(RTLD_NEXT,name->st.st_self) : ad;
+#endif
   name->st.st_self[VLEN(name)]=ch;
   if (!ad) {
     char *er=dlerror();

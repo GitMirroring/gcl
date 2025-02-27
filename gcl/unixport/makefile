@@ -24,7 +24,10 @@ endif
 LD_LIBS_PRE=$(addprefix -u ,$(PATCHED_SYMBOLS))
 LD_LIBS_POST=$(LIBS) $(LIBC) -lgclp
 ifneq ($(LAST_FILE),)
-LD_LIBS_POST:=$(LD_LIBS_POST) $(ODIR)/$(LAST_FILE)
+LD_LIBS_POST:=$(LD_LIBS_POST) ../boot.o $(ODIR)/$(LAST_FILE)
+LIBBOOT:=
+else
+LIBBOOT:=libboot.so
 endif
 
 ifeq ($(ARRS),)
@@ -118,7 +121,7 @@ $(HDIR)/mdefs.h: $(HDIR)/include.h
 sys_%.o: sys_init.c sys.c
 	$(CC) $(CFLAGS) -c -D $* -D FLAVOR="$*" $< -o $@
 
-libpre_gcl.a: $(OOBJS) sys_pre_gcl.o gmpfiles libboot.so
+libpre_gcl.a: $(OOBJS) sys_pre_gcl.o gmpfiles $(LIBBOOT)
 	rm -rf $@
 	$(ARRS) $@ $(filter %.o,$^) $(shell find gmp -name "*.o")
 

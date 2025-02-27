@@ -431,12 +431,18 @@ init_boot(void) {
   sSAoptimize_maximum_pagesA->s.s_dbind=Cnil;
   z=alloca(n);
   snprintf(z,n,"%-*.*s%s",(int)m,(int)m,d,s);
+#ifndef __CYGWIN__
   if (!(v=dlopen(z,RTLD_LAZY|RTLD_GLOBAL)))
     printf("%s\n",dlerror());
   if (!(q=dlsym(v,"gcl_init_boot")))
     printf("%s\n",dlerror());
+#endif
   initializing_boot=1;
+#ifdef __CYGWIN__
+  gcl_init_boot();
+#else
   ((void (*)())q)();
+#endif
   initializing_boot=0;
   sSAoptimize_maximum_pagesA->s.s_dbind=omp;
 
@@ -884,7 +890,7 @@ ihs_overflow(void) {
 
 void
 segmentation_catcher(int i, long code, void *scp, char *addr) {
-#ifndef _WIN32
+#if !defined(_WIN32) && !defined(__CYGWIN__)
   void *faddr;
   faddr=GET_FAULT_ADDR(sig,code,scp,addr); 
 

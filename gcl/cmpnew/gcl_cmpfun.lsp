@@ -411,7 +411,7 @@
 ;; or :out-file
 
 ;(si::putprop 'read-byte 'co1read-byte 'co1)
-(si::putprop 'read-char 'co1read-char 'co1)
+#-cygwin(si::putprop 'read-char 'co1read-char 'co1)
 (si::putprop 'write-byte 'co1write-byte 'co1)
 (si::putprop 'write-char 'co1write-char 'co1)
 

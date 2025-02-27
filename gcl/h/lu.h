@@ -152,7 +152,7 @@ struct character {
   uchar             ch_code;
   uchar             ch_font;
   uchar             ch_bits;
-  ufixnum           pad:LM(24);
+  uchar             cp1,cp2,cp3,cp4,cp5;
   ufixnum           pad1;
   ufixnum           pad2;
   ufixnum           pad3;
