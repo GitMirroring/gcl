@@ -5,6 +5,7 @@
 -include ../makedefs
 
 HDIR	 := ../h
+ODIR	 := ../o
 DEFS	 := -I../h -I../gcl-tk
 GCLIB    := gcllib.a
 RANLIB   := ranlib
