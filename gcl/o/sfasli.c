@@ -125,10 +125,12 @@ LFD(build_symbol_table)(void) {
   {
     fixnum i;
 
-#ifndef DARWIN
-    min_text=etext;
-#else
+#if defined(DARWIN)
     min_text=get_etext();
+#elif defined(__CYGWIN__)
+    min_text=data_start;
+#else
+    min_text=etext;
 #endif
     for (i=0;i<c_table.alloc_length;i++) {
       void *p=(void *)c_table.ptable[i].address;
