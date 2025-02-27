@@ -213,12 +213,12 @@ DEFUN("FPE_CODE",object,fSfpe_code,SI,2,2,NONE,II,IO,OO,OO,(fixnum x87sw,fixnum 
 #if defined(__MINGW32__) || defined(__CYGWIN__)
 
 DEFUN("FNSTSW",object,fSfnstsw,SI,0,0,NONE,II,OO,OO,OO,(void),"") {
-  volatile unsigned short t;
+  volatile unsigned short t=0;
   ASM ("fnstsw %0" :: "m" (t));
   RETURN1((object)(long)t);
 }
 DEFUN("STMXCSR",object,fSstmxcsr,SI,0,0,NONE,II,OO,OO,OO,(void),"") {
-  volatile unsigned int t;
+  volatile unsigned int t=0;
   ASM ("stmxcsr %0" :: "m" (t));
   RETURN1((object)(long)t);
 }

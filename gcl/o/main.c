@@ -423,7 +423,9 @@ void
 init_boot(void) {
 
   char *sysd=getenv("GCL_SYSDIR"),*d=sysd ? sysd : kcl_self;
+#ifndef __CYGWIN__
   void *v,*q;
+#endif
   char *z,*s="libboot.so";
   size_t m=sysd ? strlen(sysd) : dir_name_length(kcl_self),n=m+strlen(s)+1;
   object omp=sSAoptimize_maximum_pagesA->s.s_dbind;
@@ -439,7 +441,10 @@ init_boot(void) {
 #endif
   initializing_boot=1;
 #ifdef __CYGWIN__
-  gcl_init_boot();
+  {
+    extern void gcl_init_boot(void);
+    gcl_init_boot();
+  }
 #else
   ((void (*)())q)();
 #endif
@@ -1282,7 +1287,7 @@ init_main(void) {
   
 }
 
-#ifdef HAVE_DIS_ASM_H
+#if defined(HAVE_DIS_ASM_H) && defined(OUTPUT_ARCH)
 
 #include "dis-asm.h"
 
