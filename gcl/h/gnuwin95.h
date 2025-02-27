@@ -60,16 +60,7 @@ extern DBEGIN_TY _dbegin;
 
 #define TO_NUMBER(ptr,type) (*((type *)(void *)(ptr)))
 
-#define SEEK_TO_END_OFILE(fp) do { struct filehdr fileheader; int i; \
-        fseek(fp,0,0) ; \
-	fread(&fileheader, sizeof(fileheader), 1, fp); \
-	fseek(fp,    fileheader.f_symptr+fileheader.f_nsyms*SYMESZ, 0); \
-	fread(&i, sizeof(i), 1, fp); \
-	fseek(fp, i - sizeof(i), 1); \
-	while ((i = getc(fp)) == 0) \
-		; \
-	ungetc(i, fp); \
-    } while (0)
+#define SEEK_TO_END_OFILE(fp) seek_to_end_ofile(fp)
 		
 #define RUN_PROCESS
 

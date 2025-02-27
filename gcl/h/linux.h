@@ -10,25 +10,7 @@
 
 /* Seeking to the end of ELF data is a little messy... */
 #include <link.h>
-#define SEEK_TO_END_OFILE(fp)\
-  do { \
-	long offset = 0, endofelf; int j; \
-	ElfW(Ehdr) eheader; ElfW(Shdr) shdr; \
-        fseek(fp, 0, SEEK_SET); \
-        massert(1==fread(&eheader, sizeof(eheader), 1, fp));	      \
-  /* in case the headers themselves come AFTER the actual sections */ \
-	endofelf=offset = eheader.e_shoff+ eheader.e_shentsize *eheader.e_shnum;\
-        fseek(fp, eheader.e_shoff, SEEK_SET); \
-	if ( eheader.e_shentsize != sizeof(ElfW(Shdr)) ) \
-	  { FEerror("Bad ELF section header size",0); } \
-        for ( j = 0; j < eheader.e_shnum; j++ ) \
-	  { massert(1==fread(&shdr,eheader.e_shentsize,1,fp));		\
-            if ( (shdr.sh_offset > offset) && (shdr.sh_type != SHT_NOBITS) ) \
-	      { offset = shdr.sh_offset; endofelf = offset+shdr.sh_size; } \
-	  } \
-	if ( fseek(fp, endofelf, SEEK_SET) ) \
-	    FEerror("Bad ELF file",0); \
-      } while(0)
+#define SEEK_TO_END_OFILE(fp) seek_to_end_ofile(fp)
 
 
 #define GET_FAULT_ADDR(sig,code,sv,a) ((siginfo_t *)code)->si_addr
