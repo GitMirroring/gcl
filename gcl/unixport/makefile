@@ -24,7 +24,7 @@ endif
 LD_LIBS_PRE=$(addprefix -u ,$(PATCHED_SYMBOLS))
 LD_LIBS_POST=$(LIBS) $(LIBC) -lgclp
 ifneq ($(LAST_FILE),)
-LD_LIBS_POST:=$(LD_LIBS_POST) ../boot.o $(ODIR)/$(LAST_FILE)
+LD_LIBS_POST:=$(LD_LIBS_POST) ../o/boot.o $(ODIR)/$(LAST_FILE)
 LIBBOOT:=
 else
 LIBBOOT:=libboot.so
