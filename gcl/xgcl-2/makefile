@@ -6,7 +6,7 @@ LISP?=$(shell echo $$(pwd)/../unixport/saved_gcl)
 APPEND=../xbin/append
 
 objects: $(shell ls -1 *.c *.o) #$(LISP)
-	echo '#+xgcl(progn(load "sysdef.lisp")(load "sys-proclaim.lisp")(compiler::cdebug)(xlib::compile-xgcl))' | $(LISP)
+	echo '#+xgcl(load "sysdef.lisp")#+xgcl(progn(load "sys-proclaim.lisp")(compiler::cdebug)(xlib::compile-xgcl))' | $(LISP)
 	touch $@
 
 gprof_objs: objects $(addprefix ../gprof/,$(shell ls -1 *.o))
@@ -18,14 +18,14 @@ gprof_objs: objects $(addprefix ../gprof/,$(shell ls -1 *.o))
 
 
 sys-proclaim.lisp:
-	echo '#+xgcl(progn(load "sysdef.lisp")(compiler::emit-fn t)(xlib::compile-xgcl)(compiler::make-all-proclaims "*.fn"))' | $(LISP)
+	echo '#+xgcl(load "sysdef.lisp")#+xgcl(progn(compiler::emit-fn t)(xlib::compile-xgcl)(compiler::make-all-proclaims "*.fn"))' | $(LISP)
 
 docs: dwdoc/dwdoccontents.html dwdoc.pdf
 
 dwdoc/dwdoccontents.html: $(LISP)
 	mkdir -p $(@D) && \
 	cd $(@D) && \
-	echo '#+xgcl(progn(load "../sysdef.lisp")(in-package :xlib)(defmacro while (test &rest forms) `(loop (unless ,test (return)) ,@forms))(load "../gcl_tohtml.lsp")(load "../gcl_index.lsp")(tohtml "../dwdoc.tex" "dwdoc")(with-open-file (s "dwdoccontents.html" :direction :output) (let ((*standard-output* s)) (xlib::makecont "../dwdoc.tex" 1 "dwdoc")))(with-open-file (s "dwdocindex.html" :direction :output) (let ((*standard-output* s)) (xlib::printindex indexdata "dwdoc"))))' | $<
+	echo '#+xgcl(load "../sysdef.lisp")#+xgcl(progn(in-package :xlib)(defmacro while (test &rest forms) `(loop (unless ,test (return)) ,@forms))(load "../gcl_tohtml.lsp")(load "../gcl_index.lsp")(tohtml "../dwdoc.tex" "dwdoc")(with-open-file (s "dwdoccontents.html" :direction :output) (let ((*standard-output* s)) (xlib::makecont "../dwdoc.tex" 1 "dwdoc")))(with-open-file (s "dwdocindex.html" :direction :output) (let ((*standard-output* s)) (xlib::printindex indexdata "dwdoc"))))' | $<
 
 dwdoc.pdf: dwdoc.tex
 	-pdflatex $<
