@@ -271,6 +271,7 @@ get_gc_environ(void) {
     massert(mem_multiple>=0.0);
   }
 
+  log_maxpage_bound=sizeof(fixnum)*8-1;
   if ((e=getenv("GCL_MEM_BOUND"))) {
     massert(sscanf(e,"%lud",&log_maxpage_bound)==1);
     mem_multiple=1.0;
