@@ -44,19 +44,41 @@
 		   ((endp f) (return (1+ (- (+ i i)))))
 		   ((endp (cdr f)) (return (- (+ i i))))))))))
 
+#.(let (r)
+    (labels
+	((f (n r) (when (plusp n) (cons `(pop ,r) (f (1- n) r))))
+	 (d (n &aux (s (intern (format nil "AFC~a" n))))
+	   (setq r (cons (cons n s) r))
+	   `(progn (declaim (inline ,s))
+		   (defun ,s (f s r)
+		     (declare (function f)(proper-list r))
+		     (values (funcall f s ,@(f n 'r))))))
+	 (a (n) (when (plusp n) (cons (d n) (a (1- n))))))
+      `(progn
+	 ,@(a (- call-arguments-limit 2))
+	 (defconstant +afc-syms+ ',r))))
+
+(defun afc-sym (n)
+  (labels ((f (n s) (when s (if (eql (caar s) n) (cdar s) (f n (cdr s))))))
+    (f n +afc-syms+)))
+(setf (get 'afc-sym 'type-propagator) 'compiler::expand-type-propagator)
+(setf (get 'afc-sym 'compiler::c1no-side-effects) t)
 
 
 (defun mapl (fd list &rest r &aux (fun (coerce fd 'function)))
   (declare (optimize (safety 1))(dynamic-extent r)(notinline make-list));FIXME
   (check-type fd function-designator)
   (check-type list proper-list)
-  (let ((q (when r (make-list (length r)))))
-    (declare (dynamic-extent q))
-    (labels ((a-cons (x) (check-type x list) (or x (return-from mapl list)))
-	     (lmap (f x) (when x (funcall f x) (lmap f (cdr x))))
-	     (lmapr (f x) (lmap f x) x)
-	     (last nil (lmapr (lambda (x) (rplaca x (if r (a-cons (pop r)) (a-cons (cdar x))))) q)))
-      (lmapr (lambda (x) (apply fun x (last))) list))))
+  (labels ((lmap (f x) (when x (funcall f x) (lmap f (cdr x))))
+	   (lmapr (f x) (lmap f x) x))
+    (if (not r) (lmapr fun list);compiler accelerator
+	(let* ((lr (length r))(q (make-list lr))(nf (afc-sym lr)))
+	  (declare (dynamic-extent q))
+	  (labels ((a-cons (x) (check-type x list) (or x (return-from mapl list)))
+		   (last nil (lmapr (lambda (x) (rplaca x (if r (a-cons (pop r)) (a-cons (cdar x))))) q)))
+	    ;cannot apply as fun might capture (last) via &rest
+	    (lmapr (lambda (x) (funcall nf fun x (last))) list))))))
+
 
 
 (defun mapc (fd list &rest r &aux (fun (coerce fd 'function)))

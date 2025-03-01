@@ -474,8 +474,8 @@
 
 
 (defun all-eq (x y)
-  (mapc (lambda (x y) (unless (eq x y) (return-from all-eq nil))) x y)
-  t)
+  (cond ((not (and x y)) t)
+	((eq (car x) (car y)) (all-eq (cdr x) (cdr y)))))
 
 (defun and-or-norm (op w r &aux (n (mapcar 'normalize-type r)))
   (if (all-eq r n) w (cons op n)))
