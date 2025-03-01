@@ -872,7 +872,8 @@
     (setf (sixth form) (new-bind form))
     form))
 
-(defun c2lit (key inl args bind safety oargs stores &aux (tp (get key 'cmp-lisp-type :opaque)))
+(defun c2lit (key inl args bind safety &rest r &aux (oargs (pop r)) (stores (car r)) (tp (get key 'cmp-lisp-type :opaque)))
+  (declare (dynamic-extent r))
   (let* ((*inline-blocks* 0)
 	 (*restore-avma*  *restore-avma*)
 	 (*compiler-check-args* *compiler-check-args*)
@@ -1216,8 +1217,8 @@
     (if mv `(,(car tp) ,@(when (cdr tp) `(,tppn)) ,@(cddr tp)) tppn)))
 
 
-(defun t2defun (fname cfun lambda-expr doc sp macro-p)
-  (declare (ignore cfun lambda-expr doc sp macro-p))
+(defun t2defun (fname cfun lambda-expr doc sp &rest r &aux (macro-p (car r)))
+  (declare (dynamic-extent r)(ignore cfun lambda-expr doc sp macro-p))
 
   (cond ((get fname 'no-global-entry)(return-from t2defun nil)))
   
@@ -1246,10 +1247,11 @@
     (add-init `(fset ',fname ,(if macro-p `(cons 'macro ,finit) finit)))))
 
 
-(defun t3defun (fname cfun lambda-expr doc sp macro-p &aux inline-info 
+(defun t3defun (fname cfun lambda-expr doc sp &rest r &aux (macro-p (car r)) inline-info 
 ;		      (macro-p (equal `(mflag ,fname) (cadr (member *current-form* *top-level-forms*))))
 		      (*current-form* (list 'defun fname))
 		      (*volatile* (volatile (second lambda-expr))))
+  (declare (dynamic-extent r))
 
   (let ((*compiler-check-args* *compiler-check-args*)
         (*safe-compile* *safe-compile*)
@@ -1289,7 +1291,6 @@
     (t3init-fun fname cfun lambda-expr doc macro-p)
 
     (add-debug-info fname lambda-expr)))
-
 
 (defun t3defun-aux (f *exit* &rest lis)
   (let-pass3 ()   (apply f lis)))   

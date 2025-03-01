@@ -262,7 +262,8 @@
       (wt "symbol_function(" (vv-str vv) ")")
     (wt "(" (vv-str vv) "->s.s_gfdef)")))
 
-(defun wt-make-cclosure (cfun fname call argd sizes args)
+(defun wt-make-cclosure (cfun fname call argd sizes &rest r &aux (args (car r)))
+  (declare (dynamic-extent r))
   (declare (ignore args))
   (wt "fSinit_function(")
   (wt-vv call)
