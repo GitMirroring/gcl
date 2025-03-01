@@ -1,4 +1,5 @@
 (in-package :compiler)(cdebug)(setq *compile-print* nil si::*notify-gbc* t *annotate* nil)
+(si::allocate 'structure 200 t)
 
 #+pre-gcl
 (progn
@@ -9,20 +10,33 @@
 
 (progn (setq si::*code-block-reserve* (make-array 30000000 :element-type 'character :static t)) nil)
 
-(mapc 'compile (nconc #-pre-gcl '(sbit si::aset si::improper-consp mapcar mapcan mapc mapl
+(mapc 'compile (nconc #+pre-gcl (progn 'si::(s-data-raw s-data-slot-position s-data-slot-descriptions))
+		      #-pre-gcl '(sbit si::aset si::improper-consp mapcar mapcan mapc mapl)
 					;maplist member member-if member-if-not
 					;assoc assoc-if assoc-if-not
 					;rassoc rassoc-if rassoc-if-not
-				  )
-		      #+pre-gcl '(si::s-data-raw si::s-data-slot-position si::s-data-slot-descriptions)
 		      '(info-p info-ref info-type info-flags info-ch info-ref-ccb info-ref-clb)
-		      '(var-p var-name var-flags var-kind var-ref var-ref-ccb var-loc var-dt var-type var-mt var-tag var-store)
-		      'si::(listp ibb ib typep <= coerce < > >= + - set-array 0-byte-array-self set-0-byte-array-self concatenate eql-is-eq)
+		      '(var-p var-name var-flags var-kind var-ref var-ref-ccb var-loc var-dt
+			var-type var-mt var-tag var-store)
+		      #-pre-gcl
+		      '(bit-andc2 bit-and bit-ior bit-xor bit-orc2 bit-not)
+		      #-pre-gcl
+		      (progn 'si::(copy-btp btp-equal one-bit-btp btp-count
+				     new-tp4 btp-type2 btp-bnds< btp-bnds>
+				     tp-and tp-or cmp-tp-not tp-not
+				     tp= tp-p))
+		      #-pre-gcl
+		      '(naltp explode-nalt needs-explode ctp-and ctp<=
+			type-and type-or1 type<= type>= type=)
+
+		      'si::(listp ibb ib typep <= coerce < > >= + -
+				  set-array 0-byte-array-self set-0-byte-array-self
+				  concatenate eql-is-eq)
 		      '(c1constant-value-object
 			c-array-rank c-array-dim c-array-elttype c-array-self c-array-hasfillp
 			array-dimension array-row-major-index row-major-aref si::row-major-aset
 			si::row-major-aref-int aref array-rank array-total-size
-			array-has-fill-pointer-p length memoized-hash-equal)))
+			array-has-fill-pointer-p length)))
 
 (in-package :user)
 
