@@ -1797,7 +1797,7 @@ LFD(Lmake_broadcast_stream)() {
 				     MMcons(MMcons(sLsatisfies,MMcons(sLoutput_stream_p,Cnil)),Cnil))));
       /* cannot_write(vs_base[i]); */
 
-  Llist();
+  stack_list();
 
   x = alloc_object(t_stream);
   x->sm.tt=x->sm.sm_mode = (short)smm_broadcast;
@@ -1822,7 +1822,7 @@ LFD(Lmake_concatenated_stream)() {
 	!input_stream_p(vs_base[i]))
       cannot_read(vs_base[i]);
 
-  Llist();
+  stack_list();
 
   x = alloc_object(t_stream);
   x->sm.tt=x->sm.sm_mode = (short)smm_concatenated;

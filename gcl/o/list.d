@@ -227,25 +227,52 @@ make_list(fixnum n) {
   return x;
 }
 
-LFD(Llist)() {
+static fixnum
+list_count(fixnum nargs,object first,object l,va_list ap) {
+  fixnum n;
+  for (n=0;NEXT_ARG(nargs,ap,l,first,OBJNULL)!=OBJNULL;n++);
+  return n;
+}
+
+DEFUN("LIST",object,fLlist,LISP,0,MAX_ARGS,NONE,OO,OO,OO,OO,(object first,...),"") {
+
+  object x,l=Cnil;
+  va_list ap;
+  fixnum nargs=INIT_NARGS(0),n;
+
+  va_start(ap,first);
+  n=list_count(nargs,first,l,ap);
+  va_end(ap);
+  va_start(ap,first);
+  x=n_cons(n,NEXT_ARG(nargs,ap,l,first,Cnil),NEXT_ARG(nargs,ap,l,first,Cnil));
+  va_end(ap);
+  RETURN1(x);
+
+}
+
+DEFUN("LIST*",object,fLlistA,LISP,1,MAX_ARGS,NONE,OO,OO,OO,OO,(object first,...),"") {
+
+  object x,l=Cnil;
+  va_list ap;
+  fixnum nargs=INIT_NARGS(0),n;
+
+  va_start(ap,first);
+  n=list_count(nargs,first,l,ap);
+  va_end(ap);
+  va_start(ap,first);
+  x=n_cons(n-1,NEXT_ARG(nargs,ap,l,first,Cnil),NEXT_ARG(nargs,ap,l,first,Cnil));
+  va_end(ap);
+  RETURN1(x);
+
+}
+
+object
+stack_list(void) {
 
   object *a;
 
   a=vs_base;
   vs_base[0]=n_cons(vs_top-vs_base,*a++,Cnil);
-  vs_top=vs_base+1;
-
-}
-
-LFD(LlistA)() {
-
-  object *a;
-
-  if (vs_top == vs_base)
-    too_few_arguments();
-
-  a=vs_base;
-  vs_base[0]=n_cons(vs_top-vs_base-1,*a++,vs_head);
   vs_top=vs_base+1;
 
 }
@@ -348,7 +375,5 @@ gcl_init_list_function()
 
 	sKinitial_element = make_keyword("INITIAL-ELEMENT");
 
-	make_function("LIST", Llist);
-	make_function("LIST*", LlistA);
 
 }

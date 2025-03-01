@@ -786,7 +786,7 @@ call_applyhook(object fun)
 	object ah;
 
 	ah = symbol_value(siVapplyhook);
-	Llist();
+	stack_list();
 	vs_push(vs_base[0]);
 	vs_base[0] = fun;
 	vs_push(list(3,lex_env[0],lex_env[1],lex_env[2]));
