@@ -87,6 +87,15 @@
     (declare (dynamic-extent q))
     (apply 'mapl (lambda (x &rest r) (apply fun (car x) (mapl (lambda (x) (setf (car x) (car (pop r)))) q))) list r)))
 
+(defun mapc (fd list &rest r &aux (fun (coerce fd 'function)))
+  (declare (optimize (safety 1))(dynamic-extent r))
+  (check-type fd function-designator)
+  (check-type list proper-list)
+  (if (not r) (mapl (lambda (x) (funcall fun (car x))) list);compiler accelerator
+      (let* ((lr (length r))(q (make-list lr))(nf (afc-sym lr)))
+	(declare (dynamic-extent q))
+	(apply 'mapl (lambda (x &rest r) (funcall nf fun (car x) (mapl (lambda (x) (setf (car x) (car (pop r)))) q))) list r))))
+
 
 (defun mapcar (fd list &rest r &aux (fun (coerce fd 'function)) res rp)
   (declare (optimize (safety 1))(dynamic-extent r))
