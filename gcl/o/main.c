@@ -271,6 +271,11 @@ get_gc_environ(void) {
     massert(mem_multiple>=0.0);
   }
 
+  if ((e=getenv("GCL_MEM_BOUND"))) {
+    massert(sscanf(e,"%lud",&log_maxpage_bound)==1);
+    mem_multiple=1.0;
+  }
+
   gc_alloc_min=0.05;
   if ((e=getenv("GCL_GC_ALLOC_MIN"))) {
     massert(sscanf(e,"%lf",&gc_alloc_min)==1);
@@ -341,6 +346,8 @@ update_real_maxpage(void) {
   }
 #endif
 
+  get_gc_environ();
+
 #ifdef DEFINED_REAL_MAXPAGE
   real_maxpage=DEFINED_REAL_MAXPAGE;
 #else
@@ -357,7 +364,6 @@ update_real_maxpage(void) {
 
   phys_pages=ufmin(get_phys_pages1(0)+page(beg),real_maxpage)-page(beg);
 
-  get_gc_environ();
   setup_maxpages(mem_multiple);
 
   return 0;
