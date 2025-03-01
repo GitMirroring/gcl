@@ -58,12 +58,10 @@
 	 ,@(a (- call-arguments-limit 2))
 	 (defconstant +afc-syms+ ',r))))
 
+(declaim (inline afc-sym))
 (defun afc-sym (n)
   (labels ((f (n s) (when s (if (eql (caar s) n) (cdar s) (f n (cdr s))))))
     (f n +afc-syms+)))
-(setf (get 'afc-sym 'type-propagator) 'compiler::expand-type-propagator)
-(setf (get 'afc-sym 'compiler::c1no-side-effects) t)
-
 
 (defun mapl (fd list &rest r &aux (fun (coerce fd 'function)))
   (declare (optimize (safety 1))(dynamic-extent r)(notinline make-list));FIXME
