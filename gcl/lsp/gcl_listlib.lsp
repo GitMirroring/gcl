@@ -78,15 +78,6 @@
 	    (lmapr (lambda (x) (funcall nf fun x (last))) list))))))
 
 
-
-(defun mapc (fd list &rest r &aux (fun (coerce fd 'function)))
-  (declare (optimize (safety 1))(dynamic-extent r))
-  (check-type fd function-designator)
-  (check-type list proper-list)
-  (let ((q (when r (make-list (length r)))))
-    (declare (dynamic-extent q))
-    (apply 'mapl (lambda (x &rest r) (apply fun (car x) (mapl (lambda (x) (setf (car x) (car (pop r)))) q))) list r)))
-
 (defun mapc (fd list &rest r &aux (fun (coerce fd 'function)))
   (declare (optimize (safety 1))(dynamic-extent r))
   (check-type fd function-designator)
