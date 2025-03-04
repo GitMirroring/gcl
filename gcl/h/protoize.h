@@ -1672,4 +1672,4 @@ int gcl_init_cmp_anon(void);
 int is_bigger_fixnum(void *);
 int is_text_addr(void *);
 int seek_to_end_ofile(FILE *);
-object stack_list(void);
+void stack_list(void);

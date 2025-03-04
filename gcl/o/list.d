@@ -266,7 +266,7 @@ DEFUN("LIST*",object,fLlistA,LISP,1,MAX_ARGS,NONE,OO,OO,OO,OO,(object first,...)
 
 }
 
-object
+void
 stack_list(void) {
 
   object *a;
