@@ -76,32 +76,29 @@ DEFUN("CFDL",object,fScfdl,SI,0,0,NONE,OO,OO,OO,OO,(void),"") {
     
 DEFUN("DLSYM",object,fSdlsym,SI,2,2,NONE,OI,OO,OO,OO,(fixnum h,object name),"") {
 
-  char ch;
   void *ad;
 
   dlerror();
   name=coerce_to_string(name);
-  ch=name->st.st_self[VLEN(name)];
-  name->st.st_self[VLEN(name)]=0;
+  massert(snprintf(FN1,sizeof(FN1),"%-.*s",VLEN(name),name->st.st_self)>0);
 #ifndef __CYGWIN__
-  ad=dlsym(h ? (void *)h : RTLD_DEFAULT,name->st.st_self);
-  ad=ad ? ad : dlsym(RTLD_DEFAULT,name->st.st_self);
-  ad=is_text_addr(ad) ? dlsym(RTLD_NEXT,name->st.st_self) : ad;
+  ad=dlsym(h ? (void *)h : RTLD_DEFAULT,FN1);
+  ad=ad ? ad : dlsym(RTLD_DEFAULT,FN1);
+  ad=is_text_addr(ad) ? dlsym(RTLD_NEXT,FN1) : ad;
 #else
   ad=0;
-  if (h) ad=dlsym((void *)h,name->st.st_self);
+  if (h) ad=dlsym((void *)h,FN1);
   {
     static void *n,*u,*c;
     n=n ? n : dlopen("ntdll.dll",RTLD_LAZY|RTLD_GLOBAL);
     u=u ? u : dlopen("ucrtbase.dll",RTLD_LAZY|RTLD_GLOBAL);
     c=c ? c : dlopen("cygwin1.dll",RTLD_LAZY|RTLD_GLOBAL);
-    ad=ad ? ad : dlsym(n,name->st.st_self);
-    ad=ad ? ad : dlsym(u,name->st.st_self);
-    ad=ad ? ad : dlsym(c,name->st.st_self);
-    ad=ad ? ad : dlsym(RTLD_DEFAULT,name->st.st_self);
+    ad=ad ? ad : dlsym(n,FN1);
+    ad=ad ? ad : dlsym(u,FN1);
+    ad=ad ? ad : dlsym(c,FN1);
+    ad=ad ? ad : dlsym(RTLD_DEFAULT,FN1);
   }
 #endif
-  name->st.st_self[VLEN(name)]=ch;
   if (!ad) {
     char *er=dlerror();
     FEerror("dlsym lookup failure on ~s: ~s",2,name,make_simple_string(er ? er : ""));
@@ -139,19 +136,17 @@ DEFUN("DLADDR",object,fSdladdr,SI,2,2,NONE,OI,OO,OO,OO,(fixnum ad,object n),"") 
 
 DEFUN("DLOPEN",object,fSdlopen,SI,1,1,NONE,OO,OO,OO,OO,(object name),"") {
 
-  char ch,*err;
+  char *err;
   void *v;
-  ufixnum i;
 
   dlerror();
   name=coerce_to_string(name);
-  ch=name->st.st_self[VLEN(name)];
-  name->st.st_self[VLEN(name)]=0;
-  i=VLEN(name);
-  if (!strncmp("libc.so",name->st.st_self,i) || !strncmp("libm.so",name->st.st_self,i))
-    i=0;
-   v=dlopen(i ? name->st.st_self : 0,RTLD_LAZY|RTLD_GLOBAL);
-  name->st.st_self[VLEN(name)]=ch;
+  if (!strncmp("libc.so",name->st.st_self,VLEN(name)) || !strncmp("libm.so",name->st.st_self,VLEN(name)))
+    v=dlopen(0,RTLD_LAZY|RTLD_GLOBAL);
+  else {
+    massert(snprintf(FN1,sizeof(FN1),"%-.*s",VLEN(name),name->st.st_self)>0);
+    v=dlopen(FN1,RTLD_LAZY|RTLD_GLOBAL);
+  }
   if ((err=dlerror()))
     FEerror("dlopen failure on ~s: ~s",2,name,make_simple_string(err));
   
