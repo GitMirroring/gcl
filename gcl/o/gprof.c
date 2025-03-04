@@ -52,7 +52,6 @@ gprof_cleanup(void) {
 DEFUN("GPROF-ADDRESSES",object,fSgprof_addresses,SI,0,0,NONE,OO,OO,OO,OO,(void),"") {
 
   void *min=heap_end,*max=data_start,*c;
-  static void *mintext;
   struct pageinfo *v;
   object x;
   fixnum i;
@@ -69,19 +68,15 @@ DEFUN("GPROF-ADDRESSES",object,fSgprof_addresses,SI,0,0,NONE,OO,OO,OO,OO,(void),
   if (max<min)
     min=max;
 
-  if (!mintext) {/*FIXME min_text*/
-
-    mintext=data_start;
-
 #ifdef GCL_GPROF
-    for (i=0;i<c_table.alloc_length;i++)
-      mintext=(void *)c_table.ptable[i].address<mintext ? (void *)c_table.ptable[i].address : mintext;
-#endif
+  {
+      extern void *min_text;
+
+      if (min_text<data_start)
+	min=min_text;
 
   }
-
-  if (mintext<data_start)
-    min=mintext;
+#endif
 
   return MMcons(make_fixnum((fixnum)min),make_fixnum((fixnum)max));
 

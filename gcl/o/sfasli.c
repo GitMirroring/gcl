@@ -94,14 +94,12 @@ build_symbol_table_bfd(void) {
 
 #endif /* special_rsym */
 
-static void *min_text;
+void *min_text;
 extern void *data_start;
-/* extern char etext,edata,end,_data_start_; */
 
 int
 is_text_addr(void *p) {
   extern int initializing_boot;
-  /* if (!min_text) return 1;/\*FIXME build_symbol_table before initlisp*\/ */
   if (initializing_boot) return 1;/*FIXME*/
   return p>=min_text && p<data_start && !is_bigger_fixnum(p) ? 1 : 0;
 }
@@ -125,13 +123,7 @@ LFD(build_symbol_table)(void) {
   {
     fixnum i;
 
-#if defined(DARWIN)
-    min_text=get_etext();
-#elif defined(__CYGWIN__)
     min_text=data_start;
-#else
-    min_text=etext;
-#endif
     for (i=0;i<c_table.alloc_length;i++) {
       void *p=(void *)c_table.ptable[i].address;
       min_text=p<min_text ? p : min_text;
