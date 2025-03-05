@@ -149,10 +149,13 @@ struct character {
 
   object            ch_name;
   ufixnum           pad5;
-  uchar             ch_code;
+  uchar             ch_code;/*need address of this*/
   uchar             ch_font;
   uchar             ch_bits;
-  uchar             cp1,cp2,cp3,cp4,cp5;
+  uchar             cp1;/*cygwin won't take a bit field pad here*/
+#if SIZEOF_LONG == 8
+  uchar             cp2,cp3,cp4,cp5;
+#endif
   ufixnum           pad1;
   ufixnum           pad2;
   ufixnum           pad3;
