@@ -666,7 +666,7 @@ mark_object1(object x) {
     mark_object(x->pn.pn_namestring);
     break;
     
-  case t_function:	
+  case t_function:
     mark_object(x->fun.fun_data);
     mark_object(x->fun.fun_plist);
     if (x->fun.fun_env != def_env && x->fun.fun_env != src_env) {
