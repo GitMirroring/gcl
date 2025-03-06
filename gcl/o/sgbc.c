@@ -673,7 +673,7 @@ sgc_start(void) {
 
   }
 
-  sSAwritableA->s.s_dbind=fSmake_vector(sLbit,(page(rb_start)-first_data_page),Ct,Cnil,Cnil,0,Ct,Cnil);
+  sSAwritableA->s.s_dbind=fSmake_vector(sLbit,(page(heap_end)-first_data_page),Ct,Cnil,Cnil,0,Ct,Cnil);
   wrimap=(void *)sSAwritableA->s.s_dbind->v.v_self;
 
   /* now move the sgc free lists into place.   alt_free should
