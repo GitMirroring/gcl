@@ -227,7 +227,7 @@ add_page_to_freelist(char *p, struct typemanager *tm) {
   /*   pp->sgc_flags|=SGC_PERM_WRITABLE; */
   /* The SGC_PERM_WRITABLE facility is no longer used in favor of
      SGC_TOUCH.  Implicitly grouping object types by size is
-     unreliable.*?
+     unreliable.*/
 
 #endif 
 
