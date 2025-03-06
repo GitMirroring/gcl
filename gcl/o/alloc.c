@@ -223,8 +223,11 @@ add_page_to_freelist(char *p, struct typemanager *tm) {
      are many arrays in a system to make the headers not writable,
      but just SGC_TOUCH the header each time you write to it.   this
      is what is done with t_structure */
-  if (t==(tm_of(t_array)->tm_type))
-    pp->sgc_flags|=SGC_PERM_WRITABLE;
+  /* if (t==(tm_of(t_array)->tm_type)) */
+  /*   pp->sgc_flags|=SGC_PERM_WRITABLE; */
+  /* The SGC_PERM_WRITABLE facility is no longer used in favor of
+     SGC_TOUCH.  Implicitly grouping object types by size is
+     unreliable.*?
 
 #endif 
 

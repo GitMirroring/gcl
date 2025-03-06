@@ -79,8 +79,8 @@
     (when (>= (1+ n) (c-hashtable-max_ent h))
       (extend-hashtable h))
     (let ((e (gethash-int k h)))
-      (when (eql +objnull+ (htent-key e));FIXME GBC
-	(c-set-hashtable-nent h (1+ n)))
+      ;touch hashtable header; ;FIXME GBC
+      (c-set-hashtable-nent h (if (eql +objnull+ (htent-key e)) (1+ n) n))
       (set-htent-key e (address k))
       (set-htent-value e v))))
 (setf (get 'hash-set 'compiler::cmp-inline) t)

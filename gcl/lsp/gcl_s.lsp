@@ -61,18 +61,22 @@
     `(progn
        ,@(mapcar (lambda (z &aux (x (pop z))(s (pop z))(m (car z))(n (intern (string-concatenate "*" (string-upcase x)))))
 		   `(idefun ,n (x o s y)
-			    (declare (fixnum x o)(boolean s))
-			    ,(if (when (eq n '*fixnum) (member :sparc64 *features*));Possibly unaligned access
-				 `(if s
-				      ;FIXME there does not appear any useful way to lift thie branch into lisp for possible branch elimination
-				      (lit :fixnum "((" (:fixnum x) "&(sizeof(fixnum)-1)) ? "
-					   "({fixnum _t=" (:fixnum y) ";unsigned char *p1=(void *)(((fixnum *)" (:fixnum x) ")+" (:fixnum o) "),*p2=(void *)&_t,*pe=p1+sizeof(fixnum);for (;p1<pe;) *p1++=*p2++;_t;}) : "
-					   "({((fixnum *)" (:fixnum x) ")[" (:fixnum o) "]=" (:fixnum y) ";}))")
-				      (lit :fixnum "((" (:fixnum x) "&(sizeof(fixnum)-1)) ? "
-					   "({fixnum _t;unsigned char *p1=(void *)(((fixnum *)" (:fixnum x) ")+" (:fixnum o) "),*p2=(void *)&_t,*pe=p1+sizeof(fixnum);for (;p1<pe;) *p2++=*p1++;_t;}) : "
-					   "((fixnum *)" (:fixnum x) ")[" (:fixnum o) "])"))
-				 `(if s (lit ,x "(((" ,(strcat x) "*)" (:fixnum x) ")[" (:fixnum o) "]=" (,x y) ")")
-				      (lit ,x "((" ,(strcat x) "*)" (:fixnum x) ")[" (:fixnum o) "]")))))
+			    (declare (fixnum x o) ,@(unless (eq n '*object) `((boolean s))))
+			    ,(cond ((when (eq n '*fixnum) (member :sparc64 *features*));Possibly unaligned access
+				    `(if s
+					;FIXME there does not appear any useful way to lift thie branch into lisp for possible branch elimination
+					 (lit :fixnum "((" (:fixnum x) "&(sizeof(fixnum)-1)) ? "
+					      "({fixnum _t=" (:fixnum y) ";unsigned char *p1=(void *)(((fixnum *)" (:fixnum x) ")+" (:fixnum o) "),*p2=(void *)&_t,*pe=p1+sizeof(fixnum);for (;p1<pe;) *p1++=*p2++;_t;}) : "
+					      "({((fixnum *)" (:fixnum x) ")[" (:fixnum o) "]=" (:fixnum y) ";}))")
+					 (lit :fixnum "((" (:fixnum x) "&(sizeof(fixnum)-1)) ? "
+					      "({fixnum _t;unsigned char *p1=(void *)(((fixnum *)" (:fixnum x) ")+" (:fixnum o) "),*p2=(void *)&_t,*pe=p1+sizeof(fixnum);for (;p1<pe;) *p2++=*p1++;_t;}) : "
+					      "((fixnum *)" (:fixnum x) ")[" (:fixnum o) "])")))
+				   ((eq n '*object);sgc header touch support
+				    `(if (eq s t) (lit ,x "(((" ,(strcat x) "*)" (:fixnum x) ")[" (:fixnum o) "]=" (,x y) ")")
+					 (if s (lit ,x "({" (:object s) "->d.e=1;(((" ,(strcat x) "*)" (:fixnum x) ")[" (:fixnum o) "]=" (,x y) ");})")
+					     (lit ,x "((" ,(strcat x) "*)" (:fixnum x) ")[" (:fixnum o) "]"))))
+				   (`(if s (lit ,x "(((" ,(strcat x) "*)" (:fixnum x) ")[" (:fixnum o) "]=" (,x y) ")")
+					 (lit ,x "((" ,(strcat x) "*)" (:fixnum x) ")[" (:fixnum o) "]"))))))
 		 +ks+)))
   (defmacro mfff nil
    `(progn

@@ -2296,6 +2296,7 @@ LFD(Lreadtablep)()
 	check_type_character(&dspchr);
 	check_type_character(&subchr);
 	check_type_readtable(&rdtbl);
+        SGC_TOUCH(rdtbl);
 	if (rdtbl->rt.rt_self[char_code(dspchr)].rte_macro != dispatch_reader
 	    || rdtbl->rt.rt_self[char_code(dspchr)].rte_dtab == NULL)
 		FEerror("~S is not a dispatch character.", 1, dspchr);

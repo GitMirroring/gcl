@@ -117,6 +117,7 @@
 		     ,(case x
 			(character `(code-char (*uchar (c-array-self a) i t (char-code v))))
 			(bit `(set-0-byte-array-self v a i))
+			((t) `(,(caddr y) (c-array-self a) i a v))
 			(otherwise `(,(caddr y) (c-array-self a) i t v)))))
 		 +array-type-info+)))
 (setf (get 'row-major-aset 'compiler::consider-inline) t)
@@ -497,7 +498,7 @@
 	 (off (ash pos (min 0 (- (1- (third l))))))
 	 (cp (eq (car l) 'character)))
     (flet ((fm (x y)
-	     (let* ((res `(,(fifth l) (c-strstd-sself ,x) ,off ,(when y t) ,y))
+	     (let* ((res `(,(fifth l) (c-strstd-sself ,x) ,off ,(when y (if (eq '*object (fifth l)) x t)) ,y))
 		    (res (if cp `(code-char ,res) res)))
 	       (if (unless (eq tp t) tp) `(the ,tp ,res) res))))
       (if vp
