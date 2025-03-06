@@ -1,3 +1,11 @@
+gcl27 (2.7.0-35) unstable; urgency=medium
+
+  * Version_2_7_0pre38
+  * Bug fix: "ftbfs with GCC-15", thanks to Matthias Klose (Closes:
+    #1096686).
+
+ -- Camm Maguire <camm@debian.org>  Thu, 06 Mar 2025 10:54:11 -0500
+
 gcl27 (2.7.0-34) unstable; urgency=medium
 
   * Version_2_7_0pre37
