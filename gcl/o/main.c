@@ -155,7 +155,8 @@ clear_c_stack(VOL unsigned n) {
 
 }
 
-fixnum log_maxpage_bound=sizeof(fixnum)*8-1;
+static fixnum log_maxpage_bound=sizeof(fixnum)*8-1;
+static fixnum mem_bound=sizeof(fixnum)*8-1;
 
 int
 mbrk(void *v) {
@@ -260,6 +261,18 @@ get_phys_pages1(char freep) {
 
 }
 
+static int
+acceptable_log_maxpage_bound(ufixnum l) {
+
+  void *end,*dend;
+
+  if (l>sizeof(fixnum)*8-1) return 0;
+  end=data_start+(1L<<l)-PAGESIZE;
+  dend=heap_end+PAGESIZE+CEI(rb_pointer-rb_begin(),PAGESIZE);
+  return end>=dend;
+
+}
+
 static void
 get_gc_environ(void) {
 
@@ -271,10 +284,14 @@ get_gc_environ(void) {
     massert(mem_multiple>=0.0);
   }
 
-  log_maxpage_bound=sizeof(fixnum)*8-1;
+  mem_bound=sizeof(fixnum)*8-1;
   if ((e=getenv("GCL_MEM_BOUND"))) {
-    massert(sscanf(e,"%lud",&log_maxpage_bound)==1);
-    mem_multiple=1.0;
+    ufixnum f;
+    massert(sscanf(e,"%lud",&f)==1);
+    if (acceptable_log_maxpage_bound(f)) {
+      mem_bound=f;
+      mem_multiple=1.0;
+    }
   }
 
   gc_alloc_min=0.05;
@@ -354,7 +371,7 @@ update_real_maxpage(void) {
 #else
   massert(cur=sbrk(0));
   beg=data_start ? data_start : cur;
-  for (i=0,j=(1L<<log_maxpage_bound);j>PAGESIZE;j>>=1)
+  for (i=0,j=(1L<<ufmin(mem_bound,log_maxpage_bound));j>PAGESIZE;j>>=1)
     if ((end=beg+i+j-PAGESIZE)>cur)
       if (!mbrk(end)) {
 	real_maxpage=page(end);
@@ -395,15 +412,10 @@ minimize_image(void) {
 
 DEFUN("SET-LOG-MAXPAGE-BOUND",object,fSset_log_maxpage_bound,SI,1,1,NONE,II,OO,OO,OO,(fixnum l),"") {
 
-  void *end,*dend;
-  fixnum def=sizeof(fixnum)*8-1;
-
-  l=l<def ? l : def;
-  end=data_start+(1L<<l)-PAGESIZE;
   GBC(t_relocatable);
-  dend=heap_end+PAGESIZE+CEI(rb_pointer-rb_begin(),PAGESIZE);
-  if (end >= dend) {
-    putenv("GCL_MEM_MULTIPLE=1.0");/*invoking this function overrides mem_multiple*/
+  if (acceptable_log_maxpage_bound(l)) {
+    unsetenv("GCL_MEM_MULTIPLE");/*invoking this function overrides mem_multiple*/
+    unsetenv("GCL_MEM_BOUND");/*invoking this function overrides mem_multiple*/
     minimize_image();
     log_maxpage_bound=l;
     update_real_maxpage();
