@@ -1,3 +1,13 @@
+gcl (2.6.14-17) unstable; urgency=medium
+
+  * Version_2_6_15pre16
+  * Bug fix: "ftbfs with GCC-15", thanks to Matthias Klose (Closes:
+    #1096684).
+  * Bug fix: "outdated debconf version constraint; inhibits support for
+    debconf-2.0/cdebconf", thanks to Gioele Barabucci (Closes: #1096165).
+
+ -- Camm Maguire <camm@debian.org>  Fri, 07 Mar 2025 09:43:18 -0500
+
 gcl (2.6.14-16) unstable; urgency=medium
 
   * Version_2_6_15pre15
