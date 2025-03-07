@@ -65,14 +65,6 @@ store_val(ul *w,ul m,ul v) {
 
 }
 
-static int
-add_val(ul *w,ul m,ul v) {
-
-  return store_val(w,m,v+(*w&m));
-
-}
-
-
 #ifndef _LP64
 /*redirect trampolines gcc-4.0 gives no reloc for stub sections on x86 only*/
 static int

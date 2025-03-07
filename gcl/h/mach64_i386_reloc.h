@@ -6,7 +6,7 @@
   case X86_64_RELOC_UNSIGNED:		// for absolute addresses
 
      if (ri->r_extern || !ri->r_pcrel) 
-      add_val(q,~0L,ri->r_pcrel ? a-rel : a);
+      store_val(q,~0L,ri->r_pcrel ? a-rel : a);
 
     break; 
   case X86_64_RELOC_GOT_LOAD:		// a MOVQ load of a GOT entry
