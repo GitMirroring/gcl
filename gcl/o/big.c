@@ -47,6 +47,7 @@ read.d: normalize_big_to_object
 #include <stdlib.h>
 #include <string.h>
 #include "include.h"
+#include "num_include.h"
 
 #ifdef STATIC_FUNCTION_POINTERS
 static void* alloc_relblock_static (size_t n) {return alloc_relblock (n);}
