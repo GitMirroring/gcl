@@ -7,10 +7,6 @@
 
 static unsigned long gprof_on;
 
-#ifdef DARWIN
-void _mcleanup() {}
-#endif
-
 DEFUN_NEW("MCLEANUP",object,fSmcleanup,SI,0,0,NONE,OO,OO,OO,OO,(void),"") {
 
   extern void _mcleanup(void);
@@ -24,6 +20,10 @@ DEFUN_NEW("MCLEANUP",object,fSmcleanup,SI,0,0,NONE,OO,OO,OO,OO,(void),"") {
   return make_simple_string("gmon.out");
 
 }
+
+#ifdef DARWIN
+void _mcleanup() {}
+#endif
 
 static inline int
 my_monstartup(unsigned long start,unsigned long end) {

@@ -516,7 +516,9 @@ which(const char *n,char *o) {
 static int ARGC;
 static char **ARGV;
 
+#ifdef CAN_UNRANDOMIZE_SBRK
 #include "unrandomize_headers.h"
+#endif
 
 int
 main(int argc, char **argv, char **envp) {
@@ -942,7 +944,7 @@ FFN(siLcatch_fatal)(int i) {
 
 LFD(siLreset_stack_limits)(void)
 {
-  long i=0;
+  volatile long i=0;
 
   check_arg(0);
   if(catch_fatal <0) catch_fatal=1;
@@ -965,8 +967,10 @@ LFD(siLreset_stack_limits)(void)
     ihs_limit = ihs_org + stack_multiple *  IHSSIZE;
   else
     error("can't reset ihs_limit");
-  if (cs_base==cs_org)
-    cs_org=(void *)&i;
+  if (cs_base==cs_org) {
+    i=(long)&i;
+    cs_org=(void *)i;
+  }
 #ifdef __ia64__
  {
    extern void * GC_save_regs_in_stack();
