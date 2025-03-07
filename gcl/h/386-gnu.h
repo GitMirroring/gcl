@@ -54,11 +54,15 @@
 #endif
 #define PATH_MAX 4096 /*fixme dynamic*/
 #define MAXPATHLEN 4096 /*fixme dynamic*/
-#define MAX_BRK 0x70000000 /*GNU Hurd fragmentation bug*/
+/* #define MAX_BRK 0x70000000 */ /*GNU Hurd fragmentation bug*/
 
 #define RELOC_H "elf32_i386_reloc.h"
 
 #define NEED_STACK_CHK_GUARD
 
 #undef HAVE_D_TYPE /*FIXME defined, but not implemented in readdir*/
-#define NO_FILE_LOCKING /*FIXME*/
+/* #define NO_FILE_LOCKING */ /*FIXME*/
+
+#define INITIALIZE_BRK							\
+  massert(!brk(gcl_alloc_initialized ? core_end :			\
+	       ({extern ufixnum _end;(void *)ROUNDUP((ufixnum)&_end,PAGESIZE);})))
