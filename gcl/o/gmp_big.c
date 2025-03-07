@@ -461,7 +461,7 @@ integer_quotient_remainder_1(object x, object y, object *qp, object *rp,fixnum d
 
   if (type_of(x)==t_fixnum && type_of(y)==t_fixnum) {
     fixnum fx=fix(x),fy=fix(y);
-    if (fx!=-fx) {/*MOST_NEGATIVE_FIX*/
+    if (fx!=MOST_NEGATIVE_FIX) {
       if (qp) {
 	fixnum z=fixnum_div(fx,fy,d);
 	if (rp) *rp=make_fixnum(fx-fy*z);
