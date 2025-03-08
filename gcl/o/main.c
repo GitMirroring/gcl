@@ -1251,7 +1251,7 @@ init_main(void) {
   
 }
 
-#ifdef HAVE_DIS_ASM_H
+#if defined(HAVE_DIS_ASM_H) && defined(OUTPUT_ARCH)
 
 #include "dis-asm.h"
 
