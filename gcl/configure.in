@@ -1121,8 +1121,8 @@ AC_RUN_IFELSE(
     AC_MSG_RESULT([no: WARNING you must be able to emulate sbrk: as on mingw or macosx]),
     AC_MSG_RESULT([no: WARNING you must be able to emulate sbrk: as on mingw or macosx]))
 
-if test "$use" = "386-macosx" ; then
-    AC_MSG_RESULT([emulating sbrk for mac]);
+if test "$use" = "386-macosx" || test "$use" = "386-gnu" || test "$use" = "gnuwin95" || test "$use" = "mingw" ; then
+    AC_MSG_RESULT([special sbrk handling]);
     HAVE_SBRK=0
 fi
 

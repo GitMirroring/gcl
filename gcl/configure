@@ -6941,9 +6941,9 @@ rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
 fi
 
 
-if test "$use" = "386-macosx" ; then
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: emulating sbrk for mac" >&5
-printf "%s\n" "emulating sbrk for mac" >&6; };
+if test "$use" = "386-macosx" || test "$use" = "386-gnu" || test "$use" = "gnuwin95" || test "$use" = "mingw" ; then
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: special sbrk handling" >&5
+printf "%s\n" "special sbrk handling" >&6; };
     HAVE_SBRK=0
 fi
 
