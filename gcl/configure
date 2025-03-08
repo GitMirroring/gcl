@@ -6571,7 +6571,7 @@ printf "%s\n" "$ac_cv_sizeof_time_t" >&6; }
 printf "%s\n" "#define SIZEOF_TIME_T $ac_cv_sizeof_time_t" >>confdefs.h
 
 
-if test "$use" != "mingw" ; then
+if test "$use" != "mingw" && test "$use" != "386-gnu" ; then
    if test "$ac_cv_sizeof_time_t" != "8" ; then
       as_fn_error $? "Cannot define a 64 bit time_t" "$LINENO" 5
    fi
