@@ -62,7 +62,7 @@
 
 #undef HAVE_D_TYPE /*FIXME defined, but not implemented in readdir*/
 /* #define NO_FILE_LOCKING */ /*FIXME*/
-
+#define ROUNDUP(x_,y_) (((unsigned long)(x_)+(y_ -1)) & ~(y_ -1))/*FIXME double eval*/
 #define INITIALIZE_BRK							\
   massert(!brk(gcl_alloc_initialized ? core_end :			\
 	       ({extern ufixnum _end;(void *)ROUNDUP((ufixnum)&_end,PAGESIZE);})))
