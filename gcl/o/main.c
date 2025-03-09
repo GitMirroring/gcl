@@ -348,8 +348,6 @@ setup_maxpages(double scale) {
 
 }
 
-void *initial_sbrk=NULL;
-
 int
 update_real_maxpage(void) {
 
@@ -522,7 +520,7 @@ gcl_cleanup(int gc) {
 
     raw_image=FALSE;
     cs_org=0;
-    initial_sbrk=core_end;
+    msbrk_end();
 
   }
 
@@ -608,11 +606,6 @@ main(int argc, char **argv, char **envp) {
   GET_FULL_PATH_SELF(kcl_self);
   *argv=kcl_self;
 
-#ifdef CAN_UNRANDOMIZE_SBRK
-#include <stdio.h>
-#include <stdlib.h>
-#include "unrandomize.h"
-#endif
 
   vs_top = vs_base = vs_org;
   ihs_top = ihs_org-1;
