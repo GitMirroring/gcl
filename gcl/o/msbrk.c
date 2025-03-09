@@ -39,7 +39,7 @@ msbrk_init(void) {
 }
   
 void *
-msbrk(fixnum inc) {
+msbrk(intptr_t inc) {
 
   if (!inc || m==mremap(m,sz,sz+inc,0)) {
     sz+=inc;
