@@ -25,13 +25,12 @@ msbrk_init(void) {
     extern fixnum _end;
 
     massert((m=mmap(gcl_alloc_initialized ? core_end : (void *)ROUNDUP((void *)&_end,PAGESIZE),
-		    1,
+		    PAGESIZE,
 		    PROT_READ|PROT_WRITE|PROT_EXEC,
 		    MAP_PRIVATE|MAP_ANON|MAP_FIXED,
 		    -1,
 		    0))!=(void *)-1);
-    sz=1;
-
+    sz=0;
   }
   
   return 0;
@@ -41,7 +40,9 @@ msbrk_init(void) {
 void *
 msbrk(intptr_t inc) {
 
-  if (!inc || m==mremap(m,sz,sz+inc,0)) {
+  size_t p1=ROUNDUP(sz+1,PAGESIZE),p2=ROUNDUP(sz+1+inc,PAGESIZE);
+
+  if (p1==p2 || m==mremap(m,p1,p2,0)) {
     sz+=inc;
     return m+sz-inc;
   } else {
