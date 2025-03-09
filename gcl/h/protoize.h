@@ -1673,3 +1673,6 @@ int is_bigger_fixnum(void *);
 int is_text_addr(void *);
 int seek_to_end_ofile(FILE *);
 void stack_list(void);
+void *msbrk(fixnum);
+int msbrk_init(void);
+int msbrk_end(void);

@@ -182,3 +182,7 @@ do { int c = 0; \
 #define FPE_INIT Cnil
 
 #endif
+
+#undef sbrk
+#define sbrk msbrk
+#define INITIALIZE_BRK msbrk_init();

@@ -1198,7 +1198,7 @@ init_tm(enum type t, char *name, int elsize, int nelts, int sgc,int distinct) {
    homogenized and integrated into the traditional unix sequence for
    simplicity.  set_maxpage is overloaded, and the positioning of its
    call is too fragile.  20050115 CM*/
-static int gcl_alloc_initialized;
+int gcl_alloc_initialized;
 
 object malloc_list=Cnil;
 
@@ -1296,7 +1296,6 @@ gcl_init_alloc(void *cs_start) {
       sgc_quit();
 
 #endif
-
 #ifdef INITIALIZE_BRK
   INITIALIZE_BRK;
 #endif
@@ -1312,7 +1311,7 @@ gcl_init_alloc(void *cs_start) {
   INIT_ALLOC;
 #endif  
 
-  initial_sbrk=data_start=heap_end;
+  data_start=heap_end;
   first_data_page=page(data_start);
   
   /* Unused (at present) tm_distinct flag added.  Note that if cons
@@ -1668,10 +1667,6 @@ bool writable_malloc=0;
 static void *
 malloc_internal(size_t size) {
 
-#ifdef CAN_UNRANDOMIZE_SBRK
-  if (core_end && core_end!=sbrk(0))/*malloc before main in saved_image*/
-    return sbrk(size);/*will never get to gcl_init_alloc, so brk point irrelevant*/
-#endif
   if (!gcl_alloc_initialized) {
     static bool recursive_malloc;
     if (recursive_malloc)
