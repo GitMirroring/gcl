@@ -834,7 +834,7 @@
 (defun coerce-loc (loc type)
   (let ((tmp (car (rassoc (promoted-c-type type) *box-alist*))))
     (if tmp (list 'gen-loc tmp loc)
-      (let ((tl (cdr (assoc (promoted-c-type type) +coersion-alist+))))
+      (let ((tl (cdr (assoc (promoted-c-type type) +coersion-alist+))));FIXME never reached
 	(if tl (list tl loc) loc)))))
 
 ;; (defun coerce-loc (loc type)
