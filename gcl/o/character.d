@@ -537,7 +537,6 @@ gcl_init_character()
 	  x->ch.ch_font = 0;
 	  x->ch.ch_bits = 0;
 	  x->ch.ch_name=y;
-	  y->fw=0;
 	  set_type_of(y,t_simple_string);
 	  y->sst.sst_hasfillp = FALSE;
 	  y->sst.sst_adjustable = FALSE;
