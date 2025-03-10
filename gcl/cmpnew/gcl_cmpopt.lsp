@@ -931,10 +931,10 @@
  (push '((t) boolean #.(flags rfa) "(compiled_functionp(#0))")
    (get 'compiled-function-p 'inline-always))
 
-;;WRITE-CHAR
-(push '((t) t #.(flags set)
- "@0;(writec_stream(char_code(#0),sLAstandard_outputA->s.s_dbind),(#0))")
-  (get 'write-char 'inline-unsafe))
+;; ;;WRITE-CHAR
+;; (push '((t) t #.(flags set)
+;;  "@0;(writec_stream(char_code(#0),sLAstandard_outputA->s.s_dbind),(#0))")
+;;   (get 'write-char 'inline-unsafe))
 
 ;;CMOD
  (push '((t) t #.(flags) "cmod(#0)")
