@@ -105,7 +105,7 @@ rl_completion_words(const char *text, int state) {
       }
     }
     
-    package=package ? package : user_package;
+    package=(package!=OBJNULL && package!=Cnil) ? package : user_package;
     use=package->p.p_uselist;
     internal=temp && temp[1]==':' ? 1 : 0;
     ftext=text;
@@ -113,14 +113,14 @@ rl_completion_words(const char *text, int state) {
     wtext=*wtext==':' ? wtext+1 : wtext;
     len=strlen(wtext);
     tp=package;
-    i=0;
     base=internal ? tp->p.p_internal : tp->p.p_external;
     size=internal ? tp->p.p_internal_size : tp->p.p_external_size;
+    i=0;
     l=base[i];
 
   }
 
-  while (tp && tp != Cnil) {
+  while (tp != OBJNULL && tp != Cnil) {
 
     while (1) {
       while (consp(l)) {
@@ -143,17 +143,17 @@ rl_completion_words(const char *text, int state) {
 	  return c;
 	}
       }
-      if (++i==size)
+      if (++i>=size)
 	break;
       l=base[i];
     }      
 
     tp=use->c.c_car;
     use=use->c.c_cdr;
-    base=internal ? tp->p.p_internal : tp->p.p_external;
-    size=internal ? tp->p.p_internal_size : tp->p.p_external_size;
+    base=tp==Cnil ? NULL : (internal ? tp->p.p_internal : tp->p.p_external);
+    size=tp==Cnil ? 0    : (internal ? tp->p.p_internal_size : tp->p.p_external_size);
     i=0;
-    l=base[i];
+    l=base==NULL ? Cnil : base[i];
 
   }
 
