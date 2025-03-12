@@ -1066,11 +1066,14 @@ AC_RUN_IFELSE(
 AC_SUBST(DOUBLE_BIGENDIAN)
 
 # pagewidth
-AC_MSG_CHECKING(for pagewidth)
 case $use in
     mips*) min_pagewidth=14;;
     *) min_pagewidth=12;;
 esac
+AC_ARG_ENABLE(min_pagewidth,[ --enable-min_pagewidth=xxx sets 1<<xxx byte pages],
+             [min_pagewidth=$enableval],[])
+
+AC_MSG_CHECKING(for pagewidth)
 AC_RUN_IFELSE(
     [AC_LANG_PROGRAM(
 	    [[

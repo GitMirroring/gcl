@@ -792,6 +792,7 @@ with_x
 enable_xdr
 enable_immfix
 enable_fastimmfix
+enable_min_pagewidth
 enable_cstackmax
 enable_pargcl
 with_mpicc
@@ -1462,6 +1463,7 @@ Optional Features:
   --enable-xdr=yes will compile in support for XDR
   --enable-immfix will enable an immediate fixnum table above the C stack
   --enable-fastimmfix=XXXX will reject low immediate fixnums unless 2^XXX can be attained
+ --enable-min_pagewidth=xxx sets 1<<xxx byte pages
   --enable-cstackmax=xxxx will ensure that the cstack begins below xxxx or fail
  --enable-pargcl        enables ParGCL (for parallel computing),
 			 including subset of MPI (see pargcl/doc/)
@@ -7751,12 +7753,19 @@ fi
 
 
 # pagewidth
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for pagewidth" >&5
-printf %s "checking for pagewidth... " >&6; }
 case $use in
     mips*) min_pagewidth=14;;
     *) min_pagewidth=12;;
 esac
+# Check whether --enable-min_pagewidth was given.
+if test ${enable_min_pagewidth+y}
+then :
+  enableval=$enable_min_pagewidth; min_pagewidth=$enableval
+fi
+
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for pagewidth" >&5
+printf %s "checking for pagewidth... " >&6; }
 if test "$cross_compiling" = yes
 then :
   { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
@@ -7984,14 +7993,6 @@ fi
 printf "%s\n" "$sizeof_contblock" >&6; }
 
 printf "%s\n" "#define SIZEOF_CONTBLOCK $sizeof_contblock" >>confdefs.h
-
-
-
-
-
-
-
-
 
 
 
