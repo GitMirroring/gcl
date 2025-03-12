@@ -4,7 +4,7 @@
 #include "include.h"
 
 static void *m;
-static ufixnum sz;
+static ufixnum sz,mps;
 
 int
 msbrk_end(void) {
@@ -23,14 +23,29 @@ msbrk_init(void) {
 
     extern int gcl_alloc_initialized;
     extern fixnum _end;
+    void *v,*v1;
 
-    massert((m=mmap(gcl_alloc_initialized ? core_end : (void *)ROUNDUP((void *)&_end,PAGESIZE),
+    v=gcl_alloc_initialized ? core_end : (void *)ROUNDUP((void *)&_end,getpagesize());
+    v1=(void *)ROUNDUP((ufixnum)v,PAGESIZE);
+    massert(!gcl_alloc_initialized || v==v1);
+
+    if (v!=v1)
+      massert((m=mmap(v,
+		      v1-v,
+		      PROT_READ|PROT_WRITE|PROT_EXEC,
+		      MAP_PRIVATE|MAP_ANON|MAP_FIXED,
+		      -1,
+		      0))!=(void *)-1);
+
+    massert((m=mmap(v1,
 		    PAGESIZE,
 		    PROT_READ|PROT_WRITE|PROT_EXEC,
 		    MAP_PRIVATE|MAP_ANON|MAP_FIXED,
 		    -1,
 		    0))!=(void *)-1);
     sz=0;
+    mps=ROUNDUP(sz+1,PAGESIZE);
+
   }
   
   return 0;
@@ -40,9 +55,13 @@ msbrk_init(void) {
 void *
 msbrk(intptr_t inc) {
 
-  size_t p1=ROUNDUP(sz+1,PAGESIZE),p2=ROUNDUP(sz+1+inc,PAGESIZE);
+  size_t p2=ROUNDUP(sz+1+inc,PAGESIZE);
 
-  if (p1==p2 || m==mremap(m,p1,p2,0)) {
+  if (mps>=p2 || m==mremap(m,mps,p2,0)) {
+    if (mps<p2) {
+      massert(!madvise(m,p2,MADV_HUGEPAGE));
+      mps=p2;
+    }
     sz+=inc;
     return m+sz-inc;
   } else {
@@ -51,4 +70,3 @@ msbrk(intptr_t inc) {
   }
 
 }
-  
