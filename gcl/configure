@@ -7752,6 +7752,15 @@ fi
 
 
 
+ac_fn_c_check_func "$LINENO" "madvise" "ac_cv_func_madvise"
+if test "x$ac_cv_func_madvise" = xyes
+then :
+
+printf "%s\n" "#define HAVE_MADVISE 1" >>confdefs.h
+
+fi
+
+
 # pagewidth
 case $use in
     mips*) min_pagewidth=14;;
@@ -7768,9 +7777,6 @@ if test "$j" != "" ; then
    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $j" >&5
 printf "%s\n" "$j" >&6; }
    if test $min_pagewidth -lt $j ; then min_pagewidth=$j ; fi
-
-printf "%s\n" "#define HUGEPAGEWIDTH \$j" >>confdefs.h
-
 else
    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: not found" >&5
 printf "%s\n" "not found" >&6; }

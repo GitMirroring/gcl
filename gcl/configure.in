@@ -1065,6 +1065,8 @@ AC_RUN_IFELSE(
      AC_DEFINE(DOUBLE_BIGENDIAN,1,[big endian word order])])
 AC_SUBST(DOUBLE_BIGENDIAN)
 
+AC_CHECK_FUNC(madvise,AC_DEFINE(HAVE_MADVISE,1,[madvise call]))
+
 # pagewidth
 case $use in
     mips*) min_pagewidth=14;;
@@ -1079,7 +1081,6 @@ fi
 if test "$j" != "" ; then
    AC_MSG_RESULT([$j])
    if test $min_pagewidth -lt $j ; then min_pagewidth=$j ; fi
-   AC_DEFINE(HUGEPAGEWIDTH,$j,[hugepagewidth])
 else
    AC_MSG_RESULT([not found])
 fi

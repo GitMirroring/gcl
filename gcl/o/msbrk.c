@@ -59,7 +59,9 @@ msbrk(intptr_t inc) {
 
   if (mps>=p2 || m==mremap(m,mps,p2,0)) {
     if (mps<p2) {
+#ifdef HAVE_MADVISE
       massert(!madvise(m,p2,MADV_HUGEPAGE));
+#endif
       mps=p2;
     }
     sz+=inc;
