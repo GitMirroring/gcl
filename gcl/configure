@@ -7757,6 +7757,25 @@ case $use in
     mips*) min_pagewidth=14;;
     *) min_pagewidth=12;;
 esac
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for hugepagewidth" >&5
+printf %s "checking for hugepagewidth... " >&6; }
+j=""
+if test -e /proc/meminfo ; then
+   j=`awk '/^Hugepagesize:/ {if ($3!="kB") next;j=1;for (i=0;i<20 && j!=$2;i++) j=j*2;if (j==$2) printf("%d\n",i+10)}'  /proc/meminfo`
+fi
+if test "$j" != "" ; then
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $j" >&5
+printf "%s\n" "$j" >&6; }
+   if test $min_pagewidth < $j ; then min_pagewidth=$j ; fi
+
+printf "%s\n" "#define HUGEPAGEWIDTH \$j" >>confdefs.h
+
+else
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: not found" >&5
+printf "%s\n" "not found" >&6; }
+fi
+
 # Check whether --enable-min_pagewidth was given.
 if test ${enable_min_pagewidth+y}
 then :
