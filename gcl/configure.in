@@ -1065,7 +1065,11 @@ AC_RUN_IFELSE(
      AC_DEFINE(DOUBLE_BIGENDIAN,1,[big endian word order])])
 AC_SUBST(DOUBLE_BIGENDIAN)
 
-AC_CHECK_FUNC(madvise,AC_DEFINE(HAVE_MADVISE,1,[madvise call]))
+AC_CHECK_HEADER([sys/mman.h],
+	[AC_CHECK_FUNC([madvise],
+		[AC_CHECK_DECL([MADV_HUGEPAGE],
+			[AC_DEFINE(HAVE_MADVISE_HUGEPAGE,[1],[can madvise hugepages])]
+			,[],[#include <sys/mman.h>])])])
 
 # pagewidth
 case $use in

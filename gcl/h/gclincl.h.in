@@ -144,8 +144,8 @@
 /* long long is available */
 #undef HAVE_LONG_LONG
 
-/* madvise call */
-#undef HAVE_MADVISE
+/* can madvise hugepages */
+#undef HAVE_MADVISE_HUGEPAGE
 
 /* Define to 1 if you have the <malloc/malloc.h> header file. */
 #undef HAVE_MALLOC_MALLOC_H
