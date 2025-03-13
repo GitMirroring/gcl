@@ -7767,7 +7767,7 @@ fi
 if test "$j" != "" ; then
    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $j" >&5
 printf "%s\n" "$j" >&6; }
-   if test $min_pagewidth < $j ; then min_pagewidth=$j ; fi
+   if test $min_pagewidth -lt $j ; then min_pagewidth=$j ; fi
 
 printf "%s\n" "#define HUGEPAGEWIDTH \$j" >>confdefs.h
 

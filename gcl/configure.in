@@ -1078,7 +1078,7 @@ if test -e /proc/meminfo ; then
 fi
 if test "$j" != "" ; then
    AC_MSG_RESULT([$j])
-   if test $min_pagewidth < $j ; then min_pagewidth=$j ; fi
+   if test $min_pagewidth -lt $j ; then min_pagewidth=$j ; fi
    AC_DEFINE(HUGEPAGEWIDTH,$j,[hugepagewidth])
 else
    AC_MSG_RESULT([not found])
