@@ -1215,6 +1215,9 @@ gcl_init_alloc(void *cs_start) {
 
   fixnum cssize=(1L<<23);
 
+  #include "cstack.h"
+  cs_start=alloca(1);
+
 #ifdef GCL_GPROF
   if (raw_image) {
     sigset_t prof;
