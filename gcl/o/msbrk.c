@@ -48,7 +48,7 @@ msbrk_init(void) {
 		    -1,
 		    0))!=(void *)-1);
     sz=0;
-    mps=ROUNDUP(sz+1,PAGESIZE);
+    mps=PAGESIZE;
 
   }
   
@@ -59,7 +59,7 @@ msbrk_init(void) {
 void *
 msbrk(intptr_t inc) {
 
-  size_t p2=ROUNDUP(sz+1+inc,PAGESIZE);
+  size_t p2=ROUNDUP(sz+inc,PAGESIZE);
 
   if (mps>=p2 || m==mremap(m,mps,p2,0)) {
     if (mps<p2) {
