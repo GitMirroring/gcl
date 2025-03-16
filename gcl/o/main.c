@@ -659,6 +659,8 @@ main(int argc, char **argv, char **envp) {
   bds_top = bds_org-1;
   frs_top = frs_org-1;
 
+#include "cstack.h"
+
   gcl_init_alloc(alloca(1));
 
   setbuf(stdin, stdin_buf); 
