@@ -29,6 +29,10 @@ msbrk_init(void) {
     v1=(void *)ROUNDUP((ufixnum)v,PAGESIZE);
     massert(!gcl_alloc_initialized || v==v1);
 
+#ifdef UNMAP_OLD_HEAP /*386-gnu*/
+    UNMAP_OLD_HEAP
+#endif
+
     if (v!=v1)
       massert((m=mmap(v,
 		      v1-v,
