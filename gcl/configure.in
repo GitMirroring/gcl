@@ -1412,13 +1412,6 @@ AC_ARG_ENABLE([immfix],[  --enable-immfix will enable an immediate fixnum table 
 
 AC_ARG_ENABLE([fastimmfix],[  --enable-fastimmfix=XXXX will reject low immediate fixnums unless 2^XXX can be attained],,[enable_fastimmfix=64])
 
-if test "$use" = "386-gnu" ; then
-   AC_MSG_CHECKING([UNMAP_OLD_HEAP])
-   x=`cat /proc/self/maps |tail -n 1 | ${AWK} '{gsub("-"," ");x=strtonum("0x" $1);y=strtonum("0x" $2);printf("massert(!munmap((void *)0x%x,0x%x));",x,y-x);}'` #FIXME gawk
-   AC_MSG_RESULT([$x])
-   AC_DEFINE_UNQUOTED(UNMAP_OLD_HEAP,$x,[munmap old 386-gnu heap])
-fi
-
 AC_MSG_CHECKING([finding default linker script])
 touch unixport/gcl.script
 echo "int main() {return 0;}" >foo.c
@@ -1609,6 +1602,33 @@ if test "$enable_immfix" != "no" ; then
             AC_DEFINE_UNQUOTED(IM_FIX_LIM,${mem_range}UL,[size of immediate fixnum address space])
 	fi
     fi
+fi
+
+if test "$use" = "386-gnu" ; then
+   AC_MSG_CHECKING([UNMAP_OLD_HEAP])
+   AC_RUN_IFELSE(
+	[AC_LANG_PROGRAM(
+		[[
+		    #include <stdio.h>
+		    #include <unistd.h>
+		]],
+		[[
+		    FILE *fp = fopen("conftest1","w"),*f=fopen("/proc/self/maps","r");
+		    char b[4096];
+		    unsigned long a;
+		    extern unsigned long _end;
+
+		    for (a=0;a<(unsigned long)(void *)&_end && fgets(b,sizeof(b),f);)
+		    	sscanf(b,"%x-",&a);
+		    if (a>=(unsigned long)(void *)&_end)
+		        fprintf(fp,"massert(!munmap((void *)0x%lx,0x%lx));",a,$mem_top-a);
+		    fclose(fp);
+		    fclose(f);
+		    return 0;
+		]])],
+	[x=`cat conftest1`],[x="0x0"])
+   AC_MSG_RESULT([$x])
+   AC_DEFINE_UNQUOTED(UNMAP_OLD_HEAP,$x,[munmap old 386-gnu heap])
 fi
 
 AC_MSG_CHECKING([sizeof long long int])

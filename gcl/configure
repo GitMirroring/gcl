@@ -8608,17 +8608,6 @@ else $as_nop
 fi
 
 
-if test "$use" = "386-gnu" ; then
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking UNMAP_OLD_HEAP" >&5
-printf %s "checking UNMAP_OLD_HEAP... " >&6; }
-   x=`cat /proc/self/maps |tail -n 1 | ${AWK} '{gsub("-"," ");x=strtonum("0x" $1);y=strtonum("0x" $2);printf("massert(!munmap((void *)0x%x,0x%x));",x,y-x);}'` #FIXME gawk
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $x" >&5
-printf "%s\n" "$x" >&6; }
-
-printf "%s\n" "#define UNMAP_OLD_HEAP $x" >>confdefs.h
-
-fi
-
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking finding default linker script" >&5
 printf %s "checking finding default linker script... " >&6; }
 touch unixport/gcl.script
@@ -8900,6 +8889,60 @@ printf "%s\n" "#define IM_FIX_LIM ${mem_range}UL" >>confdefs.h
 
 	fi
     fi
+fi
+
+if test "$use" = "386-gnu" ; then
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking UNMAP_OLD_HEAP" >&5
+printf %s "checking UNMAP_OLD_HEAP... " >&6; }
+   if test "$cross_compiling" = yes
+then :
+  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "cannot run test program while cross compiling
+See \`config.log' for more details" "$LINENO" 5; }
+else $as_nop
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+		    #include <stdio.h>
+		    #include <unistd.h>
+
+int
+main (void)
+{
+
+		    FILE *fp = fopen("conftest1","w"),*f=fopen("/proc/self/maps","r");
+		    char b[4096];
+		    unsigned long a;
+		    extern unsigned long _end;
+
+		    for (a=0;a<(unsigned long)(void *)&_end && fgets(b,sizeof(b),f);)
+		    	sscanf(b,"%x-",&a);
+		    if (a>=(unsigned long)(void *)&_end)
+		        fprintf(fp,"massert(!munmap((void *)0x%lx,0x%lx));",a,$mem_top-a);
+		    fclose(fp);
+		    fclose(f);
+		    return 0;
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_run "$LINENO"
+then :
+  x=`cat conftest1`
+else $as_nop
+  x="0x0"
+fi
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $x" >&5
+printf "%s\n" "$x" >&6; }
+
+printf "%s\n" "#define UNMAP_OLD_HEAP $x" >>confdefs.h
+
 fi
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking sizeof long long int" >&5
