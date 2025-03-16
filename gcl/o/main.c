@@ -248,7 +248,7 @@ get_phys_pages_no_malloc(char freep) {
 
   struct sysinfo s;
 
-  return sysinfo(&s) ? 0 : ((freep ? s.freeram : s.totalram)>>PAGEWIDTH)*s.mem_unit;
+  return sysinfo(&s) ? 0 : ((freep ? s.freeram : s.totalram)*s.mem_unit)>>PAGEWIDTH;
 
 }
 
@@ -257,7 +257,7 @@ get_swap_pages_no_malloc(char freep) {
 
   struct sysinfo s;
 
-  return sysinfo(&s) ? 0 : ((freep ? s.freeswap : s.totalswap)>>PAGEWIDTH)*s.mem_unit;
+  return sysinfo(&s) ? 0 : ((freep ? s.freeswap : s.totalswap)*s.mem_unit)>>PAGEWIDTH;
 
 }
 
