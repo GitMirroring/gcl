@@ -7803,7 +7803,24 @@ fi
 
 
 
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $CC options needed to detect all undeclared functions" >&5
+
+# pagewidth
+case $use in
+    mips*) min_pagewidth=14;;
+    *) min_pagewidth=12;;
+esac
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for hugepagewidth" >&5
+printf %s "checking for hugepagewidth... " >&6; }
+j=""
+if test -e /proc/meminfo ; then
+   j=`awk '/^Hugepagesize:/ {if ($3!="kB") next;j=1;for (i=0;i<20 && j!=$2;i++) j=j*2;if (j==$2) printf("%d\n",i+10)}'  /proc/meminfo`
+fi
+if test "$j" != "" ; then
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $j" >&5
+printf "%s\n" "$j" >&6; }
+
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $CC options needed to detect all undeclared functions" >&5
 printf %s "checking for $CC options needed to detect all undeclared functions... " >&6; }
 if test ${ac_cv_c_undeclared_builtin_options+y}
 then :
@@ -7893,9 +7910,51 @@ then :
 " "$ac_c_undeclared_builtin_options" "CFLAGS"
 if test "x$ac_cv_have_decl_MADV_HUGEPAGE" = xyes
 then :
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking madvise works" >&5
+printf %s "checking madvise works... " >&6; }
+	     if test "$cross_compiling" = yes
+then :
+  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "cannot run test program while cross compiling
+See \`config.log' for more details" "$LINENO" 5; }
+else $as_nop
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+			#include <sys/mman.h>
+			#include <stdlib.h>
+
+int
+main (void)
+{
+
+	    		unsigned long k=(1UL<<$j);
+			void *p=malloc(2*k);
+			int i;
+			p=(void *)((((unsigned long)p)+k-1)&~(k-1));
+			i=madvise(p,k,MADV_HUGEPAGE);
+			return i;
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_run "$LINENO"
+then :
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
 
 printf "%s\n" "#define HAVE_MADVISE_HUGEPAGE 1" >>confdefs.h
 
+else $as_nop
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+fi
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+
 
 fi
 fi
@@ -7903,22 +7962,8 @@ fi
 fi
 
 
-# pagewidth
-case $use in
-    mips*) min_pagewidth=14;;
-    *) min_pagewidth=12;;
-esac
 
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for hugepagewidth" >&5
-printf %s "checking for hugepagewidth... " >&6; }
-j=""
-if test -e /proc/meminfo ; then
-   j=`awk '/^Hugepagesize:/ {if ($3!="kB") next;j=1;for (i=0;i<20 && j!=$2;i++) j=j*2;if (j==$2) printf("%d\n",i+10)}'  /proc/meminfo`
-fi
-if test "$j" != "" ; then
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $j" >&5
-printf "%s\n" "$j" >&6; }
-   if test $min_pagewidth -lt $j ; then min_pagewidth=$j ; fi
+if test $min_pagewidth -lt $j ; then min_pagewidth=$j ; fi
 else
    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: not found" >&5
 printf "%s\n" "not found" >&6; }

@@ -1065,11 +1065,6 @@ AC_RUN_IFELSE(
      AC_DEFINE(DOUBLE_BIGENDIAN,1,[big endian word order])])
 AC_SUBST(DOUBLE_BIGENDIAN)
 
-AC_CHECK_HEADER([sys/mman.h],
-	[AC_CHECK_FUNC([madvise],
-		[AC_CHECK_DECL([MADV_HUGEPAGE],
-			[AC_DEFINE(HAVE_MADVISE_HUGEPAGE,[1],[can madvise hugepages])]
-			,[],[#include <sys/mman.h>])])])
 
 # pagewidth
 case $use in
@@ -1084,7 +1079,30 @@ if test -e /proc/meminfo ; then
 fi
 if test "$j" != "" ; then
    AC_MSG_RESULT([$j])
-   if test $min_pagewidth -lt $j ; then min_pagewidth=$j ; fi
+
+   AC_CHECK_HEADER([sys/mman.h],
+      [AC_CHECK_FUNC([madvise],
+         [AC_CHECK_DECL([MADV_HUGEPAGE],
+            [AC_MSG_CHECKING([madvise works])
+	     AC_RUN_IFELSE(
+	       [AC_LANG_PROGRAM(
+	   	    [[
+			#include <sys/mman.h>
+			#include <stdlib.h>
+		    ]],
+	    	    [[
+	    		unsigned long k=(1UL<<$j);
+			void *p=malloc(2*k);
+			int i;
+			p=(void *)((((unsigned long)p)+k-1)&~(k-1));
+			i=madvise(p,k,MADV_HUGEPAGE);
+			return i;
+         	    ]])],
+		[AC_MSG_RESULT([yes])
+		 AC_DEFINE(HAVE_MADVISE_HUGEPAGE,[1],[can madvise hugepages])
+		 if test $min_pagewidth -lt $j ; then min_pagewidth=$j ; fi],
+		[AC_MSG_RESULT([no])])]
+	     ,[],[#include <sys/mman.h>])])])
 else
    AC_MSG_RESULT([not found])
 fi
