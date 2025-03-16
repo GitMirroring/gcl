@@ -690,6 +690,7 @@ SYSTEM
 FLISP
 PARGCLDIR
 HAVE_LONG_LONG
+LDD
 PAGEWIDTH
 DOUBLE_BIGENDIAN
 WORDS_BIGENDIAN
@@ -793,7 +794,6 @@ enable_xdr
 enable_immfix
 enable_fastimmfix
 enable_min_pagewidth
-enable_cstackmax
 enable_pargcl
 with_mpicc
 enable_ansi
@@ -1464,7 +1464,6 @@ Optional Features:
   --enable-immfix will enable an immediate fixnum table above the C stack
   --enable-fastimmfix=XXXX will reject low immediate fixnums unless 2^XXX can be attained
  --enable-min_pagewidth=xxx sets 1<<xxx byte pages
-  --enable-cstackmax=xxxx will ensure that the cstack begins below xxxx or fail
  --enable-pargcl        enables ParGCL (for parallel computing),
 			 including subset of MPI (see pargcl/doc/)
   --enable-ansi builds a large gcl aiming for ansi compliance
@@ -8163,6 +8162,66 @@ printf "%s\n" "$sizeof_contblock" >&6; }
 printf "%s\n" "#define SIZEOF_CONTBLOCK $sizeof_contblock" >>confdefs.h
 
 
+for ac_prog in ldd
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+printf %s "checking for $ac_word... " >&6; }
+if test ${ac_cv_prog_LDD+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  if test -n "$LDD"; then
+  ac_cv_prog_LDD="$LDD" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
+    ac_cv_prog_LDD="$ac_prog"
+    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+LDD=$ac_cv_prog_LDD
+if test -n "$LDD"; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $LDD" >&5
+printf "%s\n" "$LDD" >&6; }
+else
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+fi
+
+
+  test -n "$LDD" && break
+done
+
+if test "$LDD" != "" ; then
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking SHARED_LIB_BASE" >&5
+printf %s "checking SHARED_LIB_BASE... " >&6; }
+   echo 'int main() {return 0;}' >foo.c
+   ${CC} ${CFLAGS} foo.c -o foo
+   SHARED_LIB_BASE=`${LDD} foo | tr -d '()' | ${AWK} '{a=$NF;sub("0x0*","",a);n=2;b=substr(a,1,n);j="";for (i=1;i<=length(a)-n;i++) j=j "0";print "0x" b j}' | sort | head -n 1`
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $SHARED_LIB_BASE" >&5
+printf "%s\n" "$SHARED_LIB_BASE" >&6; };
+
+printf "%s\n" "#define SHARED_LIB_BASE $SHARED_LIB_BASE" >>confdefs.h
+
+   rm -f foo.c foo
+fi
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking CSTACK_DIRECTION" >&5
 printf %s "checking CSTACK_DIRECTION... " >&6; }
@@ -8181,9 +8240,6 @@ else $as_nop
 		#include <stdlib.h>
 		int main(int argc,char **argv,char **envp) {
 		    FILE *fp = fopen("conftest1","w");
-		    #ifdef CAN_UNRANDOMIZE_SBRK
-		    #include "h/unrandomize.h"
-		    #endif
 		    fprintf(fp,"%d",(alloca(sizeof(void *))>alloca(sizeof(void *))) ? -1 : 1);
 		    fclose(fp);
 		    return 0;
@@ -8205,6 +8261,7 @@ printf "%s\n" "#define CSTACK_DIRECTION $cstack_direction" >>confdefs.h
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $cstack_direction" >&5
 printf "%s\n" "$cstack_direction" >&6; }
 
+
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking finding CSTACK_ALIGNMENT" >&5
 printf %s "checking finding CSTACK_ALIGNMENT... " >&6; }
 if test "$cross_compiling" = yes
@@ -8224,9 +8281,6 @@ else $as_nop
 		    void *b,*c;
 		    FILE *fp = fopen("conftest1","w");
 		    long n;
-		    #ifdef CAN_UNRANDOMIZE_SBRK
-		    #include "h/unrandomize.h"
-		    #endif
 		    b=alloca(sizeof(b));
 		    c=alloca(sizeof(c));
 		    n=b>c ? b-c : c-b;
@@ -8252,23 +8306,11 @@ printf "%s\n" "#define CSTACK_ALIGNMENT $cstack_alignment" >>confdefs.h
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $cstack_alignment" >&5
 printf "%s\n" "$cstack_alignment" >&6; }
 
-cstack_max=-1;
-# Check whether --enable-cstackmax was given.
-if test ${enable_cstackmax+y}
-then :
-  enableval=$enable_cstackmax; if test "$enableval" != "" ; then
-	         cstack_max=$enableval;
+if test $cstack_direction -eq 1 ; then
 
-printf "%s\n" "#define CSTACKMAX $enableval" >>confdefs.h
-
-	       fi
-fi
-
-
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking CSTACK_ADDRESS" >&5
-printf %s "checking CSTACK_ADDRESS... " >&6; }
-if test "$cross_compiling" = yes
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking CSTACK_TOP" >&5
+printf %s "checking CSTACK_TOP... " >&6; }
+   if test "$cross_compiling" = yes
 then :
   { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
@@ -8278,44 +8320,183 @@ else $as_nop
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-		#include <stdio.h>
-		#include <stdlib.h>
-		int
-		main(int argc,char **argv,char **envp) {
-		    FILE *fp = fopen("conftest1","w");
-		    unsigned long i,j;
-
-		    #ifdef CAN_UNRANDOMIZE_SBRK
-		    #include "h/unrandomize.h"
-		    #endif
-		    j=1;
-		    j<<=$PAGEWIDTH;
-		    j<<=16;
-		    i=(unsigned long)alloca(sizeof(void *));
-		    if ($cstack_direction==1) i-=j;
-		    j--;
-		    i+=j;
-		    i&=~j;
-		    fprintf(fp,"0x%lx",i-1);
-		    fclose(fp);
-		    return 0;
-		}
+   		#include <stdio.h>
+   		#include <stdlib.h>
+   		#include <unistd.h>
+   		int
+   		main(int argc,char **argv,char **envp) {
+   		    FILE *fp = fopen("conftest1","w"),*f=fopen("/proc/self/maps","r");
+   		    unsigned long i,j;
+		    char b[4096];
+   		    i=(unsigned long)alloca(sizeof(void *));
+		    for (j=0;j<i && fgets(b,sizeof(b),f);)
+		    	sscanf(b,"%x-",&j);
+		    j-=1;
+		    if (j<i) j=-1;
+		    fclose(f);
+   		    fprintf(fp,"0x%lx",j);
+   		    fclose(fp);
+   		    return 0;
+   		}
 _ACEOF
 if ac_fn_c_try_run "$LINENO"
 then :
-  cstack_address=`cat conftest1`
+  cstack_top=`cat conftest1`
 else $as_nop
-  cstack_address=0
+  cstack_top=0
+fi
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $cstack_top" >&5
+printf "%s\n" "$cstack_top" >&6; }
+
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking relocated CSTACK_TOP" >&5
+printf %s "checking relocated CSTACK_TOP... " >&6; }
+   if test "$cross_compiling" = yes
+then :
+  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "cannot run test program while cross compiling
+See \`config.log' for more details" "$LINENO" 5; }
+else $as_nop
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+   		#include <stdio.h>
+   		#include <stdlib.h>
+   		#include <sys/mman.h>
+   		#include <unistd.h>
+   		#include <errno.h>
+   		int
+   		main(int argc,char **argv,char **envp) {
+   		    FILE *fp = fopen("conftest1","w"),*f=fopen("/proc/self/maps","r");
+   		    unsigned long i,j;
+		    char b[4096];
+		    #include "h/cstack.h"
+   		    i=(unsigned long)alloca(sizeof(void *));
+		    for (j=0;j<i && fgets(b,sizeof(b),f);)
+		    	sscanf(b,"%x-",&j);
+		    j-=1;
+		    if (j<i) j=-1;
+		    fclose(f);
+   		    fprintf(fp,"0x%lx",j);
+   		    fclose(fp);
+   		    return 0;
+   		}
+_ACEOF
+if ac_fn_c_try_run "$LINENO"
+then :
+  cstack_top=`cat conftest1`
+else $as_nop
+  cstack_top=0
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
 fi
 
 
-printf "%s\n" "#define CSTACK_ADDRESS $cstack_address" >>confdefs.h
+printf "%s\n" "#define CSTACK_TOP $cstack_top" >>confdefs.h
 
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $cstack_address" >&5
-printf "%s\n" "$cstack_address" >&6; }
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $cstack_top" >&5
+printf "%s\n" "$cstack_top" >&6; }
+
+else
+
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking CSTACK_TOP" >&5
+printf %s "checking CSTACK_TOP... " >&6; }
+   if test "$cross_compiling" = yes
+then :
+  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "cannot run test program while cross compiling
+See \`config.log' for more details" "$LINENO" 5; }
+else $as_nop
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+   		#include <stdio.h>
+   		#include <stdlib.h>
+   		#include <unistd.h>
+   		int
+   		main(int argc,char **argv,char **envp) {
+   		    FILE *fp = fopen("conftest1","w");
+   		    unsigned long i,j;
+   		    j=getpagesize();
+   		    i=(unsigned long)alloca(sizeof(void *));
+   		    if ($cstack_direction==1) i-=j;
+   		    j--;
+   		    i+=j;
+   		    i&=~j;
+   		    fprintf(fp,"0x%lx",i-1);
+   		    fclose(fp);
+   		    return 0;
+   		}
+_ACEOF
+if ac_fn_c_try_run "$LINENO"
+then :
+  cstack_top=`cat conftest1`
+else $as_nop
+  cstack_top=0
+fi
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $cstack_top" >&5
+printf "%s\n" "$cstack_top" >&6; }
+
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking relocated CSTACK_TOP" >&5
+printf %s "checking relocated CSTACK_TOP... " >&6; }
+   if test "$cross_compiling" = yes
+then :
+  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "cannot run test program while cross compiling
+See \`config.log' for more details" "$LINENO" 5; }
+else $as_nop
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+   		#include <stdio.h>
+   		#include <stdlib.h>
+   		#include <sys/mman.h>
+   		#include <unistd.h>
+   		#include <errno.h>
+   		int
+   		main(int argc,char **argv,char **envp) {
+   		    FILE *fp = fopen("conftest1","w");
+   		    unsigned long i,j;
+   		    #include "h/cstack.h"
+   		    j=getpagesize();
+   		    i=(unsigned long)alloca(sizeof(void *));
+   		    if ($cstack_direction==1) i-=j;
+   		    j--;
+   		    i+=j;
+   		    i&=~j;
+   		    fprintf(fp,"0x%lx",i-1);
+   		    fclose(fp);
+   		    return 0;
+   		}
+_ACEOF
+if ac_fn_c_try_run "$LINENO"
+then :
+  cstack_top=`cat conftest1`
+else $as_nop
+  cstack_top=0
+fi
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+
+
+printf "%s\n" "#define CSTACK_TOP $cstack_top" >>confdefs.h
+
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $cstack_top" >&5
+printf "%s\n" "$cstack_top" >&6; }
+
+fi
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking cstack bits" >&5
 printf %s "checking cstack bits... " >&6; }
@@ -8331,20 +8512,17 @@ else $as_nop
 
 		#include <stdio.h>
 		#include <stdlib.h>
+		#include <unistd.h>
+		#include <sys/mman.h>
+		#include <unistd.h>
+		#include <errno.h>
 		int
 		main(int argc,char **argv,char **envp) {
-		    void *v ;
 		    FILE *fp = fopen("conftest1","w");
 		    long i,j;
-
-		    #ifdef CAN_UNRANDOMIZE_SBRK
-		    #include "h/unrandomize.h"
-		    #endif
-		    j=1;
-		    j<<=$PAGEWIDTH;
-		    j<<=16;
-		    i=(long)&v;
-		    if ($cstack_direction==1) i-=j;
+		    #include "h/cstack.h"
+		    j=getpagesize();
+		    i=$cstack_top;
 		    j--;
 		    i+=j;
 		    i&=~j;
@@ -8370,6 +8548,7 @@ printf "%s\n" "#define CSTACK_BITS $cstack_bits" >>confdefs.h
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $cstack_bits" >&5
 printf "%s\n" "$cstack_bits" >&6; }
 
+
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking NEG_CSTACK_ADDRESS" >&5
 printf %s "checking NEG_CSTACK_ADDRESS... " >&6; }
 if test "$cross_compiling" = yes
@@ -8384,12 +8563,14 @@ else $as_nop
 
 		#include <stdio.h>
 		#include <stdlib.h>
+		#include <unistd.h>
+		#include <sys/mman.h>
+		#include <unistd.h>
+		#include <errno.h>
 		int
 		main(int argc,char **argv,char **envp) {
-		    #ifdef CAN_UNRANDOMIZE_SBRK
-		    #include "h/unrandomize.h"
-		    #endif
-		    return (long)$cstack_address<0 ? 0 : -1;
+		    #include "h/cstack.h"
+		    return (long)$cstack_top<0 ? 0 : -1;
 		}
 _ACEOF
 if ac_fn_c_try_run "$LINENO"
@@ -8410,6 +8591,7 @@ rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
 fi
 
 
+
 # Check whether --enable-immfix was given.
 if test ${enable_immfix+y}
 then :
@@ -8426,18 +8608,26 @@ else $as_nop
 fi
 
 
+if test "$use" = "386-gnu" ; then
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking UNMAP_OLD_HEAP" >&5
+printf %s "checking UNMAP_OLD_HEAP... " >&6; }
+   x=`cat /proc/self/maps |tail -n 1 | ${AWK} '{gsub("-"," ");x=strtonum("0x" $1);y=strtonum("0x" $2);printf("massert(!munmap((void *)0x%x,0x%x));",x,y-x);}'` #FIXME gawk
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $x" >&5
+printf "%s\n" "$x" >&6; }
 
-if test "$use" != "386-gnu" ; then #hurd can push .data below C stack, but sbrk(0) remains above, foiling unexec
+printf "%s\n" "#define UNMAP_OLD_HEAP $x" >>confdefs.h
 
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking finding default linker script" >&5
+fi
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking finding default linker script" >&5
 printf %s "checking finding default linker script... " >&6; }
-    touch unixport/gcl.script
-    echo "int main() {return 0;}" >foo.c
-    $CC $LDFLAGS -Wl,--verbose foo.c -o foo 2>&1 | \
+touch unixport/gcl.script
+echo "int main() {return 0;}" >foo.c
+$CC $LDFLAGS -Wl,--verbose foo.c -o foo 2>&1 | \
 	$AWK '/==================================================/ {i=1-i;next} {if (i) print}' >gcl.script
-    rm -rf foo.c foo
+rm -rf foo.c foo
 
-    if test "`cat gcl.script | wc -l`" != "0" ; then
+if test "`cat gcl.script | wc -l`" != "0" ; then
 	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: got it" >&5
 printf "%s\n" "got it" >&6; }
 
@@ -8448,20 +8638,21 @@ printf %s "checking output_arch... " >&6; }
 
 printf "%s\n" "#define OUTPUT_ARCH bfd_arch_${output_arch}" >>confdefs.h
 
-     	    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: bfd_arch_${output_arch}" >&5
+ 	    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: bfd_arch_${output_arch}" >&5
 printf "%s\n" "bfd_arch_${output_arch}" >&6; }
 	else
-     	    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: not found" >&5
+ 	    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: not found" >&5
 printf "%s\n" "not found" >&6; }
 	fi
 	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking output_mach" >&5
 printf %s "checking output_mach... " >&6; }
 	output_mach=`cat gcl.script |grep OUTPUT_ARCH|head -n 1|sed 's,.*(\(.*\)).*,\1:,1'|cut -f2 -d:|tr '-' '_'|tr -d '.'`;
-        if test "$output_mach" = "common" ; then
+
+    if test "$output_mach" = "common" ; then #FIXME
 	   output_mach=""
 	fi
 	defaulted=""
-        if test "$output_mach" = "" ; then
+    if test "$output_mach" = "" ; then
 		if test "$output_arch" = "i386" ; then
 		   output_mach="i386_i386";
 		   defaulted="(defaulted)"
@@ -8471,10 +8662,10 @@ printf %s "checking output_mach... " >&6; }
 
 printf "%s\n" "#define OUTPUT_MACH bfd_mach_${output_mach}" >>confdefs.h
 
-     	    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $defaulted bfd_mach_${output_mach}" >&5
+ 	    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $defaulted bfd_mach_${output_mach}" >&5
 printf "%s\n" "$defaulted bfd_mach_${output_mach}" >&6; }
 	else
-     	    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: not found" >&5
+ 	    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: not found" >&5
 printf "%s\n" "not found" >&6; }
 	fi
 
@@ -8488,12 +8679,12 @@ printf "%s\n" "$as_me: trying to adjust text start" >&6;}
 	max=0;
 	min=$lim;
 	while test $n -lt $lim ; do
-            j=`$AWK 'END {for (i=j=0;j<=n;j++) i=i ? i*2 : 1;printf("%x\n",3*i)}' n=$n </dev/null`
-            cat gcl.script.def | $AWK '/SIZEOF_HEADERS/ {gsub("0x[0-9]*","0x" j,$0);} {print}' j=$j >gcl.script
+        j=`$AWK 'END {for (i=j=0;j<=n;j++) i=i ? i*2 : 1;printf("%x\n",3*i)}' n=$n </dev/null`
+        cat gcl.script.def | $AWK '/SEGMENT_START/ {gsub("0x[0-9]*","0x" j,$0);} {print}' j=$j >gcl.script
 	    #        diff -u gcl.script.def gcl.script
-            echo "int main() {return 0;}" >foo.c
-            if ( $CC $LDFLAGS -Wl,-T gcl.script foo.c -o foo >/dev/null 2>&1 && ./foo >/dev/null 2>&1 ) >/dev/null 2>&1 ; then
-		if test $n -lt $min ; then min=$n; fi;
+        echo "int main() {return 0;}" >foo.c
+        if ( $CC $LDFLAGS -Wl,-T gcl.script foo.c -o foo >/dev/null 2>&1 && ./foo >/dev/null 2>&1 ) >/dev/null 2>&1 ; then
+		if test $n -lt $min; then min=$n; fi;
 		if test $n -gt $max; then max=$n; fi;
 	    elif test $max -gt 0 ; then
 	    	# Workaround for false island of acceptability on riscv64, 20240716
@@ -8503,8 +8694,8 @@ printf "%s\n" "$as_me: trying to adjust text start" >&6;}
 		   min=$lim
 		   max=0;
 		fi
-            fi;
-            n=`$AWK 'END {print n+1}' n=$n </dev/null`
+        fi;
+        n=`$AWK 'END {print n+1}' n=$n </dev/null`
 	done
 
 	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: min log text start $min" >&5
@@ -8513,22 +8704,32 @@ printf "%s\n" "$as_me: min log text start $min" >&6;}
 printf "%s\n" "$as_me: max log text start $max" >&6;}
 
 	if test $neg_cstack_address -eq 1 ; then #FIXME test this
-      	    if test $cstack_bits -lt $max ; then
+  	    if test $cstack_bits -lt $max ; then
 		max=$cstack_bits;
 		{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: max log text start reduced to $max considering c stack address" >&5
 printf "%s\n" "$as_me: max log text start reduced to $max considering c stack address" >&6;}
+	    fi
+	else
+	    q=`${AWK} 'END {print n-2}' n=$cstack_bits /dev/null`
+	    if test "$use" = "386-gnu"; then #FIXME: 386 hurd must start saved mmaps over 0x8000000
+	       q=`${AWK} 'END {print n-1}' n=$cstack_bits /dev/null`
+	    fi
+	    if test $min -lt $q && test $q -lt $max; then
+	       min=$q
+	       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: min log text start increased to $min over c stack address" >&5
+printf "%s\n" "$as_me: min log text start increased to $min over c stack address" >&6;}
 	    fi
 	fi
 
 	j=-1;
 	low_shft="";
 	if test $min -le $max ; then
-            if test $max -ge $enable_fastimmfix && test "$enable_immfix" != "no" ; then
+        if test $max -ge $enable_fastimmfix && test "$enable_immfix" != "no" ; then
 	        j=`$AWK 'END {for (i=j=0;j<=n;j++) i=i ? i*2 : 1;printf("%x\n",3*i)}' n=$max </dev/null`
 		low_shft=`$AWK 'END {print n+1}' n=$max </dev/null`;
 		{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: raising log text to 0x$j for a $max bit wide low immfix table" >&5
 printf "%s\n" "$as_me: raising log text to 0x$j for a $max bit wide low immfix table" >&6;}
-            else
+        else
 	        j=`$AWK 'END {for (i=j=0;j<=n;j++) i=i ? i*2 : 1;printf("%x\n",3*i)}' n=$min </dev/null`
 		{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: lowering log text to 0x$j to maximize data area" >&5
 printf "%s\n" "$as_me: lowering log text to 0x$j to maximize data area" >&6;}
@@ -8552,7 +8753,7 @@ printf "%s\n" "#define OBJNULL NULL" >>confdefs.h
 	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking our linker script" >&5
 printf %s "checking our linker script... " >&6; }
 	if test "$j" != "-1" ; then
-            cat gcl.script.def | $AWK '/SIZEOF_HEADERS/ {gsub("0x[0-9]*","0x" j,$0);} {print}' j=$j >gcl.script
+        cat gcl.script.def | $AWK '/SEGMENT_START/ {gsub("0x[0-9]*","0x" j,$0);} {print}' j=$j >gcl.script
 	    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: done" >&5
 printf "%s\n" "done" >&6; }
 	    rm -f gcl.script.def
@@ -8564,21 +8765,19 @@ printf "%s\n" "none found or not needed" >&6; }
 	    rm -f gcl.script gcl.script.def
 	fi
 	rm -rf foo.c foo
-    else
-
-printf "%s\n" "#define OBJNULL NULL" >>confdefs.h
-
-	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: not found" >&5
-printf "%s\n" "not found" >&6; }
-    fi
-
 else
 
-
 printf "%s\n" "#define OBJNULL NULL" >>confdefs.h
 
-
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: not found" >&5
+printf "%s\n" "not found" >&6; }
 fi
+
+#else
+
+#    AC_DEFINE_UNQUOTED(OBJNULL,NULL,[lowest address non-object])
+
+#fi
 
 printf "%s\n" "#define CSSIZE $enable_cssize" >>confdefs.h
 
@@ -8607,8 +8806,7 @@ main (void)
 		FILE *fp = fopen("conftest1","w");
 
 		for (i=2,k=1;i;k=i,i<<=1);
-		l=$cstack_address;
-		l=$cstack_direction==1 ? (l<k ? k-1 : $cstack_max) : l;
+		l=$cstack_top;
 		for (i=j=k;j && i<l;j>>=1,i|=j);
 		if (j<(k>>3)) i=0;
 		j=1;
