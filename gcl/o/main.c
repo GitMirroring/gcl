@@ -252,6 +252,22 @@ get_phys_pages_no_malloc(char freep) {
 
 }
 
+static ufixnum
+get_swap_pages_no_malloc(char freep) {
+
+  struct sysinfo s;
+
+  return sysinfo(&s) ? 0 : ((freep ? s.freeswap : s.totalswap)>>PAGEWIDTH)*s.mem_unit;
+
+}
+
+static ufixnum
+get_tot_pages(char freep) {
+
+  return get_phys_pages_no_malloc(freep)+get_swap_pages_no_malloc(freep);
+
+}
+
 #endif
 
 static ufixnum
@@ -348,11 +364,53 @@ setup_maxpages(double scale) {
 
 }
 
+
+static int
+set_real_maxpage(void *beg) {
+
+  void *end,*cp;
+  ufixnum mp,sz;
+
+  end=(void *)ROUNDDN((void *)-1,PAGESIZE);
+  mp=page(end-beg);
+
+  mp=ufmin(mp,get_tot_pages(0));
+
+  sz=ufmin(mem_bound,log_maxpage_bound);
+  sz=(1UL<<sz)+((1UL<<sz)-1);
+  mp=ufmin(mp,page(sz));
+
+#if defined(LOW_IM_FIX)
+  cp=(void *)(ufixnum)LOW_IM_FIX;
+#elif defined(IM_FIX_BASE)
+  cp=(void *)IM_FIX_BASE;
+#elif
+  cp=(void *)-1;
+#endif
+  cp=cp<beg ? (void *)-1 : cp;
+  mp=ufmin(mp,page(cp-beg));
+
+  cp=alloca(1);
+  cp=cp<beg ? (void *)-1 : cp;
+  mp=ufmin(mp,page(cp-beg));
+
+#ifdef SHARED_LIB_BASE
+  cp=(void *)SHARED_LIB_BASE;
+  cp=cp<beg ? (void *)-1 : cp;
+  mp=ufmin(mp,page(cp-beg));
+#endif
+
+  real_maxpage=mp+page(beg);
+
+  return 0;
+
+}
+
 int
 update_real_maxpage(void) {
 
-  ufixnum i,j;
-  void *end,*cur,*beg;
+  void *beg;
+
 #ifdef __MINGW32__
   static fixnum n;
 
@@ -364,19 +422,8 @@ update_real_maxpage(void) {
 
   get_gc_environ();
 
-#ifdef DEFINED_REAL_MAXPAGE
-  real_maxpage=DEFINED_REAL_MAXPAGE;
-#else
-  massert(cur=sbrk(0));
-  beg=data_start ? data_start : cur;
-  for (i=0,j=(1L<<ufmin(mem_bound,log_maxpage_bound));j>PAGESIZE;j>>=1)
-    if ((end=beg+i+j-PAGESIZE)>cur)
-      if (!mbrk(end)) {
-	real_maxpage=page(end);
-	i+=j;
-      }
-  massert(!mbrk(cur));
-#endif
+  massert(beg=data_start ? data_start : sbrk(0));
+  set_real_maxpage(beg);
 
   phys_pages=ufmin(get_phys_pages1(0)+page(beg),real_maxpage)-page(beg);
 
