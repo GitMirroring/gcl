@@ -188,7 +188,7 @@ mbrk(void *v) {
 #include <windows.h>
 
 static ufixnum
-get_phys_pages_no_malloc(char n) {
+get_phys_pages_no_malloc(char n,char ramp) {
 
   MEMORYSTATUS m;
 
@@ -203,7 +203,7 @@ get_phys_pages_no_malloc(char n) {
 #include <sys/sysctl.h>
 
 static ufixnum
-get_phys_pages_no_malloc(char n) {
+get_phys_pages_no_malloc(char n,char ramp) {
 
   uint64_t s;
   size_t z=sizeof(s);
@@ -216,10 +216,10 @@ get_phys_pages_no_malloc(char n) {
 
 }
 
-#elif defined(__sun__)
+#elif defined(__sun__) || defined(__GNU__)
 
 static ufixnum
-get_phys_pages_no_malloc(char n) {
+get_phys_pages_no_malloc(char n,char ramp) {
 
   return sysconf(_SC_PHYS_PAGES);
 
@@ -231,7 +231,7 @@ get_phys_pages_no_malloc(char n) {
 #include <sys/sysctl.h>
 
 static ufixnum
-get_phys_pages_no_malloc(char n) {
+get_phys_pages_no_malloc(char n,char ramp) {
 
   size_t i,len=sizeof(i);
 
@@ -244,36 +244,23 @@ get_phys_pages_no_malloc(char n) {
 #include <sys/sysinfo.h>
 
 static ufixnum
-get_phys_pages_no_malloc(char freep) {
+get_phys_pages_no_malloc(char freep,char ramp) {
 
   struct sysinfo s;
 
-  return sysinfo(&s) ? 0 : ((freep ? s.freeram : s.totalram)*s.mem_unit)>>PAGEWIDTH;
+  return sysinfo(&s) ? 0 : ((freep ?
+			     (ramp ? s.freeram : s.freeram+s.freeswap)  :
+			     (ramp ? s.totalram : s.totalram+s.totalswap))*s.mem_unit)>>PAGEWIDTH;
 
 }
 
-static ufixnum
-get_swap_pages_no_malloc(char freep) {
-
-  struct sysinfo s;
-
-  return sysinfo(&s) ? 0 : ((freep ? s.freeswap : s.totalswap)*s.mem_unit)>>PAGEWIDTH;
-
-}
-
-static ufixnum
-get_tot_pages(char freep) {
-
-  return get_phys_pages_no_malloc(freep)+get_swap_pages_no_malloc(freep);
-
-}
 
 #endif
 
 static ufixnum
-get_phys_pages1(char freep) {
+get_phys_pages1(char freep,char ramp) {
 
-  return get_phys_pages_no_malloc(freep);
+  return get_phys_pages_no_malloc(freep,ramp);
 
 }
 
@@ -374,7 +361,7 @@ set_real_maxpage(void *beg) {
   end=(void *)ROUNDDN((void *)-1,PAGESIZE);
   mp=page(end-beg);
 
-  mp=ufmin(mp,get_tot_pages(0));
+  mp=ufmin(mp,get_phys_pages1(0,0));
 
   sz=ufmin(mem_bound,log_maxpage_bound);
   sz=(1UL<<sz)+((1UL<<sz)-1);
@@ -425,7 +412,7 @@ update_real_maxpage(void) {
   massert(beg=data_start ? data_start : sbrk(0));
   set_real_maxpage(beg);
 
-  phys_pages=ufmin(get_phys_pages1(0)+page(beg),real_maxpage)-page(beg);
+  phys_pages=ufmin(get_phys_pages1(0,1)+page(beg),real_maxpage)-page(beg);
 
   setup_maxpages(mem_multiple);
 
@@ -652,7 +639,6 @@ main(int argc, char **argv, char **envp) {
 
   GET_FULL_PATH_SELF(kcl_self);
   *argv=kcl_self;
-
 
   vs_top = vs_base = vs_org;
   ihs_top = ihs_org-1;
