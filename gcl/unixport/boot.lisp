@@ -1,5 +1,7 @@
 (in-package :compiler)(cdebug)(setq *compile-print* nil si::*notify-gbc* t *annotate* nil)
-(si::allocate 'structure 200 t)
+(multiple-value-bind
+ (x ps) (si::heap-report)
+ (si::allocate 'structure (max 1 (truncate (* 4096 200) ps)) t))
 
 #+pre-gcl
 (progn
