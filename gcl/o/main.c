@@ -389,6 +389,11 @@ set_real_maxpage(void *beg) {
 
   real_maxpage=mp+page(beg);
 
+#if defined(__GNU__)/*fragmentation mremap failure*/
+  massert(!mbrk(beg+(((ufixnum)real_maxpage)<<PAGEWIDTH)));
+  massert(!mbrk(beg));
+#endif
+
   return 0;
 
 }
