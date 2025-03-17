@@ -5855,9 +5855,6 @@ case $use in
 		assert_arg_to_cflags -mlong-calls
 		TLIBS="$TLIBS -lgcc_s" # workaround hppa __moddi3 local func symbols with default linker flags
 		if test "$enable_debug" != "yes" ; then TO3FLAGS="-O2" ; TFPFLAG=""; fi #FIXME needed asof gcc 4.8.1
-
-printf "%s\n" "#define SET_STACK_POINTER \"copy %0,%%sp\\n\\t\"" >>confdefs.h
-
 		;;
 	    mips*)
 		case $canonical in
@@ -5870,13 +5867,6 @@ printf "%s\n" "#define SET_STACK_POINTER \"copy %0,%%sp\\n\\t\"" >>confdefs.h
 		if test "$enable_debug" != "yes" ; then TO3FLAGS="-O" ; fi #FIXME needed asof gcc 4.8.1
 		;;
 	    arm*)
-
-printf "%s\n" "#define SET_STACK_POINTER \"mov %%sp,%0\\n\\t\"" >>confdefs.h
-
-		{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking how to set stack pointer" >&5
-printf %s "checking how to set stack pointer... " >&6; }
-		{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: done" >&5
-printf "%s\n" "done" >&6; }
 		assert_arg_to_cflags -fdollars-in-identifiers
 		assert_arg_to_cflags -g #?
 		;;
@@ -7947,6 +7937,7 @@ printf "%s\n" "yes" >&6; }
 
 printf "%s\n" "#define HAVE_MADVISE_HUGEPAGE 1" >>confdefs.h
 
+		 if test $min_pagewidth -lt $j ; then min_pagewidth=$j ; fi
 else $as_nop
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
@@ -7961,9 +7952,6 @@ fi
 
 fi
 
-
-
-if test $min_pagewidth -lt $j ; then min_pagewidth=$j ; fi
 else
    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: not found" >&5
 printf "%s\n" "not found" >&6; }
@@ -8441,9 +8429,6 @@ rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
 fi
 
-
-printf "%s\n" "#define CSTACK_TOP $cstack_top" >>confdefs.h
-
    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $cstack_top" >&5
 printf "%s\n" "$cstack_top" >&6; }
 
@@ -8535,9 +8520,6 @@ rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
 fi
 
-
-printf "%s\n" "#define CSTACK_TOP $cstack_top" >>confdefs.h
-
    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $cstack_top" >&5
 printf "%s\n" "$cstack_top" >&6; }
 
@@ -8587,9 +8569,6 @@ rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
 fi
 
-
-printf "%s\n" "#define CSTACK_BITS $cstack_bits" >>confdefs.h
-
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $cstack_bits" >&5
 printf "%s\n" "$cstack_bits" >&6; }
 
@@ -8623,9 +8602,6 @@ then :
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
      neg_cstack_address=1
-
-printf "%s\n" "#define NEG_CSTACK_ADDRESS 1" >>confdefs.h
-
 else $as_nop
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
@@ -8913,14 +8889,6 @@ fi
 
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $mem_range" >&5
 printf "%s\n" "$mem_range" >&6; }
-    if test "$mem_range" != "0x0" ; then
-
-printf "%s\n" "#define MEM_TOP $mem_top" >>confdefs.h
-
-
-printf "%s\n" "#define MEM_RANGE $mem_range" >>confdefs.h
-
-    fi
 fi
 
 if test "$enable_immfix" != "no" ; then
@@ -8934,60 +8902,6 @@ printf "%s\n" "#define IM_FIX_LIM ${mem_range}UL" >>confdefs.h
 
 	fi
     fi
-fi
-
-if test "$use" = "386-gnu" ; then
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking UNMAP_OLD_HEAP" >&5
-printf %s "checking UNMAP_OLD_HEAP... " >&6; }
-   if test "$cross_compiling" = yes
-then :
-  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
-else $as_nop
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-		    #include <stdio.h>
-		    #include <unistd.h>
-
-int
-main (void)
-{
-
-		    FILE *fp = fopen("conftest1","w"),*f=fopen("/proc/self/maps","r");
-		    char b[4096];
-		    unsigned long a;
-		    extern unsigned long _end;
-
-		    for (a=0;a<(unsigned long)(void *)&_end && fgets(b,sizeof(b),f);)
-		    	sscanf(b,"%x-",&a);
-		    if (a>=(unsigned long)(void *)&_end)
-		        fprintf(fp,"massert(!munmap((void *)0x%lx,0x%lx));",a,$mem_top-a);
-		    fclose(fp);
-		    fclose(f);
-		    return 0;
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_run "$LINENO"
-then :
-  x=`cat conftest1`
-else $as_nop
-  x="0x0"
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
-
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $x" >&5
-printf "%s\n" "$x" >&6; }
-
-printf "%s\n" "#define UNMAP_OLD_HEAP $x" >>confdefs.h
-
 fi
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking sizeof long long int" >&5

@@ -15,14 +15,8 @@
 /* C stack alignment */
 #undef CSTACK_ALIGNMENT
 
-/* log starting C stack address */
-#undef CSTACK_BITS
-
 /* whether C stack grows up or down */
 #undef CSTACK_DIRECTION
-
-/* top C stack address */
-#undef CSTACK_TOP
 
 /* Define to 1 if using 'alloca.c'. */
 #undef C_ALLOCA
@@ -279,20 +273,11 @@
 /* upper immediate fixnum bound */
 #undef LOW_SHFT
 
-/* size of immediate fixnum address space */
-#undef MEM_RANGE
-
-/* beginning address for immediate fixnum range */
-#undef MEM_TOP
-
 /* sizeof mp_limb in gmp library */
 #undef MP_LIMB_BYTES
 
 /* binutils requires CONST definition */
 #undef NEED_CONST
-
-/* C stack address is negative */
-#undef NEG_CSTACK_ADDRESS
 
 /* no gettimeofday call */
 #undef NO_GETTOD
@@ -360,9 +345,6 @@
 /* rl_readline_name returns type const char */
 #undef RL_READLINE_NAME_TYPE_CONST_CHAR
 
-/* asm string to set the stack pointer */
-#undef SET_STACK_POINTER
-
 /* shared libray mapping region */
 #undef SHARED_LIB_BASE
 
@@ -402,9 +384,6 @@
    required in a freestanding environment). This macro is provided for
    backward compatibility; new code need not use it. */
 #undef STDC_HEADERS
-
-/* munmap old 386-gnu heap */
-#undef UNMAP_OLD_HEAP
 
 /* have _cleanup function */
 #undef USE_CLEANUP

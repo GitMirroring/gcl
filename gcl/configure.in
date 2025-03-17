@@ -448,7 +448,6 @@ case $use in
 		assert_arg_to_cflags -mlong-calls
 		TLIBS="$TLIBS -lgcc_s" # workaround hppa __moddi3 local func symbols with default linker flags
 		if test "$enable_debug" != "yes" ; then TO3FLAGS="-O2" ; TFPFLAG=""; fi #FIXME needed asof gcc 4.8.1
-		AC_DEFINE([SET_STACK_POINTER],["copy %0,%%sp\n\t"],[asm string to set the stack pointer])
 		;;
 	    mips*)
 		case $canonical in
@@ -461,9 +460,6 @@ case $use in
 		if test "$enable_debug" != "yes" ; then TO3FLAGS="-O" ; fi #FIXME needed asof gcc 4.8.1
 		;;
 	    arm*)
-		AC_DEFINE([SET_STACK_POINTER],["mov %%sp,%0\n\t"],[asm string to set the stack pointer])
-		AC_MSG_CHECKING([how to set stack pointer])
-		AC_MSG_RESULT([done])
 		assert_arg_to_cflags -fdollars-in-identifiers
 		assert_arg_to_cflags -g #?
 		;;
@@ -1315,7 +1311,6 @@ if test $cstack_direction -eq 1 ; then
    		    return 0;
    		}]])],
       [cstack_top=`cat conftest1`],[cstack_top=0])
-   AC_DEFINE_UNQUOTED(CSTACK_TOP,$cstack_top,[top C stack address])
    AC_MSG_RESULT($cstack_top)
 
 else
@@ -1369,7 +1364,6 @@ else
    		    return 0;
    		}]])],
       [cstack_top=`cat conftest1`],[cstack_top=0])
-   AC_DEFINE_UNQUOTED(CSTACK_TOP,$cstack_top,[top C stack address])
    AC_MSG_RESULT($cstack_top)
 
 fi
@@ -1400,7 +1394,6 @@ AC_RUN_IFELSE(
 		    return 0;
 		}]])],
     [cstack_bits=`cat conftest1`],[cstack_bits=0])
-AC_DEFINE_UNQUOTED(CSTACK_BITS,$cstack_bits,[log starting C stack address])
 AC_MSG_RESULT($cstack_bits)
 
 
@@ -1420,8 +1413,7 @@ AC_RUN_IFELSE(
 		    return (long)$cstack_top<0 ? 0 : -1;
 		}]])],
     [AC_MSG_RESULT(yes)
-     neg_cstack_address=1
-     AC_DEFINE(NEG_CSTACK_ADDRESS,1,[C stack address is negative])],
+     neg_cstack_address=1],
     [AC_MSG_RESULT(no)
      neg_cstack_address=0])
 
@@ -1607,10 +1599,6 @@ if test "$mem_top" != "0x0" ; then
 		]])],
 	[mem_range=`cat conftest1`],[mem_range="0x0"])
     AC_MSG_RESULT($mem_range)
-    if test "$mem_range" != "0x0" ; then
-	AC_DEFINE_UNQUOTED(MEM_TOP,$mem_top,[beginning address for immediate fixnum range])
-        AC_DEFINE_UNQUOTED(MEM_RANGE,$mem_range,[size of immediate fixnum address space])
-    fi
 fi
 
 if test "$enable_immfix" != "no" ; then
@@ -1620,33 +1608,6 @@ if test "$enable_immfix" != "no" ; then
             AC_DEFINE_UNQUOTED(IM_FIX_LIM,${mem_range}UL,[size of immediate fixnum address space])
 	fi
     fi
-fi
-
-if test "$use" = "386-gnu" ; then
-   AC_MSG_CHECKING([UNMAP_OLD_HEAP])
-   AC_RUN_IFELSE(
-	[AC_LANG_PROGRAM(
-		[[
-		    #include <stdio.h>
-		    #include <unistd.h>
-		]],
-		[[
-		    FILE *fp = fopen("conftest1","w"),*f=fopen("/proc/self/maps","r");
-		    char b[4096];
-		    unsigned long a;
-		    extern unsigned long _end;
-
-		    for (a=0;a<(unsigned long)(void *)&_end && fgets(b,sizeof(b),f);)
-		    	sscanf(b,"%x-",&a);
-		    if (a>=(unsigned long)(void *)&_end)
-		        fprintf(fp,"massert(!munmap((void *)0x%lx,0x%lx));",a,$mem_top-a);
-		    fclose(fp);
-		    fclose(f);
-		    return 0;
-		]])],
-	[x=`cat conftest1`],[x="0x0"])
-   AC_MSG_RESULT([$x])
-   AC_DEFINE_UNQUOTED(UNMAP_OLD_HEAP,$x,[munmap old 386-gnu heap])
 fi
 
 AC_MSG_CHECKING([sizeof long long int])
