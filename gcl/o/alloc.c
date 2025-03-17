@@ -123,7 +123,7 @@ expand_contblock_array(void) {
 static void
 contblock_array_push(void *p) {
 
-  ufixnum f=contblock_array->v.v_fillp;
+  ufixnum f=contblock_array==Cnil ? 0 : contblock_array->v.v_fillp;/*FIXME*/
 
   expand_contblock_array();
   memmove(contblock_array->v.v_self+f+1,contblock_array->v.v_self+f,
