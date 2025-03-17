@@ -8,8 +8,8 @@
 #define SET_STACK_POINTER "mov %%sp,%0\n\t"
 #elif defined(__hppa__)
 #define SET_STACK_POINTER "copy %0,%%sp\n\t"
-#elif defined(__SH4__)
-#define SET_STACK_POINTER "mov %0,r15\n\t"
+/* #elif defined(__SH4__) */
+/* #define SET_STACK_POINTER "mov %0,r15\n\t" */
 #endif
 
 #ifdef SET_STACK_POINTER
