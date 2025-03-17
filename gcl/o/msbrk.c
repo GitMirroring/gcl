@@ -10,11 +10,14 @@ int
 msbrk_end(void) {
 
   sz+=(ufixnum)m;
+  mps=sz;
   m=NULL;
 
   return 0;
 
 }
+
+#ifndef DARWIN/*FIXME*/
 
 int
 msbrk_init(void) {
@@ -55,7 +58,9 @@ msbrk_init(void) {
   return 0;
 
 }
-  
+
+#endif
+
 void *
 msbrk(intptr_t inc) {
 
