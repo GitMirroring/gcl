@@ -787,7 +787,6 @@ enable_debug
 enable_static
 enable_pic
 enable_gprof
-enable_dynsysgmp
 with_x
 enable_xdr
 enable_immfix
@@ -1458,7 +1457,6 @@ Optional Features:
   --enable-static will link your GCL against static as opposed to shared system libraries
   --enable-pic builds gcl with -fPIC in CFLAGS
   --enable-gprof builds gcl with -pg in CFLAGS to enable profiling with gprof
-  --enable-dynsysgmp will link against the system libgmp3 overriding certain functions with patched versions from the local source
   --enable-xdr=yes will compile in support for XDR
   --enable-immfix will enable an immediate fixnum table above the C stack
   --enable-fastimmfix=XXXX will reject low immediate fixnums unless 2^XXX can be attained
@@ -3188,7 +3186,6 @@ printf "%s\n" "use=$use" >&6; }
 def_dlopen="no"
 def_statsysbfd="no"
 def_custreloc="yes"
-def_oldgmp="no"
 def_pic="no";
 def_static="no";
 def_debug="no";
@@ -6216,15 +6213,7 @@ done
 
 rm -f makedefsafter
 
-# Check whether --enable-dynsysgmp was given.
-if test ${enable_dynsysgmp+y}
-then :
-  enableval=$enable_dynsysgmp;
-fi
-
-
-if test "$enable_dynsysgmp" != "no" ; then
-           for ac_header in gmp.h
+       for ac_header in gmp.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "gmp.h" "ac_cv_header_gmp_h" "$ac_includes_default"
 if test "x$ac_cv_header_gmp_h" = xyes
@@ -6269,7 +6258,7 @@ if test "x$ac_cv_lib_gmp___gmpz_init" = xyes
 then :
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for external gmp version" >&5
 printf %s "checking for external gmp version... " >&6; }
-		 if test "$cross_compiling" = yes
+	 if test "$cross_compiling" = yes
 then :
   { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
@@ -6279,17 +6268,17 @@ else $as_nop
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-				 #include <gmp.h>
+			 #include <gmp.h>
 
 int
 main (void)
 {
 
-				 #if __GNU_MP_VERSION > 3
-				 return 0;
-				 #else
-				 return -1;
-				 #endif
+			 #if __GNU_MP_VERSION > 3
+			 return 0;
+			 #else
+			 return -1;
+			 #endif
 
   ;
   return 0;
@@ -6299,11 +6288,11 @@ if ac_fn_c_try_run "$LINENO"
 then :
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: good" >&5
 printf "%s\n" "good" >&6; }
-		      TLIBS="$TLIBS -lgmp"
-		      echo "#include \"gmp.h\"" >foo.c
-		      echo "int main() {return 0;}" >>foo.c
-		      MP_INCLUDE=`$CC -E foo.c | $AWK '/(\/|\\\\)gmp.h/ {if (!i) print $3;i=1}' | tr -d '"'`
-		      rm -f foo.c
+	      TLIBS="$TLIBS -lgmp"
+	      echo "#include \"gmp.h\"" >foo.c
+	      echo "int main() {return 0;}" >>foo.c
+	      MP_INCLUDE=`$CC -E foo.c | $AWK '/(\/|\\\\)gmp.h/ {if (!i) print $3;i=1}' | tr -d '"'`
+	      rm -f foo.c
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -6315,47 +6304,10 @@ fi
 
 done
 
-    if test "$MP_INCLUDE" = "" ; then
-	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: Cannot use dynamic gmp lib" >&5
-printf "%s\n" "Cannot use dynamic gmp lib" >&6; }
-    fi
-
-fi
-
-
 if test "$MP_INCLUDE" = "" ; then
-
-    GMPDIR=gmp4
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking doing configure in gmp directory" >&5
-printf %s "checking doing configure in gmp directory... " >&6; }
-    echo
-    echo "#"
-    echo "#"
-    echo "# -------------------"
-    echo "# Subconfigure of GMP"
-    echo "#"
-    echo "#"
-
-    if test "$use_common_binary" = "yes"; then
-	cd $GMPDIR && ./configure --build=$host && cd ..
-    else
-	cd $GMPDIR && ./configure --host=$host --build=$build && cd ..
-    fi
-    #MY_SUBDIRS="$MY_SUBDIRS $GMPDIR"
-
-    echo "#"
-    echo "#"
-    echo "#"
-    echo "# Subconfigure of GMP done"
-    echo "# ------------------------"
-    echo "#"
-
-    if test "$MP_INCLUDE" = "" ; then
-	cp $GMPDIR/gmp.h h/gmp.h
-	MP_INCLUDE=h/gmp.h
-	MPFILES=gmp_all
-    fi
+	as_fn_error $? "Cannot use dynamic gmp lib" "$LINENO" 5
 fi
+
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for leading underscore in object symbols" >&5
 printf %s "checking for leading underscore in object symbols... " >&6; }
