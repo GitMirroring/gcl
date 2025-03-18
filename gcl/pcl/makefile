@@ -54,8 +54,6 @@ $(addsuffix .c,$(AFILES)) $(addsuffix .data,$(AFILES))\
 
 clean:
 	rm -f *.o *.fn *.exe *.dll saved_gcl_pcl cmpinclude.h *.c *.h *.data
-	rm -f sys-package.lisp sys-proclaim.lisp
-
 
 # remake the sys-package.lisp and sys-proclaim.lisp files
 # Those files may be empty on a first build.
