@@ -37,7 +37,7 @@ gprof_objs: $(addprefix ../gprof/,$(addsuffix .o,$(AFILES)))
 
 saved_gcl_pcl: $(LISP)
 	cp ../h/cmpinclude.h .
-	touch sys-package.lisp
+	touch sys-proclaim.lisp sys-package.lisp
 	echo $(SETUP) '(pcl::compile-pcl)' | $< 
 	echo $(SETUP) '(pcl::load-pcl)(si::save-system "$@")' | $< $(LISPFLAGS)
 
@@ -45,7 +45,7 @@ $(addsuffix .c,$(AFILES)) $(addsuffix .data,$(AFILES))\
 	$(addsuffix .h,$(AFILES)): \
 	$(addsuffix .lisp,$(FILES))
 	cp ../h/cmpinclude.h .
-	touch sys-package.lisp
+	touch sys-proclaim.lisp sys-package.lisp
 	echo ${SETUP} '(pcl::compile-pcl)' ${DINLH}  | $(LISP)
 
 %.o: %.c %.h %.data
