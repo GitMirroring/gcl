@@ -405,7 +405,6 @@ set_real_maxpage(void *beg) {
   mp=ufmin(mp,page(cp-beg));
 
   cp=next_shared_lib_map_no_malloc();
-  emsg("shlib %p\n",cp);
   cp=cp<beg ? (void *)-1 : cp;
   mp=ufmin(mp,page(cp-beg));
 
