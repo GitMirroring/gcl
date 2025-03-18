@@ -8,28 +8,37 @@
 #define SET_STACK_POINTER "mov %%sp,%0\n\t"
 #elif defined(__hppa__)
 #define SET_STACK_POINTER "copy %0,%%sp\n\t"
-/* #elif defined(__SH4__) */
-/* #define SET_STACK_POINTER "mov %0,r15\n\t" */
+#elif defined(__SH4__)
+#define SET_STACK_POINTER "mov %0,r15\n\t"
+#endif
+
+#define FIXED_STACK (1UL<<23)/*FIXME configure?*/
+#if defined(__SH4__)
+#define CTOP (void *)0x80000000
+#define SS FIXED_STACK
+#else
+#define CTOP (void *)0xc0000000/*FIXME configure?*/
+#define SS getpagesize()
 #endif
 
 #ifdef SET_STACK_POINTER
 {
-  void *p,*p1,*b,*s,*m=(void *)-1-(1UL<<30)+1;/*FIXME configure?*/
+  void *p,*p1,*b,*s;
   int a,f=MAP_FIXED|MAP_PRIVATE|MAP_ANON|MAP_STACK;
 
   p=alloca(1);
   p1=alloca(1);
-  b=m-(p1<p ? getpagesize() : (1UL<<23));/*FIXME configure?*/
+  b=CTOP-(p1<p ? SS : FIXED_STACK);
   a=p1<p ? p-p1 : p1-p;
   a<<=2;
-  s=p1<p ? m-a : b+a;
+  s=p1<p ? CTOP-a : b+a;
   if (p1<p) f|=MAP_GROWSDOWN;
 
-  if (p > m || p < b) {
-    if (mmap(b,getpagesize(),PROT_READ|PROT_WRITE|PROT_EXEC,f,-1,0)!=(void *)-1) {
+  if (p > CTOP || p < b) {
+    if (mmap(b,SS,PROT_READ|PROT_WRITE|PROT_EXEC,f,-1,0)!=(void *)-1) {
       asm volatile (SET_STACK_POINTER::"r" (s):"memory");
       if (p1>p)
-	mmap(m,getpagesize(),PROT_NONE,f,-1,0);/*guard page*/
+	mmap(CTOP,getpagesize(),PROT_NONE,f,-1,0);/*guard page*/
     }
   }
 }
