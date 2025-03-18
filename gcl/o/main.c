@@ -164,10 +164,6 @@ mbrk(void *v) {
   ufixnum uv=(ufixnum)v,uc=(ufixnum)sbrk(0),ux,um;
   fixnum m=((1UL<<(sizeof(fixnum)*8-1))-1);
 
-#ifdef MAX_BRK /*GNU Hurd fragmentation bug*/
-  if ((ufixnum)v>MAX_BRK) return -1;
-#endif
-
   if (uv<uc) {
     um=uv;
     ux=uc;
@@ -389,13 +385,13 @@ set_real_maxpage(void *beg) {
 
   real_maxpage=mp+page(beg);
 
-#if defined(__GNU__)/*fragmentation mremap failure*/
-  {
-    void *p=sbrk(0);
-    massert(!mbrk((void *)(((ufixnum)real_maxpage)<<PAGEWIDTH)));
-    massert(!mbrk(p));
-  }
-#endif
+/* #if defined(__GNU__)/\*fragmentation mremap failure*\/ */
+/*   { */
+/*     void *p=sbrk(0); */
+/*     massert(!mbrk((void *)(((ufixnum)real_maxpage)<<PAGEWIDTH))); */
+/*     massert(!mbrk(p)); */
+/*   } */
+/* #endif */
 
   return 0;
 

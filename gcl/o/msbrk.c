@@ -3,7 +3,7 @@
 
 #include "include.h"
 
-static void *m,*m1;
+static void *m;
 static ufixnum sz,mps;
 
 int
@@ -11,13 +11,51 @@ msbrk_end(void) {
 
   sz+=(ufixnum)m;
   mps=sz;
-  m=m1=NULL;
+  m=NULL;
 
   return 0;
 
 }
 
 #if !defined(DARWIN) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)/*FIXME*/
+
+static void *
+new_amap(void *v,ufixnum s) {
+  return mmap(v,s,PROT_READ|PROT_WRITE|PROT_EXEC,MAP_PRIVATE|MAP_ANON|MAP_FIXED,-1,0);
+}
+
+#if defined(__gnu_hurd___) && defined(__i386__)
+#define H1 (void *)0x20000000
+#define HE (void *)0x28000000
+#else
+#define H1 NULL
+#define HE NULL
+#endif
+
+static int
+old_mprotect(void *v,ufixnum s) {
+  void *ve=v+s;
+  v=v<H1 ? H1 : v;
+  ve=ve>HE ? HE : ve;
+  return  v<ve ? mprotect(v,ve-v,PROT_READ|PROT_WRITE|PROT_EXEC) : 0;
+}
+
+static void *
+new_map(void *v,ufixnum s) {
+
+  if (old_mprotect(v,s))
+    return (void *)-1;
+  if (v+s<H1)
+    return new_amap(v,s);
+  if (v<H1 && new_amap(v,H1-v)!=v)
+    return (void *)-1;
+  if (v+s<HE)
+    return v;
+  if (v<HE && new_amap(HE,v+s-HE)!=HE)
+    return (void *)-1;
+  return v<HE ? v : new_amap(v,s);
+
+}
 
 int
 msbrk_init(void) {
@@ -26,80 +64,39 @@ msbrk_init(void) {
 
     extern int gcl_alloc_initialized;
     extern fixnum _end;
-    void *v,*v1;
+    void *v;
 
     v=gcl_alloc_initialized ? core_end : (void *)ROUNDUP((void *)&_end,getpagesize());
-    v1=(void *)ROUNDUP((ufixnum)v,PAGESIZE);
-    massert(!gcl_alloc_initialized || v==v1);
+    m=(void *)ROUNDUP((ufixnum)v,PAGESIZE);
+    massert(!gcl_alloc_initialized || v==m);
 
-    if (v!=v1)
-      massert((m=mmap(v,
-		      v1-v,
-		      PROT_READ|PROT_WRITE|PROT_EXEC,
-		      MAP_PRIVATE|MAP_ANON|MAP_FIXED,
-		      -1,
-		      0))!=(void *)-1);
-
-    massert((m=mmap(v1,
-		    PAGESIZE,
-		    PROT_READ|PROT_WRITE|PROT_EXEC,
-		    MAP_PRIVATE|MAP_ANON|MAP_FIXED,
-		    -1,
-		    0))!=(void *)-1);
-    sz=0;
-    mps=PAGESIZE;
+    if (v!=m)
+      massert(new_map(v,m-v)!=(void *)-1);
+    mps=sz=0;
 
   }
   
   return 0;
 
 }
-#if defined(__gnu_hurd___) && defined(__i386__)
-
-void *
-mmremap(void *v,ufixnum s1,ufixnum s2,ufixnum flags) {
-
-  static void *h1=(void *)0x20000000,*he=(void *)0x28000000;
-
-  if (m+s2<h1)
-    return mremap(v,s1,s2,flags);
-  if (m+s1<h1)
-    if (mremap(v,s1,(h1-m),flags)!=v)
-      return (void *)-1;
-  if (mprotect(h1,he-h1,PROT_READ|PROT_WRITE|PROT_EXEC))
-    return (void *)-1;
-  if (m+s2<he)
-    return v;
-  if (!m1) {
-    m1=mmap(he,s2-(he-m),PROT_READ|PROT_WRITE|PROT_EXEC,MAP_PRIVATE|MAP_ANON|MAP_FIXED,-1,0);
-    return m1==(void *)-1 ? m1 : v;
-  } else
-    return mremap(he,mps-(he-m),s2-(he-m),flags)==he ? v : (void *)-1;
-}
-
-#undef mremap
-#define mremap mmremap
-
-#endif
 
 void *
 msbrk(intptr_t inc) {
 
   size_t p2=ROUNDUP(sz+inc,PAGESIZE);
 
-  if (mps>=p2 || m==mremap(m,mps,p2,0)) {
-    if (mps<p2) {
+  if (mps<p2) {
+    if (m+mps!=new_map(m+mps,p2-mps))
+      return (void *)-1;
 #ifdef HAVE_MADVISE_HUGEPAGE
-      massert(!madvise(m,p2,MADV_HUGEPAGE));
+    massert(!madvise(m,p2,MADV_HUGEPAGE));
 #endif
-      mps=p2;
-    }
-    sz+=inc;
-    return m+sz-inc;
-  } else {
-    errno=ENOMEM;
-    return (void *)-1;
+    mps=p2;
   }
 
+  sz+=inc;
+  return m+sz-inc;
+
 }
+
 #endif
