@@ -1,3 +1,5 @@
+#if SIZEOF_LONG == 4
+
 #if defined(__PPC__)
 #define SET_STACK_POINTER "addi %%r1,%0,0\n\t"
 #elif defined(__m68k__)
@@ -43,4 +45,5 @@
     }
   }
 }
+#endif
 #endif
