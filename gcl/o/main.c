@@ -347,6 +347,32 @@ setup_maxpages(double scale) {
 
 }
 
+static void *
+next_shared_lib_map_no_malloc(void)  {
+
+  ufixnum a=0;
+
+#if !defined(DARWIN) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)/*FIXME*/
+
+  char b[40960],*c,*d,*s=sbrk(0);
+  int l;
+
+  massert((l=open("/proc/self/maps",O_RDONLY)));
+  massert(read(l,b,sizeof(b))<sizeof(b));
+
+  for (a=0,d=b;(char *)a<s && (c=strtok(d,"\n"));d=NULL) {
+    if (strchr(c,'/'))
+	sscanf(c,"%lx-",&a);
+  }
+  close(l);
+
+#endif
+
+  return (void *)(a ? a : -1);
+
+}
+
+static void *stack_map_base=(void *)-1;
 
 static int
 set_real_maxpage(void *beg) {
@@ -374,24 +400,16 @@ set_real_maxpage(void *beg) {
   mp=ufmin(mp,page(cp-beg));
 
   cp=alloca(1);
+  cp=cp<stack_map_base ? cp : stack_map_base;
   cp=cp<beg ? (void *)-1 : cp;
   mp=ufmin(mp,page(cp-beg));
 
-#ifdef SHARED_LIB_BASE
-  cp=(void *)SHARED_LIB_BASE;
+  cp=next_shared_lib_map_no_malloc();
+  emsg("shlib %p\n",cp);
   cp=cp<beg ? (void *)-1 : cp;
   mp=ufmin(mp,page(cp-beg));
-#endif
 
   real_maxpage=mp+page(beg);
-
-/* #if defined(__GNU__)/\*fragmentation mremap failure*\/ */
-/*   { */
-/*     void *p=sbrk(0); */
-/*     massert(!mbrk((void *)(((ufixnum)real_maxpage)<<PAGEWIDTH))); */
-/*     massert(!mbrk(p)); */
-/*   } */
-/* #endif */
 
   return 0;
 

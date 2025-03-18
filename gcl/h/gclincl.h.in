@@ -345,9 +345,6 @@
 /* rl_readline_name returns type const char */
 #undef RL_READLINE_NAME_TYPE_CONST_CHAR
 
-/* shared libray mapping region */
-#undef SHARED_LIB_BASE
-
 /* have sigcontext of signal.h */
 #undef SIGNAL_H_HAS_SIGCONTEXT
 

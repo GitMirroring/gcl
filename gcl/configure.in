@@ -1206,17 +1206,6 @@ AC_RUN_IFELSE(
 AC_MSG_RESULT($sizeof_contblock)
 AC_DEFINE_UNQUOTED(SIZEOF_CONTBLOCK,$sizeof_contblock,[sizeof linked list for contiguous pages])
 
-AC_CHECK_PROGS(LDD,ldd)
-if test "$LDD" != "" ; then
-   AC_MSG_CHECKING(SHARED_LIB_BASE)
-   echo 'int main() {return 0;}' >foo.c
-   ${CC} ${CFLAGS} foo.c -o foo
-   SHARED_LIB_BASE=`${LDD} foo | tr -d '()' | ${AWK} '{a=$NF;sub("0x[0]*","",a);n=2;b=substr(a,1,n);j="";for (i=1;i<=length(a)-n;i++) j=j "0";print "0x" b j}' | sort | head -n 1`
-   AC_MSG_RESULT($SHARED_LIB_BASE);
-   AC_DEFINE_UNQUOTED(SHARED_LIB_BASE,$SHARED_LIB_BASE,[shared libray mapping region])
-   rm -f foo.c foo
-fi
-
 AC_MSG_CHECKING(CSTACK_DIRECTION)
 AC_RUN_IFELSE(
     [AC_LANG_SOURCE(
@@ -1298,7 +1287,7 @@ if test $cstack_direction -eq 1 ; then
    		main(int argc,char **argv,char **envp) {
    		    FILE *fp = fopen("conftest1","w"),*f=fopen("/proc/self/maps","r");
    		    unsigned long i,j;
-		    char b[4096];
+		    char b[4096],*stack_map_base;
 		    #include "h/cstack.h"
    		    i=(unsigned long)alloca(sizeof(void *));
 		    for (j=0;j<i && fgets(b,sizeof(b),f);)
@@ -1328,7 +1317,6 @@ else
    		    unsigned long i,j;
    		    j=getpagesize();
    		    i=(unsigned long)alloca(sizeof(void *));
-   		    if ($cstack_direction==1) i-=j;
    		    j--;
    		    i+=j;
    		    i&=~j;
@@ -1352,10 +1340,10 @@ else
    		main(int argc,char **argv,char **envp) {
    		    FILE *fp = fopen("conftest1","w");
    		    unsigned long i,j;
+		    char *stack_map_base;
    		    #include "h/cstack.h"
    		    j=getpagesize();
    		    i=(unsigned long)alloca(sizeof(void *));
-   		    if ($cstack_direction==1) i-=j;
    		    j--;
    		    i+=j;
    		    i&=~j;
@@ -1382,6 +1370,7 @@ AC_RUN_IFELSE(
 		main(int argc,char **argv,char **envp) {
 		    FILE *fp = fopen("conftest1","w");
 		    long i,j;
+		    char *stack_map_base;
 		    #include "h/cstack.h"
 		    j=getpagesize();
 		    i=$cstack_top;
@@ -1409,6 +1398,7 @@ AC_RUN_IFELSE(
 		#include <errno.h>
 		int
 		main(int argc,char **argv,char **envp) {
+	            char *stack_map_base;
 		    #include "h/cstack.h"
 		    return (long)$cstack_top<0 ? 0 : -1;
 		}]])],

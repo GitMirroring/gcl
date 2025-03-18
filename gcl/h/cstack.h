@@ -36,6 +36,7 @@
 
   if (p > CTOP || p < b) {
     if (mmap(b,SS,PROT_READ|PROT_WRITE|PROT_EXEC,f,-1,0)!=(void *)-1) {
+      stack_map_base=b;
       asm volatile (SET_STACK_POINTER::"r" (s):"memory");
       if (p1>p)
 	mmap(CTOP,getpagesize(),PROT_NONE,f,-1,0);/*guard page*/

@@ -690,7 +690,6 @@ SYSTEM
 FLISP
 PARGCLDIR
 HAVE_LONG_LONG
-LDD
 PAGEWIDTH
 DOUBLE_BIGENDIAN
 WORDS_BIGENDIAN
@@ -8195,67 +8194,6 @@ printf "%s\n" "$sizeof_contblock" >&6; }
 printf "%s\n" "#define SIZEOF_CONTBLOCK $sizeof_contblock" >>confdefs.h
 
 
-for ac_prog in ldd
-do
-  # Extract the first word of "$ac_prog", so it can be a program name with args.
-set dummy $ac_prog; ac_word=$2
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-printf %s "checking for $ac_word... " >&6; }
-if test ${ac_cv_prog_LDD+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  if test -n "$LDD"; then
-  ac_cv_prog_LDD="$LDD" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  case $as_dir in #(((
-    '') as_dir=./ ;;
-    */) ;;
-    *) as_dir=$as_dir/ ;;
-  esac
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
-    ac_cv_prog_LDD="$ac_prog"
-    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-fi
-fi
-LDD=$ac_cv_prog_LDD
-if test -n "$LDD"; then
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $LDD" >&5
-printf "%s\n" "$LDD" >&6; }
-else
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-fi
-
-
-  test -n "$LDD" && break
-done
-
-if test "$LDD" != "" ; then
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking SHARED_LIB_BASE" >&5
-printf %s "checking SHARED_LIB_BASE... " >&6; }
-   echo 'int main() {return 0;}' >foo.c
-   ${CC} ${CFLAGS} foo.c -o foo
-   SHARED_LIB_BASE=`${LDD} foo | tr -d '()' | ${AWK} '{a=$NF;sub("0x0*","",a);n=2;b=substr(a,1,n);j="";for (i=1;i<=length(a)-n;i++) j=j "0";print "0x" b j}' | sort | head -n 1`
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $SHARED_LIB_BASE" >&5
-printf "%s\n" "$SHARED_LIB_BASE" >&6; };
-
-printf "%s\n" "#define SHARED_LIB_BASE $SHARED_LIB_BASE" >>confdefs.h
-
-   rm -f foo.c foo
-fi
-
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking CSTACK_DIRECTION" >&5
 printf %s "checking CSTACK_DIRECTION... " >&6; }
 if test "$cross_compiling" = yes
@@ -8406,7 +8344,7 @@ else $as_nop
    		main(int argc,char **argv,char **envp) {
    		    FILE *fp = fopen("conftest1","w"),*f=fopen("/proc/self/maps","r");
    		    unsigned long i,j;
-		    char b[4096];
+		    char b[4096],*stack_map_base;
 		    #include "h/cstack.h"
    		    i=(unsigned long)alloca(sizeof(void *));
 		    for (j=0;j<i && fgets(b,sizeof(b),f);)
@@ -8455,7 +8393,6 @@ else $as_nop
    		    unsigned long i,j;
    		    j=getpagesize();
    		    i=(unsigned long)alloca(sizeof(void *));
-   		    if ($cstack_direction==1) i-=j;
    		    j--;
    		    i+=j;
    		    i&=~j;
@@ -8498,10 +8435,10 @@ else $as_nop
    		main(int argc,char **argv,char **envp) {
    		    FILE *fp = fopen("conftest1","w");
    		    unsigned long i,j;
+		    char *stack_map_base;
    		    #include "h/cstack.h"
    		    j=getpagesize();
    		    i=(unsigned long)alloca(sizeof(void *));
-   		    if ($cstack_direction==1) i-=j;
    		    j--;
    		    i+=j;
    		    i&=~j;
@@ -8547,6 +8484,7 @@ else $as_nop
 		main(int argc,char **argv,char **envp) {
 		    FILE *fp = fopen("conftest1","w");
 		    long i,j;
+		    char *stack_map_base;
 		    #include "h/cstack.h"
 		    j=getpagesize();
 		    i=$cstack_top;
@@ -8593,6 +8531,7 @@ else $as_nop
 		#include <errno.h>
 		int
 		main(int argc,char **argv,char **envp) {
+	            char *stack_map_base;
 		    #include "h/cstack.h"
 		    return (long)$cstack_top<0 ? 0 : -1;
 		}
