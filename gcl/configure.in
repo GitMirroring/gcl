@@ -1449,7 +1449,7 @@ if test "`cat gcl.script | wc -l`" != "0" ; then
 	    if test "$use" = "386-gnu"; then #FIXME: 386 hurd must start saved mmaps over 0x8000000
 	       q=`${AWK} 'END {print n-1}' n=$cstack_bits /dev/null`
 	    fi
-	    if test $min -lt $q && test $q -lt $max; then
+	    if test $min -lt $q && test $q -lt $max && test $q -lt 30; then
 	       min=$q
 	       AC_MSG_NOTICE([min log text start increased to $min over c stack address])
 	    fi
