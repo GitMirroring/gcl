@@ -361,7 +361,7 @@ next_shared_lib_map_no_malloc(void)  {
   massert(read(l,b,sizeof(b))<sizeof(b));
 
   for (a=0,d=b;(char *)a<s && (c=strtok(d,"\n"));d=NULL)
-    if (strchr(c,'/'))
+    if (!strstr(c,kcl_self) && strchr(c,'/'))
 	sscanf(c,"%lx-",&a);
 
   close(l);
