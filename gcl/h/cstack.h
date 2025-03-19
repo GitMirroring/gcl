@@ -15,7 +15,7 @@
 #endif
 
 #define FIXED_STACK (1UL<<23)/*FIXME configure?*/
-#if defined(__SH4__)
+#if defined(__SH4__)/*FIXME is this just due to qemu?*/
 #define CTOP (void *)0x80000000
 #define SS FIXED_STACK
 #else
