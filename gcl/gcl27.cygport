@@ -1,0 +1,113 @@
+GIT_URI="git://git.sv.gnu.org/gcl.git"
+GIT_BRANCH="master"
+inherit git.cygclass
+
+
+NAME="gcl27"
+VERSION=2.7.0
+RELEASE=1
+HOMEPAGE="https://www.gnu.org/software/gcl/"
+
+PKG_NAMES="${PN}"
+
+#SRC_URI="git://git@git.sv.gnu.org/gcl.git;protocol=ssh;branch=master;"
+SRC_DIR=gcl/gcl"
+
+# HG_URI="http://hg.code.sf.net/p/clisp/clisp"
+# HG_REV=16678
+# inherit hg
+
+# The following was sent upstream but not applied yet.
+# PATCH_URI+=" http://sourceforge.net/p/clisp/patches/39/attachment/04-uuid.patch"
+
+# The following was rejected upstream
+### PATCH_URI+=" http://sourceforge.net/p/clisp/patches/40/attachment/06-gtk_server_cfg.patch"
+
+# The following aren't ready for upstream.
+#PATCH_URI+=" 20170303-update_modules_syscalls_configure.patch"
+### PATCH_URI+=" 2.49+-gtk2_lib_name.patch"
+#PATCH_URI+=" 2.49-no_cygwin_README.patch"
+#PATCH_URI+=" cygwin-no-save-executable.patch"
+#PATCH_URI+=" 20170306-berkeley_db_test.patch"
+#PATCH_URI+=" 20150312-clx_test.patch"
+#PATCH_URI+=" 20150312-excepsit_test.patch"
+#PATCH_URI+=" 20150312-gdbm_test.patch"
+#PATCH_URI+=" 20150312-libsvm_test.patch"
+
+#PATCH_URI+=" 20170324-path_test.patch"
+
+#PATCH_URI+=" 20170306-rawsock_test.patch"
+#PATCH_URI+=" 20150312-postgresql_test.patch"
+#PATCH_URI+=" 20170306-socket_test.patch"
+#PATCH_URI+=" 20170306-syscalls_test.patch"
+
+#PATCH_URI+=" 20170306-berkeley_db_txn_recover.patch"
+#PATCH_URI+=" 2.49.92-fix_dllimport.patch"
+#PATCH_URI+=" 2.49.92-my_realpath.patch"
+
+# The following works around the clx build problem reported here:
+# https://sourceforge.net/p/clisp/mailman/clisp-devel/thread/8b7ee413-fa96-d0ef-004c-4079be6939c9%40cornell.edu/#msg35700257
+#PATCH_URI+=" 2.49.92-clx.patch"
+
+gcl_CATEGORY="Devel Interpreters Math Shells"
+gcl_SUMMARY="A Common Lisp implementation"
+gcl_DESCRIPTION="GNU Common Lisp (GCL) is a Common Lisp compiler and interpreter
+ implemented in C, and complying both with the ANSI standard and with the standard set 
+ forth in the book "Common Lisp, the Language I".  It attempts
+ to strike a useful middle ground in performance and portability
+ from its design around C."
+gcl27_CONTENTS="
+usr
+"
+
+MAKEOPTS+=" -j1"
+
+BUILD_REQUIRES="
+	libeditreadline-devel
+	tk8.6-devel
+	libgmp-devel
+	libxmu-devel
+	libxaw7-devel
+	zlib1g-devel
+	libtirpc-devel
+"
+
+# The test suite claims that win32 can't be found.  The testsuite for
+# libsvm takes hours to run, so I don't do it routinely.
+#CHECK_MODULES="rawsock dirkey pcre gdbm berkeley-db postgresql fastcgi zlib gtk2 dbus clx/new-clx"
+#MODULES="${CHECK_MODULES} bindings/win32 libsvm"
+
+WITHMODS="--with-modules=$(echo ${MODULES} | sed -e's, , --with-modules=,g')"
+CYGCONF_ARGS="--mandir=/usr/share/man --enable-infodir=/usr/share/info --enable-emacsdir=/usr/share/emacs/site-lisp"
+
+#LDFLAGS="-Wl,--stack,0x800000"
+#export LDFLAGS
+
+# do not strip for (disassemble)
+#RESTRICT="debuginfo strip"
+
+src_compile() {
+    cd ${S}
+    export CFLAGS="-g -O2"
+    verbose ./configure --prefix=/usr ${CYGCONF_ARGS} \
+	     || error "configure failed"
+    cd ${S}
+    cygmake
+}
+
+src_install() {
+    cd ${S}
+    cyginstall
+}
+
+# clx and dbus tests have to be run under X.  Sometimes the clx test
+# hangs or produces failures and has to be run manually: 'cd ${B};
+# make full-mod-check MODULES=clx/new-clx'.
+
+src_test() {
+    cd ${S}
+#    # find . -name '*.dll' | rebase -OT -
+#    make -k check || true
+#    make -k base-mod-check || true
+#    make -k full-mod-check MODULES="${CHECK_MODULES}"
+}
