@@ -357,11 +357,11 @@ next_shared_lib_map_no_malloc(void)  {
   char b[40960],*c,*d,*s=sbrk(0);
   int l;
 
-  massert((l=open("/proc/self/maps",O_RDONLY)));
+  massert((l=open("/proc/self/maps",O_RDONLY))!=-1);
   massert(read(l,b,sizeof(b))<sizeof(b));
 
   for (a=0,d=b;(char *)a<s && (c=strtok(d,"\n"));d=NULL)
-    if (!strstr(c,kcl_self) && strchr(c,'/'))
+    if ((!kcl_self || !strstr(c,kcl_self)) && strchr(c,'/'))
 	sscanf(c,"%lx-",&a);
 
   close(l);
