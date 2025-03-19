@@ -360,19 +360,21 @@ next_shared_lib_map_no_malloc(void)  {
   massert((l=open("/proc/self/maps",O_RDONLY)));
   massert(read(l,b,sizeof(b))<sizeof(b));
 
-  for (a=0,d=b;(char *)a<s && (c=strtok(d,"\n"));d=NULL) {
+  for (a=0,d=b;(char *)a<s && (c=strtok(d,"\n"));d=NULL)
     if (strchr(c,'/'))
 	sscanf(c,"%lx-",&a);
-  }
+
   close(l);
+  memset(b,0,sizeof(b));
 
 #endif
 
-  return (void *)(a ? a : -1);
+  return (void *)((char *)a>s ? a : -1);
 
 }
 
 static void *stack_map_base=(void *)-1;
+void *shared_lib_start=(void *)-1;
 
 static int
 set_real_maxpage(void *beg) {
@@ -404,7 +406,7 @@ set_real_maxpage(void *beg) {
   cp=cp<beg ? (void *)-1 : cp;
   mp=ufmin(mp,page(cp-beg));
 
-  cp=next_shared_lib_map_no_malloc();
+  cp=shared_lib_start=next_shared_lib_map_no_malloc();
   cp=cp<beg ? (void *)-1 : cp;
   mp=ufmin(mp,page(cp-beg));
 

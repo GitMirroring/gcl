@@ -1248,6 +1248,7 @@ static void
 FFN(siLheap_report)(void) {
 
   int i;
+  extern void *shared_lib_start;
   
   check_arg(0);
   
@@ -1255,7 +1256,7 @@ FFN(siLheap_report)(void) {
   vs_push(make_fixnum(PAGESIZE));
   vs_push(make_fixnum((ufixnum)data_start));
   vs_push(make_fixnum((real_maxpage<<PAGEWIDTH)));
-  vs_push(make_fixnum(0));/*SHARED_LIB_HEAP_CEILING*/
+  vs_push(make_fixnum((ufixnum)shared_lib_start));
   i=getpagesize();
   vs_push(make_fixnum(((unsigned long)cs_base+i-1)&-i));
   vs_push(make_fixnum(labs(cs_base-cs_org)));
