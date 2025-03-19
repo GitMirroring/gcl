@@ -37,6 +37,7 @@ gprof_objs: $(addprefix ../gprof/,$(addsuffix .o,$(AFILES)))
 
 saved_gcl_pcl: $(LISP)
 	cp ../h/cmpinclude.h .
+	touch sys-proclaim.lisp sys-package.lisp
 	echo $(SETUP) '(pcl::compile-pcl)' | $< 
 	echo $(SETUP) '(pcl::load-pcl)(si::save-system "$@")' | $< $(LISPFLAGS)
 
@@ -44,6 +45,7 @@ $(addsuffix .c,$(AFILES)) $(addsuffix .data,$(AFILES))\
 	$(addsuffix .h,$(AFILES)): \
 	$(addsuffix .lisp,$(FILES))
 	cp ../h/cmpinclude.h .
+	touch sys-proclaim.lisp sys-package.lisp
 	echo ${SETUP} '(pcl::compile-pcl)' ${DINLH}  | $(LISP)
 
 %.o: %.c %.h %.data
@@ -53,13 +55,12 @@ $(addsuffix .c,$(AFILES)) $(addsuffix .data,$(AFILES))\
 clean:
 	rm -f *.o *.fn *.exe *.dll saved_gcl_pcl cmpinclude.h *.c *.h *.data
 
-
 # remake the sys-package.lisp and sys-proclaim.lisp files
 # Those files may be empty on a first build.
 remake-sys-files:
 	$(MAKE) clean
-	rm -f sys-proclaim.lisp
-	touch sys-proclaim.lisp
+	rm -f sys-proclaim.lisp sys-package.lisp
+	touch sys-proclaim.lisp sys-package.lisp
 	$(MAKE)
 	echo $(SETUP) '(pcl::load-pcl)(load "../cmpnew/gcl_collectfn.lsp")(pcl::renew-sys-files)' \
 		| $(LISP) ../unixport/ $(LISPFLAGS)

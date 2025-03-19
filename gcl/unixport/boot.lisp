@@ -1,5 +1,10 @@
 (in-package :compiler)(cdebug)(setq *compile-print* nil si::*notify-gbc* t *annotate* nil)
-(si::allocate 'structure 200 t)
+
+(room t)
+
+(multiple-value-bind
+ (x ps) (si::heap-report)
+ (si::allocate 'structure (max 1 (truncate (* 4096 200) ps)) t))
 
 #+pre-gcl
 (progn
@@ -60,10 +65,10 @@
   
   (with-open-file (s "../lsp/gcl_recompile.lsp" :direction :output))
   (dolist (l '(recompile callhash assert defmacro defstruct describe evalmacros sc
-			 logical_pathname_translations make_pathname parse_namestring merge_pathnames
-			 pathname_match_p namestring wild_pathname_p translate_pathname truename directory
-			 rename_file restart
-			 iolib mislib module numlib packlib setf top trace sloop debug info serror mnum fpe))
+	       logical_pathname_translations make_pathname parse_namestring merge_pathnames
+	       pathname_match_p namestring wild_pathname_p translate_pathname truename directory
+	       rename_file restart iolib mislib module numlib packlib
+	       setf top trace sloop debug info serror mnum fpe))
     (doitf l "lsp" ld? cmpl?)))
 
 (doit (if (boundp 'noload) 'identity 'load) 'compile-file)

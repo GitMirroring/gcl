@@ -164,10 +164,6 @@ mbrk(void *v) {
   ufixnum uv=(ufixnum)v,uc=(ufixnum)sbrk(0),ux,um;
   fixnum m=((1UL<<(sizeof(fixnum)*8-1))-1);
 
-#ifdef MAX_BRK /*GNU Hurd fragmentation bug*/
-  if ((ufixnum)v>MAX_BRK) return -1;
-#endif
-
   if (uv<uc) {
     um=uv;
     ux=uc;
@@ -188,7 +184,7 @@ mbrk(void *v) {
 #include <windows.h>
 
 static ufixnum
-get_phys_pages_no_malloc(char n) {
+get_phys_pages_no_malloc(char n,char ramp) {
 
   MEMORYSTATUS m;
 
@@ -203,7 +199,7 @@ get_phys_pages_no_malloc(char n) {
 #include <sys/sysctl.h>
 
 static ufixnum
-get_phys_pages_no_malloc(char n) {
+get_phys_pages_no_malloc(char n,char ramp) {
 
   uint64_t s;
   size_t z=sizeof(s);
@@ -219,7 +215,7 @@ get_phys_pages_no_malloc(char n) {
 #elif defined(__sun__) || defined(__GNU__)
 
 static ufixnum
-get_phys_pages_no_malloc(char n) {
+get_phys_pages_no_malloc(char n,char ramp) {
 
   return sysconf(_SC_PHYS_PAGES);
 
@@ -231,7 +227,7 @@ get_phys_pages_no_malloc(char n) {
 #include <sys/sysctl.h>
 
 static ufixnum
-get_phys_pages_no_malloc(char n) {
+get_phys_pages_no_malloc(char n,char ramp) {
 
   size_t i,len=sizeof(i);
 
@@ -244,20 +240,23 @@ get_phys_pages_no_malloc(char n) {
 #include <sys/sysinfo.h>
 
 static ufixnum
-get_phys_pages_no_malloc(char freep) {
+get_phys_pages_no_malloc(char freep,char ramp) {
 
   struct sysinfo s;
 
-  return sysinfo(&s) ? 0 : ((freep ? s.freeram : s.totalram)>>PAGEWIDTH)*s.mem_unit;
+  return sysinfo(&s) ? 0 : ((freep ?
+			     (ramp ? s.freeram : s.freeram+s.freeswap)  :
+			     (ramp ? s.totalram : s.totalram+s.totalswap))*s.mem_unit)>>PAGEWIDTH;
 
 }
+
 
 #endif
 
 static ufixnum
-get_phys_pages1(char freep) {
+get_phys_pages1(char freep,char ramp) {
 
-  return get_phys_pages_no_malloc(freep);
+  return get_phys_pages_no_malloc(freep,ramp);
 
 }
 
@@ -348,13 +347,80 @@ setup_maxpages(double scale) {
 
 }
 
-void *initial_sbrk=NULL;
+static void *
+next_shared_lib_map_no_malloc(void)  {
+
+  ufixnum a=0;
+
+#if !defined(DARWIN) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)/*FIXME*/
+
+  char b[40960],*c,*d,*s=sbrk(0);
+  int l;
+
+  massert((l=open("/proc/self/maps",O_RDONLY)));
+  massert(read(l,b,sizeof(b))<sizeof(b));
+
+  for (a=0,d=b;(char *)a<s && (c=strtok(d,"\n"));d=NULL)
+    if (strchr(c,'/'))
+	sscanf(c,"%lx-",&a);
+
+  close(l);
+  memset(b,0,sizeof(b));
+
+#endif
+
+  return (void *)((char *)a>s ? a : -1);
+
+}
+
+static void *stack_map_base=(void *)-1;
+void *shared_lib_start=(void *)-1;
+
+static int
+set_real_maxpage(void *beg) {
+
+  void *end,*cp;
+  ufixnum mp,sz;
+
+  end=(void *)ROUNDDN((void *)-1,PAGESIZE);
+  mp=page(end-beg);
+
+  mp=ufmin(mp,get_phys_pages1(0,0));
+
+  sz=ufmin(mem_bound,log_maxpage_bound);
+  sz=(1UL<<sz)+((1UL<<sz)-1);
+  mp=ufmin(mp,page(sz));
+
+#if defined(LOW_IM_FIX)
+  cp=(void *)(ufixnum)LOW_IM_FIX;
+#elif defined(IM_FIX_BASE)
+  cp=(void *)IM_FIX_BASE;
+#elif
+  cp=(void *)-1;
+#endif
+  cp=cp<beg ? (void *)-1 : cp;
+  mp=ufmin(mp,page(cp-beg));
+
+  cp=alloca(1);
+  cp=cp<stack_map_base ? cp : stack_map_base;
+  cp=cp<beg ? (void *)-1 : cp;
+  mp=ufmin(mp,page(cp-beg));
+
+  cp=shared_lib_start=next_shared_lib_map_no_malloc();
+  cp=cp<beg ? (void *)-1 : cp;
+  mp=ufmin(mp,page(cp-beg));
+
+  real_maxpage=mp+page(beg);
+
+  return 0;
+
+}
 
 int
 update_real_maxpage(void) {
 
-  ufixnum i,j;
-  void *end,*cur,*beg;
+  void *beg;
+
 #ifdef __MINGW32__
   static fixnum n;
 
@@ -366,21 +432,10 @@ update_real_maxpage(void) {
 
   get_gc_environ();
 
-#ifdef DEFINED_REAL_MAXPAGE
-  real_maxpage=DEFINED_REAL_MAXPAGE;
-#else
-  massert(cur=sbrk(0));
-  beg=data_start ? data_start : cur;
-  for (i=0,j=(1L<<ufmin(mem_bound,log_maxpage_bound));j>PAGESIZE;j>>=1)
-    if ((end=beg+i+j-PAGESIZE)>cur)
-      if (!mbrk(end)) {
-	real_maxpage=page(end);
-	i+=j;
-      }
-  massert(!mbrk(cur));
-#endif
+  massert(beg=data_start ? data_start : sbrk(0));
+  set_real_maxpage(beg);
 
-  phys_pages=ufmin(get_phys_pages1(0)+page(beg),real_maxpage)-page(beg);
+  phys_pages=ufmin(get_phys_pages1(0,1)+page(beg),real_maxpage)-page(beg);
 
   setup_maxpages(mem_multiple);
 
@@ -522,7 +577,7 @@ gcl_cleanup(int gc) {
 
     raw_image=FALSE;
     cs_org=0;
-    initial_sbrk=core_end;
+    msbrk_end();
 
   }
 
@@ -608,16 +663,12 @@ main(int argc, char **argv, char **envp) {
   GET_FULL_PATH_SELF(kcl_self);
   *argv=kcl_self;
 
-#ifdef CAN_UNRANDOMIZE_SBRK
-#include <stdio.h>
-#include <stdlib.h>
-#include "unrandomize.h"
-#endif
-
   vs_top = vs_base = vs_org;
   ihs_top = ihs_org-1;
   bds_top = bds_org-1;
   frs_top = frs_org-1;
+
+#include "cstack.h"
 
   gcl_init_alloc(alloca(1));
 

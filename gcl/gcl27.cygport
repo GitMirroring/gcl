@@ -1,20 +1,10 @@
-<<<<<<< HEAD
-NAME="gcl27"
-VERSION=2.7.0
-RELEASE=1
-HOMEPAGE="https://www.gnu.org/software/gcl/"
-
-PKG_NAMES="${PN} ${PN}-tk ${PN}-doc ${PN}-tk-doc elpa-${PN}"
-
-SRC_URI="git://git@git.sv.gnu.org/gcl.git;protocol=ssh;branch=master;"
-=======
 GIT_URI="git://git.sv.gnu.org/gcl.git"
-GIT_BRANCH="Version_2_6_15pre"
+GIT_BRANCH="master"
 inherit git.cygclass
 
 
-NAME="gcl"
-VERSION=2.6.15
+NAME="gcl27"
+VERSION=2.7.0
 RELEASE=1
 HOMEPAGE="https://www.gnu.org/software/gcl/"
 
@@ -22,7 +12,6 @@ PKG_NAMES="${PN}"
 
 #SRC_URI="git://git@git.sv.gnu.org/gcl.git;protocol=ssh;branch=master;"
 SRC_DIR=gcl/gcl"
->>>>>>> sbrk_mmap_test
 
 # HG_URI="http://hg.code.sf.net/p/clisp/clisp"
 # HG_REV=16678
@@ -73,7 +62,7 @@ usr
 
 MAKEOPTS+=" -j1"
 
-DEPEND="
+BUILD_REQUIRES="
 	libeditreadline-devel
 	tk8.6-devel
 	libgmp-devel
