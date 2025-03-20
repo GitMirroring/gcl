@@ -179,6 +179,30 @@ mbrk(void *v) {
 
 }
     
+static char *
+next_line(int l,ufixnum *s) {
+
+  size_t n;
+  ssize_t i;
+  char *p;
+
+  if (*s && (n=strlen(FN1))) {
+    memmove(FN1,FN1+n+1,sizeof(FN1)-(n+1));
+    *s-=n+1;
+  }
+
+  massert(*s<sizeof(FN1));
+  massert((i=read(l,FN1+*s,sizeof(FN1)-*s))>=0);
+  *s+=i;
+
+  if (!(p=memchr(FN1,'\n',*s)))
+    return NULL;
+
+  *p=0;
+  return FN1;
+
+}
+
 #if defined(__CYGWIN__)||defined(__MINGW32__)
 
 #include <windows.h>
@@ -347,30 +371,30 @@ setup_maxpages(double scale) {
 
 }
 
+
 static void *
 next_shared_lib_map_no_malloc(void)  {
 
-  ufixnum a=0;
-
 #if !defined(DARWIN) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)/*FIXME*/
 
-  char b[40960],*c,*d,*s=sbrk(0);
+  char *c,rwx[4];
+  ufixnum a,e,s=(ufixnum)sbrk(0),r;
   int l;
 
   massert((l=open("/proc/self/maps",O_RDONLY))!=-1);
-  massert(read(l,b,sizeof(b))<sizeof(b));
 
-  for (a=0,d=b;(char *)a<s && (c=strtok(d,"\n"));d=NULL)
-    if ((!kcl_self || !strstr(c,kcl_self)) && strchr(c,'/'))
-	sscanf(c,"%lx-",&a);
+  for (a=r=0;(a<=s || !memcmp(rwx,"---",3)) && (c=next_line(l,&r));)
+    sscanf(c,"%lx-%lx %3s",&a,&e,rwx);
 
-  close(l);
-  memset(b,0,sizeof(b));
+  massert(!close(l));
+
+  return (void *)(c ? a : -1);
+
+#else
+
+  return (void *)-1;
 
 #endif
-
-  return (void *)((char *)a>s ? a : -1);
-
 }
 
 static void *stack_map_base=(void *)-1;
