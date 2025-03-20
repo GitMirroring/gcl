@@ -149,6 +149,8 @@ DEFUN("DLOPEN",object,fSdlopen,SI,1,1,NONE,OO,OO,OO,OO,(object name),"") {
   }
   if ((err=dlerror()))
     FEerror("dlopen failure on ~s: ~s",2,name,make_simple_string(err));
+
+  update_real_maxpage();
   
   RETURN1(make_fixnum((fixnum)v));
 
