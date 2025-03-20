@@ -1300,6 +1300,7 @@ gcl_init_alloc(void *cs_start) {
       sgc_quit();
 
 #endif
+
 #ifdef INITIALIZE_BRK
   INITIALIZE_BRK;
 #endif
