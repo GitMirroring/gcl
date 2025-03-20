@@ -315,7 +315,11 @@ get_phys_pages_no_malloc(char freep,char ramp) {
 static ufixnum
 get_phys_pages1(char freep,char ramp) {
 
-  return get_phys_pages_no_malloc(freep,ramp);
+  ufixnum p=get_phys_pages_no_malloc(freep,ramp);
+#if SIZEOF_LONG == 8 && defined(__GNU__)/*FIXME*/
+  p>>=1;
+#endif
+  return p;
 
 }
 
