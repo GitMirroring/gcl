@@ -203,6 +203,43 @@ next_line(int l,ufixnum *s) {
 
 }
 
+static void
+parse_meminfo_decimal(char *c,char *h,ufixnum *t) {
+
+  ufixnum n=strlen(h);
+
+  if (memcmp(h,c,n))
+    return;
+
+  massert(sscanf(c+n,"%ld kB",t)==1);
+  *t<<=10;
+  *t>>=PAGEWIDTH;
+
+}
+
+static void
+parse_proc_meminfo(ufixnum *t,ufixnum *f,ufixnum *st,ufixnum *sf) {
+
+  int l;
+  ufixnum r=0;
+  char *s="/proc/meminfo",*c;
+
+  *t=*f=*st=*sf=0;
+
+  massert((l=open(s,O_RDONLY))>=0);
+
+  for (;(c=next_line(l,&r));) {
+    parse_meminfo_decimal(c,"MemTotal:",t);
+    parse_meminfo_decimal(c,"MemFree:",f);
+    parse_meminfo_decimal(c,"SwapTotal:",st);
+    parse_meminfo_decimal(c,"SwapFree:",sf);
+  }
+
+  massert(!close(l));
+
+}
+
+
 #if defined(__CYGWIN__)||defined(__MINGW32__)
 
 #include <windows.h>
@@ -236,7 +273,7 @@ get_phys_pages_no_malloc(char n,char ramp) {
 
 }
 
-#elif defined(__sun__) || defined(__GNU__)
+#elif defined(__sun__)
 
 static ufixnum
 get_phys_pages_no_malloc(char n,char ramp) {
@@ -261,16 +298,14 @@ get_phys_pages_no_malloc(char n,char ramp) {
 
 #else /*Linux*/
 
-#include <sys/sysinfo.h>
-
 static ufixnum
 get_phys_pages_no_malloc(char freep,char ramp) {
 
-  struct sysinfo s;
+  ufixnum t,f,st,sf;
 
-  return sysinfo(&s) ? 0 : ((freep ?
-			     (ramp ? s.freeram : s.freeram+s.freeswap)  :
-			     (ramp ? s.totalram : s.totalram+s.totalswap))*s.mem_unit)>>PAGEWIDTH;
+  parse_proc_meminfo(&t,&f,&st,&sf);
+
+  return (freep ? (ramp ? f : f+sf) : (ramp ? t : t+st));
 
 }
 
