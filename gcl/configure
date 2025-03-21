@@ -8610,17 +8610,22 @@ printf "%s\n" "$as_me: max log text start $max" >&6;}
 		{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: max log text start reduced to $max considering c stack address" >&5
 printf "%s\n" "$as_me: max log text start reduced to $max considering c stack address" >&6;}
 	    fi
-	else
-	    q=`${AWK} 'END {print n-2}' n=$cstack_bits /dev/null`
-	    if test "$use" = "386-gnu"; then #FIXME: 386 hurd must start saved mmaps over 0x8000000
-	       q=`${AWK} 'END {print n-1}' n=$cstack_bits /dev/null`
-	    fi
-	    if test $min -lt $q && test $q -lt $max && test $q -lt 30; then
-	       min=$q
-	       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: min log text start increased to $min over c stack address" >&5
-printf "%s\n" "$as_me: min log text start increased to $min over c stack address" >&6;}
-	    fi
 	fi
+
+	# Need to get over default cstack and related maps between 0x1000000 and 0x2000000
+	if test "$use" == "386-gnu" || test "$use" == "amd64-gnu" ; then
+	   if test "$use" == "386-gnu" ; then
+	      q=24;
+	   else
+	      q=23;
+	   fi
+	   if test $min -lt $q && test $q -lt $max && test $q -lt 30; then
+	      min=$q
+	      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: min log text start increased to $min over c stack address" >&5
+printf "%s\n" "$as_me: min log text start increased to $min over c stack address" >&6;}
+	   fi
+	fi
+
 
 	j=-1;
 	low_shft="";
