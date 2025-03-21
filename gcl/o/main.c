@@ -316,7 +316,7 @@ static ufixnum
 get_phys_pages1(char freep,char ramp) {
 
   ufixnum p=get_phys_pages_no_malloc(freep,ramp);
-#if SIZEOF_LONG == 8 && defined(__GNU__)/*FIXME*/
+#if defined(__GNU__)/*FIXME -- no mmap overcommit as of yet*/
   p>>=1;
 #endif
   return p;
