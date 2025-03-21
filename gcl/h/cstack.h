@@ -18,6 +18,11 @@
 #if defined(__SH4__)/*FIXME is this just due to qemu?*/
 #define CTOP (void *)0x80000000
 #define SS FIXED_STACK
+#elif defined(__gnu_hurd__)
+#define CTOP (void *)0xc0000000
+#define SS FIXED_STACK
+#define MAP_GROWSDOWN 0
+#define MAP_STACK 0
 #else
 #define CTOP (void *)0xc0000000/*FIXME configure?*/
 #define SS getpagesize()
