@@ -51,7 +51,7 @@ SRC_DIR=gcl/gcl"
 
 gcl_CATEGORY="Devel Interpreters Math Shells"
 gcl_SUMMARY="A Common Lisp implementation"
-gcl_DESCRIPTION="GNU Common Lisp, GCL, is a Common Lisp compiler and interpreter implemented in C, and complying both with the ANSI standard and with the standard set  forth in the book "Common Lisp, the Language I".  It attempts to strike a useful middle ground in performance and portability from its design around C."
+gcl_DESCRIPTION="GNU Common Lisp, GCL, is a Common Lisp compiler and interpreter implemented in C, and complying both with the ANSI standard and with the standard set  forth in the book 'Common Lisp, the Language I'.  It attempts to strike a useful middle ground in performance and portability from its design around C."
 gcl27_CONTENTS="usr"
 
 MAKEOPTS+=" -j1"
