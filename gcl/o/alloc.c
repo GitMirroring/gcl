@@ -1307,6 +1307,8 @@ gcl_init_alloc(void *cs_start) {
 
   update_real_maxpage();
 
+  cumulative_allocation=recent_allocation=0;
+
   if (gcl_alloc_initialized) {
     maybe_set_hole_from_maxpages();
     return;
