@@ -6,6 +6,7 @@
 @menu
 * Command Line::                
 * Operating System Definitions::  
+* Environment Variables::
 @end menu
 
 @node Command Line, Operating System Definitions, Operating System, Operating System
@@ -427,3 +428,33 @@ be any non-negative, non-complex number.
 
 
 @end defun
+
+@node Environment Variables, Operating System Definitions, Operating System, Operating System
+@section Environment Variables
+
+Several environment variables affect GCL:
+
+@vtable @code
+@item GCL_MEM_MULTIPLE -- default 1.0
+A positive float indicating the fraction of available memory
+GCL should use.
+@item GCL_MEM_BOUND -- default sizeof(long)-1
+A positive integer bounding GCL's heap to 1<<(n+1) bytes.  Trumps
+GCL_MEM_MULTIPLE.
+@item GCL_GC_ALLOC_MIN -- default 0.05
+A positive float indicating the minimum fraction of heap to be
+allocated between garbage collection (GC) cycles.
+@item GCL_GC_PAGE_MIN -- default 0.5
+A positive float indicating the minimum fraction of heap to be
+allocated before garbage collection (GC) commences.
+@item GCL_GC_PAGE_MAX -- default 0.75
+A positive float indicating the maximum fraction of heap to be
+allocated after which garbage collection (GC) is mandatory.
+@item GCL_MULTIPROCESS_MEMORY_POOL -- default unset
+A string when set indicating a directory in which to place the file
+gcl_pool used for coordinating memory management among multiple GCL
+processes.  This should be a local directory for performance reasons.
+@item GCL_WAIT_ON_ABORT -- default 0
+A non-negative integer indicating how many seconds to sleep before
+aborting on fatal error.
+@end vtable

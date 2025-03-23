@@ -139,6 +139,14 @@ language code.  The interpreter ignores this form.
 
 @end deffn
 
+@defun SET-LOG-MAXPAGE-BOUND (positive-integer)
+Package:SYSTEM
+
+GCL specific: Limits the heap to 1<<(positive-integer+1) bytes.  Trumps any limits
+specified in the environment.
+
+@end defun
+
 @defun ALLOCATE (type number &optional (really-allocate nil))
 Package:LISP
 

@@ -2570,9 +2570,7 @@ The @i{primary value} of each @i{form} is assigned to the corresponding @i{var}.
 
 @subsubheading  Pronunciation::
 
-@b{psetq}: pronounced
-@tex p\=e'set ,ky\"u 
-@end tex
+pronounced p\=e'set ,ky\"u
 
 @subsubheading  Arguments and Values::
 

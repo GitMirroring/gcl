@@ -290,8 +290,8 @@ install_unix:
 	$(MAKE) install-command "INSTALL_LIB_DIR=$(INSTALL_LIB_DIR)" "prefix=$(prefix)" "DESTDIR=$(DESTDIR)" "BINDIR=$$MINSTALL_LIB_DIR/unixport"
 	cp bin/$(BINSCPT) $(DESTDIR)$(prefix)/bin/
 	rm -f $(DESTDIR)$(prefix)/bin/gcl.exe
-	tar cf - $$(find $(PORTDIR) -name saved_gcl) $$(find $(PORTDIR) -name saved_ansi_gcl) \
-           $$(find $(PORTDIR) -name saved_gcl_gprof) $$(find $(PORTDIR) -name saved_ansi_gcl_gprof) info/*.info* $(LISP_LIB) \
+	tar cf - $$(find $(PORTDIR) -name saved_gcl$(EXE)) $$(find $(PORTDIR) -name saved_ansi_gcl$(EXE)) \
+           $$(find $(PORTDIR) -name saved_gcl_gprof$(EXE)) $$(find $(PORTDIR) -name saved_ansi_gcl_gprof$(EXE)) $(LISP_LIB) \
 	   $(TCL_EXES)  |  (cd $(DESTDIR)$(INSTALL_LIB_DIR) ;tar xf -)
 	if gcc --version | grep -i mingw >/dev/null 2>&1 ; then if grep -i oncrpc makedefs >/dev/null 2>&1 ; then cp /mingw/bin/oncrpc.dll $(DESTDIR)$(INSTALL_LIB_DIR)/$(PORTDIR); fi ; fi
 	cd $(DESTDIR)$(INSTALL_LIB_DIR)/$(PORTDIR) && \
