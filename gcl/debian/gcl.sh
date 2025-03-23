@@ -27,6 +27,7 @@ SYS=$DIR/unixport
 exec $SYS/$EXE -dir $SYS/ -libdir $DIR/ \
    -eval '(setq si::*allow-gzipped-file* t)' \
    -eval '(setq si::*tk-library* "/usr/lib/tk@TKVERS@")' \
+   -eval '(setq si::*default-info-files* (list "gcl@EXT@-si.info" "gcl@EXT@-tk.info" "gcl@EXT@.info"))' \
      "$@"
 
 # other options: -load /tmp/foo.o -load jo.lsp -eval "(joe 3)"
