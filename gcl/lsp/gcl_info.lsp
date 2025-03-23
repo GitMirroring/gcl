@@ -70,7 +70,7 @@
 	(when (eq x tem)
 	  (setq tem 
 		(make-array len :adjustable t
-			    :element-type 'character :fill-pointer 0))
+			    :element-type 'character :fill-pointer i))
 	  (dotimes (j i) (setf (aref tem j) (aref x j))))
 	(vector-push-extend #\\ tem))
       (unless (eq tem x) (vector-push-extend ch tem))
@@ -100,7 +100,7 @@
 	    s
 	    (node-string (car (nth 1 *current-info-data*)))
 	    (node
-	     (and node-string (car (get-nodes "index" node-string)))))
+	     (and node-string (car (get-nodes "Index" node-string)))))
        (when node
 	   (setq s (show-info
 		    node
