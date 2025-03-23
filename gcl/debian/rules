@@ -65,18 +65,20 @@ configure-stamp:
 
 build-stamp: configure-stamp
 	dh_testdir
-
-	rm -rf debian/tmp1
-	mkdir -p debian/tmp1
-	$(MAKE)
-	$(MAKE) install DESTDIR=$$(pwd)/debian/tmp1
-
+	PEXT=${EXT} $(MAKE)
 	touch $@
 
 build: build-arch build-indep
 build-arch: build-stamp
 build-indep: build-stamp
 	touch $@
+
+install-stamp: build-stamp
+	rm -rf debian/tmp1
+	mkdir -p debian/tmp1
+	PEXT=${EXT} $(MAKE) install DESTDIR=$$(pwd)/debian/tmp1
+	touch $@
+
 
 debian/control: debian/control_$(EXT)
 	cp $< $@
@@ -95,23 +97,17 @@ clean: debian/control debian/gcl.templates
 	rm -f debian/elpa-gcl$(EXT).elpa debian/gcl$(EXT)-pkg.el
 
 INS:=$(shell for i in `find debian -name "in.*"` ; do echo $$i | sed 's,in.,,1' ; done |sed "s,\([^x]gcl\),\1$(EXT),g")
-
 gcl$(EXT)% : in.gcl%
 	cat $< | sed 's,@EXT@,$(EXT),g' >$@
 
 install: DH_OPTIONS:=
-install: install-stamp
-install-stamp: build-stamp debian/control $(INS)
+install: install-stamp debian/control $(INS)
 	dh_testdir
 	dh_testroot
 	dh_prep
 	dh_installdirs
 
 	cp -a debian/tmp1 debian/tmp
-
-	[ "$(EXT)" = "" ] || \
-		for i in debian/tmp/usr/share/info/*.info*; do \
-			mv $$i $$(echo $$i | sed "s,gcl,gcl$(EXT),g"); done
 
 	mv debian/tmp/usr/share/doc debian/tmp/usr/share/foo
 	mkdir -p debian/tmp/usr/share/doc/gcl
@@ -146,9 +142,7 @@ install-stamp: build-stamp debian/control $(INS)
 	mv debian/gcl$(EXT)/usr/lib/gcl-$(VERS)/gcl-tk debian/gcl$(EXT)-tk/usr/lib/gcl-$(VERS)/
 
 	mkdir -p debian/gcl$(EXT)-tk-doc/usr/share/doc/gcl$(EXT)/
-	mv debian/gcl$(EXT)-doc/usr/share/doc/gcl$(EXT)/gcl-tk_html debian/gcl$(EXT)-tk-doc/usr/share/doc/gcl$(EXT)/
-
-	touch $@
+	mv debian/gcl$(EXT)-doc/usr/share/doc/gcl$(EXT)/gcl$(EXT)-tk_html debian/gcl$(EXT)-tk-doc/usr/share/doc/gcl$(EXT)/
 
 # Build architecture-independent files here.
 # Pass -i to all debhelper commands in this target to reduce clutter.
