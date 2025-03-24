@@ -5797,15 +5797,16 @@ fi
 
 if test "$GPROF" != "" ; then
    case $use in
-       powerpc*) if test "$host_cpu" = "powerpc64le" ; then GPROF=""; fi;;
-       s390*) GPROF="";;#mcount smashes float args in make_shortfloat 20180313
+#       powerpc*) if test "$host_cpu" = "powerpc64le" ; then GPROF=""; fi;;
+#       s390*) GPROF="";;#mcount smashes float args in make_shortfloat 20180313
        sh4*)  GPROF="";;
        m68k*) GPROF="";;
        ia64*) GPROF="";;
-       hppa*) GPROF="";;
-       arm*)  if echo $canonical |grep -q hf$; then GPROF=""; fi;;#FIXME CALL and JUMP24 veneers needed for thumb 20190201 #FIXME mcount compiled as a 24/22 bit reloc even with -mlong-calls, marginally accessible
-       aarch64*) GPROF="";;#unreproducible buildd bug 20170824
-       *gnu)  GPROF="";;
+#       hppa*) GPROF="";;
+       gnuwin95*) GPROF="";;
+#       arm*)  if echo $canonical |grep -q hf$; then GPROF=""; fi;;#FIXME CALL and JUMP24 veneers needed for thumb 20190201 #FIXME mcount compiled as a 24/22 bit reloc even with -mlong-calls, marginally accessible
+#       aarch64*) GPROF="";;#unreproducible buildd bug 20170824
+#       *gnu)  GPROF="";;
    esac
    OLD_CFLAGS=$CFLAGS
    if ! add_arg_to_cflags -pg ; then GPROF="" ; fi
@@ -10673,36 +10674,28 @@ fi
 
 
 	if test "${TCLSH}" = "" ; then true ; else
-
-	    rm -f conftest.tcl
-	    cat >> conftest.tcl <<EOF
-
-puts [set tcl_version]
-
-EOF
-
-	    TCL_VERSION=`${TCLSH} < conftest.tcl`
+	    TCL_VERSION=`echo 'puts [set tcl_version]' | ${TCLSH}`
 	fi
 
-	if test -x /usr/lib/tcl$TCL_VERSION/tclConfig.sh ; then
+	if test -e /usr/lib/tcl$TCL_VERSION/tclConfig.sh ; then
 	    TCL_CONFIG_PREFIX=/usr/lib/tcl$TCL_VERSION
 	fi
 
     fi
 
-    if test -f ${TCL_CONFIG_PREFIX}/tclConfig.sh  ; then . ${TCL_CONFIG_PREFIX}/tclConfig.sh ; fi
+    if test -e ${TCL_CONFIG_PREFIX}/tclConfig.sh  ; then . ${TCL_CONFIG_PREFIX}/tclConfig.sh ; fi
 
     if test -d "${TK_CONFIG_PREFIX}"  ; then true ; else
-	if test -f ${TCL_CONFIG_PREFIX}/tkConfig.sh ; then
+	if test -e ${TCL_CONFIG_PREFIX}/tkConfig.sh ; then
 	    TK_CONFIG_PREFIX=${TCL_CONFIG_PREFIX}
 	else
-	    if test -x `echo $TCL_CONFIG_PREFIX | sed 's,tcl,tk,g'`/tkConfig.sh ; then
+	    if test -e `echo $TCL_CONFIG_PREFIX | sed 's,tcl,tk,g'`/tkConfig.sh ; then
 		TK_CONFIG_PREFIX=`echo $TCL_CONFIG_PREFIX | sed 's,tcl,tk,g'`
 	    fi
 	fi
     fi
 
-    if test -f ${TK_CONFIG_PREFIX}/tkConfig.sh  ; then . ${TK_CONFIG_PREFIX}/tkConfig.sh ; fi
+    if test -e ${TK_CONFIG_PREFIX}/tkConfig.sh  ; then . ${TK_CONFIG_PREFIX}/tkConfig.sh ; fi
 
     if test -d ${TCL_CONFIG_PREFIX}/tcl${TCL_VERSION} ; then
 	TCL_LIBRARY=${TCL_CONFIG_PREFIX}/tcl${TCL_VERSION}
@@ -10720,24 +10713,24 @@ EOF
 	fi
     fi
 
-    if test -f ${TCL_CONFIG_PREFIX}/../include/tcl.h ; then
+    if test -e ${TCL_CONFIG_PREFIX}/../include/tcl.h ; then
 	TCL_INCLUDE=-I${TCL_CONFIG_PREFIX}/../include
     else
-	if test -f /usr/include/tcl${TCL_VERSION}/tcl.h ; then
+	if test -e /usr/include/tcl${TCL_VERSION}/tcl.h ; then
 	    TCL_INCLUDE=-I/usr/include/tcl${TCL_VERSION}
 	fi
     fi
 
-    if test -f ${TK_CONFIG_PREFIX}/../include/tk.h ; then
+    if test -e ${TK_CONFIG_PREFIX}/../include/tk.h ; then
 	TK_INCLUDE=-I${TK_CONFIG_PREFIX}/../include
     else
-	if test -f /usr/include/tcl${TCL_VERSION}/tk.h ; then
+	if test -e /usr/include/tcl${TCL_VERSION}/tk.h ; then
 	    TK_INCLUDE=-I/usr/include/tcl${TCL_VERSION}
 	fi
     fi
 
     TCL_VERSION_DOT_FREE=`echo ${TCL_VERSION} | tr -d .`
-    if test -f ${TK_CONFIG_PREFIX}/../bin/tcl${TCL_VERSION_DOT_FREE}.dll  ; then
+    if test -e ${TK_CONFIG_PREFIX}/../bin/tcl${TCL_VERSION_DOT_FREE}.dll  ; then
 	TCL_LIBS="-L${TK_CONFIG_PREFIX}/../bin -ltk${TCL_VERSION_DOT_FREE} -ltcl${TCL_VERSION_DOT_FREE}"
 	TCL_STUB_LIBS="-L${TK_CONFIG_PREFIX}/lib -ltkstub${TCL_VERSION_DOT_FREE} -ltclstub${TCL_VERSION_DOT_FREE}"
     else
