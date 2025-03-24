@@ -181,7 +181,7 @@ int m;
     { bcopy(sfd->valid_data,sfd->read_buffer,sfd->valid_data_size);
       sfd->valid_data=sfd->read_buffer;}
    /* there is at least a packet size of space available */   
-  if ((fix(FFN(fScheck_fd_for_input)(sfd->fd,sfd->write_timeout))>0)) {
+  if (((fixnum)(FFN(fScheck_fd_for_input)(sfd->fd,sfd->write_timeout))>0)) {
   again:
     {
       char *start = sfd->valid_data+sfd->valid_data_size;
