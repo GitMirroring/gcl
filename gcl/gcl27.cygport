@@ -63,12 +63,16 @@ usr
 MAKEOPTS+=" -j1"
 
 BUILD_REQUIRES="
-	libeditreadline-devel
-	tk8.6-devel
+	texlive
+	texlive-collection-basic
+	texlive-collection-latex
+	texinfo
+	libreadline-devel
+	tcl-tk-devel
 	libgmp-devel
-	libxmu-devel
-	libxaw7-devel
-	zlib1g-devel
+	libXmu-devel
+	libXaw-devel
+	zlib-devel
 	libtirpc-devel
 "
 
