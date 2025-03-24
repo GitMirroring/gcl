@@ -220,7 +220,24 @@ command:
 merge:
 	$(CC) -o merge merge.c
 
-LISP_LIB=cmpnew/gcl_collectfn.o xgcl-2/sysdef.lisp xgcl-2/gcl_dwtest.lsp xgcl-2/gcl_dwtestcases.lsp lsp/gcl_export.lsp lsp/gcl_autoload.lsp cmpnew/gcl_cmpopt.lsp cmpnew/gcl_lfun_list.lsp lsp/gcl_auto_new.lsp h/cmpinclude.h  unixport/init_raw.lsp $(shell ls -1 unixport/*.a) gcl-tk/tk-package.lsp $(TK_LISP_LIB) $(RL_LIB) $(FIRST_FILE) $(LAST_FILE) $(addsuffix /sys-proclaim.lisp,lsp cmpnew pcl clcs xgcl-2) unixport/gcl.script unixport/libboot.so lsp/gcl_defmacro.lsp lsp/gcl_evalmacros.lsp lsp/gcl_top.lsp lsp/gcl_module.lsp xgcl-2/sysdef.lisp pcl/package.lisp clcs/package.lisp
+LISP_LIB=$(shell ls -1 cmpnew/gcl_collectfn.o \
+           xgcl-2/sysdef.lisp xgcl-2/gcl_dwtest.lsp xgcl-2/gcl_dwtestcases.lsp xgcl-2/sysdef.lisp  \
+	   lsp/gcl_export.lsp lsp/gcl_autoload.lsp cmpnew/gcl_cmpopt.lsp \
+	   cmpnew/gcl_lfun_list.lsp lsp/gcl_auto_new.lsp \
+	   h/cmpinclude.h  unixport/init_raw.lsp \
+	   $(addsuffix .a,$(addprefix unixport/lib,gcl gcl_gprof ansi_gcl ansi_gcl_gprof)) \
+	   $(addsuffix $(EXE),$(addprefix unixport/saved_,gcl gcl_gprof ansi_gcl ansi_gcl_gprof)) \
+	   unixport/libboot.so \
+	   $(shell find $(ODIR) -name "$(FIRST_FILE)") $(shell find $(ODIR) -name "$(LAST_FILE)") \
+	   gcl-tk/tk-package.lsp $(TK_LISP_LIB) \
+	   $(RL_LIB) \
+	   $(addsuffix /sys-proclaim.lisp,lsp cmpnew pcl clcs xgcl-2) \
+	   unixport/gcl.script \
+	   lsp/gcl_defmacro.lsp lsp/gcl_evalmacros.lsp lsp/gcl_top.lsp lsp/gcl_module.lsp \
+	   pcl/package.lisp clcs/package.lisp)
+
+foo:
+	echo $(LISP_LIB)
 
 install-command:
 	rm -f bin/$(BINSCPT)
@@ -290,9 +307,7 @@ install_unix:
 	$(MAKE) install-command "INSTALL_LIB_DIR=$(INSTALL_LIB_DIR)" "prefix=$(prefix)" "DESTDIR=$(DESTDIR)" "BINDIR=$$MINSTALL_LIB_DIR/unixport"
 	cp bin/$(BINSCPT) $(DESTDIR)$(prefix)/bin/
 	rm -f $(DESTDIR)$(prefix)/bin/gcl.exe
-	tar cf - $$(find $(PORTDIR) -name saved_gcl$(EXE)) $$(find $(PORTDIR) -name saved_ansi_gcl$(EXE)) \
-           $$(find $(PORTDIR) -name saved_gcl_gprof$(EXE)) $$(find $(PORTDIR) -name saved_ansi_gcl_gprof$(EXE)) $(LISP_LIB) \
-	   $(TCL_EXES)  |  (cd $(DESTDIR)$(INSTALL_LIB_DIR) ;tar xf -)
+	tar cf - $(LISP_LIB) $(TCL_EXES)  |  (cd $(DESTDIR)$(INSTALL_LIB_DIR) ;tar xf -)
 	if gcc --version | grep -i mingw >/dev/null 2>&1 ; then if grep -i oncrpc makedefs >/dev/null 2>&1 ; then cp /mingw/bin/oncrpc.dll $(DESTDIR)$(INSTALL_LIB_DIR)/$(PORTDIR); fi ; fi
 	cd $(DESTDIR)$(INSTALL_LIB_DIR)/$(PORTDIR) && \
 		for i in saved_*; do \
