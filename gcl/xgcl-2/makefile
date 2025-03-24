@@ -37,7 +37,7 @@ clean:
 	rm -rf dwdoc objects
 
 install: docs
-	-mkdir -p $(DESTDIR)$(INFO_DIR)../doc
-	-cp -r dwdoc $(DESTDIR)$(INFO_DIR)../doc
-	-cp *tex $(DESTDIR)$(INFO_DIR)../doc
-	find -name "*.pdf" -exec cp {} $(DESTDIR)$(INFO_DIR)../doc \;
+	-mkdir -p $(DESTDIR)$(INFO_DIR)../doc/gcl${PEXT}
+	-cp -r dwdoc $(DESTDIR)$(INFO_DIR)../doc/gcl${PEXT}
+	-cp *tex $(DESTDIR)$(INFO_DIR)../doc/gcl${PEXT}
+	find -name "*.pdf" -exec cp {} $(DESTDIR)$(INFO_DIR)../doc/gcl${PEXT} \;

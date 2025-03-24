@@ -224,7 +224,7 @@ LISP_LIB=$(shell ls -1 cmpnew/gcl_collectfn.o \
            xgcl-2/sysdef.lisp xgcl-2/gcl_dwtest.lsp xgcl-2/gcl_dwtestcases.lsp xgcl-2/sysdef.lisp  \
 	   lsp/gcl_export.lsp lsp/gcl_autoload.lsp cmpnew/gcl_cmpopt.lsp \
 	   cmpnew/gcl_lfun_list.lsp lsp/gcl_auto_new.lsp \
-	   h/cmpinclude.h  unixport/init_raw.lsp \
+	   h/cmpinclude.h  unixport/init_raw.lsp unixport/libgclp.a \
 	   $(addsuffix .a,$(addprefix unixport/lib,gcl gcl_gprof ansi_gcl ansi_gcl_gprof)) \
 	   $(addsuffix $(EXE),$(addprefix unixport/saved_,gcl gcl_gprof ansi_gcl ansi_gcl_gprof)) \
 	   unixport/libboot.so \
@@ -236,20 +236,13 @@ LISP_LIB=$(shell ls -1 cmpnew/gcl_collectfn.o \
 	   lsp/gcl_defmacro.lsp lsp/gcl_evalmacros.lsp lsp/gcl_top.lsp lsp/gcl_module.lsp \
 	   pcl/package.lisp clcs/package.lisp)
 
-foo:
-	echo $(LISP_LIB)
+bin/gcl: bin/gcl.sh
+	sed -e "s,@EXT@,$(PEXT),g" \
+	    -e "s,@VERS@,$$(cat majvers).$$(cat minvers),g" \
+	    -e "s,@TKVERS@,$$(echo $(TK_CONFIG_PREFIX) |sed 's,.*/tk,,g'),g" $< >$@
+	chmod a+x $@
 
-install-command:
-	rm -f bin/$(BINSCPT)
-	(echo '#!/bin/sh' ; \
-	echo exec $(BINDIR)/$(FLISP)$(EXE) \\ ; \
-	echo '   -dir' $(INSTALL_LIB_DIR)/unixport/ \\ ; \
-	echo '   -libdir' $(INSTALL_LIB_DIR)/ \\ ; \
-	echo '   -eval '\''(setq si::*allow-gzipped-file* t)'\' \\ ;\
-	! [ -d "$(TK_CONFIG_PREFIX)" ] || echo '   -eval '\''(setq si::*tk-library* '\"$(TK_LIBRARY)\"')'\' \\;\
-	echo '     '\"\$$@\" ) > bin/$(BINSCPT);
-	echo '#' other options: -load "/tmp/foo.o" -load "jo.lsp" -eval '"(joe 3)"' >> bin/$(BINSCPT)
-	chmod a+x bin/$(BINSCPT)
+install-command: bin/gcl
 
 install_windows_command:
 	rm -f $(prefix)/bin/gcl
@@ -301,11 +294,14 @@ install_unix:
 	mkdir -p $(DESTDIR)$(prefix)/lib 
 	mkdir -p $(DESTDIR)$(prefix)/bin
 	mkdir -p $(DESTDIR)$(prefix)/share
-	cp -a man $(DESTDIR)$(prefix)/share/
+	i=$$(find man -name gcl.1); \
+		mkdir -p $(DESTDIR)$(prefix)/share/$$(dirname $$i) ; \
+		sed -e 's,\(\b\)gcl\(\b\),\1gcl$(PEXT)\2,g' $$i \
+			>$(DESTDIR)$(prefix)/share/$$(dirname $$i)/gcl$(PEXT).1
 	mkdir -p $(DESTDIR)$(INSTALL_LIB_DIR)
 	MINSTALL_LIB_DIR=`echo $(INSTALL_LIB_DIR) | sed -e 'sX^\([a-z]\):X/\1Xg'` ; \
 	$(MAKE) install-command "INSTALL_LIB_DIR=$(INSTALL_LIB_DIR)" "prefix=$(prefix)" "DESTDIR=$(DESTDIR)" "BINDIR=$$MINSTALL_LIB_DIR/unixport"
-	cp bin/$(BINSCPT) $(DESTDIR)$(prefix)/bin/
+	cp bin/$(BINSCPT) $(DESTDIR)$(prefix)/bin/gcl$(PEXT)
 	rm -f $(DESTDIR)$(prefix)/bin/gcl.exe
 	tar cf - $(LISP_LIB) $(TCL_EXES)  |  (cd $(DESTDIR)$(INSTALL_LIB_DIR) ;tar xf -)
 	if gcc --version | grep -i mingw >/dev/null 2>&1 ; then if grep -i oncrpc makedefs >/dev/null 2>&1 ; then cp /mingw/bin/oncrpc.dll $(DESTDIR)$(INSTALL_LIB_DIR)/$(PORTDIR); fi ; fi
@@ -315,20 +311,16 @@ install_unix:
 			mv foo $$i ; \
 		done
 	if [ -e "unixport/rsym$(EXE)" ] ; then cp unixport/rsym$(EXE) $(DESTDIR)$(INSTALL_LIB_DIR)/unixport/ ; fi
-#	ln $(SYMB) $(INSTALL_LIB_DIR)/$(PORTDIR)/$(FLISP)$(EXE) \
-#	 $(DESTDIR)$(prefix)/bin/gcl.exe
 	if [ -d "$(TK_CONFIG_PREFIX)" ] ; then  \
 	cat gcl-tk/gcltksrv$(BAT) | \
 	sed -e "s!GCL_TK_DIR=.*!GCL_TK_DIR=$(INSTALL_LIB_DIR)/gcl-tk!g"  \
 	-e "s!TK_LIBRARY=.*!TK_LIBRARY=$(TK_LIBRARY)!g" > \
 	$(DESTDIR)$(INSTALL_LIB_DIR)/gcl-tk/gcltksrv$(BAT) ; \
 	chmod a+x $(DESTDIR)$(INSTALL_LIB_DIR)/gcl-tk/gcltksrv$(BAT) ; fi
-#	if [ -d "$(TK_CONFIG_PREFIX)" ] ; then  \
-#	(cd $(DESTDIR)$(INSTALL_LIB_DIR)/gcl-tk/demos ; \
-#	echo '(load "../tkl.o")(TK::GET-AUTOLOADS (directory "*.lisp"))' | ../../$(PORTDIR)/$(FLISP)$(EXE)) ; fi
 	if test "$(EMACS_SITE_LISP)" != "" ; then (cd elisp ; $(MAKE) install DESTDIR=$(DESTDIR)) ; fi
 	if test "$(INFO_DIR)" != "unknown"; then (cd info ; $(MAKE) ; $(MAKE) install DESTDIR=$(DESTDIR)) ; fi
 	[ "$(X_LIBS)" == "" ] || if test "$(INFO_DIR)" != "unknown"; then (cd xgcl-2 ; $(MAKE) install LISP=$$(pwd)/../unixport/saved_pre_gcl DESTDIR=$(DESTDIR)) ; fi
+	for i in lsp lisp el tcl; do find $(DESTDIR) -type f -name "*.$$i" -exec chmod ugo-x {} \; ; done
 
 install_windows:
 	mkdir -p $(DESTDIR)$(prefix)/lib 

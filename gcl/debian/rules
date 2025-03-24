@@ -74,9 +74,10 @@ build-indep: build-stamp
 	touch $@
 
 install-stamp: build-stamp
-	rm -rf debian/tmp1
-	mkdir -p debian/tmp1
-	PEXT=${EXT} $(MAKE) install DESTDIR=$$(pwd)/debian/tmp1
+	dh_testdir
+	dh_testroot
+	dh_prep
+	PEXT=${EXT} $(MAKE) install DESTDIR=$$(pwd)/debian/tmp
 	touch $@
 
 
@@ -93,46 +94,21 @@ clean: debian/control debian/gcl.templates
 
 	dh_clean
 	rm -rf debian/gprof debian/ansi-gprof debian/trad debian/ansi $(INS) debian/substvars debian.upstream
-	rm -rf *stamp build-indep debian/tmp1
+	rm -rf *stamp build-indep
 	rm -f debian/elpa-gcl$(EXT).elpa debian/gcl$(EXT)-pkg.el
 
-INS:=$(shell for i in `find debian -name "in.*"` ; do echo $$i | sed 's,in.,,1' ; done |sed "s,\([^x]gcl\),\1$(EXT),g")
+INS:=$(shell for i in `find debian -name "in.*"` ; do \
+		echo $$i | sed 's,in.,,1' ; \
+		done |\
+	     sed "s,\([^x]gcl\),\1$(EXT),g")
+
 gcl$(EXT)% : in.gcl%
 	cat $< | sed 's,@EXT@,$(EXT),g' >$@
 
 install: DH_OPTIONS:=
 install: install-stamp debian/control $(INS)
-	dh_testdir
-	dh_testroot
-	dh_prep
+
 	dh_installdirs
-
-	cp -a debian/tmp1 debian/tmp
-
-	mv debian/tmp/usr/share/doc debian/tmp/usr/share/foo
-	mkdir -p debian/tmp/usr/share/doc/gcl
-	mv debian/tmp/usr/share/foo/* debian/tmp/usr/share/doc/gcl
-	rmdir debian/tmp/usr/share/foo
-
-	[ "$(EXT)" = "" ] || \
-		mv debian/tmp/usr/share/doc/gcl debian/tmp/usr/share/doc/gcl$(EXT) 
-
-	[ "$(EXT)" = "" ] || \
-		(mv debian/tmp/usr/share/man/man1/gcl.1 debian/foo && cat debian/foo |sed -e 's, gcl , gcl$(EXT) ,g' -e 's, GCL , GCL$(EXT) ,g' >debian/tmp/usr/share/man/man1/gcl$(EXT).1)
-
-	rm -f debian/tmp/usr/bin/*.exe debian/tmp/usr/bin/*.bat
-
-	find debian/tmp -type f -name "*.lsp" -exec chmod ugo-x {} \;
-	find debian/tmp -type f -name "*.lisp" -exec chmod ugo-x {} \;
-	find debian/tmp -type f -name "*.el" -exec chmod ugo-x {} \;
-	find debian/tmp -type f -name "*.tcl" -exec chmod ugo-x {} \;
-
-	rm -f debian/tmp/usr/bin/gcl
-	TKVERS=$$(cat bin/gcl | grep /tk | head -1l | sed "s,.*/tk\([0-9.]*\)\").*,\1,1"); \
-		cat debian/gcl.sh | sed -e "s,@EXT@,$(EXT),g" \
-					-e "s,@VERS@,$(VERS),g" \
-					-e "s,@TKVERS@,$$TKVERS,g" >debian/tmp/usr/bin/gcl$(EXT)
-	chmod 0755 debian/tmp/usr/bin/gcl$(EXT)
 
 	rm -rf debian/tmp/usr/lib/gcl-$(VERS)/info
 

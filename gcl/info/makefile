@@ -47,8 +47,8 @@ install: ${FILES}
 	grep gcl${PEXT}.info $(DESTDIR)${INFO_DIR}/dir >/dev/null 2>&1 || \
 	echo "* GCL Ansi Doc: (gcl${PEXT}.info).  Ansi Common Lisp Specification." >> $(DESTDIR)${INFO_DIR}/dir
 	cp *.info* $(DESTDIR)${INFO_DIR}/
-	mkdir -p $(DESTDIR)$(INFO_DIR)/../doc
-	cp -a ${GCL_HTML} $(DESTDIR)$(INFO_DIR)/../doc
+	mkdir -p $(DESTDIR)$(INFO_DIR)/../doc/gcl${PEXT}
+	cp -a ${GCL_HTML} $(DESTDIR)$(INFO_DIR)/../doc/gcl${PEXT}
 
 clean:
 	rm -f *.info* *.html *.dvi *.cp *.ky *.vr *.tp *.pg *.toc *.aux *.log *.fn
