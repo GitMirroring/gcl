@@ -5,8 +5,8 @@ Abstract: Documentation on GCL-specific Lisp system functions
 Section: Programming
 
 Format: PDF
-Files: /usr/share/doc/gcl@EXT@-doc/gcl-si*.pdf.gz /usr/share/doc/gcl@EXT@-doc/gcl-si*.pdf.gz
+Files: /usr/share/doc/gcl@EXT@-doc/gcl@EXT@-si*.pdf.gz /usr/share/doc/gcl@EXT@-doc/gcl@EXT@-si*.pdf.gz
 
 Format: HTML
-Index: /usr/share/doc/gcl@EXT@/gcl-si_html/index.html
-Files: /usr/share/doc/gcl@EXT@/gcl-si_html/*.html
+Index: /usr/share/doc/gcl@EXT@/gcl@EXT@-si_html/index.html
+Files: /usr/share/doc/gcl@EXT@/gcl@EXT@-si_html/*.html
