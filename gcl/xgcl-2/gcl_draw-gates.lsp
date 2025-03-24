@@ -67,7 +67,7 @@
 
 (defun draw-xor (w x y)
   (window-draw-arc-xy w (- x 16) (+ y 16) 23 23 315 90)
-  (draw-or w (+ x 6) y)))
+  (draw-or w (+ x 6) y))
 
 (setf (get 'xor 'picmenu-spec)
       '(picmenu-spec  46 32 ((in1 (6 26)) (in2 (6 6)) (out (46 16))) t
@@ -75,7 +75,7 @@
 
 (defun draw-nor (w x y)
   (window-draw-circle-xy w (+ x 44) (+ y 16) 4)
-  (draw-or w x y)))
+  (draw-or w x y))
 
 (setf (get 'nor 'picmenu-spec)
       '(picmenu-spec  48 32 ((in1 (0 26)) (in2 (0 6)) (out (48 16))) t
@@ -85,7 +85,7 @@
 (defun draw-nor2 (w x y)
   (window-draw-circle-xy w (+ x 4) (+ y 6) 4)
   (window-draw-circle-xy w (+ x 4) (+ y 26) 4)
-  (draw-and w (+ x 8) y)))
+  (draw-and w (+ x 8) y))
 
 (setf (get 'nor2 'picmenu-spec)
       '(picmenu-spec  48 32 ((in1 (0 26)) (in2 (0 6)) (out (48 16))) t
@@ -94,7 +94,7 @@
 (defun draw-nand2 (w x y)
   (window-draw-circle-xy w (+ x 4) (+ y 6) 4)
   (window-draw-circle-xy w (+ x 4) (+ y 26) 4)
-  (draw-or w (+ x 4) y)))
+  (draw-or w (+ x 4) y))
 
 (setf (get 'nand2 'picmenu-spec)
       '(picmenu-spec  44 32 ((in1 (0 26)) (in2 (0 6)) (out (44 16))) t
