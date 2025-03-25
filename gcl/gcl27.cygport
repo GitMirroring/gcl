@@ -49,9 +49,9 @@ SRC_DIR="gcl/gcl"
 # https://sourceforge.net/p/clisp/mailman/clisp-devel/thread/8b7ee413-fa96-d0ef-004c-4079be6939c9%40cornell.edu/#msg35700257
 #PATCH_URI+=" 2.49.92-clx.patch"
 
-gcl_CATEGORY="Devel Interpreters Math Shells"
-gcl_SUMMARY="A Common Lisp implementation"
-gcl_DESCRIPTION="GNU Common Lisp (GCL) is a Common Lisp compiler and interpreter
+gcl27_CATEGORY="Devel Interpreters Math Shells"
+gcl27_SUMMARY="A Common Lisp implementation"
+gcl27_DESCRIPTION="GNU Common Lisp (GCL) is a Common Lisp compiler and interpreter
  implemented in C, and complying both with the ANSI standard and with the standard set 
  forth in the book 'Common Lisp, the Language I'.  It attempts
  to strike a useful middle ground in performance and portability
@@ -66,6 +66,8 @@ BUILD_REQUIRES="
 	texlive
 	texlive-collection-basic
 	texlive-collection-latex
+	texlive-collection-latexextra
+	texlive-collection-fontsrecommended
 	texinfo
 	libreadline-devel
 	tcl-tk-devel
