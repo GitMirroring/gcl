@@ -4,7 +4,9 @@
 #define SET_STACK_POINTER "addi %%r1,%0,0\n\t"
 #elif defined(__m68k__)
 #define SET_STACK_POINTER "movel %0,%%sp\n\t"
-#elif defined(__i386__) && !defined(__gnu_hurd__)
+#elif defined(__i386__)
+#define SET_STACK_POINTER "mov %0,%%esp\n\t"
+#elif defined(__ILP32__) && defined(__x86_64__)
 #define SET_STACK_POINTER "mov %0,%%esp\n\t"
 #elif defined(__arm__)
 #define SET_STACK_POINTER "mov %%sp,%0\n\t"
