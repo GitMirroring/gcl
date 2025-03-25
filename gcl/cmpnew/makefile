@@ -68,6 +68,6 @@ remake:
 	(cd .. ; $(MAKE))
 
 clean:
-	rm -f *.o core a.out *.fn *.c *.data *.h
+	rm -f *.o core a.out *.fn *.c *.data *.h *cmpnopt*
 allclean:
 	rm -f *.h *.data *.c

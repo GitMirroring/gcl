@@ -90,7 +90,7 @@ clean: debian/control debian/gcl.templates
 	rm -f *stamp
 	debconf-updatepo
 
-	$(MAKE) clean
+	PEXT=${EXT} $(MAKE) clean
 
 	dh_clean
 	rm -rf debian/gprof debian/ansi-gprof debian/trad debian/ansi $(INS) debian/substvars debian.upstream

@@ -53,6 +53,7 @@ install: ${FILES}
 clean:
 	rm -f *.info* *.html *.dvi *.cp *.ky *.vr *.tp *.pg *.toc *.aux *.log *.fn
 	rm -rf *.IC *.IE *.IG *.IP *.IR *.IT *.fu
+	rm -rf IC.* IG.* IP.* IT.* fn.* vr.*
 	rm -rf $(GCL_DVI) $(GCL_HTML) $(GCL_PDF)
 	rm -rf *.fns *.vrs *.ICs *.IGs *.IPs *.IRs *.ITs
 	[ "${PEXT}" = "" ] || rm -f ${GCL_TEXI}
