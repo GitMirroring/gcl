@@ -456,7 +456,7 @@ set_real_maxpage(void *beg) {
   cp=(void *)(ufixnum)LOW_IM_FIX;
 #elif defined(IM_FIX_BASE)
   cp=(void *)IM_FIX_BASE;
-#elif
+#else
   cp=(void *)-1;
 #endif
   cp=cp<beg ? (void *)-1 : cp;
