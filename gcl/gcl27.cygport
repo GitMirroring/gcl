@@ -1,5 +1,5 @@
 GIT_URI="git://git.sv.gnu.org/gcl.git"
-GIT_BRANCH="master"
+GIT_TAG="Version_2_7_0pre39"
 inherit git.cygclass
 
 
