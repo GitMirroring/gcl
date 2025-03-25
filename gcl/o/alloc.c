@@ -120,8 +120,12 @@ expand_contblock_array(void) {
 static void
 contblock_array_push(void *p) {
 
+  ufixnum f=contblock_array==Cnil ? 0 : contblock_array->v.v_fillp;/*FIXME*/
+
   expand_contblock_array();
-  contblock_array->v.v_self[contblock_array->v.v_fillp]=p;
+  memmove(contblock_array->v.v_self+f+1,contblock_array->v.v_self+f,
+	  (contblock_array->v.v_fillp-f)*sizeof(*contblock_array->v.v_self));
+  contblock_array->v.v_self[f]=p;
   contblock_array->v.v_fillp++;
 
 }
