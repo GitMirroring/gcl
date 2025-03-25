@@ -3,9 +3,11 @@
 EXT=@EXT@
 VERS=@VERS@
 
-if [ -e /etc/default/gcl$EXT ] ; then . /etc/default/gcl$EXT ; fi
-if ! set | grep -q -w GCL_ANSI ; then GCL_ANSI=$DEFAULT_GCL_ANSI ; fi
-if ! set | grep -q -w GCL_PROF ; then GCL_PROF=$DEFAULT_GCL_PROF ; fi
+if [ -e /etc/default/gcl$EXT ] ; then
+    . /etc/default/gcl$EXT ;
+    if ! set | grep -q -w GCL_ANSI ; then GCL_ANSI=$DEFAULT_GCL_ANSI ; fi
+    if ! set | grep -q -w GCL_PROF ; then GCL_PROF=$DEFAULT_GCL_PROF ; fi
+fi
 
 DIR=/usr/lib/gcl-$VERS;
 
