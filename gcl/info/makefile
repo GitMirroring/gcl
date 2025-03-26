@@ -51,9 +51,9 @@ install: ${FILES}
 	cp -a ${GCL_HTML} $(DESTDIR)$(INFO_DIR)/../doc/gcl${PEXT}
 
 clean:
-	rm -f *.info* *.html *.dvi *.cp *.ky *.vr *.tp *.pg *.toc *.aux *.log *.fn
+	rm -f *.info* *.html *.dvi *.cp *.ky *.vr *.tp *.pg *.toc *.aux *.log *.fn *.out
 	rm -rf *.IC *.IE *.IG *.IP *.IR *.IT *.fu
-	rm -rf IC.* IG.* IP.* IT.* fn.* vr.*
+	rm -rf IC.* IG.* IR.* IP.* IT.* fn.* vr.*
 	rm -rf $(GCL_DVI) $(GCL_HTML) $(GCL_PDF)
 	rm -rf *.fns *.vrs *.ICs *.IGs *.IPs *.IRs *.ITs
 	[ "${PEXT}" = "" ] || rm -f ${GCL_TEXI}
