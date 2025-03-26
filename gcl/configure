@@ -8253,7 +8253,7 @@ else $as_nop
    		    unsigned long i,j;
 		    char b[4096];
    		    i=(unsigned long)alloca(sizeof(void *));
-		    f==fopen("/proc/self/maps","r");
+		    f=fopen("/proc/self/maps","r");
 		    for (j=0;j<i && fgets(b,sizeof(b),f);)
 		    	sscanf(b,"%x-",&j);
 		    fclose(f);
@@ -8301,7 +8301,7 @@ else $as_nop
 		    char b[4096],*stack_map_base;
 		    #include "h/cstack.h"
    		    i=(unsigned long)alloca(sizeof(void *));
-		    f==fopen("/proc/self/maps","r");
+		    f=fopen("/proc/self/maps","r");
 		    for (j=0;j<i && fgets(b,sizeof(b),f);)
 		    	sscanf(b,"%x-",&j);
 		    fclose(f);

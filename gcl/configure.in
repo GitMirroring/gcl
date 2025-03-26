@@ -1221,7 +1221,7 @@ if test $cstack_direction -eq 1 ; then
    		    unsigned long i,j;
 		    char b[4096];
    		    i=(unsigned long)alloca(sizeof(void *));
-		    f==fopen("/proc/self/maps","r");
+		    f=fopen("/proc/self/maps","r");
 		    for (j=0;j<i && fgets(b,sizeof(b),f);)
 		    	sscanf(b,"%x-",&j);
 		    fclose(f);
@@ -1250,7 +1250,7 @@ if test $cstack_direction -eq 1 ; then
 		    char b[4096],*stack_map_base;
 		    #include "h/cstack.h"
    		    i=(unsigned long)alloca(sizeof(void *));
-		    f==fopen("/proc/self/maps","r");
+		    f=fopen("/proc/self/maps","r");
 		    for (j=0;j<i && fgets(b,sizeof(b),f);)
 		    	sscanf(b,"%x-",&j);
 		    fclose(f);
