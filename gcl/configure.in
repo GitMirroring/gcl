@@ -1217,15 +1217,16 @@ if test $cstack_direction -eq 1 ; then
    		#include <unistd.h>
    		int
    		main(int argc,char **argv,char **envp) {
-   		    FILE *fp = fopen("conftest1","w"),*f=fopen("/proc/self/maps","r");
+   		    FILE *fp = fopen("conftest1","w"),*f;
    		    unsigned long i,j;
 		    char b[4096];
    		    i=(unsigned long)alloca(sizeof(void *));
+		    f==fopen("/proc/self/maps","r");
 		    for (j=0;j<i && fgets(b,sizeof(b),f);)
 		    	sscanf(b,"%x-",&j);
+		    fclose(f);
 		    j-=1;
 		    if (j<i) j=-1;
-		    fclose(f);
    		    fprintf(fp,"0x%lx",j);
    		    fclose(fp);
    		    return 0;
@@ -1244,16 +1245,17 @@ if test $cstack_direction -eq 1 ; then
    		#include <errno.h>
    		int
    		main(int argc,char **argv,char **envp) {
-   		    FILE *fp = fopen("conftest1","w"),*f=fopen("/proc/self/maps","r");
+   		    FILE *fp = fopen("conftest1","w"),*f;
    		    unsigned long i,j;
 		    char b[4096],*stack_map_base;
 		    #include "h/cstack.h"
    		    i=(unsigned long)alloca(sizeof(void *));
+		    f==fopen("/proc/self/maps","r");
 		    for (j=0;j<i && fgets(b,sizeof(b),f);)
 		    	sscanf(b,"%x-",&j);
+		    fclose(f);
 		    j-=1;
 		    if (j<i) j=-1;
-		    fclose(f);
    		    fprintf(fp,"0x%lx",j);
    		    fclose(fp);
    		    return 0;
