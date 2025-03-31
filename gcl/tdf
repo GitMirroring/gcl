@@ -1,0 +1,17 @@
+#!/bin/bash
+#set -x
+while [ $# -gt 1 ] ; do
+      echo $1;
+      if test "$1" = "-o" ; then
+      	  O=$2
+	  E=$(echo $O | sed 's,^.*\.,,g')
+	  shift
+	  shift
+       else
+	 shift
+       fi
+done
+
+$MAKEINFO --latex $1 --output t.tex
+$LATEX -output-format=$E t.tex
+mv t.$E $O

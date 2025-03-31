@@ -1,0 +1,17 @@
+#!/bin/bash
+#set -x
+FLAGS=$1
+shift
+ARCHIVE=$1
+shift
+rm -rf tmp
+mkdir tmp
+while [ $# -gt 0 ] ; do
+    case $(basename $1) in
+	*.o) cp $1 tmp;;
+	*.a) ar x $1 --output tmp;;
+	*) echo Bad arg $1 ; exit 1 ;;
+    esac
+    shift
+done
+ar $FLAGS $ARCHIVE tmp/*.o
