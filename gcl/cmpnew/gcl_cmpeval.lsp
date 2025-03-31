@@ -729,7 +729,7 @@
 		       (list
 			(list
 			 ,@(mapcar (lambda (z)
-				     `(list (mapcar 'uniq-tp ',(pop z))
+				     `(list (mapcar 'uniq-tp ',(mapcar 'export-type (pop z)))
 					    ',(pop z) ',(pop z) ',(pop z)
 					    (cons ',(caar z) (uniq-tp ',(cdar z)))
 					    ,(cadr z)))
