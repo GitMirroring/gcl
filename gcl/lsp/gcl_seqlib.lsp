@@ -80,9 +80,8 @@
 	(set-array-n (make-array n :element-type (array-element-type s)) 0 s start n))))
 
 
-(eval-when
- (compile eval)
-  #-pre-gcl (load "../lsp/gcl_defseq.lsp"))
+#-pre-gcl
+(eval-when (compile) (load (merge-pathnames "gcl_defseq.lsp" *compile-file-pathname*)))
 
 (defseq find ((item) s)
   (labels ((find-loop (i p)

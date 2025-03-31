@@ -648,34 +648,19 @@ LOOP:
 }
 
 int
-main(argc, argv)
-int argc;
-char **argv;
-{
-	char *p, *q;
+main(int argc, char *argv[]) {
 
-	if (argc != 2)
-		error("arg count");
-	for (p = argv[1], q = filename;  *p != '\0';  p++, q++)
-		if (q >= &filename[BUFSIZ-3])
-			error("too long file name");
-		else
-			*q = *p;
-	q[0] = '.';
-	q[1] = 'd';
-	q[2] = '\0';
-	in = fopen(filename, "r");
-	if (in == NULL)
-		error("can't open input file");
-	q[1] = 'c';
-	out = fopen(filename, "w");
-	if (out == NULL)
-		error("can't open output file");
-	q[1] = 'd';
-	printf("dpp: %s -> ", filename);
-	q[1] = 'c';
-	printf("%s\n", filename);
-	q[1] = 'd';
-	main_loop();
-	return 0;
+  if (argc != 3)
+    error("arg count");
+  if (sscanf(argv[1],"%s.d",filename)!=1)
+    error("bad filename\n");
+  if (!(in = fopen(argv[1], "r")))
+    error("can't open input file");
+  out = fopen(argv[2], "w");
+  if (!(out = fopen(argv[2], "w")))
+    error("can't open output file");
+  printf("dpp: %s -> ", argv[1]);
+  printf("%s\n", argv[2]);
+  main_loop();
+  return 0;
 }

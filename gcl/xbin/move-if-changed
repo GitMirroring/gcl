@@ -12,6 +12,6 @@ else
 echo $1 and $2 were not the same.
 rm -f $2
 ${MOVE} $1 $2
-echo ln $1 $2
+echo ${MOVE} $1 $2
 fi
 

@@ -15,7 +15,7 @@ if [ $# -le 0 ]  ; then
   echo see echo h/*.defs
 exit 1 ; fi
 
-if [ -f h/$1.defs ] ; then echo using $1.defs ;
+if [ -e h/$1.defs ] ; then echo using $1.defs ;
   else echo h/$1.defs does not exist
   echo Build one or use one of `ls h/*.defs`
   exit 1
@@ -65,7 +65,7 @@ echo $1 > machine
 
 # Copy the config.h over.
 
-cat h/$1.h > tmpx
+cat $srcdir/h/$1.h > tmpx
 if [ -f ${HOME}/local_gcl.h ] ; then
  cat  ${HOME}/local_gcl.h >> tmpx
 fi

@@ -64,7 +64,7 @@ ar_check_init_fn(void (fn)(void),char *s,object b,char *o) {
 static void
 lsp_init(const char *a,const char *b) {
 
-  char *d,*sysd=getenv("GCL_SYSDIR");
+  char *d,*sysd=getenv("GCL_LSPSYSDIR");
   int n;
 
   d=sysd ? sysd : kcl_self;

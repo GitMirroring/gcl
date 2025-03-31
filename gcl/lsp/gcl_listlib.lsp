@@ -347,7 +347,8 @@
 (defun identity (x) x)
 
 
-#-pre-gcl (eval-when (compile eval) (load "../lsp/gcl_defseq.lsp"))
+#-pre-gcl
+(eval-when (compile) (load (merge-pathnames "gcl_defseq.lsp" *compile-file-pathname*)))
 
 (defseq member ((item) list :list t)
   (unless (mapl (lambda (x) (when (test item (car x)) (return-from member x))) list)))

@@ -625,7 +625,7 @@ and load your system with:
 	 (port-device (if (null port-directory)
 			  nil
 			(pathname-device port-directory)))
-			     
+	 (port-directory (pathname-directory directory))
          (pathname
            (make-pathname
              :name (string-downcase (string name))

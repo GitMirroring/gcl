@@ -67,7 +67,7 @@
 
  (defun slist nil
    
-   (let* ((com (get-com "../h/cmpinclude.h"))
+   (let* ((com (get-com "h/cmpinclude.h"))
 	  (td (cadr com))
 	  (com (car com))
 	  (u (car (member-if #'(lambda (x) (and (eq (car x) '|union|) (eq (cadr x) '|lispunion|))) com)))

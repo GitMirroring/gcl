@@ -294,6 +294,7 @@
 	(push (list s sig) r))))
   (write-sys-proclaims1 sp r))
 
+(defvar *do-recomp-output-dir* nil)
 ;;FIXME not always idempotent
 (defun do-recomp (&optional cdebug &rest excl &aux *sig-discovery-props* *compile-verbose*)
   (gen-discovery-props)
@@ -302,7 +303,13 @@
 	 (fl (set-difference fl excl :test (lambda (x y) (search y x)))))
     (when cdebug (compiler::cdebug))
     (format t "~%Recompiling original source files ...~%")
-    (mapc (lambda (x) (format t "~s~%" x) (compile-file x)) (remove nil fl))))
+    (mapc (lambda (x)
+	    (format t "~s~%" x)
+	    (compile-file x :output-file
+			  (merge-pathnames
+			   (make-pathname :type "o" :name (pathname-name x))
+			   (or (truename *do-recomp-output-dir*) x))))
+	  (remove nil fl))))
 
 (defun gen-all-ftype-symbols (&aux r)
   (do-all-symbols (s r)
