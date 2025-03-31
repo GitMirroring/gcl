@@ -86,7 +86,6 @@
       *gcl-release-date*  "@LI-RELEASE@")
 
 (defvar *system-banner* (default-system-banner))
-(setq *optimize-maximum-pages* t)
 
 (fmakunbound 'init-cmp-anon)
 (when (fboundp 'user-init) (user-init))
@@ -122,3 +121,5 @@
     (warn "equal is not tail recursive ~s ~s" i j)))
 
 (format t "~s heap words available~%" (multiple-value-bind (a b c d) (si::heap-report) (/ (- d c) (/ a 8))))
+
+(setq *optimize-maximum-pages* t)

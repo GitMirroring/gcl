@@ -1,4 +1,6 @@
-(in-package :compiler)(cdebug)(setq *compile-print* nil si::*notify-gbc* t *annotate* nil)
+(in-package :compiler)
+(cdebug)
+(setq *compile-print* nil si::*notify-gbc* t *annotate* nil *optimize-maximum-pages* nil)
 
 (room t)
 
@@ -12,8 +14,6 @@
   (unless (fboundp 'logandc2) (defun logandc2 (x y) (boole boole-andc2 x y)))
   (unless (fboundp 'lognot) (defun lognot (x) (boole boole-c1 x 0)))
   (unless (fboundp 'abs) (defun abs (x) (if (< x 0) (- x) x))))
-
-(progn (setq si::*code-block-reserve* (make-array 30000000 :element-type 'character :static t)) nil)
 
 (mapc 'compile (nconc
 		#+pre-gcl '(listp si::real-simple-typep-fn si::array-simple-typep-fn)
@@ -61,3 +61,5 @@
   (compile nil `(lambda (x) (declare (optimize (safety 2))) (address x)))
   (compile nil `(lambda (x) (declare (optimize (safety 2))) (nani x))))
 
+(progn (setq si::*code-block-reserve* (make-array 30000000 :element-type 'character :static t)) nil)
+(setq *optimize-maximum-pages* t)
