@@ -867,6 +867,8 @@ L_STUBS = s sf c listlib predlib deftype typeof subtypep bit type typep typecase
 
 L_OBJS = $(addprefix gcl_,$(addsuffix .o,$(L_STUBS)))
 L_FOBJS = $(addprefix gcl/,$(L_OBJS))
+EARLY = typep nr deftype cmptype cmpinline cmpflet s
+EARLY_OBJS = $(addprefix gcl_,$(addsuffix .o,$(EARLY)))
 X_STUBS = Xlib Xutil X XAtom defentry_events Xstruct XStruct_l_3 general keysymdef X10 Xinit dwtrans tohtml index
 X_OBJS = $(addprefix gcl_,$(addsuffix .o,$(X_STUBS)))
 X_LIB = lib/libxgcl.a
@@ -4282,28 +4284,28 @@ unixport/sys_%.o: unixport/sys_init.c h/new_decl.h
 gcl0/%.o: lsp/%.lsp | unixport/gcl0
 	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" -compile $< -o $@
 	[ "$*" = "gcl_c" ] || [ "$*" = "gcl_listlib" ] || \
-		ln -snf $(@F) $$(echo $@ |sed 's,\.o,\.done,g')
+		ln $@ $$(echo $@ |sed 's,\.o,\.done,g') #FIXME directory link
 
 gcl0/%.o: cmpnew/%.lsp | unixport/gcl0
 	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" -compile $< -o $@
-	ln -snf $(@F) $$(echo $@ |sed 's,\.o,\.done,g')
+	ln $@ $$(echo $@ |sed 's,\.o,\.done,g')
 
 .POSIX: # parallel job ordering
-unixport/libgcl0.a: $(addprefix gcl0/,$(filter-out gcl_c.o gcl_listlib.o,$(L_OBJS)))
-unixport/libgcl0.a: $(addprefix gcl0/,$(filter gcl_c.o gcl_listlib.o,$(L_OBJS)))
+unixport/libgcl0.a: $(addprefix gcl0/,$(EARLY_OBJS))
+unixport/libgcl0.a: $(addprefix gcl0/,$(filter-out $(EARLY_OBJS),$(L_OBJS)))
 $(addprefix unixport/lib,$(addsuffix .a,gcl1 gcl2 gcl3)): unixport/lib%.a: $(addprefix %/,$(L_OBJS))
 
 gcl1/%.o: lsp/%.lsp  | unixport/gcl1
 	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" \
 	   -eval "(setq compiler::*dump-inl-hash* t)" \
 	   -compile $< -o $@
-	ln -snf $(@F) $$(echo $@ |sed 's,\.o,\.done,g')
+	ln $@ $$(echo $@ |sed 's,\.o,\.done,g')
 
 gcl1/%.o: cmpnew/%.lsp  | unixport/gcl1
 	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" \
 	   -eval "(setq compiler::*dump-inl-hash* t)" \
 	   -compile $< -o $@
-	ln -snf $(@F) $$(echo $@ |sed 's,\.o,\.done,g')
+	ln $@ $$(echo $@ |sed 's,\.o,\.done,g')
 
 gcl2/%.o: lsp/%.lsp  | unixport/gcl2
 	$| -eval "(setq compiler::*dump-inl-hash* t)" -compile $< -o $@
@@ -4324,7 +4326,7 @@ unixport/libgcl.a:  $(L_FOBJS) unixport/sys_gcl.o | unixport/gcl xbin/ar_merge
 	$(word 1,$|) -batch \
 		-eval "(let ((si::*do-recomp-output-dir* \"$(<D)\")) (si::do-recomp t))" \
 		-eval "(compiler::dump-inl-hash \"$(<D)/all.hsh\")"
-	$(word 2,$!) crus $@ $^
+	$(word 2,$|) crus $@ $^
 
 unixport/mod_gcl0: xgcl-2/sysdef.lisp | unixport/saved_gcl mod_gcl0
 	rm -f in
