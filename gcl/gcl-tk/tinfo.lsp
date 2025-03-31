@@ -19,7 +19,7 @@
 
 (eval-when (compile eval)
 (defmacro f (op x y)
-   `(the ,(if  (get op 'compiler::predicate)  't 'fixnum)
+   `(the ,(ecase op (>= 'boolean)((+ -) 'fixnum))
 	 (,op (the fixnum ,x) (the fixnum ,y))))
 (defmacro while (test &body body)
   `(sloop while ,test do ,@ body))
