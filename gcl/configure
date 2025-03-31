@@ -10662,7 +10662,7 @@ main (void)
 
 				 struct dirent *d;
 				 DIR *r=opendir("./");
-				 for (;(d=readdir(r)) && strcmp("configure",d->d_name););
+				 for (;(d=readdir(r)) && strcmp("config.log",d->d_name););
 				 return d && d->d_type==DT_REG ? 0 : -1;
 
   ;

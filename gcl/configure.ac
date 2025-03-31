@@ -1610,7 +1610,7 @@ AC_CHECK_HEADERS([dirent.h],
 			     [[
 				 struct dirent *d;
 				 DIR *r=opendir("./");
-				 for (;(d=readdir(r)) && strcmp("configure",d->d_name););
+				 for (;(d=readdir(r)) && strcmp("config.log",d->d_name););
 				 return d && d->d_type==DT_REG ? 0 : -1;
 			     ]])],
 		     [AC_MSG_RESULT([yes]) AC_DEFINE(HAVE_D_TYPE,1,[have struct dirent d_type field])],
