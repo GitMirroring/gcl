@@ -154,6 +154,8 @@ gcl_init_system(object no_init)
 
 #ifndef pre_gcl  
 
+#ifndef gcl
+
 #ifdef HAVE_XGCL
   lsp_init("xgcl-2","sysdef.lisp");
   check_init(xgcl-2,gcl_Xlib,no_init);
@@ -172,8 +174,6 @@ gcl_init_system(object no_init)
   check_init(xgcl-2,gcl_index,no_init);
 #endif
   
-#ifndef gcl
-
   check_init(mod,gcl_ansi_io,no_init);
   check_init(mod,gcl_destructuring_bind,no_init);
   check_init(mod,gcl_loop,no_init);
