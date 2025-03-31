@@ -326,13 +326,11 @@ get_phys_pages1(char freep,char ramp) {
 static int
 acceptable_log_maxpage_bound(ufixnum l) {
 
-  void *end,*dend;
+  ufixnum max=(sizeof(fixnum)<<3)-1;
 
-  if (l>sizeof(fixnum)*8-1) return 0;
-  end=data_start+(1L<<l)-PAGESIZE;
-  dend=heap_end+PAGESIZE+CEI(rb_pointer-rb_begin(),PAGESIZE);
-  return end>=dend;
-
+  return l>max ? 0 :
+    (l==max ? 1 :
+     (void *)heap_end-data_start+CEI(rb_pointer-rb_begin(),PAGESIZE) < (1UL<<(l+1)));
 }
 
 static void
