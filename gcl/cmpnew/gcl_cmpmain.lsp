@@ -183,6 +183,7 @@
 (defvar *init-name* nil)
 (defvar *function-filename* nil)
 (defvar *c-debug* nil)
+(defvar *dump-inl-hash* nil)
 (defun compile-file1 (input-pathname
                       &key (output-file (merge-pathnames ".o" (truename input-pathname)))
                            (o-file t)
@@ -347,6 +348,8 @@ Cannot compile ~a.~%" (namestring (merge-pathnames input-pathname *compiler-defa
 	 (when *compile-verbose* (format t "~&;; End of Pass 2.  ~%"))
 	 (cond (*record-call-info*
 		(dump-fn-data (get-output-pathname output-file "fn" name dir device))))
+	 (cond (*dump-inl-hash*
+		(dump-inl-hash (get-output-pathname output-file "hsh" name dir device))))
 	 (cond (o-file
 		(compiler-cc c-pathname o-pathname)
 		(cond ((probe-file o-pathname)
