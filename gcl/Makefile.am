@@ -117,7 +117,7 @@ gcl0/%.o: cmpnew/%.lsp | unixport/gcl0
 	ln $@ $$(echo $@ |sed 's,\.o,\.done,g')
 
 .POSIX: # parallel job ordering
-EARLY=typep nr deftype cmptype cmpinline cmpflet s
+EARLY=s typep nr deftype cmptype cmpinline cmpflet
 EARLY_OBJS=$(addprefix gcl_,$(addsuffix .o,$(EARLY)))
 unixport/libgcl0.a: $(addprefix gcl0/,$(EARLY_OBJS))
 unixport/libgcl0.a: $(addprefix gcl0/,$(filter-out $(EARLY_OBJS),$(L_OBJS)))

@@ -867,7 +867,7 @@ L_STUBS = s sf c listlib predlib deftype typeof subtypep bit type typep typecase
 
 L_OBJS = $(addprefix gcl_,$(addsuffix .o,$(L_STUBS)))
 L_FOBJS = $(addprefix gcl/,$(L_OBJS))
-EARLY = typep nr deftype cmptype cmpinline cmpflet s
+EARLY = s typep nr deftype cmptype cmpinline cmpflet
 EARLY_OBJS = $(addprefix gcl_,$(addsuffix .o,$(EARLY)))
 @AMM_XGCL_TRUE@X_STUBS = Xlib Xutil X XAtom defentry_events Xstruct XStruct_l_3 general keysymdef X10 Xinit dwtrans tohtml index
 @AMM_XGCL_TRUE@X_OBJS = $(addprefix gcl_,$(addsuffix .o,$(X_STUBS)))
