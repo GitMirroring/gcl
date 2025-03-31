@@ -41,7 +41,7 @@
 ;    where "prefix" is the file name prefix for HTML files.
 
 ; Print index for LaTeX given a list of items ((words ...) page-number)
-(in-package 'xlib)
+(in-package "XLIB")
 (defun printindex (origlst &optional html)
   (let (lst top)
     (setq lst
