@@ -33,7 +33,7 @@ main() {
 
       d=strstr(c,"\")");
       e=d ? d+2 : buf+strlen(buf)-1;
-      printf("%-.*s\n",e-c,c);
+      printf("%-.*s\n",(int)(e-c),c);
 
     }
 
