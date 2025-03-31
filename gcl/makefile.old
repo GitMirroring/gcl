@@ -165,7 +165,7 @@ $(MPDIR)/libmport.a:
 $(GMPDIR)/libgmp.a: $(GMPDIR)/Makefile
 	cd $(GMPDIR) && $(MAKE) && rm -f libgmp.a &&  ar qc libgmp.a *.o */*.o
 
-PWD_CMD?=pwd
+PWD_CMD ?=pwd
 
 gmp_all: $(GMPDIR)/Makefile
 	cd $(GMPDIR) && echo '#include <stdio.h>' >> gmp.h && echo "#include \"`$(PWD_CMD)`/../h/prelink.h\"" >> gmp.h && $(MAKE) 
@@ -214,8 +214,6 @@ command:
 	GCLDIR=`echo $(GCLDIR)` ; \
 	$(MAKE) install-command "INSTALL_LIB_DIR=$$GCLDIR" "prefix=$$GCLDIR" "BINDIR=$$MGCLDIR/$(PORTDIR)"
 	(cd xbin ; cp ../bin/gcl .)
-
-#	GCLDIR=`echo $(GCLDIR) | sed -e 'sX^/cygdrive/\([a-z]\)X\1!Xg' -e 'sX^//\([a-z]\)X\1!Xg'` ; \
 
 merge:
 	$(CC) -o merge merge.c

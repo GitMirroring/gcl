@@ -1,13 +1,18 @@
 # Copyright 2024 Camm Maguire
-AC_INIT
-AC_PREREQ([2.71])
+AC_INIT(gcl,2.7.0)
+AC_PREREQ([2.72])
 AC_CONFIG_HEADERS([h/gclincl.h])
+AM_INIT_AUTOMAKE([1.17 -Wno-portability])
+AM_PATH_LISPDIR
+AC_CONFIG_FILES([Makefile])
+#AC_USE_SYSTEM_EXTENSIONS
+#LT_INIT
 
-VERSION=`cat majvers`.`cat minvers`
+VERSION=`cat $srcdir/majvers`.`cat $srcdir/minvers`
 AC_SUBST(VERSION)
 
-AC_ARG_ENABLE(xgcl,[ --enable-xgcl=yes will compile in support for XGCL],
-[enable_xgcl=$enableval],[enable_xgcl="yes"])
+dnl AC_ARG_ENABLE(xgcl,[ --enable-xgcl=yes will compile in support for XGCL],
+dnl [enable_xgcl=$enableval],[enable_xgcl="yes"])
 
 #
 # Host information 
@@ -76,11 +81,14 @@ def_static="no";
 def_debug="no";
 case $use in 
     *kfreebsd)
-	ln -snf linux.defs h/$use.defs;;
+	if ! test -d h ; then mkdir h; fi
+	ln -snf ../$srcdir/h/linux.defs h/$use.defs;;
     *gnu)
-	ln -snf linux.defs h/$use.defs;;
+	if ! test -d h ; then mkdir h; fi
+	ln -snf ../$srcdir/h/linux.defs h/$use.defs;;
     *linux)
-	ln -snf linux.defs h/$use.defs;
+	if ! test -d h ; then mkdir h; fi
+	ln -snf ../$srcdir/h/linux.defs h/$use.defs;
 	case $use in
 	    ia64*)
 		def_dlopen="yes" ; def_custreloc="no" ;;
@@ -184,6 +192,7 @@ if test "$LDFLAGS" = "" ; then
 fi
 
 AC_USE_SYSTEM_EXTENSIONS
+AC_PROG_RANLIB
 AC_PROG_CC
 AC_PROG_CPP
 AC_SUBST(CC)
@@ -421,6 +430,15 @@ if test "$GPROF" != "" ; then
    fi
 fi
 AC_SUBST(GPROF)
+AM_CONDITIONAL([AMM_GPROF],[test "$GPROF" != ""])
+dnl GPROF_BIN=""
+dnl GPROF_LIB=""
+dnl if test "$GPROF" != "" ; then
+dnl    GPROF_BIN="unixport/saved_gcl_gprof unixport/saved_ansi_gcl_gprof"
+dnl    GPROF_LIB="lib/libbase_gcl_gprof.a unixport/libgcl_gprof.a unixport/libansi_gcl_gprof.a"
+dnl fi
+dnl AC_SUBST(GPROF_BIN)
+dnl AC_SUBST(GPROF_LIB)
 
 if test "$enable_debug" = "yes" ; then
     assert_arg_to_cflags -g
@@ -761,6 +779,7 @@ if test "$enable_xgcl" = "yes" ; then
 		 [AC_MSG_RESULT([missing x libraries -- cannot compile xgcl])])
 
 fi
+AM_CONDITIONAL([AMM_XGCL],[test "$X_LIBS" != ""])
 
 
 AC_SUBST(X_LIBS)
@@ -1098,11 +1117,11 @@ AC_RUN_IFELSE(
 		#define EXTER
 		#define INLINE
 		#include "$MP_INCLUDE"
-		#include "./h/enum.h"
+		#include "$srcdir/h/enum.h"
 		#define OBJ_ALIGN
-		#include "./h/type.h"
-		#include "./h/lu.h"
-		#include "./h/object.h"
+		#include "$srcdir/h/type.h"
+		#include "$srcdir/h/lu.h"
+		#include "$srcdir/h/object.h"
 	    ]],
 	    [[
 		unsigned long i;
@@ -1148,10 +1167,10 @@ AC_RUN_IFELSE(
 		#define EXTER
 		#define INLINE
 		#include "$MP_INCLUDE"
-		#include "h/enum.h"
-		#include "h/type.h"
-		#include "h/lu.h"
-		#include "h/object.h"
+		#include "$srcdir/h/enum.h"
+		#include "$srcdir/h/type.h"
+		#include "$srcdir/h/lu.h"
+		#include "$srcdir/h/object.h"
 	    ]],
 	    [[
 		FILE *f=fopen("conftest1","w");
@@ -1217,16 +1236,15 @@ if test $cstack_direction -eq 1 ; then
    		#include <unistd.h>
    		int
    		main(int argc,char **argv,char **envp) {
-   		    FILE *fp = fopen("conftest1","w"),*f;
+   		    FILE *fp = fopen("conftest1","w"),*f=fopen("/proc/self/maps","r");
    		    unsigned long i,j;
 		    char b[4096];
    		    i=(unsigned long)alloca(sizeof(void *));
-		    f=fopen("/proc/self/maps","r");
 		    for (j=0;j<i && fgets(b,sizeof(b),f);)
 		    	sscanf(b,"%x-",&j);
-		    fclose(f);
 		    j-=1;
 		    if (j<i) j=-1;
+		    fclose(f);
    		    fprintf(fp,"0x%lx",j);
    		    fclose(fp);
    		    return 0;
@@ -1245,17 +1263,16 @@ if test $cstack_direction -eq 1 ; then
    		#include <errno.h>
    		int
    		main(int argc,char **argv,char **envp) {
-   		    FILE *fp = fopen("conftest1","w"),*f;
+   		    FILE *fp = fopen("conftest1","w"),*f=fopen("/proc/self/maps","r");
    		    unsigned long i,j;
 		    char b[4096],*stack_map_base;
-		    #include "h/cstack.h"
+		    #include "$srcdir/h/cstack.h"
    		    i=(unsigned long)alloca(sizeof(void *));
-		    f=fopen("/proc/self/maps","r");
 		    for (j=0;j<i && fgets(b,sizeof(b),f);)
 		    	sscanf(b,"%x-",&j);
-		    fclose(f);
 		    j-=1;
 		    if (j<i) j=-1;
+		    fclose(f);
    		    fprintf(fp,"0x%lx",j);
    		    fclose(fp);
    		    return 0;
@@ -1302,7 +1319,7 @@ else
    		    FILE *fp = fopen("conftest1","w");
    		    unsigned long i,j;
 		    char *stack_map_base;
-   		    #include "h/cstack.h"
+   		    #include "$srcdir/h/cstack.h"
    		    j=getpagesize();
    		    i=(unsigned long)alloca(sizeof(void *));
    		    j--;
@@ -1332,7 +1349,7 @@ AC_RUN_IFELSE(
 		    FILE *fp = fopen("conftest1","w");
 		    long i,j;
 		    char *stack_map_base;
-		    #include "h/cstack.h"
+		    #include "$srcdir/h/cstack.h"
 		    j=getpagesize();
 		    i=$cstack_top;
 		    j--;
@@ -1360,7 +1377,7 @@ AC_RUN_IFELSE(
 		int
 		main(int argc,char **argv,char **envp) {
 	            char *stack_map_base;
-		    #include "h/cstack.h"
+		    #include "$srcdir/h/cstack.h"
 		    return (long)$cstack_top<0 ? 0 : -1;
 		}]])],
     [AC_MSG_RESULT(yes)
@@ -1374,6 +1391,7 @@ AC_ARG_ENABLE([immfix],[  --enable-immfix will enable an immediate fixnum table 
 AC_ARG_ENABLE([fastimmfix],[  --enable-fastimmfix=XXXX will reject low immediate fixnums unless 2^XXX can be attained],,[enable_fastimmfix=64])
 
 AC_MSG_CHECKING([finding default linker script])
+if ! test -d unixport ; then mkdir unixport ; fi
 touch unixport/gcl.script
 echo "int main() {return 0;}" >foo.c
 $CC $LDFLAGS -Wl,--verbose foo.c -o foo 2>&1 | \
@@ -2293,9 +2311,14 @@ AC_CHECK_HEADERS(alloca.h)
 AC_FUNC_ALLOCA
 
 
-LDFLAGS="`echo $GPL_FLAG $LDFLAGS | sed 's,gcl.script,../unixport/gcl.script,g'`"
-AC_SUBST(LDFLAGS)
+#LDFLAGS="`echo $GPL_FLAG $LDFLAGS | sed 's,gcl.script,../unixport/gcl.script,g'`"
+LDFLAGS="`echo $GPL_FLAG $LDFLAGS`"
+#AM_LDFLAGS = $LDFLAGS
+BASE_LDFLAGS="$LDFLAGS"
+LDFLAGS=""
+AC_SUBST(BASE_LDFLAGS)
 LIBS="$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS $LIBS $TLIBS"
+#AM_LIBS = $LIBS
 AC_SUBST(LIBS)
 CFLAGS="$CFLAGS $GP_FLAG"
 FINAL_CFLAGS="$CFLAGS $CPPFLAGS $X_CFLAGS"
@@ -2304,7 +2327,12 @@ AC_SUBST(FINAL_CFLAGS)
 NIFLAGS="$CFLAGS $CPPFLAGS $TONIFLAGS -I\$(GCLDIR)/o"
 AC_SUBST(NIFLAGS)
 CFLAGS="$CFLAGS $CPPFLAGS $TO3FLAGS -I\$(GCLDIR)/o"
-AC_SUBST(CFLAGS)
+BASE_CFLAGS="$CFLAGS"
+CFLAGS=""
+AC_SUBST(BASE_CFLAGS)
+BASE_CPPFLAGS="-I h -I /usr/include/tirpc $CPPFLAGS"
+CPPFLAGS=
+AC_SUBST(BASE_CPPFLAGS)
 O3FLAGS=$TOSFLAGS
 AC_SUBST(O3FLAGS)
 O2FLAGS=$TO2FLAGS
@@ -2313,7 +2341,7 @@ AC_SUBST(O2FLAGS)
 AC_SUBST(EXTRA_LOBJS)
 AC_SUBST(LEADING_UNDERSCORE)
 AC_SUBST(GNU_LD)
-if test -f h/$use.defs  ; then
+if test -e h/$use.defs  ; then
 
     AC_SUBST(use)
     AC_CONFIG_FILES([makedefc windows/gcl.iss windows/sysdir.bat windows/install.lsp ])
@@ -2322,7 +2350,7 @@ AC_OUTPUT
     cat makedefc
 
     echo    add-defs1 $use
-    CC=$CC ./add-defs1 $use
+    CC=$CC srcdir=$srcdir $srcdir/add-defs1 $use
 
 else
     echo "Unable to guess machine type"
