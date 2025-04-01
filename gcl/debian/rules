@@ -96,9 +96,9 @@ DOC_FILES+=$(addsuffix .pdf,$(DOC_STUBS))
 DOC_FILES+=$(addsuffix .html,$(DOC_STUBS))
 DOC_FFILES=$(addprefix info/,$(DOC_FILES))
 EXT_TARGS=$(DOC_FFILES) man/man1/gcl$(EXT).1 bin/gcl$(EXT)
-info/gcl$(EXT)-si-index.texi $(EXT_TARGS):
+$(EXT_TARGS):
 	$(MAKE) $(MAKEFLAGS) $@
-ext-install: $(EXT_TARGS) | info/gcl$(EXT)-si-index.texi install-stamp
+ext-install: $(EXT_TARGS) | install-stamp
 	for i in $^; do \
 		for j in $$i*; do \
 			if [ -d $$j ] ; then l=d ; r=-r ; else l=f ; fi ; \
@@ -134,12 +134,26 @@ INS:=$(shell for i in `find debian -name "in.*"` ; do \
 gcl$(EXT)% : in.gcl%
 	cat $< | sed 's,@EXT@,$(EXT),g' >$@
 
+foo:
+	echo $(EXT_TARGS)
+
 install: DH_OPTIONS:=
-install: ext-install debian/control $(INS)
+install: install-stamp debian/control $(INS)
 
 	dh_installdirs
 
-	rm -rf debian/tmp/usr/lib/gcl-$(VERS)/info
+	$(MAKE) $(MAKEFLAGS) $(EXT_TARGS)
+
+	for i in $(EXT_TARGS); do \
+		for j in $$i*; do \
+			if [ -d $$j ] ; then l=d ; r=-r ; else l=f ; fi ; \
+			k=$$(find debian/tmp -type $$l -name $$(echo $$(basename $$j) | sed 's,$(EXT),,g')); \
+			[ "$$k" = "" ] || cp $$r $$j $$(dirname $$k) ; \
+			echo $$i $$j $$k; \
+			[ "$$k" = "" ] || chmod $$(dirname $$k)/$$(basename $$j) --reference=$$k ; \
+			[ "$$k" = "" ] || rm $$r $$k ; \
+		done ; \
+	done
 
 	mv debian/tmp/usr/share/doc/gcl debian/tmp/usr/share/doc/gcl$(EXT)
 

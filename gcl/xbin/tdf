@@ -12,6 +12,8 @@ while [ $# -gt 1 ] ; do
        fi
 done
 
-$MAKEINFO --latex $1 --output t.tex
-latex -output-format=$E t.tex
-mv t.$E $O
+TFN=$($(dirname $0)/mktmp $1)
+
+$MAKEINFO --latex $1 --output $TFN
+latex -output-format=$E $TFN
+mv $TFN $O

@@ -369,31 +369,30 @@ bin/gcl%: bin/in.gcl.sh majvers minvers
 man/man1/gcl%.1: man/man1/gcl.1
 	sed -e 's,\(\b\)gcl\(\b\),\1gcl$*\2,g' $< > $@
 
-info/gcl%-si-index.texi: info/gcl-si-index.texi
-	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
-info/gcl%-si.texi: info/gcl-si.texi info/gcl%-si-index.texi
+info/gcl%-si.texi: info/gcl-si.texi
 	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
 info/gcl%-tk.texi: info/gcl-tk.texi
 	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
 info/gcl%.texi: info/gcl.texi
 	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
 
-%.info: %.texi
-	$(MAKEINFO) $< --output $@
+%.info: %.texi | xbin/mktmp
+	i=$$($| $<);ln -f $< $$i;$(MAKEINFO) $$i --output $@;rm $$i
 
-%.tex: %.texi
-	$(MAKEINFO) --latex $< --output $@
+%.tex: %.texi | xbin/mktmp
+	i=$$($| $<);ln -f $< $$i;$(MAKEINFO) --latex $$i --output $@;rm $$i
 
-%.pdf: %.tex
-	latex -output-format=pdf -output-directory=$(@D) $<
+%.pdf: %.tex | xbin/mktmp
+	i=$$($| $<);j=$$i.$$(echo $< | sed 's,.*\.,,g');ln -f $< $$j;\
+		latex -output-format=pdf -output-directory=$(@D) $$j|tail && mv $$i.pdf $@ && rm $$i.*
 
-%.dvi: %.tex
-	latex -output-directory=$(@D) $<
+%.dvi: %.tex | xbin/mktmp
+	i=$$($| $<);j=$$i.$$(echo $< | sed 's,.*\.,,g');ln -f $< $$j;\
+		latex -output-directory=$(@D) $$i|tail && mv $$i.dvi $@ && rm $$i.*
 
-%.html: %.texi
+%.html: %.texi | xbin/mktmp
 	mkdir -p $@
-	$(MAKEINFO) --html $< --output $@
-
+	i=$$($| $<);ln -f $< $$i;$(MAKEINFO) --html $$i --output $@;rm $$i
 
 
 check_SCRIPTS=ansi-tests/test_results

@@ -858,7 +858,7 @@ my_unixport_LIBRARIES = unixport/libgcl.a unixport/libansi_gcl.a \
 @AMM_GPROF_FALSE@lib_libgprof_a_SOURCES = o/foo.c
 @AMM_GPROF_TRUE@lib_libgprof_a_SOURCES = o/gprof.c
 @AMM_GPROF_TRUE@lib_libgprof_a_CFLAGS = $(AM_CFLAGS) -fno-omit-frame-pointer -pg
-@AMM_GPROF_TRUE@EXTRA_lib_libgprof_gcl_a_DEPENDENCIES = h/new_decl.h
+@AMM_GPROF_TRUE@EXTRA_lib_libgprof_a_DEPENDENCIES = h/new_decl.h
 @AMM_GPROF_TRUE@unixport_saved_gcl_gprof_SOURCES = 
 @AMM_GPROF_TRUE@unixport_saved_ansi_gcl_gprof_SOURCES = 
 @AMM_GPROF_TRUE@lib_libbase_gcl_gprof_a_SOURCES = $(C_SRC) o/gprof.c
@@ -894,7 +894,7 @@ L_STUBS = s sf c listlib predlib deftype typeof subtypep bit type typep typecase
 	describe evalmacros sc logical_pathname_translations make_pathname parse_namestring \
 	merge_pathnames pathname_match_p namestring wild_pathname_p translate_pathname \
 	truename directory rename_file restart iolib mislib module numlib packlib \
-	setf top trace sloop debug info serror mnum fpe 
+	setf top trace sloop debug info serror mnum fpe
 
 L_OBJS = $(addprefix gcl_,$(addsuffix .o,$(L_STUBS)))
 L_FOBJS = $(addprefix gcl/,$(L_OBJS))
@@ -968,8 +968,8 @@ my_gcltkd_DATA = gcl-tk/demos/gc-monitor.lisp g/demos/gc-monitor.o g/demos/index
 
 bin_SCRIPTS = bin/gcl
 MY_DIRS = pre_gcl gcl0 gcl1 gcl2 gcl3 gcl mod_gcl0 mod_gcl pcl_gcl ansi_gcl
-DWDOCS = $(addprefix xgcl-2/dwdoc/dwdoc,$(addsuffix .html,1 2 3 contents index)) xgcl-2/dwdoc.pdf
-doc_DATA = $(DWDOCS)
+DWDOCS = $(addprefix xgcl-2/dwdoc/dwdoc,$(addsuffix .html,1 2 3 contents index))
+doc_DATA = $(DWDOCS) xgcl-2/dwdoc.pdf
 all: all-am
 
 .SUFFIXES:
@@ -4644,21 +4644,23 @@ info/gcl%-tk.texi: info/gcl-tk.texi
 info/gcl%.texi: info/gcl.texi
 	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
 
-%.info: %.texi
-	$(MAKEINFO) $< --output $@
+%.info: %.texi | xbin/mktmp
+	i=$$($| $<);ln -f $< $$i;$(MAKEINFO) $$i --output $@;rm $$i
 
-%.tex: %.texi
-	$(MAKEINFO) --latex $< --output $@
+%.tex: %.texi | xbin/mktmp
+	i=$$($| $<);ln -f $< $$i;$(MAKEINFO) --latex $$i --output $@;rm $$i
 
-%.pdf: %.tex
-	latex -output-format=pdf -output-directory=$(@D) $<
+%.pdf: %.tex | xbin/mktmp
+	i=$$($| $<);j=$$i.$$(echo $< | sed 's,.*\.,,g');ln -f $< $$j;\
+		latex -output-format=pdf -output-directory=$(@D) $$j|tail && mv $$i.pdf $@ && rm $$i.*
 
-%.dvi: %.tex
-	latex -output-directory=$(@D) $<
+%.dvi: %.tex | xbin/mktmp
+	i=$$($| $<);j=$$i.$$(echo $< | sed 's,.*\.,,g');ln -f $< $$j;\
+		latex -output-directory=$(@D) $$i|tail && mv $$i.dvi $@ && rm $$i.*
 
-%.html: %.texi
+%.html: %.texi | xbin/mktmp
 	mkdir -p $@
-	$(MAKEINFO) --html $< --output $@
+	i=$$($| $<);ln -f $< $$i;$(MAKEINFO) --html $$i --output $@;rm $$i
 
 g/gcltksrv$(EXEEXT): gcl-tk/gcltksrv.in | g
 	cat $<  | sed -e "s!TK_LIBRARY=.*!TK_LIBRARY=${TK_LIBRARY}!g" \
