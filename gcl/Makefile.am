@@ -5,7 +5,6 @@ AUTOMAKE_OPTIONS=subdir-objects info-in-builddir
 
 
 noinst_PROGRAMS=bin/dpp o/grab_defs
-#bin_SCRIPTS=gcl27
 
 my_libdir=$(libdir)/$(PACKAGE)-$(PACKAGE_VERSION)
 my_unixportdir=$(my_libdir)/unixport
@@ -16,146 +15,34 @@ unixport/saved_gcl$(EXEEXT):
 unixport_saved_ansi_gcl_SOURCES= 
 unixport/saved_ansi_gcl$(EXEEXT):
 
-my_unixport_LIBRARIES=lib/libbase_gcl.a lib/libgclp.a lib/libgprof.a
-my_unixport_LIBRARIES+=unixport/libgcl.a unixport/libansi_gcl.a
-lib_libgclp_a_SOURCES=o/bcmp.c o/bcopy.c o/bzero.c o/user_init.c o/user_match.c
+noinst_LIBRARIES=lib/libbase_gcl.a lib/libgprof.a
 lib_libbase_gcl_a_SOURCES=$(C_SRC)
+EXTRA_lib_libbase_gcl_a_DEPENDENCIES=h/new_decl.h
+
+my_unixport_LIBRARIES=unixport/libgcl.a unixport/libansi_gcl.a
+unixport/libgcl.a:
+unixport/libansi_gcl.a:
+unixport/libgcl_gprof.a:
+unixport/libansi_gcl_gprof.a:
 
 if AMM_GPROF
 lib_libgprof_a_SOURCES=o/gprof.c
 lib_libgprof_a_CFLAGS=$(AM_CFLAGS) -fno-omit-frame-pointer -pg
+EXTRA_lib_libgprof_a_DEPENDENCIES=h/new_decl.h
 my_unixport_PROGRAMS+=unixport/saved_gcl_gprof unixport/saved_ansi_gcl_gprof
 unixport_saved_gcl_gprof_SOURCES= 
 unixport/saved_gcl_gprof$(EXEEXT):
 unixport_saved_ansi_gcl_gprof_SOURCES= 
 unixport/saved_ansi_gcl_gprof$(EXEEXT):
-my_unixport_LIBRARIES += lib/libbase_gcl_gprof.a unixport/libgcl_gprof.a unixport/libansi_gcl_gprof.a
+noinst_LIBRARIES += lib/libbase_gcl_gprof.a
 lib_libbase_gcl_gprof_a_SOURCES=$(C_SRC) o/gprof.c
 lib_libbase_gcl_gprof_a_CFLAGS=$(AM_CFLAGS) -fno-omit-frame-pointer -pg
 lib_libbase_gcl_gprof_a_CPPFLAGS=$(AM_CPPFLAGS) -DGCL_GPROF
+EXTRA_lib_libbase_gcl_gprof_a_DEPENDENCIES=h/new_decl.h
+my_unixport_LIBRARIES += unixport/libgcl_gprof.a unixport/libansi_gcl_gprof.a
 else
 lib_libgprof_a_SOURCES=o/foo.c
 endif
-
-
-##include makefile
-C_SRC=   o/typespec.c o/alloc.c o/gbc.c o/bitop.c o/main.c o/eval.c o/macros.c o/lex.c o/bds.c o/frame.c\
-	 o/predicate.c o/reference.c o/assignment.c o/bind.c o/let.c o/conditional.c o/block.c o/iteration.c\
-	 o/mapfun.c\
-	 o/prog.c o/multival.c o/catch.c o/cfun.c o/cmpaux.c o/big.c o/number.c o/num_pred.c o/num_comp.c\
-	 o/num_arith.c o/num_sfun.c o/num_co.c o/num_log.c o/num_rand.c o/earith.c\
-	 o/array.c o/regexpr.c o/structure.c o/toplevel.c o/backq.c o/format.c\
-	 o/unixfsys.c o/unixfasl.c o/error.c o/unixtime.c o/unixsys.c o/unixsave.c o/funlink.c  o/fat_string.c\
-	 o/run_process.c o/nfunlink.c o/usig.c o/usig2.c o/utils.c o/makefun.c o/sockets.c o/gmp_wrappers.c\
-	 o/clxsocket.c o/nsocket.c o/new_init.c o/prelink.c o/sfasl.c o/msbrk.c o/character.c \
-	 o/hash.c o/pathname.c o/sequence.c o/file.c o/list.c o/print.c o/string.c\
-	 o/gcl_readline.c o/package.c o/read.c o/symbol.c
-
-%.c: %.d | bin/dpp
-	bin/dpp $< $@
-
-
-
-unixport/raw_%_gprof: lib/libbase_gcl_gprof.a unixport/lib%_gprof.a lib/libgclp.a
-	$(CC) $(AM_LDFLAGS) -rdynamic -Wl,-z,relro $(LDFLAGS) -o $@ $^ $(LIBS)
-
-unixport/raw_%: lib/libbase_gcl.a lib/libgprof.a unixport/lib%.a lib/libgclp.a
-	$(CC) $(AM_LDFLAGS) -rdynamic -Wl,-z,relro $(LDFLAGS) -o $@ $^ $(LIBS)
-
-unixport/saved_%: | unixport/raw_% unixport/gcl_cmpnopt_%.lsp h/cmpinclude.h \
-		    unixport/libboot.so unixport/init_raw.lsp
-	ar x unixport/lib$*.a $$(ar t unixport/lib$*.a |grep ^gcl_)
-	ln -snf gcl_cmpnopt_$*.lsp unixport/gcl_cmpnopt.lsp
-	GCL_LSPSYSDIR=$(srcdir)/unixport/ \
-		$(word 1,$|) $$(pwd)/$(@D)/ -libdir $$(pwd)/ \
-		    < <(cat $(word 5,$|) <(echo "(system:save-system \"$@\")"))
-
-unixport/gcl_cmpnopt_%.lsp: unixport/lib%.a | unixport/%
-	echo "(mapc (quote load) (directory \"$*/*.hsh\"))" \
-	     "(compiler::dump-inl-hash \"$@\")" | $|
-
-MY_DIRS=pre_gcl gcl0 gcl1 gcl2 gcl3 gcl mod_gcl0 mod_gcl pcl_gcl ansi_gcl gcl_gprof ansi_gcl_gprof
-MY_DIRS+=g/demos g a c
-$(MY_DIRS): % :
-	[ -d $@ ] || mkdir -p $@
-
-unixport/pre_gcl: | pre_gcl
-	ln -s /bin/true $@
-
-unixport/gcl0: | unixport/saved_pre_gcl
-unixport/gcl1: | unixport/saved_gcl0
-unixport/gcl2: | unixport/saved_gcl1
-unixport/gcl3: | unixport/saved_gcl2
-unixport/gcl:  | unixport/saved_gcl3
-$(addprefix unixport/,gcl0 gcl1 gcl2 gcl3 gcl): unixport/% : unixport/cinit.lisp | %
-	$(word 2,$|) < <(cat $< <(echo "(system:save-system \"$@\")"))
-
-unixport/sys_%.o: unixport/sys_init.c h/new_decl.h
-	i=$$(echo $* | sed 's,[0-9],,g' | sed 's,_gprof,,g'); \
-	   $(CC) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -D $$i -D FLAVOR="$$i" -c $< -o $@
-
-L_STUBS=s sf c listlib predlib deftype typeof subtypep bit type typep typecase arraylib \
-        seq seqlib bnum fle dl rm nr lr sym hash sharp \
-	cmptype cmpeval cmpvar cmpwt cmpif \
-	cmplet cmptag cmpinline cmpenv cmplam cmptop cmpbind cmpblock cmpcall cmpcatch \
-	cmpflet cmpfun cmplabel cmploc cmpmap cmpmulti cmpspecial cmputil cmpvs cmpmain \
-	callhash assert defmacro defstruct \
-	describe evalmacros sc logical_pathname_translations make_pathname parse_namestring \
-	merge_pathnames pathname_match_p namestring wild_pathname_p translate_pathname \
-	truename directory rename_file restart iolib mislib module numlib packlib \
-	setf top trace sloop debug info serror mnum fpe 
-L_OBJS=$(addprefix gcl_,$(addsuffix .o,$(L_STUBS)))
-L_FOBJS=$(addprefix gcl/,$(L_OBJS))
-
-gcl0/%.o: lsp/%.lsp | unixport/gcl0
-	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" -compile $< -o $@
-	[ "$*" = "gcl_c" ] || [ "$*" = "gcl_listlib" ] || \
-		ln $@ $$(echo $@ |sed 's,\.o,\.done,g') #FIXME directory link
-
-gcl0/%.o: cmpnew/%.lsp | unixport/gcl0
-	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" -compile $< -o $@
-	ln $@ $$(echo $@ |sed 's,\.o,\.done,g')
-
-.POSIX: # parallel job ordering
-EARLY=s typep nr deftype cmptype cmpinline cmpflet
-EARLY_OBJS=$(addprefix gcl_,$(addsuffix .o,$(EARLY)))
-unixport/libgcl0.a: $(addprefix gcl0/,$(EARLY_OBJS))
-unixport/libgcl0.a: $(addprefix gcl0/,$(filter-out $(EARLY_OBJS),$(L_OBJS)))
-$(addprefix unixport/lib,$(addsuffix .a,gcl1 gcl2 gcl3)): unixport/lib%.a: $(addprefix %/,$(L_OBJS))
-
-gcl1/%.o: lsp/%.lsp  | unixport/gcl1
-	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" \
-	   -eval "(setq compiler::*dump-inl-hash* t)" \
-	   -compile $< -o $@
-	ln $@ $$(echo $@ |sed 's,\.o,\.done,g')
-
-gcl1/%.o: cmpnew/%.lsp  | unixport/gcl1
-	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" \
-	   -eval "(setq compiler::*dump-inl-hash* t)" \
-	   -compile $< -o $@
-	ln $@ $$(echo $@ |sed 's,\.o,\.done,g')
-
-gcl2/%.o: lsp/%.lsp  | unixport/gcl2
-	$| -eval "(setq compiler::*dump-inl-hash* t)" -compile $< -o $@
-
-gcl2/%.o: cmpnew/%.lsp | unixport/gcl2
-	$| -eval "(setq compiler::*dump-inl-hash* t)" -compile $< -o $@
-
-gcl3/%.o: lsp/%.lsp  | unixport/gcl3
-	$| -eval "(setq compiler::*dump-inl-hash* t)" -compile $< -o $@
-
-gcl3/%.o: cmpnew/%.lsp | unixport/gcl3
-	$| -eval "(setq compiler::*dump-inl-hash* t)" -compile $< -o $@
-
-
-gcl/%.o: gcl3/%.o | gcl
-	cp $(patsubst %.o,%.*,$<) $(@D)
-
-unixport/libgcl.a:  $(L_FOBJS) unixport/sys_gcl.o | unixport/gcl xbin/ar_merge
-	$(word 1,$|) -batch \
-		-eval "(let ((si::*do-recomp-output-dir* \"$(<D)\")) (si::do-recomp t))" \
-		-eval "(compiler::dump-inl-hash \"$(<D)/all.hsh\")"
-	$(word 2,$|) crus $@ $^
 
 if AMM_XGCL
 
@@ -163,7 +50,7 @@ X_STUBS=Xlib Xutil X XAtom defentry_events Xstruct XStruct_l_3 general keysymdef
 X_OBJS=$(addprefix gcl_,$(addsuffix .o,$(X_STUBS)))
 X_LIB=lib/libxgcl.a
 
-noinst_LIBRARIES=$(X_LIB)
+noinst_LIBRARIES+=$(X_LIB)
 lib_libxgcl_a_SOURCES=xgcl-2/Events.c xgcl-2/general-c.c xgcl-2/XStruct-2.c xgcl-2/XStruct-4.c xgcl-2/Xutil-2.c
 
 if AMM_GPROF
@@ -177,56 +64,173 @@ endif
 
 endif
 
-unixport/mod_gcl0: xgcl-2/sysdef.lisp | unixport/saved_gcl mod_gcl0
-	rm -f in
-	[ "$(X_OBJS)" = "" ] || echo "(load \"$<\")" >in
-	echo "(compiler::cdebug)(si::save-system \"$@\")" >>in
-	$(word 1,$|) <in
+C_SRC=   o/typespec.c o/alloc.c o/gbc.c o/bitop.c o/main.c o/eval.c o/macros.c o/lex.c o/bds.c o/frame.c\
+	 o/predicate.c o/reference.c o/assignment.c o/bind.c o/let.c o/conditional.c o/block.c o/iteration.c\
+	 o/mapfun.c\
+	 o/prog.c o/multival.c o/catch.c o/cfun.c o/cmpaux.c o/big.c o/number.c o/num_pred.c o/num_comp.c\
+	 o/num_arith.c o/num_sfun.c o/num_co.c o/num_log.c o/num_rand.c o/earith.c\
+	 o/array.c o/regexpr.c o/structure.c o/toplevel.c o/backq.c o/format.c\
+	 o/unixfsys.c o/unixfasl.c o/error.c o/unixtime.c o/unixsys.c o/unixsave.c o/funlink.c  o/fat_string.c\
+	 o/run_process.c o/nfunlink.c o/usig.c o/usig2.c o/utils.c o/makefun.c o/sockets.c o/gmp_wrappers.c\
+	 o/clxsocket.c o/nsocket.c o/new_init.c o/prelink.c o/sfasl.c o/msbrk.c o/character.c \
+	 o/hash.c o/pathname.c o/sequence.c o/file.c o/list.c o/print.c o/string.c\
+	 o/gcl_readline.c o/package.c o/read.c o/symbol.c \
+	 o/bcmp.c o/bcopy.c o/bzero.c o/user_init.c o/user_match.c
 
-mod_gcl0/%.o: mod/%.lsp | unixport/mod_gcl0
-	$| -eval "(setq compiler::*dump-inl-hash* t)" \
-	   -compile $< -o $@
-
-mod_gcl0/%.o: xgcl-2/%.lsp  | unixport/mod_gcl0
-	$| -eval "(setq compiler::*dump-inl-hash* t)" \
-	   -compile $< -o $@
-
-unixport/mod_gcl: unixport/saved_mod_gcl0 | mod_gcl
-	ln -snf $(<F) $@
-
-mod_gcl/%.o: mod_gcl0/%.o | unixport/mod_gcl
-	cp $(patsubst %.o,%.*,$<) $(@D)
-
+L_STUBS=s sf c listlib predlib deftype typeof subtypep bit type typep typecase arraylib \
+        seq seqlib bnum fle dl rm nr lr sym hash sharp \
+	cmptype cmpeval cmpvar cmpwt cmpif \
+	cmplet cmptag cmpinline cmpenv cmplam cmptop cmpbind cmpblock cmpcall cmpcatch \
+	cmpflet cmpfun cmplabel cmploc cmpmap cmpmulti cmpspecial cmputil cmpvs cmpmain \
+	callhash assert defmacro defstruct \
+	describe evalmacros sc logical_pathname_translations make_pathname parse_namestring \
+	merge_pathnames pathname_match_p namestring wild_pathname_p translate_pathname \
+	truename directory rename_file restart iolib mislib module numlib packlib \
+	setf top trace sloop debug info serror mnum fpe
+L_OBJS=$(addprefix gcl_,$(addsuffix .o,$(L_STUBS)))
+L_FOBJS=$(addprefix gcl/,$(L_OBJS))
 
 MOD_STUBS=ansi_io defpackage destructuring_bind loop make_defpackage
 MOD_OBJS=$(addprefix gcl_,$(addsuffix .o,$(MOD_STUBS))) $(X_OBJS)
-MOD_FOBJS=$(addprefix mod_gcl/,$(MOD_OBJS)) $(L_FOBJS)
-unixport/libmod_gcl0.a: unixport/lib%.a: $(addprefix %/,$(MOD_OBJS)) $(L_FOBJS) $(X_LIB)
-unixport/libmod_gcl.a:  $(MOD_FOBJS) $(X_LIB) unixport/sys_mod_gcl.o | unixport/mod_gcl xbin/ar_merge
-	$(word 1,$|) -batch \
-	   -eval "(let ((si::*do-recomp-output-dir* \"$(<D)\")) (si::do-recomp t))" \
-           -eval "(compiler::dump-inl-hash \"$(<D)/all.hsh\")"
-	$(word 2,$|) crus $@ $^
 
 PCL_STUBS=boot braid cache combin compat cpl ctypes defclass defcombin defs dfun dlisp2\
 	  dlisp env fast_init fin fixup fngen fsc generic_functions impl_low init iterate\
 	  low macros methods pkg precom1 precom2 slots_boot slots std_class vector walk
 PCL_OBJS=$(addprefix gcl_pcl_,$(addsuffix .o,$(PCL_STUBS)))
-PCL_FOBJS=$(addprefix pcl_gcl/,$(PCL_OBJS)) $(MOD_FOBJS) $(L_FOBJS)
+PCL_FOBJS=$(addprefix pcl_gcl/,$(PCL_OBJS)) $(addprefix mod_gcl/,$(MOD_OBJS)) $(L_FOBJS) $(X_LIB)
 
-unixport/pcl_gcl: unixport/saved_mod_gcl pcl/defsys.lisp clcs/package.lisp \
-		  clcs/myload1.lisp cmpnew/gcl_collectfn.lsp | pcl_gcl
-	echo  "(load \"$(word 3,$^)\")" \
-	      "(load \"$(word 4,$^)\")" \
-	      "(load \"$(word 5,$^)\")" \
-	      "(let ((*features* (remove :kcl *features*))) (load \"$(word 2,$^)\"))" \
+CLCS_STUBS=condition_definitions conditions precom
+CLCS_OBJS=$(addprefix gcl_clcs_,$(addsuffix .o,$(CLCS_STUBS)))
+ANSI_FOBJS=$(addprefix ansi_gcl/,$(CLCS_OBJS)) $(PCL_FOBJS)
+
+unixport/saved_%: | unixport/raw_% unixport/gcl_cmpnopt_%.lsp h/cmpinclude.h \
+		    unixport/libboot.so unixport/init_raw.lsp
+	ar x unixport/lib$*.a $$(ar t unixport/lib$*.a |grep ^gcl_)
+	ln -snf gcl_cmpnopt_$*.lsp unixport/gcl_cmpnopt.lsp
+	GCL_LSPSYSDIR=$(srcdir)/unixport/ \
+		$(word 1,$|) $$(pwd)/$(@D)/ -libdir $$(pwd)/ \
+		    < <(cat $(word 5,$|) <(echo "(system:save-system \"$@\")"))
+
+unixport/raw_%: unixport/lib%.a
+	$(CC) $(AM_LDFLAGS) -rdynamic -Wl,-z,relro $(LDFLAGS) -o $@ $< $(LIBS)
+
+unixport/gcl_cmpnopt_gcl_gprof.lsp unixport/gcl_cmpnopt_ansi_gcl_gprof.lsp:\
+unixport/gcl_cmpnopt_%_gprof.lsp: unixport/gcl_cmpnopt_%.lsp
+	ln -snf $$(basename $<) $@
+unixport/gcl_cmpnopt_%.lsp: unixport/lib%.a | unixport/%
+	echo "(mapc (quote load) (directory \"$*/*.hsh\"))" \
+	     "(compiler::dump-inl-hash \"$@\")" | $|
+
+$(addprefix unixport/lib,$(addsuffix .a,pre_gcl gcl0 gcl1 gcl2 gcl3 gcl mod_gcl0 mod_gcl pcl_gcl ansi_gcl)): \
+unixport/lib%.a: lib/libbase_gcl.a  lib/libgprof.a unixport/sys_%.o
+$(addprefix unixport/lib,$(addsuffix .a,gcl_gprof ansi_gcl_gprof)): \
+unixport/lib%.a:lib/libbase_gcl_gprof.a unixport/sys_%.o
+
+$(addprefix unixport/lib,$(addsuffix .a,gcl0 gcl1 gcl2 gcl3 gcl)):\
+unixport/lib%.a: $(addprefix %/,$(L_OBJS))
+unixport/libmod_gcl0.a unixport/libmod_gcl.a:\
+unixport/lib%.a: $(addprefix %/,$(MOD_OBJS)) $(L_FOBJS) $(X_LIB)
+unixport/libgcl.a unixport/libmod_gcl.a: unixport/lib%.a: %/recompile
+unixport/libpcl_gcl.a: $(PCL_FOBJS)
+unixport/libansi_gcl.a: $(ANSI_FOBJS)
+
+unixport/libgcl_gprof.a: $(patsubst %.o,%.go,$(L_FOBJS))
+unixport/libansi_gcl_gprof.a: $(patsubst %.o,%.go,$(ANSI_FOBJS))
+
+unixport/lib%.a: | xbin/ar_merge
+	$| crus $@ $^
+
+%/recompile: | unixport/%
+	$| -batch \
+	   -eval "(let ((si::*do-recomp-output-dir* \"$(@D)\")) (si::do-recomp t))" \
+	   -eval "(compiler::dump-inl-hash \"$(@D)/all.hsh\")"
+	touch $@
+
+unixport/sys_%.o: unixport/sys_init.c h/new_decl.h
+	i=$$(echo $* | sed 's,[0-9],,g' | sed 's,_gprof,,g'); \
+	   $(CC) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -D $$i -D FLAVOR="$$i" -c $< -o $@
+
+unixport/pre_gcl: | pre_gcl
+	ln -s /bin/true $@
+
+unixport/gcl0: | unixport/saved_pre_gcl
+unixport/gcl1: | unixport/saved_gcl0
+unixport/gcl2: | unixport/saved_gcl1
+unixport/gcl3: | unixport/saved_gcl2
+unixport/gcl:  | unixport/saved_gcl3
+unixport/mod_gcl0:  | unixport/saved_gcl
+unixport/mod_gcl:  | unixport/saved_mod_gcl0
+unixport/pcl_gcl:  | unixport/saved_mod_gcl
+unixport/ansi_gcl:  | unixport/saved_pcl_gcl
+$(addprefix unixport/,gcl0 gcl1): unixport/% : unixport/cinit.lisp | %
+	$(word 2,$|) < <(cat $< <(echo "(system:save-system \"$@\")"))
+$(addprefix unixport/,gcl2 gcl3 gcl mod_gcl): unixport/% : | %
+	ln -snf $$(basename $(word 2,$|)) $@
+
+unixport/mod_gcl0: xgcl-2/sysdef.lisp | mod_gcl0
+	rm -f $(@D)/in
+	[ "$(X_OBJS)" = "" ] || echo "(load \"$<\")" >$(@D)/in
+	echo "(compiler::cdebug)(si::save-system \"$@\")" >>$(@D)/in
+	$(word 2,$|) <$(@D)/in
+	cp gcl/all.hsh $(word 1,$|) #FIXME
+
+unixport/pcl_gcl: clcs/package.lisp clcs/myload1.lisp cmpnew/gcl_collectfn.lsp pcl/defsys.lisp  | pcl_gcl
+	echo  "(let ((*features* (remove :kcl *features*))) (mapc (quote load) (list $(patsubst %,\"%\",$^))))" \
 	      "(compiler::cdebug)" \
 	      "(setq compiler::*assert-ftype-proclamations* t)" \
-	      "(setq pcl::*pcl-directory* (cons \"$$(dirname $(word 2,$^))/\" \"$(@F)/\"))" \
+	      "(setq pcl::*pcl-directory* (cons \"$$(dirname $(word 4,$^))/\" \"$(@F)/\"))" \
 	      "(print pcl::*pcl-directory*)" \
 	      "(setq pcl::*default-pathname-extensions* (cons \"lisp\" \"o\"))" \
 	      "(setq pcl::*pathname-extensions* (cons \"lisp\" \"o\"))" \
-	      "(si::save-system \"$@\")" | $<
+	      "(si::save-system \"$@\")" | $(word 2,$|)
+
+unixport/ansi_gcl: clcs/package.lisp clcs/gcl_clcs_precom.lisp \
+		   clcs/gcl_clcs_conditions.lisp clcs/gcl_clcs_condition_definitions.lisp \
+		   | ansi_gcl
+	echo "(mapc (quote load) (list $(patsubst %,\"%\",$^)))" \
+             "(compiler::cdebug)" \
+             "(si::save-system \"$@\")" | $(word 2,$|)
+	cp pcl_gcl/all.hsh $(word 1,$|) #FIXME
+
+
+.POSIX: # parallel job ordering
+E0=s typep nr deftype cmptype cmpinline cmpflet
+L0=c listlib seqlib type evalmacros
+E0_OBJS=$(addprefix gcl_,$(addsuffix .o,$(E0)))
+M0_OBJS=$(filter-out $(E0_OBJS) $(L0_OBJS),$(L_OBJS))
+L0_OBJS=$(addprefix gcl_,$(addsuffix .o,$(L0)))
+E0D_OBJS=$(addprefix gcl0/,$(E0_OBJS))
+M0D_OBJS=$(addprefix gcl0/,$(M0_OBJS))
+L0D_OBJS=$(addprefix gcl0/,$(L0_OBJS))
+$(L0D_OBJS): $(M0D_OBJS)
+$(M0D_OBJS): $(E0D_OBJS)
+
+gcl0/%.o: */%.lsp | unixport/gcl0
+	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" -compile $< -o $@
+	[ "$*" = "gcl_c" ] || [ "$*" = "gcl_listlib" ] || \
+		ln -f $@ $$(echo $@ |sed 's,\.o,\.done,g') #FIXME directory link
+
+gcl1/%.o: */%.lsp  | unixport/gcl1
+	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" \
+	   -eval "(setq compiler::*dump-inl-hash* t)" \
+	   -compile $< -o $@
+	ln -f $@ $$(echo $@ |sed 's,\.o,\.done,g')
+
+gcl2/%.o: */%.lsp  | unixport/gcl2
+	$| -eval "(compiler::cdebug)(setq compiler::*dump-inl-hash* t)" -compile $< -o $@
+
+gcl3/%.o: */%.lsp  | unixport/gcl3
+	$| -eval "(compiler::cdebug)(setq compiler::*dump-inl-hash* t)" -compile $< -o $@
+
+gcl/%.o: gcl3/%.o | gcl
+	cp $(patsubst %.o,%.*,$<) $(@D)
+
+mod_gcl0/%.o: */%.lsp | unixport/mod_gcl0
+	$| -eval "(setq compiler::*dump-inl-hash* t)" -compile $< -o $@
+
+mod_gcl/%.o: mod_gcl0/%.o | unixport/mod_gcl
+	cp $(patsubst %.o,%.*,$<) $(@D)
+
 
 %/c1: | unixport/%
 	echo "(pcl::compile-pcl)" | $|
@@ -258,102 +262,33 @@ unixport/pcl_gcl: unixport/saved_mod_gcl pcl/defsys.lisp clcs/package.lisp \
 
 %/all.hs1 : %/sys-package.lisp %/p1.lisp %/sys-proclaim.lisp | unixport/%
 	rm -rf $*/*.o
-	echo "(load \"$(word 1,$^)\")" \
-	     "(load \"$(word 2,$^)\")" \
-	     "(load \"$(word 3,$^)\")" \
+	echo "(mapc (quote load) (list $(patsubst %,\"%\",$^)))" \
 	     "(pcl::compile-pcl)" \
 	     "(compiler::dump-inl-hash \"$@\")" | $|
 
-%/all.hsh: %/p1.lisp %/all.hs1
+%/all.hsh: %/p1.lisp %/all.hs1 | unixport/pcl_gcl
+	echo "pcl conflicts:"
+	echo "(pcl::load-pcl)(si::all-conflicts)" | $|
 	cat $^ > $@
 
-$(addprefix pcl_gcl/,$(PCL_OBJS)): pcl_gcl/all.hsh
+$(addprefix pcl_gcl/,$(PCL_OBJS)): pcl_gcl/all.hsh 
 	touch $@
 
-unixport/libpcl_gcl.a: $(PCL_FOBJS) $(X_LIB) unixport/sys_pcl_gcl.o | unixport/pcl_gcl xbin/ar_merge
-	echo "(pcl::load-pcl)(si::all-conflicts)" | $(word 1,$|)
-	$(word 2,$|) crus $@ $^
-
-CLCS_STUBS=condition_definitions conditions precom
-CLCS_OBJS=$(addprefix gcl_clcs_,$(addsuffix .o,$(CLCS_STUBS)))
-ANSI_FOBJS=$(addprefix ansi_gcl/,$(CLCS_OBJS)) $(PCL_FOBJS)
-
-unixport/ansi_gcl: clcs/package.lisp clcs/gcl_clcs_precom.lisp \
-		   clcs/gcl_clcs_conditions.lisp clcs/gcl_clcs_condition_definitions.lisp \
-		   | unixport/saved_pcl_gcl ansi_gcl
-	echo "(load \"$(word 1,$^)\")" \
-             "(load \"$(word 2,$^)\")" \
-             "(load \"$(word 3,$^)\")" \
-             "(load \"$(word 4,$^)\")" \
-             "(compiler::cdebug)" \
-             "(si::save-system \"$@\")" | $(word 1,$|)
 
 ansi_gcl/%.o: clcs/%.lisp | unixport/ansi_gcl
 	$| -eval "(setq compiler::*dump-inl-hash* t)" -compile $< -o $@
 
-unixport/libansi_gcl.a: $(ANSI_FOBJS) $(X_LIB)
-
-
-
-
-
-unixport/gcl_gprof: unixport/saved_gcl | gcl_gprof
-	ln -snf $(<F) $@
-
-gcl_gprof/all.hsh: unixport/gcl_cmpnopt_gcl.lsp | unixport/gcl_gprof
-	cp $< $@
-gcl_gprof/%.o: gcl/%.o | gcl_gprof/all.hsh
+%.go: %.o
 	$(CC) $(AM_CPPFLAGS) -I $(<D) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) \
-	      -fno-omit-frame-pointer -pg -c $(<D)/$*.c -o $@
-	cat $(<D)/$*.data >>$@
+	      -fno-omit-frame-pointer -pg -c $*.c -o $@
+	cat $*.data >>$@
 
-unixport/libgcl_gprof.a: $(addprefix gcl_gprof/,$(L_OBJS)) $(X_GLIB)
-
-
-unixport/ansi_gcl_gprof: unixport/saved_ansi_gcl | ansi_gcl_gprof
-	ln -snf $(<F) $@
-
-ansi_gcl_gprof/all.hsh: unixport/gcl_cmpnopt_ansi_gcl.lsp  | unixport/ansi_gcl_gprof
-	cp $< $@
-ansi_gcl_gprof/%.o: mod_gcl/%.o | ansi_gcl_gprof/all.hsh
-	$(CC) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) \
-	      -fno-omit-frame-pointer -pg -c  $(<D)/$*.c -o $@
-	cat $(<D)/$*.data >>$@
-ansi_gcl_gprof/%.o: pcl_gcl/%.o | ansi_gcl_gprof/all.hsh
-	$(CC) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) \
-	      -fno-omit-frame-pointer -pg -c  $(<D)/$*.c -o $@
-	cat $(<D)/$*.data >>$@
-ansi_gcl_gprof/%.o: ansi_gcl/%.o | ansi_gcl_gprof/all.hsh
-	$(CC) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) \
-	      -fno-omit-frame-pointer -pg -c  $(<D)/$*.c -o $@
-	cat $(<D)/$*.data >>$@
-
-unixport/libansi_gcl_gprof.a: $(addprefix ansi_gcl_gprof/,$(MOD_OBJS) $(PCL_OBJS) $(CLCS_OBJS)) \
-			      unixport/libgcl_gprof.a
-
-unixport/lib%.a: unixport/sys_%.o | xbin/ar_merge
-	$| crus $@ $^
-
+clean_gcl_gprof: clean_% :
+	rm -rf unixport/lib$*.a unixport/saved_$* gcl/*.go
+clean_ansi_gcl_gprof: clean_% :
+	rm -rf unixport/lib$*.a unixport/saved_$* $(addsuffix /*.go,mod_gcl pcl_gcl ansi_gcl)
 clean_%:
 	rm -rf $* unixport/$* unixport/lib$*.a unixport/saved_$*
-#remake_%: clean_% unixport/saved_%
-
-unixport/init_raw.lsp: unixport/init_raw.lsp.in majvers minvers release git.tag
-
-	cat $< | sed \
-		-e "s#@LI-VERS@#(`cat $(word 2,$^)`.`cat $(word 3,$^)`) `cat $(word 4,$^)`#1" \
-		-e "s#@LI-EXTVERS@#`cat $(word 3,$^) | cut -f2 -d.`#1" \
-		-e "s#@LI-MINVERS@#`cat $(word 3,$^) | cut -f1 -d.`#1" \
-		-e "s#@LI-MAJVERS@#`cat $(word 2,$^)`#1" \
-		-e "s#@LI-GITTAG@#`cat $(word 5,$^)`#1" \
-		-e "s#@LI-RELEASE@#`cat $(word 4,$^)`#1" \
-		-e "s#@LI-CC@#\"$(GCL_CC) -c $(filter-out -pg,$(FINAL_CFLAGS))\"#1" \
-		-e "s#@LI-DFP@#\"$(filter -pg,$(FINAL_CFLAGS))\"#1" \
-		-e "s#@LI-LD@#\"$(GCL_CC) $(LD_FLAGS) -o \"#1" \
-		-e "s#@LI-LD-LIBS@#\" $(LD_LIBS_POST)\"#1" \
-		-e "s#@LI-OPT-THREE@#\"$(O3FLAGS)\"#1" \
-		-e "s#@LI-OPT-TWO@#\"$(O2FLAGS)\"#1" \
-		-e "s#@LI-INIT-LSP@#\"$@\"#1" >$@
 
 CMPINCLUDE_FILES=h/cmpincl1.h h/gclincl.h h/compbas.h h/type.h h/mgmp.h \
 	h/lu.h h/globals.h  h/vs.h \
@@ -402,11 +337,8 @@ unixport/libboot.so: o/boot.c o/boot.h h/new_decl.h
 
 o/boot.ini: CPPFLAGS += -DNO_BOOT_H
 o/%.ini:  o/%.c | o/grab_defs xbin/move-if-changed
-	$(CPP) $(AM_CPPFLAGS) -DINICOMP -DNO_DEFUN $(CPPFLAGS) $< | $(word 1,$|) > $*.inj
-	$(word 2,$|) mv $*.inj $@
-
-NDF=$(C_SRC) $(patsubst o/%.c,o/lib_libbase_gcl_gprof_a-%.c,$(C_SRC) o/gprof.c) o/user_init.c o/user_match.c o/gprof.c o/lib_libgprof_a-gprof.c gcl-tk/g_gcltkaux-guis.c gcl-tk/g_gcltkaux-tkAppInit.c gcl-tk/g_gcltkaux-tkMain.c
-$(patsubst %.c,%.o,$(NDF)): h/new_decl.h
+	$(CPP) $(AM_CPPFLAGS) -DINICOMP -DNO_DEFUN $(CPPFLAGS) $< | $(word 1,$|) > $(@D)/$*.inj
+	$(word 2,$|) mv $(@D)/$*.inj $@
 
 o/new_init.c: $(INI_FILES)
 	echo '#include "make-init.h"' > $@
@@ -418,21 +350,53 @@ o/new_init.c: $(INI_FILES)
 o/foo.c:
 	touch $@
 
-a/copy: ansi-tests | a
-	cp $</*.lsp $(@D)
-	touch $@
-
-a/test_results: a/copy | unixport/saved_ansi_gcl
+ansi-tests/test_results: ansi-tests/*.lsp | unixport/saved_ansi_gcl
+	[ -d $(@D) ] || (mkdir $(@D) && cp $^ $(@D))
 	cd $(@D) && echo '(load "gclload")' | ../$| |tee $(@F)
 
-bin/gcl: bin/gcl.sh majvers minvers
-	sed -e "s,@EXT@,$(PEXT),g" \
+bin/gcl: bin/in.gcl.sh majvers minvers
+	sed -e "s,@EXT@,,g" \
 	    -e "s,@VERS@,$$(cat $(word 2,$^)).$$(cat $(word 3,$^)),g" \
 	    -e "s,@TKVERS@,$$(echo $(TK_CONFIG_PREFIX) |sed 's,.*/tk,,g'),g" $< >$@
 	chmod a+x $@
 
-check: a/copy
-check_SCRIPTS=a/test_results
+bin/gcl%: bin/in.gcl.sh majvers minvers
+	sed -e "s,@EXT@,$*,g" \
+	    -e "s,@VERS@,$$(cat $(word 2,$^)).$$(cat $(word 3,$^)),g" \
+	    -e "s,@TKVERS@,$$(echo $(TK_CONFIG_PREFIX) |sed 's,.*/tk,,g'),g" $< >$@
+	chmod a+x $@
+
+man/man1/gcl%.1: man/man1/gcl.1
+	sed -e 's,\(\b\)gcl\(\b\),\1gcl$*\2,g' $< > $@
+
+info/gcl%-si-index.texi: info/gcl-si-index.texi
+	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
+info/gcl%-si.texi: info/gcl-si.texi info/gcl%-si-index.texi
+	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
+info/gcl%-tk.texi: info/gcl-tk.texi
+	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
+info/gcl%.texi: info/gcl.texi
+	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
+
+%.info: %.texi
+	$(MAKEINFO) $< --output $@
+
+%.tex: %.texi
+	$(MAKEINFO) --latex $< --output $@
+
+%.pdf: %.tex
+	latex -output-format=pdf -output-directory=$(@D) $<
+
+%.dvi: %.tex
+	latex -output-directory=$(@D) $<
+
+%.html: %.texi
+	mkdir -p $@
+	$(MAKEINFO) --html $< --output $@
+
+
+
+check_SCRIPTS=ansi-tests/test_results
 
 g/gcltksrv$(EXEEXT): gcl-tk/gcltksrv.in | g
 	cat $<  | sed -e "s!TK_LIBRARY=.*!TK_LIBRARY=${TK_LIBRARY}!g" \
@@ -455,9 +419,10 @@ g_gcltksrv_SOURCES=
 g_gcltkaux_SOURCES=gcl-tk/guis.c gcl-tk/tkAppInit.c gcl-tk/tkMain.c
 g_gcltkaux_CPPFLAGS=$(AM_CPPFLAGS) $(TK_INCLUDE) $(TCL_INCLUDE) $(TK_XINCLUDES)
 g_gcltkaux_LDADD=$(TK_LIB_SPEC) $(TCL_LIB_SPEC)
+EXTRA_g_gcltkaux_DEPENDENCIES=h/new_decl.h
 
-TEXI2DVI=$(srcdir)/tdf
-TEXI2PDF=$(srcdir)/tdf
+TEXI2DVI=xbin/tdf
+TEXI2PDF=xbin/tdf
 info_TEXINFOS=info/gcl.texi info/gcl-si.texi info/gcl-tk.texi
 
 man1_MANS=man/man1/gcl.1
@@ -508,3 +473,37 @@ g/demos/index.lsp: g/tkl.o | unixport/saved_gcl
 
 bin_SCRIPTS=bin/gcl
 
+%.c: %.d | bin/dpp
+	bin/dpp $< $@
+
+MY_DIRS=pre_gcl gcl0 gcl1 gcl2 gcl3 gcl mod_gcl0 mod_gcl pcl_gcl ansi_gcl
+g/demos g a c $(MY_DIRS): % :
+	[ -d $@ ] || mkdir -p $@
+
+
+DWDOCS=$(addprefix xgcl-2/dwdoc/dwdoc,$(addsuffix .html,1 2 3 contents index))
+$(DWDOCS): xgcl-2/dwdoc.tex xgcl-2/gcl_tohtml.lsp xgcl-2/gcl_index.lsp | unixport/saved_mod_gcl
+	mkdir -p $(@D)
+	echo "(in-package :xlib)" \
+	     "(progn " \
+		"(mapc (quote load) (list $(patsubst %,\"%\",$(filter-out $<,$^))))" \
+		"(tohtml \"$<\" \"$(@D)/dwdoc\"))" \
+		"(with-open-file (s \"$(@D)/dwdoccontents.html\" :direction :output)" \
+			"(let ((*standard-output* s))" \
+				"(makecont \"$<\" 1 \"$(@D)/dwdoc\")))" \
+	        "(with-open-file (s \"$(@D)/dwdocindex.html\" :direction :output)" \
+			"(let ((*standard-output* s))" \
+				"(printindex indexdata \"$(@D)/dwdoc\")))" | $|
+docdir=$(datarootdir)/doc/$(PACKAGE)
+doc_DATA=$(DWDOCS) xgcl-2/dwdoc.pdf
+
+clean-local:
+	rm -rf $(MY_DIRS) $(addprefix unixport/,$(MY_DIRS))
+	rm -rf unixport/*cmpnopt* #FIXME
+	rm -rf o/*.inj
+	rm -rf h/cmpincludea.h h/mstdint.h # FIXME
+	rm -rf h/stamp-h1 # FIXME
+	rm -rf $$(echo o/*.d | sed 's,\.d,.c,g') #FIXME
+	rm -rf lib g #FIXME
+distclean-local:
+	rm -rf o/.Tpo #FIXME
