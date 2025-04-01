@@ -9,9 +9,12 @@ mkdir tmp
 while [ $# -gt 0 ] ; do
     case $(basename $1) in
 	*.o) cp $1 tmp;;
+	*.go) cp $1 tmp/$(echo $(basename $1)|sed 's,\.go,.o,g');;
 	*.a) ar x $1 --output tmp;;
+	recompile);;
 	*) echo Bad arg $1 ; exit 1 ;;
     esac
     shift
 done
 ar $FLAGS $ARCHIVE tmp/*.o
+rm -rf tmp
