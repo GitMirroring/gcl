@@ -281,7 +281,7 @@ add_args_to_cflags  -fsigned-char -pipe -fcommon \
 	            -std=gnu17 \
 	            -Wall \
 	            -Wno-builtin-requires-header -Wno-empty-body -Wno-self-assign \
-	            -Wno-unused-but-set-variable
+	            -Wno-unused-but-set-variable -D_FILE_OFFSET_BITS=64 -D_TIME_BITS=64
 
 add_args_to_ldflags -no-pie # -Wl,-z,lazy
 
