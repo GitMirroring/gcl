@@ -13,5 +13,5 @@ while [ $# -gt 1 ] ; do
 done
 
 $MAKEINFO --latex $1 --output t.tex
-$LATEX -output-format=$E t.tex
+latex -output-format=$E t.tex
 mv t.$E $O
