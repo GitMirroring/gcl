@@ -2,11 +2,12 @@
 (cdebug)
 (setq *compile-print* nil si::*notify-gbc* t *annotate* nil *optimize-maximum-pages* nil)
 
-(room t)
-
 (multiple-value-bind
  (x ps) (si::heap-report)
- (si::allocate 'structure (max 1 (truncate (* 4096 200) ps)) t))
+  (si::allocate 'structure (max 1 (truncate (* 4096 200) ps)) t))
+
+(room t)
+
 
 #+pre-gcl
 (progn
@@ -61,5 +62,4 @@
   (compile nil `(lambda (x) (declare (optimize (safety 2))) (address x)))
   (compile nil `(lambda (x) (declare (optimize (safety 2))) (nani x))))
 
-(progn (setq si::*code-block-reserve* (make-array 30000000 :element-type 'character :static t)) nil)
 (setq *optimize-maximum-pages* t)
