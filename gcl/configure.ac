@@ -81,14 +81,14 @@ def_static="no";
 def_debug="no";
 case $use in 
     *kfreebsd)
-	if ! test -d h ; then mkdir h; fi
-	ln -snf ../$srcdir/h/linux.defs h/$use.defs;;
+	if ! test -d h ; then mkdir h; fi;;
+#	ln -snf ../$srcdir/h/linux.defs h/$use.defs;;
     *gnu)
-	if ! test -d h ; then mkdir h; fi
-	ln -snf ../$srcdir/h/linux.defs h/$use.defs;;
+	if ! test -d h ; then mkdir h; fi;;
+#	ln -snf ../$srcdir/h/linux.defs h/$use.defs;;
     *linux)
-	if ! test -d h ; then mkdir h; fi
-	ln -snf ../$srcdir/h/linux.defs h/$use.defs;
+	if ! test -d h ; then mkdir h; fi;
+#	ln -snf ../$srcdir/h/linux.defs h/$use.defs;
 	case $use in
 	    ia64*)
 		def_dlopen="yes" ; def_custreloc="no" ;;
