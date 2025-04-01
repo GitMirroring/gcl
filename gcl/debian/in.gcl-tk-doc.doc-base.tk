@@ -8,5 +8,5 @@ Format: PDF
 Files: /usr/share/doc/gcl@EXT@/gcl@EXT@-tk*.pdf.gz /usr/share/doc/gcl@EXT@-doc/gcl@EXT@-tk*.pdf.gz
 
 Format: HTML
-Index: /usr/share/doc/gcl@EXT@/gcl@EXT@-tk_html/index.html
-Files: /usr/share/doc/gcl@EXT@/gcl@EXT@-tk_html/*.html
+Index: /usr/share/doc/gcl@EXT@/gcl@EXT@-tk.html/index.html
+Files: /usr/share/doc/gcl@EXT@/gcl@EXT@-tk.html/*.html
