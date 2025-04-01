@@ -643,6 +643,18 @@ am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
 use
+LI_INIT_LSP
+LI_OPT_TWO
+LI_OPT_THREE
+LI_LD_LIBS
+LI_LD
+LI_DFP
+LI_CC
+LI_RELEASE
+LI_GITTAG
+LI_MAJVERS
+LI_MINVERS
+LI_EXTVERS
 GNU_LD
 LEADING_UNDERSCORE
 EXTRA_LOBJS
@@ -4161,14 +4173,14 @@ def_static="no";
 def_debug="no";
 case $use in
     *kfreebsd)
-	if ! test -d h ; then mkdir h; fi
-	ln -snf ../$srcdir/h/linux.defs h/$use.defs;;
+	if ! test -d h ; then mkdir h; fi;;
+#	ln -snf ../$srcdir/h/linux.defs h/$use.defs;;
     *gnu)
-	if ! test -d h ; then mkdir h; fi
-	ln -snf ../$srcdir/h/linux.defs h/$use.defs;;
+	if ! test -d h ; then mkdir h; fi;;
+#	ln -snf ../$srcdir/h/linux.defs h/$use.defs;;
     *linux)
-	if ! test -d h ; then mkdir h; fi
-	ln -snf ../$srcdir/h/linux.defs h/$use.defs;
+	if ! test -d h ; then mkdir h; fi;
+#	ln -snf ../$srcdir/h/linux.defs h/$use.defs;
 	case $use in
 	    ia64*)
 		def_dlopen="yes" ; def_custreloc="no" ;;
@@ -7176,7 +7188,7 @@ add_args_to_cflags  -fsigned-char -pipe -fcommon \
 	            -std=gnu17 \
 	            -Wall \
 	            -Wno-builtin-requires-header -Wno-empty-body -Wno-self-assign \
-	            -Wno-unused-but-set-variable
+	            -Wno-unused-but-set-variable -D_FILE_OFFSET_BITS=64 -D_TIME_BITS=64
 
 add_args_to_ldflags -no-pie # -Wl,-z,lazy
 
@@ -12942,6 +12954,37 @@ O2FLAGS=$TO2FLAGS
 
 
 
+
+LI_EXTVERS=`cat minvers | cut -f2 -d.`
+
+LI_MINVERS=`cat minvers | cut -f1 -d.`
+
+LI_MAJVERS=`cat majvers`
+
+LI_GITTAG="`cat git.tag`"
+
+LI_RELEASE="`cat release`"
+
+LI_CC="\"$GCL_CC -c `echo " $FINAL_CFLAGS" | sed 's,-pg\b,,g'`\""
+
+LI_DFP="\"$GPL_FLAG\""
+
+LI_LD="\"$GCL_CC $BASE_LDFLAGS -o\""
+
+LI_LD_LIBS="\"$LIBS\""
+
+LI_OPT_THREE="\"$O3FLAGS\""
+
+LI_OPT_TWO="\"$O2FLAGS\""
+
+LI_INIT_LSP="\"init_raw.lsp\""
+
+
+ac_config_files="$ac_config_files unixport/init_raw.lsp"
+
+
+
+
 if test -e h/$use.defs  ; then
 
 
@@ -13697,6 +13740,7 @@ do
     "h/gclincl.h") CONFIG_HEADERS="$CONFIG_HEADERS h/gclincl.h" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
+    "unixport/init_raw.lsp") CONFIG_FILES="$CONFIG_FILES unixport/init_raw.lsp" ;;
     "makedefc") CONFIG_FILES="$CONFIG_FILES makedefc" ;;
     "windows/gcl.iss") CONFIG_FILES="$CONFIG_FILES windows/gcl.iss" ;;
     "windows/sysdir.bat") CONFIG_FILES="$CONFIG_FILES windows/sysdir.bat" ;;
