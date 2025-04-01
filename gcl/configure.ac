@@ -2341,6 +2341,36 @@ AC_SUBST(O2FLAGS)
 AC_SUBST(EXTRA_LOBJS)
 AC_SUBST(LEADING_UNDERSCORE)
 AC_SUBST(GNU_LD)
+
+LI_EXTVERS=`cat minvers | cut -f2 -d.`
+AC_SUBST(LI_EXTVERS)
+LI_MINVERS=`cat minvers | cut -f1 -d.`
+AC_SUBST(LI_MINVERS)
+LI_MAJVERS=`cat majvers`
+AC_SUBST(LI_MAJVERS)
+LI_GITTAG="`cat git.tag`"
+AC_SUBST(LI_GITTAG)
+LI_RELEASE="`cat release`"
+AC_SUBST(LI_RELEASE)
+LI_CC="\"$GCL_CC -c `echo " $FINAL_CFLAGS" | sed 's,-pg\b,,g'`\""
+AC_SUBST(LI_CC)
+LI_DFP="\"$GPL_FLAG\""
+AC_SUBST(LI_DFP)
+LI_LD="\"$GCL_CC $BASE_LDFLAGS -o\""
+AC_SUBST(LI_LD)
+LI_LD_LIBS="\"$LIBS\""
+AC_SUBST(LI_LD_LIBS)
+LI_OPT_THREE="\"$O3FLAGS\""
+AC_SUBST(LI_OPT_THREE)
+LI_OPT_TWO="\"$O2FLAGS\""
+AC_SUBST(LI_OPT_TWO)
+LI_INIT_LSP="\"init_raw.lsp\""
+AC_SUBST(LI_INIT_LSP)
+
+AC_CONFIG_FILES([unixport/init_raw.lsp])
+
+
+
 if test -e h/$use.defs  ; then
 
     AC_SUBST(use)

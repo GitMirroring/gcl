@@ -77,11 +77,11 @@
 
 (set-up-top-level)
 
-(setq *gcl-extra-version* @LI-EXTVERS@
-      *gcl-minor-version* @LI-MINVERS@ 
-      *gcl-major-version* @LI-MAJVERS@
-      *gcl-git-tag* @LI-GITTAG@
-      *gcl-release-date*  "@LI-RELEASE@")
+(setq *gcl-extra-version* @LI_EXTVERS@
+      *gcl-minor-version* @LI_MINVERS@
+      *gcl-major-version* @LI_MAJVERS@
+      *gcl-git-tag* @LI_GITTAG@
+      *gcl-release-date*  "@LI_RELEASE@")
 
 (defvar *system-banner* (default-system-banner))
 
@@ -89,14 +89,14 @@
 (when (fboundp 'user-init) (user-init))
 
 (in-package :compiler)
-(setq *cc* @LI-CC@
-      *default-prof-p* (> (length @LI-DFP@) 0)
-      *ld* @LI-LD@
-      *ld-libs* @LI-LD-LIBS@
+(setq *cc* @LI_CC@
+      *default-prof-p* (> (length @LI_DFP@) 0)
+      *ld* @LI_LD@
+      *ld-libs* @LI_LD_LIBS@
       *ld-libs* (concatenate 'string "-l" #+ansi-cl "ansi_" "gcl" #+gprof "_gprof" " " *ld-libs*)
-      *opt-three* @LI-OPT-THREE@
-      *opt-two* @LI-OPT-TWO@
-      *init-lsp* @LI-INIT-LSP@)
+      *opt-three* @LI_OPT_THREE@
+      *opt-two* @LI_OPT_TWO@
+      *init-lsp* @LI_INIT_LSP@)
 
 (import 'si::(clines defentry defcfun object void int double quit bye gbc system
 		     commonp *break-on-warnings* make-char char-bits char-font
