@@ -118,6 +118,8 @@ unixport/raw_%: unixport/lib%.a
 unixport/gcl_cmpnopt_gcl_gprof.lsp unixport/gcl_cmpnopt_ansi_gcl_gprof.lsp:\
 unixport/gcl_cmpnopt_%_gprof.lsp: unixport/gcl_cmpnopt_%.lsp
 	ln -snf $$(basename $<) $@
+unixport/gcl_cmpnopt_pre_gcl.lsp:
+	touch $@
 unixport/gcl_cmpnopt_%.lsp: unixport/lib%.a | unixport/%
 	echo "(mapc (quote load) (directory \"$*/*.hsh\"))" \
 	     "(compiler::dump-inl-hash \"$@\")" | $|
@@ -126,6 +128,14 @@ $(addprefix unixport/lib,$(addsuffix .a,pre_gcl gcl0 gcl1 gcl2 gcl3 gcl mod_gcl0
 unixport/lib%.a: lib/libbase_gcl.a  lib/libgprof.a unixport/sys_%.o
 $(addprefix unixport/lib,$(addsuffix .a,gcl_gprof ansi_gcl_gprof)): \
 unixport/lib%.a:lib/libbase_gcl_gprof.a unixport/sys_%.o
+
+.POSIX: # parallel job ordering
+E0=s typep nr deftype cmptype cmpinline cmpflet
+L0=c listlib seqlib type evalmacros
+E0_OBJS=$(addprefix gcl_,$(addsuffix .o,$(E0)))
+M0_OBJS=$(filter-out $(E0_OBJS) $(L0_OBJS),$(L_OBJS))
+L0_OBJS=$(addprefix gcl_,$(addsuffix .o,$(L0)))
+unixport/libgcl0.a: $(addprefix gcl0/,$(EO_OBJS) $(MO_OBJS) $(LO_OBJS))
 
 $(addprefix unixport/lib,$(addsuffix .a,gcl0 gcl1 gcl2 gcl3 gcl)):\
 unixport/lib%.a: $(addprefix %/,$(L_OBJS))
@@ -192,19 +202,6 @@ unixport/ansi_gcl: clcs/package.lisp clcs/gcl_clcs_precom.lisp \
              "(compiler::cdebug)" \
              "(si::save-system \"$@\")" | $(word 2,$|)
 	cp pcl_gcl/all.hsh $(word 1,$|) #FIXME
-
-
-.POSIX: # parallel job ordering
-E0=s typep nr deftype cmptype cmpinline cmpflet
-L0=c listlib seqlib type evalmacros
-E0_OBJS=$(addprefix gcl_,$(addsuffix .o,$(E0)))
-M0_OBJS=$(filter-out $(E0_OBJS) $(L0_OBJS),$(L_OBJS))
-L0_OBJS=$(addprefix gcl_,$(addsuffix .o,$(L0)))
-E0D_OBJS=$(addprefix gcl0/,$(E0_OBJS))
-M0D_OBJS=$(addprefix gcl0/,$(M0_OBJS))
-L0D_OBJS=$(addprefix gcl0/,$(L0_OBJS))
-#$(L0D_OBJS): $(M0D_OBJS)
-#$(M0D_OBJS): $(E0D_OBJS)
 
 gcl0/%.o: */%.lsp | unixport/gcl0
 	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" -compile $< -o $@
@@ -516,6 +513,7 @@ clean-local:
 		file-that-was-renamed.txt foo.fasl foo.lsp foo.txt \
 		foo.ufsl ldtest.lsp scratch/ temp.dat test_results \
 		tmp.dat tmp.txt)
+	rm -rf info/*.idx unixport/in
 
 
 distclean-local:
