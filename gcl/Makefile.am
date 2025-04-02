@@ -434,7 +434,8 @@ lisp_DATA=elisp/ansi-doc.el elisp/dbl.el elisp/doc-to-texi.el elisp/gcl.el \
 c/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl c
 	$(word 1,$|) -compile $< -o $@
 
-my_unixport_DATA=unixport/init_raw.lsp unixport/gcl.script unixport/libboot.so
+my_unixport_DATA=$(addprefix unixport/,init_raw.lsp gcl.script libboot.so \
+				       gcl_cmpnopt_gcl.lsp gcl_cmpnopt_ansi_gcl.lsp)
 
 my_xgcl2dir=$(my_libdir)/xgcl-2
 my_xgcl2_DATA=xgcl-2/sysdef.lisp xgcl-2/gcl_dwtest.lsp xgcl-2/gcl_dwtestcases.lsp

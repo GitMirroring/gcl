@@ -940,7 +940,9 @@ man1_MANS = man/man1/gcl.1
 lisp_DATA = elisp/ansi-doc.el elisp/dbl.el elisp/doc-to-texi.el elisp/gcl.el \
           elisp/man1-to-texi.el elisp/sshell.el elisp/smart-complete.el elisp/add-default.el 
 
-my_unixport_DATA = unixport/init_raw.lsp unixport/gcl.script unixport/libboot.so
+my_unixport_DATA = $(addprefix unixport/,init_raw.lsp gcl.script libboot.so \
+				       gcl_cmpnopt_gcl.lsp gcl_cmpnopt_ansi_gcl.lsp)
+
 my_xgcl2dir = $(my_libdir)/xgcl-2
 my_xgcl2_DATA = xgcl-2/sysdef.lisp xgcl-2/gcl_dwtest.lsp xgcl-2/gcl_dwtestcases.lsp
 my_pcldir = $(my_libdir)/pcl
