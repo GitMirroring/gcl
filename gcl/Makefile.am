@@ -103,13 +103,14 @@ CLCS_STUBS=condition_definitions conditions precom
 CLCS_OBJS=$(addprefix gcl_clcs_,$(addsuffix .o,$(CLCS_STUBS)))
 ANSI_FOBJS=$(addprefix ansi_gcl/,$(CLCS_OBJS)) $(PCL_FOBJS)
 
+$(addprefix unixport/saved_,gcl ansi_gcl gcl_gprof ansi_gcl_gprof): unixport/saved_%: unixport/raw_%
 unixport/saved_%: | unixport/raw_% unixport/gcl_cmpnopt_%.lsp h/cmpinclude.h \
 		    unixport/libboot.so unixport/init_raw.lsp
 	ar x unixport/lib$*.a $$(ar t unixport/lib$*.a |grep ^gcl_)
 	ln -snf gcl_cmpnopt_$*.lsp unixport/gcl_cmpnopt.lsp
 	GCL_LSPSYSDIR=$(srcdir)/unixport/ \
-		$(word 1,$|) $$(pwd)/$(@D)/ -libdir $$(pwd)/ \
-		    < <(cat $(word 5,$|) <(echo "(system:save-system \"$@\")"))
+		unixport/raw_$* $$(pwd)/$(@D)/ -libdir $$(pwd)/ \
+		    < <(cat unixport/init_raw.lsp <(echo "(system:save-system \"$@\")"))
 
 unixport/raw_%: unixport/lib%.a
 	$(CC) $(AM_LDFLAGS) -rdynamic -Wl,-z,relro $(LDFLAGS) -o $@ $< $(LIBS)
@@ -202,8 +203,8 @@ L0_OBJS=$(addprefix gcl_,$(addsuffix .o,$(L0)))
 E0D_OBJS=$(addprefix gcl0/,$(E0_OBJS))
 M0D_OBJS=$(addprefix gcl0/,$(M0_OBJS))
 L0D_OBJS=$(addprefix gcl0/,$(L0_OBJS))
-$(L0D_OBJS): $(M0D_OBJS)
-$(M0D_OBJS): $(E0D_OBJS)
+#$(L0D_OBJS): $(M0D_OBJS)
+#$(M0D_OBJS): $(E0D_OBJS)
 
 gcl0/%.o: */%.lsp | unixport/gcl0
 	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" -compile $< -o $@
@@ -336,6 +337,11 @@ unixport/libboot.so: o/boot.c o/boot.h h/new_decl.h
 		-fPIC -shared -Wl,-undefined -Wl,dynamic_lookup $< -o $@
 
 o/boot.ini: CPPFLAGS += -DNO_BOOT_H
+o/%.ini:  o/%.d | o/grab_defs xbin/move-if-changed xbin/mktmp bin/dpp
+	i=$$($(word 3,$|) $<);j=$$i.c;$(word 4,$|) $< $$j;\
+		$(CPP) $(AM_CPPFLAGS) -DINICOMP -DNO_DEFUN $(CPPFLAGS) $$j | $(word 1,$|) > $(@D)/$*.inj;\
+		rm $$j;
+	$(word 2,$|) mv $(@D)/$*.inj $@
 o/%.ini:  o/%.c | o/grab_defs xbin/move-if-changed
 	$(CPP) $(AM_CPPFLAGS) -DINICOMP -DNO_DEFUN $(CPPFLAGS) $< | $(word 1,$|) > $(@D)/$*.inj
 	$(word 2,$|) mv $(@D)/$*.inj $@

@@ -74,6 +74,7 @@ configure-stamp:
 
 build-stamp: configure-stamp
 	dh_testdir
+	$(MAKE) $(MAKEFLAGS)
 	$(MAKE) $(MAKEFLAGS) check
 	touch $@
 
