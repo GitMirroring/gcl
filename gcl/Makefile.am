@@ -502,7 +502,7 @@ doc_DATA=$(DWDOCS) xgcl-2/dwdoc.pdf
 
 clean-local:
 	rm -rf $(MY_DIRS) $(addprefix unixport/,$(MY_DIRS))
-	rm -rf unixport/*cmpnopt* #FIXME
+	rm -rf unixport/*cmpnopt* unixport/lib* unixport/saved_* #FIXME
 	rm -rf o/*.inj
 	rm -rf h/cmpincludea.h h/mstdint.h # FIXME
 	rm -rf h/stamp-h1 # FIXME
