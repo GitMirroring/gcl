@@ -32,7 +32,7 @@ fi
 ## host=CPU-COMPANY-SYSTEM
 AC_MSG_RESULT(host=$host)
 
-use=unknown
+#use=unknown
 case $canonical in
     sh4*linux*) use=sh4-linux;;
     *x86_64*linux*) use=amd64-linux;;
@@ -2371,11 +2371,11 @@ AC_CONFIG_FILES([unixport/init_raw.lsp])
 
 
 
-if test -e h/$use.defs  ; then
+if test "$use" != ""  ; then
 
     AC_SUBST(use)
     AC_CONFIG_FILES([makedefc windows/gcl.iss windows/sysdir.bat windows/install.lsp ])
-AC_OUTPUT
+    AC_OUTPUT
     echo makedefc
     cat makedefc
 

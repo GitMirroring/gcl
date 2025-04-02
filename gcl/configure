@@ -4119,7 +4119,7 @@ fi
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: host=$host" >&5
 printf "%s\n" "host=$host" >&6; }
 
-use=unknown
+#use=unknown
 case $canonical in
     sh4*linux*) use=sh4-linux;;
     *x86_64*linux*) use=amd64-linux;;
@@ -12985,12 +12985,12 @@ ac_config_files="$ac_config_files unixport/init_raw.lsp"
 
 
 
-if test -e h/$use.defs  ; then
+if test "$use" != ""  ; then
 
 
     ac_config_files="$ac_config_files makedefc windows/gcl.iss windows/sysdir.bat windows/install.lsp"
 
-cat >confcache <<\_ACEOF
+    cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
 # scripts and configure runs, see configure's option --config-cache.
