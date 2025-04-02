@@ -4582,10 +4582,12 @@ gcl-tk/gcltksrv$(EXEEXT): gcl-tk/gcltksrv.in | gcl-tk # FIXME configure
 	-e "s!GCL_TK_DIR=.*!GCL_TK_DIR=$(my_unixportdir)/../gcl-tk!g" > $@
 	chmod a+x $@
 
-gcl-tk/%.o: gcl-tk/%.lisp | unixport/saved_ansi_gcl gcl-tk gcl-tk/demos # FIXME directory
+gcl-tk/%.o: gcl-tk/%.lisp | unixport/saved_ansi_gcl
+	[ -d $(@D) ] || mkdir -p $(@D)
 	$(word 1,$|) -compile $< -o $@
 
-gcl-tk/%.o: gcl-tk/%.lsp | unixport/saved_ansi_gcl gcl-tk
+gcl-tk/%.o: gcl-tk/%.lsp | unixport/saved_ansi_gcl
+	[ -d $(@D) ] || mkdir -p $(@D)
 	$(word 1,$|) -compile $< -o $@
 
 gcl-tk/demos/index.lsp: gcl-tk/tkl.o | unixport/saved_gcl
