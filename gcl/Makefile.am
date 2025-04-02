@@ -22,7 +22,7 @@ docdir=$(datarootdir)/doc/$(PACKAGE)
 
 noinst_PROGRAMS=bin/dpp o/grab_defs
 my_unixport_PROGRAMS=unixport/saved_gcl unixport/saved_ansi_gcl
-my_gcltk_PROGRAMS=g/gcltkaux g/gcltksrv
+my_gcltk_PROGRAMS=gcl-tk/gcltkaux gcl-tk/gcltksrv
 noinst_LIBRARIES=lib/libbase_gcl.a
 my_unixport_LIBRARIES=unixport/libgcl.a unixport/libansi_gcl.a
 bin_SCRIPTS=bin/gcl
@@ -40,12 +40,12 @@ my_lsp_DATA+=lsp/gcl_evalmacros.lsp lsp/gcl_export.lsp lsp/gcl_module.lsp lsp/gc
 my_h_DATA=h/cmpinclude.h
 my_cmpnew_DATA=cmpnew/gcl_cmpopt.lsp c/gcl_collectfn.o cmpnew/gcl_lfun_list.lsp
 my_clcs_DATA=clcs/package.lisp
-my_gcltk_DATA=g/tkl.o g/tinfo.o gcl-tk/tk-package.lsp gcl-tk/gcl.tcl
+my_gcltk_DATA=gcl-tk/tkl.o gcl-tk/tinfo.o gcl-tk/tk-package.lsp gcl-tk/gcl.tcl
 my_gcltkd_DATA=$(addprefix gcl-tk/demos/,gc-monitor.lisp mkBasic.lisp mkCanvText.lisp mkdialog.lisp \
 	            mkEntry2.lisp mkEntry.lisp mkForm.lisp mkHScale.lisp mkItems.lisp mkLabel.lisp \
 	            mkListbox.lisp mkPlot.lisp mkRadio.lisp mkRuler.lisp mkSearch.lisp mkStyles.lisp \
 	            mkTextBind.lisp mkVScale.lisp nqthm-stack.lisp showVars.lisp widget.lisp) \
-	       $(addprefix g/demos/,gc-monitor.o index.lsp)
+	       $(addprefix gcl-tk/demos/,gc-monitor.o index.lsp)
 doc_DATA=$(DWDOCS) xgcl-2/dwdoc.pdf
 
 if AMM_GPROF
@@ -71,14 +71,13 @@ endif
 
 
 lib_libbase_gcl_a_SOURCES=$(C_SRC)
-EXTRA_lib_libbase_gcl_a_DEPENDENCIES=h/new_decl.h
 lib_libgprof_a_SOURCES=o/gprof.c
 lib_libgprof_a_CFLAGS=$(AM_CFLAGS) -fno-omit-frame-pointer -pg
-EXTRA_lib_libgprof_a_DEPENDENCIES=h/new_decl.h
+$(patsubst %.c,%.o,$(C_SRC)) o/lib_libgprof_a-gprof.o: h/new_decl.h # FIXME
 lib_libbase_gcl_gprof_a_SOURCES=$(C_SRC) o/gprof.c
 lib_libbase_gcl_gprof_a_CFLAGS=$(AM_CFLAGS) -fno-omit-frame-pointer -pg
 lib_libbase_gcl_gprof_a_CPPFLAGS=$(AM_CPPFLAGS) -DGCL_GPROF
-EXTRA_lib_libbase_gcl_gprof_a_DEPENDENCIES=h/new_decl.h
+$(patsubst %.c,%.o,$(patsubst o/%,o/lib_libbase_gcl_gprof_a-%,$(C_SRC) o/gprof.c)): h/new_decl.h #FIXME
 X_SRC=xgcl-2/Events.c xgcl-2/general-c.c xgcl-2/XStruct-2.c xgcl-2/XStruct-4.c xgcl-2/Xutil-2.c
 lib_libxgcl_a_SOURCES=$(X_SRC)
 lib_libxgcl_gprof_a_SOURCES=$(X_SRC)
@@ -97,12 +96,12 @@ unixport/libansi_gcl.a:
 unixport/libgcl_gprof.a:
 unixport/libansi_gcl_gprof.a:
 
-g_gcltksrv_SOURCES=
-g_gcltkaux_SOURCES=gcl-tk/guis.c gcl-tk/tkAppInit.c gcl-tk/tkMain.c
-g_gcltkaux_CPPFLAGS=$(AM_CPPFLAGS) $(TK_INCLUDE) $(TCL_INCLUDE) $(TK_XINCLUDES)
-g_gcltkaux_LDADD=$(TK_LIB_SPEC) $(TCL_LIB_SPEC)
-EXTRA_g_gcltkaux_DEPENDENCIES=h/new_decl.h
-
+GCLTK_SRC=gcl-tk/guis.c gcl-tk/tkAppInit.c gcl-tk/tkMain.c
+gcl_tk_gcltksrv_SOURCES=
+gcl_tk_gcltkaux_SOURCES=$(GCLTK_SRC)
+gcl_tk_gcltkaux_CPPFLAGS=$(AM_CPPFLAGS) $(TK_INCLUDE) $(TCL_INCLUDE) $(TK_XINCLUDES)
+gcl_tk_gcltkaux_LDADD=$(TK_LIB_SPEC) $(TCL_LIB_SPEC)
+$(patsubst %.c,%.o,$(patsubst gcl-tk/%,gcl-tk/gcltkaux-%,$(GCLTK_SRC))): h/new_decl.h # FIXME
 
 DWDOCS=$(addprefix xgcl-2/dwdoc/dwdoc,$(addsuffix .html,1 2 3 contents index))
 
@@ -407,20 +406,20 @@ bin/gcl: bin/in.gcl.sh majvers minvers # FIXME configure
 	    -e "s,@TKVERS@,$$(echo $(TK_CONFIG_PREFIX) |sed 's,.*/tk,,g'),g" $< >$@
 	chmod a+x $@
 
-g/gcltksrv$(EXEEXT): gcl-tk/gcltksrv.in | g # FIXME configure
+gcl-tk/gcltksrv$(EXEEXT): gcl-tk/gcltksrv.in | gcl-tk # FIXME configure
 	cat $<  | sed -e "s!TK_LIBRARY=.*!TK_LIBRARY=${TK_LIBRARY}!g" \
 	-e "s!TCL_LIBRARY=.*!TCL_LIBRARY=${TCL_LIBRARY}!g" \
 	-e "s!TK_XLIB_DIR=.*!TK_XLIB_DIR=${TK_XLIB_DIR}!g" \
 	-e "s!GCL_TK_DIR=.*!GCL_TK_DIR=$(my_unixportdir)/../gcl-tk!g" > $@
 	chmod a+x $@
 
-g/%.o: gcl-tk/%.lisp | unixport/saved_ansi_gcl g g/demos # FIXME directory
+gcl-tk/%.o: gcl-tk/%.lisp | unixport/saved_ansi_gcl gcl-tk gcl-tk/demos # FIXME directory
 	$(word 1,$|) -compile $< -o $@
 
-g/%.o: gcl-tk/%.lsp | unixport/saved_ansi_gcl g
+gcl-tk/%.o: gcl-tk/%.lsp | unixport/saved_ansi_gcl gcl-tk
 	$(word 1,$|) -compile $< -o $@
 
-g/demos/index.lsp: g/tkl.o | unixport/saved_gcl
+gcl-tk/demos/index.lsp: gcl-tk/tkl.o | unixport/saved_gcl
 	cd $(@D) && echo "(load \"../../$<\")(tk::get-autoloads (directory \"*.lisp\"))" | ../../$|
 
 c/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl c # FIXME directory
@@ -429,7 +428,7 @@ c/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl c # FIXME direc
 %.c: %.d | bin/dpp
 	bin/dpp $< $@
 
-g/demos g a c $(MY_DIRS): % :
+gcl-tk/demos gcl-tk a c $(MY_DIRS): % :
 	[ -d $@ ] || mkdir -p $@
 
 $(DWDOCS): xgcl-2/dwdoc.tex xgcl-2/gcl_tohtml.lsp xgcl-2/gcl_index.lsp | unixport/saved_mod_gcl

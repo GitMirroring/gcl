@@ -96,7 +96,7 @@ host_triplet = x86_64-pc-linux-gnu
 noinst_PROGRAMS = bin/dpp$(EXEEXT) o/grab_defs$(EXEEXT)
 my_unixport_PROGRAMS = unixport/saved_gcl$(EXEEXT) \
 	unixport/saved_ansi_gcl$(EXEEXT) $(am__EXEEXT_1)
-my_gcltk_PROGRAMS = g/gcltkaux$(EXEEXT) g/gcltksrv$(EXEEXT)
+my_gcltk_PROGRAMS = gcl-tk/gcltkaux$(EXEEXT) gcl-tk/gcltksrv$(EXEEXT)
 am__append_1 = $(LIBGPROF) lib/libbase_gcl_gprof.a
 am__append_2 = unixport/saved_gcl_gprof unixport/saved_ansi_gcl_gprof
 am__append_3 = unixport/libgcl_gprof.a unixport/libansi_gcl_gprof.a
@@ -330,15 +330,17 @@ unixport_libgcl_gprof_a_OBJECTS = unixport/libgcl_gprof.$(OBJEXT)
 bin_dpp_SOURCES = bin/dpp.c
 bin_dpp_OBJECTS = bin/dpp.$(OBJEXT)
 bin_dpp_LDADD = $(LDADD)
-am_g_gcltkaux_OBJECTS = gcl-tk/g_gcltkaux-guis.$(OBJEXT) \
-	gcl-tk/g_gcltkaux-tkAppInit.$(OBJEXT) \
-	gcl-tk/g_gcltkaux-tkMain.$(OBJEXT)
-g_gcltkaux_OBJECTS = $(am_g_gcltkaux_OBJECTS)
+am__objects_5 = gcl-tk/gcltkaux-guis.$(OBJEXT) \
+	gcl-tk/gcltkaux-tkAppInit.$(OBJEXT) \
+	gcl-tk/gcltkaux-tkMain.$(OBJEXT)
+am_gcl_tk_gcltkaux_OBJECTS = $(am__objects_5)
+gcl_tk_gcltkaux_OBJECTS = $(am_gcl_tk_gcltkaux_OBJECTS)
 am__DEPENDENCIES_1 =
-g_gcltkaux_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am_g_gcltksrv_OBJECTS =
-g_gcltksrv_OBJECTS = $(am_g_gcltksrv_OBJECTS)
-g_gcltksrv_LDADD = $(LDADD)
+gcl_tk_gcltkaux_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
+am_gcl_tk_gcltksrv_OBJECTS =
+gcl_tk_gcltksrv_OBJECTS = $(am_gcl_tk_gcltksrv_OBJECTS)
+gcl_tk_gcltksrv_LDADD = $(LDADD)
 o_grab_defs_SOURCES = o/grab_defs.c
 o_grab_defs_OBJECTS = o/grab_defs.$(OBJEXT)
 o_grab_defs_LDADD = $(LDADD)
@@ -374,9 +376,9 @@ DEFAULT_INCLUDES = -I. -I$(top_builddir)/h
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = bin/$(DEPDIR)/dpp.Po \
-	gcl-tk/$(DEPDIR)/g_gcltkaux-guis.Po \
-	gcl-tk/$(DEPDIR)/g_gcltkaux-tkAppInit.Po \
-	gcl-tk/$(DEPDIR)/g_gcltkaux-tkMain.Po o/$(DEPDIR)/alloc.Po \
+	gcl-tk/$(DEPDIR)/gcltkaux-guis.Po \
+	gcl-tk/$(DEPDIR)/gcltkaux-tkAppInit.Po \
+	gcl-tk/$(DEPDIR)/gcltkaux-tkMain.Po o/$(DEPDIR)/alloc.Po \
 	o/$(DEPDIR)/array.Po o/$(DEPDIR)/assignment.Po \
 	o/$(DEPDIR)/backq.Po o/$(DEPDIR)/bcmp.Po o/$(DEPDIR)/bcopy.Po \
 	o/$(DEPDIR)/bds.Po o/$(DEPDIR)/big.Po o/$(DEPDIR)/bind.Po \
@@ -527,8 +529,8 @@ SOURCES = $(lib_libbase_gcl_a_SOURCES) \
 	$(lib_libxgcl_a_SOURCES) $(lib_libxgcl_gprof_a_SOURCES) \
 	unixport/libansi_gcl.c unixport/libansi_gcl_gprof.c \
 	unixport/libgcl.c unixport/libgcl_gprof.c bin/dpp.c \
-	$(g_gcltkaux_SOURCES) $(g_gcltksrv_SOURCES) o/grab_defs.c \
-	$(unixport_saved_ansi_gcl_SOURCES) \
+	$(gcl_tk_gcltkaux_SOURCES) $(gcl_tk_gcltksrv_SOURCES) \
+	o/grab_defs.c $(unixport_saved_ansi_gcl_SOURCES) \
 	$(unixport_saved_ansi_gcl_gprof_SOURCES) \
 	$(unixport_saved_gcl_SOURCES) \
 	$(unixport_saved_gcl_gprof_SOURCES)
@@ -537,8 +539,8 @@ DIST_SOURCES = $(lib_libbase_gcl_a_SOURCES) \
 	$(lib_libxgcl_a_SOURCES) $(lib_libxgcl_gprof_a_SOURCES) \
 	unixport/libansi_gcl.c unixport/libansi_gcl_gprof.c \
 	unixport/libgcl.c unixport/libgcl_gprof.c bin/dpp.c \
-	$(g_gcltkaux_SOURCES) $(g_gcltksrv_SOURCES) o/grab_defs.c \
-	$(unixport_saved_ansi_gcl_SOURCES) \
+	$(gcl_tk_gcltkaux_SOURCES) $(gcl_tk_gcltksrv_SOURCES) \
+	o/grab_defs.c $(unixport_saved_ansi_gcl_SOURCES) \
 	$(unixport_saved_ansi_gcl_gprof_SOURCES) \
 	$(unixport_saved_gcl_SOURCES) \
 	$(unixport_saved_gcl_gprof_SOURCES)
@@ -646,9 +648,9 @@ AUTOCONF = ${SHELL} '/mnt/sda4/debian/gclm4/gcl/missing' autoconf
 AUTOHEADER = ${SHELL} '/mnt/sda4/debian/gclm4/gcl/missing' autoheader
 AUTOMAKE = ${SHELL} '/mnt/sda4/debian/gclm4/gcl/missing' automake-1.17
 AWK = gawk
-BASE_CFLAGS = -fsigned-char -pipe -fcommon -fno-builtin-malloc -fno-builtin-free -fno-PIE -fno-pie -fno-PIC -fno-pic -std=gnu17 -Wall -Wno-empty-body -Wno-unused-but-set-variable -D_FILE_OFFSET_BITS=64 -D_TIME_BITS=64  -I/usr/include/tirpc   -O3 -fomit-frame-pointer -I$(GCLDIR)/o
-BASE_CPPFLAGS = -I h -I /usr/include/tirpc 
-BASE_LDFLAGS = -no-pie -Wl,-T,gcl.script
+BASE_CFLAGS = -g -Werror=implicit-function-declaration -ffile-prefix-map=/mnt/sda4/debian/gclm4/gcl=. -fstack-protector-strong -fstack-clash-protection -Wformat -Werror=format-security -fcf-protection -fsigned-char -pipe -fcommon -fno-builtin-malloc -fno-builtin-free -fno-PIE -fno-pie -fno-PIC -fno-pic -std=gnu17 -Wall -Wno-empty-body -Wno-unused-but-set-variable -D_FILE_OFFSET_BITS=64 -D_TIME_BITS=64  -I/usr/include/tirpc  -Wdate-time -D_FORTIFY_SOURCE=2 -O2 -I$(GCLDIR)/o
+BASE_CPPFLAGS = -I h -I /usr/include/tirpc -Wdate-time -D_FORTIFY_SOURCE=2
+BASE_LDFLAGS = -Wl,-z,relro -no-pie -Wl,-T,gcl.script
 BUILD_BFD = 
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -667,12 +669,12 @@ ECHO_N = -n
 ECHO_T = 
 EMACS = /usr/bin/emacs
 EMACSLOADPATH = 
-EMACS_DEFAULT_EL = ./default.el
-EMACS_SITE_LISP = NONE/share/emacs/site-lisp/
+EMACS_DEFAULT_EL = /usr/share/emacs/site-lisp//default.el
+EMACS_SITE_LISP = /usr/share/emacs/site-lisp/
 ETAGS = etags
 EXEEXT = 
 EXTRA_LOBJS = 
-FINAL_CFLAGS = -fsigned-char -pipe -fcommon -fno-builtin-malloc -fno-builtin-free -fno-PIE -fno-pie -fno-PIC -fno-pic -std=gnu17 -Wall -Wno-empty-body -Wno-unused-but-set-variable -D_FILE_OFFSET_BITS=64 -D_TIME_BITS=64  -I/usr/include/tirpc   
+FINAL_CFLAGS = -g -Werror=implicit-function-declaration -ffile-prefix-map=/mnt/sda4/debian/gclm4/gcl=. -fstack-protector-strong -fstack-clash-protection -Wformat -Werror=format-security -fcf-protection -fsigned-char -pipe -fcommon -fno-builtin-malloc -fno-builtin-free -fno-PIE -fno-pie -fno-PIC -fno-pic -std=gnu17 -Wall -Wno-empty-body -Wno-unused-but-set-variable -D_FILE_OFFSET_BITS=64 -D_TIME_BITS=64  -I/usr/include/tirpc  -Wdate-time -D_FORTIFY_SOURCE=2 
 FLISP = saved_ansi_gcl
 GCL_CC = gcc 
 GMP = 1
@@ -687,7 +689,7 @@ HAVE_SETENV =
 HAVE_SIGEMT = 
 HAVE_SIGSYS = 
 HAVE_SV_ONSTACK = 
-INFO_DIR = NONE/share/info/
+INFO_DIR = /usr/share/info/
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
@@ -699,12 +701,12 @@ LIBBFD =
 LIBIBERTY = 
 LIBOBJS = 
 LIBS =   -lX11  -ldl  -lm -ldl  -lgmp -ltirpc -lreadline
-LI_CC = "gcc  -c  -fsigned-char -pipe -fcommon -fno-builtin-malloc -fno-builtin-free -fno-PIE -fno-pie -fno-PIC -fno-pic -std=gnu17 -Wall -Wno-empty-body -Wno-unused-but-set-variable -D_FILE_OFFSET_BITS=64 -D_TIME_BITS=64  -I/usr/include/tirpc   "
+LI_CC = "gcc  -c  -g -Werror=implicit-function-declaration -ffile-prefix-map=/mnt/sda4/debian/gclm4/gcl=. -fstack-protector-strong -fstack-clash-protection -Wformat -Werror=format-security -fcf-protection -fsigned-char -pipe -fcommon -fno-builtin-malloc -fno-builtin-free -fno-PIE -fno-pie -fno-PIC -fno-pic -std=gnu17 -Wall -Wno-empty-body -Wno-unused-but-set-variable -D_FILE_OFFSET_BITS=64 -D_TIME_BITS=64  -I/usr/include/tirpc  -Wdate-time -D_FORTIFY_SOURCE=2 "
 LI_DFP = ""
 LI_EXTVERS = 0
 LI_GITTAG = "Version_2_7_0pre39"
 LI_INIT_LSP = "init_raw.lsp"
-LI_LD = "gcc  -no-pie -Wl,-T,gcl.script -o"
+LI_LD = "gcc  -Wl,-z,relro -no-pie -Wl,-T,gcl.script -o"
 LI_LD_LIBS = "  -lX11  -ldl  -lm -ldl  -lgmp -ltirpc -lreadline"
 LI_MAJVERS = 2
 LI_MINVERS = 7
@@ -714,7 +716,7 @@ LI_RELEASE = Thu Oct 26 12:00:01 PM EDT 2023
 LTLIBOBJS = 
 MAKEINFO = ${SHELL} '/mnt/sda4/debian/gclm4/gcl/missing' makeinfo
 MKDIR_P = /usr/bin/mkdir -p
-NIFLAGS = -fsigned-char -pipe -fcommon -fno-builtin-malloc -fno-builtin-free -fno-PIE -fno-pie -fno-PIC -fno-pic -std=gnu17 -Wall -Wno-empty-body -Wno-unused-but-set-variable -D_FILE_OFFSET_BITS=64 -D_TIME_BITS=64  -I/usr/include/tirpc    -I$(GCLDIR)/o
+NIFLAGS = -g -Werror=implicit-function-declaration -ffile-prefix-map=/mnt/sda4/debian/gclm4/gcl=. -fstack-protector-strong -fstack-clash-protection -Wformat -Werror=format-security -fcf-protection -fsigned-char -pipe -fcommon -fno-builtin-malloc -fno-builtin-free -fno-PIE -fno-pie -fno-PIC -fno-pic -std=gnu17 -Wall -Wno-empty-body -Wno-unused-but-set-variable -D_FILE_OFFSET_BITS=64 -D_TIME_BITS=64  -I/usr/include/tirpc  -Wdate-time -D_FORTIFY_SOURCE=2  -I$(GCLDIR)/o
 NOTIFY = 
 NO_PROFILE = 
 O2FLAGS = -O
@@ -731,12 +733,12 @@ PAGEWIDTH = 21
 PARGCLDIR = 
 PATH_SEPARATOR = :
 PRELINK_CHECK = 
-RANLIB = ranlib
+RANLIB = x86_64-linux-gnu-ranlib
 RL_LIB = 
 RL_OBJS = gcl_readline
 SET_MAKE = 
 SHELL = /bin/bash
-STRIP = 
+STRIP = x86_64-linux-gnu-strip
 SYSTEM = ansi_gcl
 TCLSH = tclsh
 TCL_DL_LIBS = -ldl
@@ -761,7 +763,7 @@ abs_builddir = /mnt/sda4/debian/gclm4/gcl
 abs_srcdir = /mnt/sda4/debian/gclm4/gcl
 abs_top_builddir = /mnt/sda4/debian/gclm4/gcl
 abs_top_srcdir = /mnt/sda4/debian/gclm4/gcl
-ac_ct_CC = gcc
+ac_ct_CC = 
 am__include = include
 am__leading_dot = .
 am__quote = 
@@ -782,7 +784,7 @@ docdir = $(datarootdir)/doc/$(PACKAGE)
 dvidir = ${docdir}
 exec_prefix = ${prefix}
 host = x86_64-pc-linux-gnu
-host_alias = 
+host_alias = x86_64-linux-gnu
 host_cpu = x86_64
 host_os = linux-gnu
 host_vendor = pc
@@ -795,11 +797,11 @@ libexecdir = ${exec_prefix}/libexec
 lispdir = ${datarootdir}/emacs/site-lisp
 localedir = ${datarootdir}/locale
 localstatedir = ${prefix}/var
-mandir = ${datarootdir}/man
+mandir = ${prefix}/share/man
 mkdir_p = $(MKDIR_P)
 oldincludedir = /usr/include
 pdfdir = ${docdir}
-prefix = /usr/local
+prefix = /usr
 program_transform_name = s,x,x,
 psdir = ${docdir}
 runstatedir = ${localstatedir}/run
@@ -835,7 +837,7 @@ check_SCRIPTS = ansi-tests/test_results
 info_TEXINFOS = info/gcl.texi info/gcl-si.texi info/gcl-tk.texi
 man1_MANS = man/man1/gcl.1
 lisp_DATA = elisp/ansi-doc.el elisp/dbl.el elisp/doc-to-texi.el elisp/gcl.el \
-          elisp/man1-to-texi.el elisp/sshell.el elisp/smart-complete.el elisp/add-default.el 
+          elisp/man1-to-texi.el elisp/sshell.el elisp/smart-complete.el elisp/add-default.el
 
 my_unixport_DATA = $(addprefix unixport/,init_raw.lsp gcl.script libboot.so \
 				       gcl_cmpnopt_gcl.lsp gcl_cmpnopt_ansi_gcl.lsp)
@@ -848,12 +850,12 @@ my_lsp_DATA = lsp/gcl_auto_new.lsp lsp/gcl_autoload.lsp \
 my_h_DATA = h/cmpinclude.h
 my_cmpnew_DATA = cmpnew/gcl_cmpopt.lsp c/gcl_collectfn.o cmpnew/gcl_lfun_list.lsp
 my_clcs_DATA = clcs/package.lisp
-my_gcltk_DATA = g/tkl.o g/tinfo.o gcl-tk/tk-package.lsp gcl-tk/gcl.tcl
+my_gcltk_DATA = gcl-tk/tkl.o gcl-tk/tinfo.o gcl-tk/tk-package.lsp gcl-tk/gcl.tcl
 my_gcltkd_DATA = $(addprefix gcl-tk/demos/,gc-monitor.lisp mkBasic.lisp mkCanvText.lisp mkdialog.lisp \
 	            mkEntry2.lisp mkEntry.lisp mkForm.lisp mkHScale.lisp mkItems.lisp mkLabel.lisp \
 	            mkListbox.lisp mkPlot.lisp mkRadio.lisp mkRuler.lisp mkSearch.lisp mkStyles.lisp \
 	            mkTextBind.lisp mkVScale.lisp nqthm-stack.lisp showVars.lisp widget.lisp) \
-	       $(addprefix g/demos/,gc-monitor.o index.lsp)
+	       $(addprefix gcl-tk/demos/,gc-monitor.o index.lsp)
 
 doc_DATA = $(DWDOCS) xgcl-2/dwdoc.pdf
 LIBGPROF = lib/libgprof.a
@@ -865,14 +867,11 @@ X_LIB = lib/libxgcl.a
 
 # end of primaries
 lib_libbase_gcl_a_SOURCES = $(C_SRC)
-EXTRA_lib_libbase_gcl_a_DEPENDENCIES = h/new_decl.h
 lib_libgprof_a_SOURCES = o/gprof.c
 lib_libgprof_a_CFLAGS = $(AM_CFLAGS) -fno-omit-frame-pointer -pg
-EXTRA_lib_libgprof_a_DEPENDENCIES = h/new_decl.h
 lib_libbase_gcl_gprof_a_SOURCES = $(C_SRC) o/gprof.c
 lib_libbase_gcl_gprof_a_CFLAGS = $(AM_CFLAGS) -fno-omit-frame-pointer -pg
 lib_libbase_gcl_gprof_a_CPPFLAGS = $(AM_CPPFLAGS) -DGCL_GPROF
-EXTRA_lib_libbase_gcl_gprof_a_DEPENDENCIES = h/new_decl.h
 X_SRC = xgcl-2/Events.c xgcl-2/general-c.c xgcl-2/XStruct-2.c xgcl-2/XStruct-4.c xgcl-2/Xutil-2.c
 lib_libxgcl_a_SOURCES = $(X_SRC)
 lib_libxgcl_gprof_a_SOURCES = $(X_SRC)
@@ -881,11 +880,11 @@ unixport_saved_gcl_SOURCES =
 unixport_saved_ansi_gcl_SOURCES = 
 unixport_saved_gcl_gprof_SOURCES = 
 unixport_saved_ansi_gcl_gprof_SOURCES = 
-g_gcltksrv_SOURCES = 
-g_gcltkaux_SOURCES = gcl-tk/guis.c gcl-tk/tkAppInit.c gcl-tk/tkMain.c
-g_gcltkaux_CPPFLAGS = $(AM_CPPFLAGS) $(TK_INCLUDE) $(TCL_INCLUDE) $(TK_XINCLUDES)
-g_gcltkaux_LDADD = $(TK_LIB_SPEC) $(TCL_LIB_SPEC)
-EXTRA_g_gcltkaux_DEPENDENCIES = h/new_decl.h
+GCLTK_SRC = gcl-tk/guis.c gcl-tk/tkAppInit.c gcl-tk/tkMain.c
+gcl_tk_gcltksrv_SOURCES = 
+gcl_tk_gcltkaux_SOURCES = $(GCLTK_SRC)
+gcl_tk_gcltkaux_CPPFLAGS = $(AM_CPPFLAGS) $(TK_INCLUDE) $(TCL_INCLUDE) $(TK_XINCLUDES)
+gcl_tk_gcltkaux_LDADD = $(TK_LIB_SPEC) $(TCL_LIB_SPEC)
 DWDOCS = $(addprefix xgcl-2/dwdoc/dwdoc,$(addsuffix .html,1 2 3 contents index))
 TEXI2DVI = xbin/tdf
 TEXI2PDF = xbin/tdf
@@ -1456,19 +1455,16 @@ gcl-tk/$(am__dirstamp):
 gcl-tk/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) gcl-tk/$(DEPDIR)
 	@: >>gcl-tk/$(DEPDIR)/$(am__dirstamp)
-gcl-tk/g_gcltkaux-guis.$(OBJEXT): gcl-tk/$(am__dirstamp) \
+gcl-tk/gcltkaux-guis.$(OBJEXT): gcl-tk/$(am__dirstamp) \
 	gcl-tk/$(DEPDIR)/$(am__dirstamp)
-gcl-tk/g_gcltkaux-tkAppInit.$(OBJEXT): gcl-tk/$(am__dirstamp) \
+gcl-tk/gcltkaux-tkAppInit.$(OBJEXT): gcl-tk/$(am__dirstamp) \
 	gcl-tk/$(DEPDIR)/$(am__dirstamp)
-gcl-tk/g_gcltkaux-tkMain.$(OBJEXT): gcl-tk/$(am__dirstamp) \
+gcl-tk/gcltkaux-tkMain.$(OBJEXT): gcl-tk/$(am__dirstamp) \
 	gcl-tk/$(DEPDIR)/$(am__dirstamp)
-g/$(am__dirstamp):
-	@$(MKDIR_P) g
-	@: >>g/$(am__dirstamp)
 
-g/gcltkaux$(EXEEXT): $(g_gcltkaux_OBJECTS) $(g_gcltkaux_DEPENDENCIES) $(EXTRA_g_gcltkaux_DEPENDENCIES) g/$(am__dirstamp)
-	@rm -f g/gcltkaux$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(g_gcltkaux_OBJECTS) $(g_gcltkaux_LDADD) $(LIBS)
+gcl-tk/gcltkaux$(EXEEXT): $(gcl_tk_gcltkaux_OBJECTS) $(gcl_tk_gcltkaux_DEPENDENCIES) $(EXTRA_gcl_tk_gcltkaux_DEPENDENCIES) gcl-tk/$(am__dirstamp)
+	@rm -f gcl-tk/gcltkaux$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(gcl_tk_gcltkaux_OBJECTS) $(gcl_tk_gcltkaux_LDADD) $(LIBS)
 o/grab_defs.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 
 o/grab_defs$(EXEEXT): $(o_grab_defs_OBJECTS) $(o_grab_defs_DEPENDENCIES) $(EXTRA_o_grab_defs_DEPENDENCIES) o/$(am__dirstamp)
@@ -1522,9 +1518,9 @@ distclean-compile:
 	-rm -f *.tab.c
 
 include bin/$(DEPDIR)/dpp.Po # am--include-marker
-include gcl-tk/$(DEPDIR)/g_gcltkaux-guis.Po # am--include-marker
-include gcl-tk/$(DEPDIR)/g_gcltkaux-tkAppInit.Po # am--include-marker
-include gcl-tk/$(DEPDIR)/g_gcltkaux-tkMain.Po # am--include-marker
+include gcl-tk/$(DEPDIR)/gcltkaux-guis.Po # am--include-marker
+include gcl-tk/$(DEPDIR)/gcltkaux-tkAppInit.Po # am--include-marker
+include gcl-tk/$(DEPDIR)/gcltkaux-tkMain.Po # am--include-marker
 include o/$(DEPDIR)/alloc.Po # am--include-marker
 include o/$(DEPDIR)/array.Po # am--include-marker
 include o/$(DEPDIR)/assignment.Po # am--include-marker
@@ -2927,47 +2923,47 @@ xgcl-2/lib_libxgcl_gprof_a-Xutil-2.obj: xgcl-2/Xutil-2.c
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
 #	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_libxgcl_gprof_a_CFLAGS) $(CFLAGS) -c -o xgcl-2/lib_libxgcl_gprof_a-Xutil-2.obj `if test -f 'xgcl-2/Xutil-2.c'; then $(CYGPATH_W) 'xgcl-2/Xutil-2.c'; else $(CYGPATH_W) '$(srcdir)/xgcl-2/Xutil-2.c'; fi`
 
-gcl-tk/g_gcltkaux-guis.o: gcl-tk/guis.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(g_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gcl-tk/g_gcltkaux-guis.o -MD -MP -MF gcl-tk/$(DEPDIR)/g_gcltkaux-guis.Tpo -c -o gcl-tk/g_gcltkaux-guis.o `test -f 'gcl-tk/guis.c' || echo '$(srcdir)/'`gcl-tk/guis.c
-	$(AM_V_at)$(am__mv) gcl-tk/$(DEPDIR)/g_gcltkaux-guis.Tpo gcl-tk/$(DEPDIR)/g_gcltkaux-guis.Po
-#	$(AM_V_CC)source='gcl-tk/guis.c' object='gcl-tk/g_gcltkaux-guis.o' libtool=no \
+gcl-tk/gcltkaux-guis.o: gcl-tk/guis.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcl_tk_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gcl-tk/gcltkaux-guis.o -MD -MP -MF gcl-tk/$(DEPDIR)/gcltkaux-guis.Tpo -c -o gcl-tk/gcltkaux-guis.o `test -f 'gcl-tk/guis.c' || echo '$(srcdir)/'`gcl-tk/guis.c
+	$(AM_V_at)$(am__mv) gcl-tk/$(DEPDIR)/gcltkaux-guis.Tpo gcl-tk/$(DEPDIR)/gcltkaux-guis.Po
+#	$(AM_V_CC)source='gcl-tk/guis.c' object='gcl-tk/gcltkaux-guis.o' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(g_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gcl-tk/g_gcltkaux-guis.o `test -f 'gcl-tk/guis.c' || echo '$(srcdir)/'`gcl-tk/guis.c
+#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcl_tk_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gcl-tk/gcltkaux-guis.o `test -f 'gcl-tk/guis.c' || echo '$(srcdir)/'`gcl-tk/guis.c
 
-gcl-tk/g_gcltkaux-guis.obj: gcl-tk/guis.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(g_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gcl-tk/g_gcltkaux-guis.obj -MD -MP -MF gcl-tk/$(DEPDIR)/g_gcltkaux-guis.Tpo -c -o gcl-tk/g_gcltkaux-guis.obj `if test -f 'gcl-tk/guis.c'; then $(CYGPATH_W) 'gcl-tk/guis.c'; else $(CYGPATH_W) '$(srcdir)/gcl-tk/guis.c'; fi`
-	$(AM_V_at)$(am__mv) gcl-tk/$(DEPDIR)/g_gcltkaux-guis.Tpo gcl-tk/$(DEPDIR)/g_gcltkaux-guis.Po
-#	$(AM_V_CC)source='gcl-tk/guis.c' object='gcl-tk/g_gcltkaux-guis.obj' libtool=no \
+gcl-tk/gcltkaux-guis.obj: gcl-tk/guis.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcl_tk_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gcl-tk/gcltkaux-guis.obj -MD -MP -MF gcl-tk/$(DEPDIR)/gcltkaux-guis.Tpo -c -o gcl-tk/gcltkaux-guis.obj `if test -f 'gcl-tk/guis.c'; then $(CYGPATH_W) 'gcl-tk/guis.c'; else $(CYGPATH_W) '$(srcdir)/gcl-tk/guis.c'; fi`
+	$(AM_V_at)$(am__mv) gcl-tk/$(DEPDIR)/gcltkaux-guis.Tpo gcl-tk/$(DEPDIR)/gcltkaux-guis.Po
+#	$(AM_V_CC)source='gcl-tk/guis.c' object='gcl-tk/gcltkaux-guis.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(g_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gcl-tk/g_gcltkaux-guis.obj `if test -f 'gcl-tk/guis.c'; then $(CYGPATH_W) 'gcl-tk/guis.c'; else $(CYGPATH_W) '$(srcdir)/gcl-tk/guis.c'; fi`
+#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcl_tk_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gcl-tk/gcltkaux-guis.obj `if test -f 'gcl-tk/guis.c'; then $(CYGPATH_W) 'gcl-tk/guis.c'; else $(CYGPATH_W) '$(srcdir)/gcl-tk/guis.c'; fi`
 
-gcl-tk/g_gcltkaux-tkAppInit.o: gcl-tk/tkAppInit.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(g_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gcl-tk/g_gcltkaux-tkAppInit.o -MD -MP -MF gcl-tk/$(DEPDIR)/g_gcltkaux-tkAppInit.Tpo -c -o gcl-tk/g_gcltkaux-tkAppInit.o `test -f 'gcl-tk/tkAppInit.c' || echo '$(srcdir)/'`gcl-tk/tkAppInit.c
-	$(AM_V_at)$(am__mv) gcl-tk/$(DEPDIR)/g_gcltkaux-tkAppInit.Tpo gcl-tk/$(DEPDIR)/g_gcltkaux-tkAppInit.Po
-#	$(AM_V_CC)source='gcl-tk/tkAppInit.c' object='gcl-tk/g_gcltkaux-tkAppInit.o' libtool=no \
+gcl-tk/gcltkaux-tkAppInit.o: gcl-tk/tkAppInit.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcl_tk_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gcl-tk/gcltkaux-tkAppInit.o -MD -MP -MF gcl-tk/$(DEPDIR)/gcltkaux-tkAppInit.Tpo -c -o gcl-tk/gcltkaux-tkAppInit.o `test -f 'gcl-tk/tkAppInit.c' || echo '$(srcdir)/'`gcl-tk/tkAppInit.c
+	$(AM_V_at)$(am__mv) gcl-tk/$(DEPDIR)/gcltkaux-tkAppInit.Tpo gcl-tk/$(DEPDIR)/gcltkaux-tkAppInit.Po
+#	$(AM_V_CC)source='gcl-tk/tkAppInit.c' object='gcl-tk/gcltkaux-tkAppInit.o' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(g_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gcl-tk/g_gcltkaux-tkAppInit.o `test -f 'gcl-tk/tkAppInit.c' || echo '$(srcdir)/'`gcl-tk/tkAppInit.c
+#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcl_tk_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gcl-tk/gcltkaux-tkAppInit.o `test -f 'gcl-tk/tkAppInit.c' || echo '$(srcdir)/'`gcl-tk/tkAppInit.c
 
-gcl-tk/g_gcltkaux-tkAppInit.obj: gcl-tk/tkAppInit.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(g_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gcl-tk/g_gcltkaux-tkAppInit.obj -MD -MP -MF gcl-tk/$(DEPDIR)/g_gcltkaux-tkAppInit.Tpo -c -o gcl-tk/g_gcltkaux-tkAppInit.obj `if test -f 'gcl-tk/tkAppInit.c'; then $(CYGPATH_W) 'gcl-tk/tkAppInit.c'; else $(CYGPATH_W) '$(srcdir)/gcl-tk/tkAppInit.c'; fi`
-	$(AM_V_at)$(am__mv) gcl-tk/$(DEPDIR)/g_gcltkaux-tkAppInit.Tpo gcl-tk/$(DEPDIR)/g_gcltkaux-tkAppInit.Po
-#	$(AM_V_CC)source='gcl-tk/tkAppInit.c' object='gcl-tk/g_gcltkaux-tkAppInit.obj' libtool=no \
+gcl-tk/gcltkaux-tkAppInit.obj: gcl-tk/tkAppInit.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcl_tk_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gcl-tk/gcltkaux-tkAppInit.obj -MD -MP -MF gcl-tk/$(DEPDIR)/gcltkaux-tkAppInit.Tpo -c -o gcl-tk/gcltkaux-tkAppInit.obj `if test -f 'gcl-tk/tkAppInit.c'; then $(CYGPATH_W) 'gcl-tk/tkAppInit.c'; else $(CYGPATH_W) '$(srcdir)/gcl-tk/tkAppInit.c'; fi`
+	$(AM_V_at)$(am__mv) gcl-tk/$(DEPDIR)/gcltkaux-tkAppInit.Tpo gcl-tk/$(DEPDIR)/gcltkaux-tkAppInit.Po
+#	$(AM_V_CC)source='gcl-tk/tkAppInit.c' object='gcl-tk/gcltkaux-tkAppInit.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(g_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gcl-tk/g_gcltkaux-tkAppInit.obj `if test -f 'gcl-tk/tkAppInit.c'; then $(CYGPATH_W) 'gcl-tk/tkAppInit.c'; else $(CYGPATH_W) '$(srcdir)/gcl-tk/tkAppInit.c'; fi`
+#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcl_tk_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gcl-tk/gcltkaux-tkAppInit.obj `if test -f 'gcl-tk/tkAppInit.c'; then $(CYGPATH_W) 'gcl-tk/tkAppInit.c'; else $(CYGPATH_W) '$(srcdir)/gcl-tk/tkAppInit.c'; fi`
 
-gcl-tk/g_gcltkaux-tkMain.o: gcl-tk/tkMain.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(g_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gcl-tk/g_gcltkaux-tkMain.o -MD -MP -MF gcl-tk/$(DEPDIR)/g_gcltkaux-tkMain.Tpo -c -o gcl-tk/g_gcltkaux-tkMain.o `test -f 'gcl-tk/tkMain.c' || echo '$(srcdir)/'`gcl-tk/tkMain.c
-	$(AM_V_at)$(am__mv) gcl-tk/$(DEPDIR)/g_gcltkaux-tkMain.Tpo gcl-tk/$(DEPDIR)/g_gcltkaux-tkMain.Po
-#	$(AM_V_CC)source='gcl-tk/tkMain.c' object='gcl-tk/g_gcltkaux-tkMain.o' libtool=no \
+gcl-tk/gcltkaux-tkMain.o: gcl-tk/tkMain.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcl_tk_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gcl-tk/gcltkaux-tkMain.o -MD -MP -MF gcl-tk/$(DEPDIR)/gcltkaux-tkMain.Tpo -c -o gcl-tk/gcltkaux-tkMain.o `test -f 'gcl-tk/tkMain.c' || echo '$(srcdir)/'`gcl-tk/tkMain.c
+	$(AM_V_at)$(am__mv) gcl-tk/$(DEPDIR)/gcltkaux-tkMain.Tpo gcl-tk/$(DEPDIR)/gcltkaux-tkMain.Po
+#	$(AM_V_CC)source='gcl-tk/tkMain.c' object='gcl-tk/gcltkaux-tkMain.o' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(g_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gcl-tk/g_gcltkaux-tkMain.o `test -f 'gcl-tk/tkMain.c' || echo '$(srcdir)/'`gcl-tk/tkMain.c
+#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcl_tk_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gcl-tk/gcltkaux-tkMain.o `test -f 'gcl-tk/tkMain.c' || echo '$(srcdir)/'`gcl-tk/tkMain.c
 
-gcl-tk/g_gcltkaux-tkMain.obj: gcl-tk/tkMain.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(g_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gcl-tk/g_gcltkaux-tkMain.obj -MD -MP -MF gcl-tk/$(DEPDIR)/g_gcltkaux-tkMain.Tpo -c -o gcl-tk/g_gcltkaux-tkMain.obj `if test -f 'gcl-tk/tkMain.c'; then $(CYGPATH_W) 'gcl-tk/tkMain.c'; else $(CYGPATH_W) '$(srcdir)/gcl-tk/tkMain.c'; fi`
-	$(AM_V_at)$(am__mv) gcl-tk/$(DEPDIR)/g_gcltkaux-tkMain.Tpo gcl-tk/$(DEPDIR)/g_gcltkaux-tkMain.Po
-#	$(AM_V_CC)source='gcl-tk/tkMain.c' object='gcl-tk/g_gcltkaux-tkMain.obj' libtool=no \
+gcl-tk/gcltkaux-tkMain.obj: gcl-tk/tkMain.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcl_tk_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT gcl-tk/gcltkaux-tkMain.obj -MD -MP -MF gcl-tk/$(DEPDIR)/gcltkaux-tkMain.Tpo -c -o gcl-tk/gcltkaux-tkMain.obj `if test -f 'gcl-tk/tkMain.c'; then $(CYGPATH_W) 'gcl-tk/tkMain.c'; else $(CYGPATH_W) '$(srcdir)/gcl-tk/tkMain.c'; fi`
+	$(AM_V_at)$(am__mv) gcl-tk/$(DEPDIR)/gcltkaux-tkMain.Tpo gcl-tk/$(DEPDIR)/gcltkaux-tkMain.Po
+#	$(AM_V_CC)source='gcl-tk/tkMain.c' object='gcl-tk/gcltkaux-tkMain.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(g_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gcl-tk/g_gcltkaux-tkMain.obj `if test -f 'gcl-tk/tkMain.c'; then $(CYGPATH_W) 'gcl-tk/tkMain.c'; else $(CYGPATH_W) '$(srcdir)/gcl-tk/tkMain.c'; fi`
+#	$(AM_V_CC_no)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(gcl_tk_gcltkaux_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o gcl-tk/gcltkaux-tkMain.obj `if test -f 'gcl-tk/tkMain.c'; then $(CYGPATH_W) 'gcl-tk/tkMain.c'; else $(CYGPATH_W) '$(srcdir)/gcl-tk/tkMain.c'; fi`
 info/$(am__dirstamp):
 	@$(MKDIR_P) info
 	@: >>info/$(am__dirstamp)
@@ -3733,7 +3729,6 @@ distclean-generic:
 	-test . = "$(srcdir)" || $(am__rm_f) $(CONFIG_CLEAN_VPATH_FILES)
 	-$(am__rm_f) bin/$(DEPDIR)/$(am__dirstamp)
 	-$(am__rm_f) bin/$(am__dirstamp)
-	-$(am__rm_f) g/$(am__dirstamp)
 	-$(am__rm_f) gcl-tk/$(DEPDIR)/$(am__dirstamp)
 	-$(am__rm_f) gcl-tk/$(am__dirstamp)
 	-$(am__rm_f) info/$(am__dirstamp)
@@ -3758,9 +3753,9 @@ clean-am: clean-aminfo clean-generic clean-local \
 distclean: distclean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -f bin/$(DEPDIR)/dpp.Po
-	-rm -f gcl-tk/$(DEPDIR)/g_gcltkaux-guis.Po
-	-rm -f gcl-tk/$(DEPDIR)/g_gcltkaux-tkAppInit.Po
-	-rm -f gcl-tk/$(DEPDIR)/g_gcltkaux-tkMain.Po
+	-rm -f gcl-tk/$(DEPDIR)/gcltkaux-guis.Po
+	-rm -f gcl-tk/$(DEPDIR)/gcltkaux-tkAppInit.Po
+	-rm -f gcl-tk/$(DEPDIR)/gcltkaux-tkMain.Po
 	-rm -f o/$(DEPDIR)/alloc.Po
 	-rm -f o/$(DEPDIR)/array.Po
 	-rm -f o/$(DEPDIR)/assignment.Po
@@ -4081,9 +4076,9 @@ maintainer-clean: maintainer-clean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
 	-rm -f bin/$(DEPDIR)/dpp.Po
-	-rm -f gcl-tk/$(DEPDIR)/g_gcltkaux-guis.Po
-	-rm -f gcl-tk/$(DEPDIR)/g_gcltkaux-tkAppInit.Po
-	-rm -f gcl-tk/$(DEPDIR)/g_gcltkaux-tkMain.Po
+	-rm -f gcl-tk/$(DEPDIR)/gcltkaux-guis.Po
+	-rm -f gcl-tk/$(DEPDIR)/gcltkaux-tkAppInit.Po
+	-rm -f gcl-tk/$(DEPDIR)/gcltkaux-tkMain.Po
 	-rm -f o/$(DEPDIR)/alloc.Po
 	-rm -f o/$(DEPDIR)/array.Po
 	-rm -f o/$(DEPDIR)/assignment.Po
@@ -4328,6 +4323,8 @@ uninstall-man: uninstall-man1
 .PRECIOUS: Makefile
 
 export C_INCLUDE_PATH=$(srcdir)/h:$(srcdir)/gcl-tk
+$(patsubst %.c,%.o,$(C_SRC)) o/lib_libgprof_a-gprof.o: h/new_decl.h # FIXME
+$(patsubst %.c,%.o,$(patsubst o/%,o/lib_libbase_gcl_gprof_a-%,$(C_SRC) o/gprof.c)): h/new_decl.h #FIXME
 unixport/saved_gcl$(EXEEXT):
 unixport/saved_ansi_gcl$(EXEEXT):
 unixport/saved_gcl_gprof$(EXEEXT):
@@ -4336,6 +4333,7 @@ unixport/libgcl.a:
 unixport/libansi_gcl.a:
 unixport/libgcl_gprof.a:
 unixport/libansi_gcl_gprof.a:
+$(patsubst %.c,%.o,$(patsubst gcl-tk/%,gcl-tk/gcltkaux-%,$(GCLTK_SRC))): h/new_decl.h # FIXME
 
 $(addprefix unixport/saved_,gcl ansi_gcl gcl_gprof ansi_gcl_gprof):\
 unixport/saved_%: unixport/raw_% # rebuild these only when out of date
@@ -4577,20 +4575,20 @@ bin/gcl: bin/in.gcl.sh majvers minvers # FIXME configure
 	    -e "s,@TKVERS@,$$(echo $(TK_CONFIG_PREFIX) |sed 's,.*/tk,,g'),g" $< >$@
 	chmod a+x $@
 
-g/gcltksrv$(EXEEXT): gcl-tk/gcltksrv.in | g # FIXME configure
+gcl-tk/gcltksrv$(EXEEXT): gcl-tk/gcltksrv.in | gcl-tk # FIXME configure
 	cat $<  | sed -e "s!TK_LIBRARY=.*!TK_LIBRARY=${TK_LIBRARY}!g" \
 	-e "s!TCL_LIBRARY=.*!TCL_LIBRARY=${TCL_LIBRARY}!g" \
 	-e "s!TK_XLIB_DIR=.*!TK_XLIB_DIR=${TK_XLIB_DIR}!g" \
 	-e "s!GCL_TK_DIR=.*!GCL_TK_DIR=$(my_unixportdir)/../gcl-tk!g" > $@
 	chmod a+x $@
 
-g/%.o: gcl-tk/%.lisp | unixport/saved_ansi_gcl g g/demos # FIXME directory
+gcl-tk/%.o: gcl-tk/%.lisp | unixport/saved_ansi_gcl gcl-tk gcl-tk/demos # FIXME directory
 	$(word 1,$|) -compile $< -o $@
 
-g/%.o: gcl-tk/%.lsp | unixport/saved_ansi_gcl g
+gcl-tk/%.o: gcl-tk/%.lsp | unixport/saved_ansi_gcl gcl-tk
 	$(word 1,$|) -compile $< -o $@
 
-g/demos/index.lsp: g/tkl.o | unixport/saved_gcl
+gcl-tk/demos/index.lsp: gcl-tk/tkl.o | unixport/saved_gcl
 	cd $(@D) && echo "(load \"../../$<\")(tk::get-autoloads (directory \"*.lisp\"))" | ../../$|
 
 c/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl c # FIXME directory
@@ -4599,7 +4597,7 @@ c/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl c # FIXME direc
 %.c: %.d | bin/dpp
 	bin/dpp $< $@
 
-g/demos g a c $(MY_DIRS): % :
+gcl-tk/demos gcl-tk a c $(MY_DIRS): % :
 	[ -d $@ ] || mkdir -p $@
 
 $(DWDOCS): xgcl-2/dwdoc.tex xgcl-2/gcl_tohtml.lsp xgcl-2/gcl_index.lsp | unixport/saved_mod_gcl
@@ -4615,7 +4613,7 @@ $(DWDOCS): xgcl-2/dwdoc.tex xgcl-2/gcl_tohtml.lsp xgcl-2/gcl_index.lsp | unixpor
 			"(let ((*standard-output* s))" \
 				"(printindex indexdata \"$(@D)/dwdoc\")))" | $|
 
-# package extension 
+# package extension
 
 bin/gcl%: bin/in.gcl.sh majvers minvers
 	sed -e "s,@EXT@,$*,g" \
