@@ -4712,6 +4712,12 @@ clean-local:
 	rm -rf h/stamp-h1 # FIXME
 	rm -rf $$(echo o/*.d | sed 's,\.d,.c,g') #FIXME
 	rm -rf lib g #FIXME
+	rm -rf $(addprefix ansi-tests/,\
+		compile-file-test-lp.lsp compile-file-test-lp.out \
+		file-that-was-renamed.txt foo.fasl foo.lsp foo.txt \
+		foo.ufsl ldtest.lsp scratch/ temp.dat test_results \
+		tmp.dat tmp.txt)
+
 distclean-local:
 	rm -rf o/.Tpo #FIXME
 

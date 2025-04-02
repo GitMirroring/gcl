@@ -125,6 +125,7 @@ clean: debian/control debian/gcl.templates
 	rm -rf $(INS) debian/substvars debian.upstream
 	rm -rf *stamp build-indep
 	rm -f  debian/elpa-gcl$(EXT).elpa debian/gcl$(EXT)-pkg.el
+	rm -rf $(EXT_TARGS)
 
 INS:=$(shell for i in `find debian -name "in.*"` ; do \
 		echo $$i | sed 's,in.,,1' ; \
