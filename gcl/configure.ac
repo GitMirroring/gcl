@@ -2379,8 +2379,8 @@ if test "$use" != ""  ; then
     echo makedefc
     cat makedefc
 
-    echo    add-defs1 $use
-    CC=$CC srcdir=$srcdir $srcdir/add-defs1 $use
+    echo add-defs1 $use
+#    CC=$CC srcdir=$srcdir $srcdir/add-defs1 $use
 
 else
     echo "Unable to guess machine type"
