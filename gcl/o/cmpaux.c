@@ -609,20 +609,20 @@ gcl_init_or_load1(void (*fn)(void),const char *file) {
 
     object memory;
     object faslfile;
-    object fn,tfn;
+    object lpn,ltn;
 
     printf("Initializing %s\n",file);fflush(stdout);
-    fn=make_simple_string(file);
-    realpath(file,FN1);
-    tfn=make_simple_string(FN1);
+    lpn=make_simple_string(file);
+    massert(realpath(file,FN1));
+    ltn=make_simple_string(FN1);
     memory=new_cfdata();
-    memory->cfd.cfd_name=tfn;
+    memory->cfd.cfd_name=ltn;
     memory->cfd.cfd_start=(char *)fn;
-    faslfile=open_stream(fn,smm_input,Cnil,sKerror);
+    faslfile=open_stream(ltn,smm_input,Cnil,sKerror);
     SEEK_TO_END_OFILE(faslfile->sm.sm_fp);
     set_min_cfd_self=1;
-    bds_bind(sLAload_pathnameA,fn);
-    bds_bind(sLAload_truenameA,tfn);
+    bds_bind(sLAload_pathnameA,lpn);
+    bds_bind(sLAload_truenameA,ltn);
     call_init(0,memory,faslfile);
     bds_unwind1;
     bds_unwind1;
