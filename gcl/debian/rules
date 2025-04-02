@@ -20,6 +20,8 @@ NUMJOBS=$(filter 1 2 3 4,$(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD
 endif
 ifneq (,$(NUMJOBS))
 MAKEFLAGS+=-O -j $(NUMJOBS)
+GCL_MULTIPROCESS_MEMORY_POOL:=$(shell pwd)
+export GCL_MULTIPROCESS_MEMORY_POOL
 endif
 
 # This is the debhelper compatability version to use.
