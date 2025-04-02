@@ -8,7 +8,11 @@ AC_CONFIG_FILES([Makefile])
 #AC_USE_SYSTEM_EXTENSIONS
 #LT_INIT
 
-VERSION=`cat $srcdir/majvers`.`cat $srcdir/minvers`
+MAJVERS=`cat $srcdir/majvers`
+MINVERS=`cat $srcdir/minvers`
+GIT_TAG=`cat $srcdir/git.tag`
+RELEASE=`cat $srcdir/release`
+VERSION=$MAJVERS.$MINVERS
 AC_SUBST(VERSION)
 
 dnl AC_ARG_ENABLE(xgcl,[ --enable-xgcl=yes will compile in support for XGCL],
@@ -29,7 +33,6 @@ AC_DEFINE_UNQUOTED(HOST_KERNEL,"`echo $my_host_kernel | ${AWK} '{print toupper($
 if test "$my_host_system" != "" ; then 
 	AC_DEFINE_UNQUOTED(HOST_SYSTEM,"`echo $my_host_system | ${AWK} '{print toupper($0)}'`",[Host system])
 fi
-## host=CPU-COMPANY-SYSTEM
 AC_MSG_RESULT(host=$host)
 
 #use=unknown
@@ -120,7 +123,7 @@ AC_ARG_ENABLE([ihssize],[  --enable-ihssize=XXXX will compile in a invocation hi
 AC_ARG_ENABLE([frssize],[  --enable-frssize=XXXX will compile in a frame stack of size XXX],
 	      [AC_DEFINE_UNQUOTED(FRSSIZE,$enableval,[frame stack size])])
 
-AC_ARG_ENABLE([infodir],[  --enable-infodir=XXXX will force the use of a INFO_DIR=XXXXX as place to look for info],
+AC_ARG_ENABLE([infodir],[--enable-infodir=XXXX will force the use of a INFO_DIR=XXXXX as place to look for info],
 	      [INFO_DIR=$enableval],[INFO_DIR=$prefix/share/info])
 INFO_DIR=`eval echo $INFO_DIR/`
 
@@ -2342,15 +2345,15 @@ AC_SUBST(EXTRA_LOBJS)
 AC_SUBST(LEADING_UNDERSCORE)
 AC_SUBST(GNU_LD)
 
-LI_EXTVERS=`cat minvers | cut -f2 -d.`
+LI_EXTVERS=`echo $MINVERS | cut -f2 -d.`
 AC_SUBST(LI_EXTVERS)
-LI_MINVERS=`cat minvers | cut -f1 -d.`
+LI_MINVERS=`echo $MINVERS | cut -f1 -d.`
 AC_SUBST(LI_MINVERS)
-LI_MAJVERS=`cat majvers`
+LI_MAJVERS=$MAJVERS
 AC_SUBST(LI_MAJVERS)
-LI_GITTAG="`cat git.tag`"
+LI_GITTAG="$GIT_TAG"
 AC_SUBST(LI_GITTAG)
-LI_RELEASE="`cat release`"
+LI_RELEASE="$RELEASE"
 AC_SUBST(LI_RELEASE)
 LI_CC="\"$GCL_CC -c `echo " $FINAL_CFLAGS" | sed 's,-pg\b,,g'`\""
 AC_SUBST(LI_CC)

@@ -1513,7 +1513,7 @@ Optional Features:
   --enable-bdssize=XXXX will compile in a binding stack of size XXX
   --enable-ihssize=XXXX will compile in a invocation history stack of size XXX
   --enable-frssize=XXXX will compile in a frame stack of size XXX
-  --enable-infodir=XXXX will force the use of a INFO_DIR=XXXXX as place to look for info
+--enable-infodir=XXXX will force the use of a INFO_DIR=XXXXX as place to look for info
   --enable-emacsdir=XXXX will manually specify the location for elisp files
   --enable-xgcl=yes will compile in support for XGCL
   --enable-dlopen uses dlopen for loading objects, which can then not be retained  in saved images
@@ -3961,7 +3961,11 @@ ac_config_files="$ac_config_files Makefile"
 #AC_USE_SYSTEM_EXTENSIONS
 #LT_INIT
 
-VERSION=`cat $srcdir/majvers`.`cat $srcdir/minvers`
+MAJVERS=`cat $srcdir/majvers`
+MINVERS=`cat $srcdir/minvers`
+GIT_TAG=`cat $srcdir/git.tag`
+RELEASE=`cat $srcdir/release`
+VERSION=$MAJVERS.$MINVERS
 
 
 
@@ -4115,7 +4119,6 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 fi
-## host=CPU-COMPANY-SYSTEM
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: host=$host" >&5
 printf "%s\n" "host=$host" >&6; }
 
@@ -12955,15 +12958,15 @@ O2FLAGS=$TO2FLAGS
 
 
 
-LI_EXTVERS=`cat minvers | cut -f2 -d.`
+LI_EXTVERS=`echo $MINVERS | cut -f2 -d.`
 
-LI_MINVERS=`cat minvers | cut -f1 -d.`
+LI_MINVERS=`echo $MINVERS | cut -f1 -d.`
 
-LI_MAJVERS=`cat majvers`
+LI_MAJVERS=$MAJVERS
 
-LI_GITTAG="`cat git.tag`"
+LI_GITTAG="$GIT_TAG"
 
-LI_RELEASE="`cat release`"
+LI_RELEASE="$RELEASE"
 
 LI_CC="\"$GCL_CC -c `echo " $FINAL_CFLAGS" | sed 's,-pg\b,,g'`\""
 

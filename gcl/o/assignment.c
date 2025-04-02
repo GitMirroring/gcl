@@ -192,7 +192,7 @@ DEFUN("FSET",object,fSfset,SI,2,2,NONE,OO,OO,OO,OO,(object sym,object function),
   if (function->fun.fun_plist!=Cnil) {
     function->fun.fun_plist->c.c_cdr->c.c_cdr->c.c_cdr->c.c_cdr->c.c_cdr->c.c_car=sym;/*FIXME*/
     x=function->fun.fun_plist->c.c_cdr->c.c_cdr->c.c_cdr->c.c_car;
-    function->fun.fun_plist->c.c_cdr->c.c_cdr->c.c_cdr->c.c_car=x==Cnil ? sLAload_pathnameA->s.s_dbind : x;/*FIXME*/
+    function->fun.fun_plist->c.c_cdr->c.c_cdr->c.c_cdr->c.c_car=x==Cnil ? sLAload_truenameA->s.s_dbind : x;
   }
   RETURN1(function);
 

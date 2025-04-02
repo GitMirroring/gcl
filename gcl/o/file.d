@@ -1715,32 +1715,41 @@ BEGIN:
 }
 
 void
-load(s)
-const char *s;
-{
-	object filename, strm, x;
-	vs_mark;
+load(const char *s) {
 
-	if (user_match(s,strlen(s)))
-		return;
-	filename = make_simple_string(s);
-	bds_bind(sLAload_pathnameA,filename);
-	vs_push(filename);
-	strm = open_stream(filename, smm_input, Cnil, sKerror);
-	vs_push(strm);
-	for (;;) {
-		preserving_whitespace_flag = FALSE;
-		detect_eos_flag = TRUE;
-		x = read_object_non_recursive(strm);
-		if (x == OBJNULL)
-			break;
-		vs_push(x);
-		ieval(x);
-		vs_popp;
-	}
-	close_stream(strm);
-	bds_unwind1;
-	vs_reset;
+  object filename, tfn, strm, x;
+
+  vs_mark;
+
+  if (user_match(s,strlen(s)))
+    return;
+
+  filename = make_simple_string(s);
+  vs_push(filename);
+  realpath(s,FN1);
+  tfn = make_simple_string(FN1);
+  bds_bind(sLAload_pathnameA,filename);
+  bds_bind(sLAload_truenameA,tfn);
+
+  strm = open_stream(filename, smm_input, Cnil, sKerror);
+  vs_push(strm);
+  for (;;) {
+    preserving_whitespace_flag = FALSE;
+    detect_eos_flag = TRUE;
+    x = read_object_non_recursive(strm);
+    if (x == OBJNULL)
+      break;
+    vs_push(x);
+    ieval(x);
+    vs_popp;
+  }
+  close_stream(strm);
+
+  bds_unwind1;
+  bds_unwind1;
+
+  vs_reset;
+
 }
 
 
@@ -2113,7 +2122,9 @@ LFD(siLfile_column)()
 }
 
 
-object sLAload_pathnameA;
+
+DEFVAR("*LOAD-PATHNAME*",sLAload_pathnameA,LISP,sLnil,"");
+DEFVAR("*LOAD-TRUENAME*",sLAload_truenameA,LISP,sLnil,"");
 DEFVAR("*COLLECT-BINARY-MODULES*",sSAcollect_binary_modulesA,SI,sLnil,"");
 DEFVAR("*BINARY-MODULES*",sSAbinary_modulesA,SI,Cnil,"");
 DEFVAR("*DISABLE-RECOMPILE*",sSAdisable_recompile,SI,Ct,"");

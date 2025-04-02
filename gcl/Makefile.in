@@ -96,13 +96,13 @@ host_triplet = @host@
 noinst_PROGRAMS = bin/dpp$(EXEEXT) o/grab_defs$(EXEEXT)
 my_unixport_PROGRAMS = unixport/saved_gcl$(EXEEXT) \
 	unixport/saved_ansi_gcl$(EXEEXT) $(am__EXEEXT_1)
-@AMM_GPROF_TRUE@am__append_1 = unixport/saved_gcl_gprof unixport/saved_ansi_gcl_gprof
-@AMM_GPROF_TRUE@am__append_2 = lib/libbase_gcl_gprof.a
+my_gcltk_PROGRAMS = g/gcltkaux$(EXEEXT) g/gcltksrv$(EXEEXT)
+@AMM_GPROF_TRUE@am__append_1 = $(LIBGPROF) lib/libbase_gcl_gprof.a
+@AMM_GPROF_TRUE@am__append_2 = unixport/saved_gcl_gprof unixport/saved_ansi_gcl_gprof
 @AMM_GPROF_TRUE@am__append_3 = unixport/libgcl_gprof.a unixport/libansi_gcl_gprof.a
 @AMM_XGCL_TRUE@am__append_4 = $(X_LIB)
-@AMM_GPROF_TRUE@@AMM_XGCL_TRUE@am__append_5 = $(X_GLIB)
+@AMM_GPROF_TRUE@@AMM_XGCL_TRUE@am__append_5 = lib/libxgcl_gprof.a
 @AMM_GPROF_TRUE@am__append_6 = o/gprof.ini
-my_gcltk_PROGRAMS = g/gcltkaux$(EXEEXT) g/gcltksrv$(EXEEXT)
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -200,23 +200,6 @@ lib_libbase_gcl_a_OBJECTS = $(am_lib_libbase_gcl_a_OBJECTS)
 lib_libbase_gcl_gprof_a_AR = $(AR) $(ARFLAGS)
 lib_libbase_gcl_gprof_a_RANLIB = $(RANLIB)
 lib_libbase_gcl_gprof_a_LIBADD =
-am__lib_libbase_gcl_gprof_a_SOURCES_DIST = o/typespec.c o/alloc.c \
-	o/gbc.c o/bitop.c o/main.c o/eval.c o/macros.c o/lex.c o/bds.c \
-	o/frame.c o/predicate.c o/reference.c o/assignment.c o/bind.c \
-	o/let.c o/conditional.c o/block.c o/iteration.c o/mapfun.c \
-	o/prog.c o/multival.c o/catch.c o/cfun.c o/cmpaux.c o/big.c \
-	o/number.c o/num_pred.c o/num_comp.c o/num_arith.c \
-	o/num_sfun.c o/num_co.c o/num_log.c o/num_rand.c o/earith.c \
-	o/array.c o/regexpr.c o/structure.c o/toplevel.c o/backq.c \
-	o/format.c o/unixfsys.c o/unixfasl.c o/error.c o/unixtime.c \
-	o/unixsys.c o/unixsave.c o/funlink.c o/fat_string.c \
-	o/run_process.c o/nfunlink.c o/usig.c o/usig2.c o/utils.c \
-	o/makefun.c o/sockets.c o/gmp_wrappers.c o/clxsocket.c \
-	o/nsocket.c o/new_init.c o/prelink.c o/sfasl.c o/msbrk.c \
-	o/character.c o/hash.c o/pathname.c o/sequence.c o/file.c \
-	o/list.c o/print.c o/string.c o/gcl_readline.c o/package.c \
-	o/read.c o/symbol.c o/bcmp.c o/bcopy.c o/bzero.c o/user_init.c \
-	o/user_match.c o/gprof.c
 am__objects_2 = o/lib_libbase_gcl_gprof_a-typespec.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-alloc.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-gbc.$(OBJEXT) \
@@ -296,41 +279,32 @@ am__objects_2 = o/lib_libbase_gcl_gprof_a-typespec.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-bzero.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-user_init.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-user_match.$(OBJEXT)
-@AMM_GPROF_TRUE@am_lib_libbase_gcl_gprof_a_OBJECTS = $(am__objects_2) \
-@AMM_GPROF_TRUE@	o/lib_libbase_gcl_gprof_a-gprof.$(OBJEXT)
+am_lib_libbase_gcl_gprof_a_OBJECTS = $(am__objects_2) \
+	o/lib_libbase_gcl_gprof_a-gprof.$(OBJEXT)
 lib_libbase_gcl_gprof_a_OBJECTS =  \
 	$(am_lib_libbase_gcl_gprof_a_OBJECTS)
 lib_libgprof_a_AR = $(AR) $(ARFLAGS)
 lib_libgprof_a_RANLIB = $(RANLIB)
 lib_libgprof_a_LIBADD =
-am__lib_libgprof_a_SOURCES_DIST = o/foo.c o/gprof.c
-@AMM_GPROF_FALSE@am_lib_libgprof_a_OBJECTS =  \
-@AMM_GPROF_FALSE@	o/lib_libgprof_a-foo.$(OBJEXT)
-@AMM_GPROF_TRUE@am_lib_libgprof_a_OBJECTS =  \
-@AMM_GPROF_TRUE@	o/lib_libgprof_a-gprof.$(OBJEXT)
+am_lib_libgprof_a_OBJECTS = o/lib_libgprof_a-gprof.$(OBJEXT)
 lib_libgprof_a_OBJECTS = $(am_lib_libgprof_a_OBJECTS)
 lib_libxgcl_a_AR = $(AR) $(ARFLAGS)
 lib_libxgcl_a_RANLIB = $(RANLIB)
 lib_libxgcl_a_LIBADD =
-am__lib_libxgcl_a_SOURCES_DIST = xgcl-2/Events.c xgcl-2/general-c.c \
-	xgcl-2/XStruct-2.c xgcl-2/XStruct-4.c xgcl-2/Xutil-2.c
-@AMM_XGCL_TRUE@am_lib_libxgcl_a_OBJECTS = xgcl-2/Events.$(OBJEXT) \
-@AMM_XGCL_TRUE@	xgcl-2/general-c.$(OBJEXT) \
-@AMM_XGCL_TRUE@	xgcl-2/XStruct-2.$(OBJEXT) \
-@AMM_XGCL_TRUE@	xgcl-2/XStruct-4.$(OBJEXT) \
-@AMM_XGCL_TRUE@	xgcl-2/Xutil-2.$(OBJEXT)
+am__objects_3 = xgcl-2/Events.$(OBJEXT) xgcl-2/general-c.$(OBJEXT) \
+	xgcl-2/XStruct-2.$(OBJEXT) xgcl-2/XStruct-4.$(OBJEXT) \
+	xgcl-2/Xutil-2.$(OBJEXT)
+am_lib_libxgcl_a_OBJECTS = $(am__objects_3)
 lib_libxgcl_a_OBJECTS = $(am_lib_libxgcl_a_OBJECTS)
 lib_libxgcl_gprof_a_AR = $(AR) $(ARFLAGS)
 lib_libxgcl_gprof_a_RANLIB = $(RANLIB)
 lib_libxgcl_gprof_a_LIBADD =
-am__lib_libxgcl_gprof_a_SOURCES_DIST = xgcl-2/Events.c \
-	xgcl-2/general-c.c xgcl-2/XStruct-2.c xgcl-2/XStruct-4.c \
-	xgcl-2/Xutil-2.c
-@AMM_GPROF_TRUE@@AMM_XGCL_TRUE@am_lib_libxgcl_gprof_a_OBJECTS = xgcl-2/lib_libxgcl_gprof_a-Events.$(OBJEXT) \
-@AMM_GPROF_TRUE@@AMM_XGCL_TRUE@	xgcl-2/lib_libxgcl_gprof_a-general-c.$(OBJEXT) \
-@AMM_GPROF_TRUE@@AMM_XGCL_TRUE@	xgcl-2/lib_libxgcl_gprof_a-XStruct-2.$(OBJEXT) \
-@AMM_GPROF_TRUE@@AMM_XGCL_TRUE@	xgcl-2/lib_libxgcl_gprof_a-XStruct-4.$(OBJEXT) \
-@AMM_GPROF_TRUE@@AMM_XGCL_TRUE@	xgcl-2/lib_libxgcl_gprof_a-Xutil-2.$(OBJEXT)
+am__objects_4 = xgcl-2/lib_libxgcl_gprof_a-Events.$(OBJEXT) \
+	xgcl-2/lib_libxgcl_gprof_a-general-c.$(OBJEXT) \
+	xgcl-2/lib_libxgcl_gprof_a-XStruct-2.$(OBJEXT) \
+	xgcl-2/lib_libxgcl_gprof_a-XStruct-4.$(OBJEXT) \
+	xgcl-2/lib_libxgcl_gprof_a-Xutil-2.$(OBJEXT)
+am_lib_libxgcl_gprof_a_OBJECTS = $(am__objects_4)
 lib_libxgcl_gprof_a_OBJECTS = $(am_lib_libxgcl_gprof_a_OBJECTS)
 unixport_libansi_gcl_a_AR = $(AR) $(ARFLAGS)
 unixport_libansi_gcl_a_RANLIB = $(RANLIB)
@@ -497,7 +471,6 @@ am__depfiles_remade = bin/$(DEPDIR)/dpp.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-usig.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-usig2.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-utils.Po \
-	o/$(DEPDIR)/lib_libgprof_a-foo.Po \
 	o/$(DEPDIR)/lib_libgprof_a-gprof.Po o/$(DEPDIR)/list.Po \
 	o/$(DEPDIR)/macros.Po o/$(DEPDIR)/main.Po \
 	o/$(DEPDIR)/makefun.Po o/$(DEPDIR)/mapfun.Po \
@@ -560,13 +533,11 @@ SOURCES = $(lib_libbase_gcl_a_SOURCES) \
 	$(unixport_saved_gcl_SOURCES) \
 	$(unixport_saved_gcl_gprof_SOURCES)
 DIST_SOURCES = $(lib_libbase_gcl_a_SOURCES) \
-	$(am__lib_libbase_gcl_gprof_a_SOURCES_DIST) \
-	$(am__lib_libgprof_a_SOURCES_DIST) \
-	$(am__lib_libxgcl_a_SOURCES_DIST) \
-	$(am__lib_libxgcl_gprof_a_SOURCES_DIST) unixport/libansi_gcl.c \
-	unixport/libansi_gcl_gprof.c unixport/libgcl.c \
-	unixport/libgcl_gprof.c bin/dpp.c $(g_gcltkaux_SOURCES) \
-	$(g_gcltksrv_SOURCES) o/grab_defs.c \
+	$(lib_libbase_gcl_gprof_a_SOURCES) $(lib_libgprof_a_SOURCES) \
+	$(lib_libxgcl_a_SOURCES) $(lib_libxgcl_gprof_a_SOURCES) \
+	unixport/libansi_gcl.c unixport/libansi_gcl_gprof.c \
+	unixport/libgcl.c unixport/libgcl_gprof.c bin/dpp.c \
+	$(g_gcltkaux_SOURCES) $(g_gcltksrv_SOURCES) o/grab_defs.c \
 	$(unixport_saved_ansi_gcl_SOURCES) \
 	$(unixport_saved_ansi_gcl_gprof_SOURCES) \
 	$(unixport_saved_gcl_SOURCES) \
@@ -841,37 +812,84 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 use = @use@
-AM_CPPFLAGS = $(BASE_CPPFLAGS) -I $(srcdir)/h -I$(srcdir)/gcl-tk 
+AM_CPPFLAGS = $(BASE_CPPFLAGS)
 AM_CFLAGS = $(BASE_CFLAGS)
 AM_LDFLAGS = $(BASE_LDFLAGS)
 AUTOMAKE_OPTIONS = subdir-objects info-in-builddir
 my_libdir = $(libdir)/$(PACKAGE)-$(PACKAGE_VERSION)
 my_unixportdir = $(my_libdir)/unixport
-unixport_saved_gcl_SOURCES = 
-unixport_saved_ansi_gcl_SOURCES = 
-noinst_LIBRARIES = lib/libbase_gcl.a lib/libgprof.a $(am__append_2) \
-	$(am__append_4) $(am__append_5)
-lib_libbase_gcl_a_SOURCES = $(C_SRC)
-EXTRA_lib_libbase_gcl_a_DEPENDENCIES = h/new_decl.h
+my_gcltkdir = $(my_libdir)/gcl-tk
+my_xgcl2dir = $(my_libdir)/xgcl-2
+my_pcldir = $(my_libdir)/pcl
+my_lspdir = $(my_libdir)/lsp
+my_hdir = $(my_libdir)/h
+my_cmpnewdir = $(my_libdir)/cmpnew
+my_clcsdir = $(my_libdir)/clcs
+my_gcltkddir = $(my_libdir)/gcl-tk/demos
+noinst_LIBRARIES = lib/libbase_gcl.a $(am__append_1) $(am__append_4) \
+	$(am__append_5)
 my_unixport_LIBRARIES = unixport/libgcl.a unixport/libansi_gcl.a \
 	$(am__append_3)
-@AMM_GPROF_FALSE@lib_libgprof_a_SOURCES = o/foo.c
-@AMM_GPROF_TRUE@lib_libgprof_a_SOURCES = o/gprof.c
-@AMM_GPROF_TRUE@lib_libgprof_a_CFLAGS = $(AM_CFLAGS) -fno-omit-frame-pointer -pg
-@AMM_GPROF_TRUE@EXTRA_lib_libgprof_a_DEPENDENCIES = h/new_decl.h
-@AMM_GPROF_TRUE@unixport_saved_gcl_gprof_SOURCES = 
-@AMM_GPROF_TRUE@unixport_saved_ansi_gcl_gprof_SOURCES = 
-@AMM_GPROF_TRUE@lib_libbase_gcl_gprof_a_SOURCES = $(C_SRC) o/gprof.c
-@AMM_GPROF_TRUE@lib_libbase_gcl_gprof_a_CFLAGS = $(AM_CFLAGS) -fno-omit-frame-pointer -pg
-@AMM_GPROF_TRUE@lib_libbase_gcl_gprof_a_CPPFLAGS = $(AM_CPPFLAGS) -DGCL_GPROF
-@AMM_GPROF_TRUE@EXTRA_lib_libbase_gcl_gprof_a_DEPENDENCIES = h/new_decl.h
-@AMM_XGCL_TRUE@X_STUBS = Xlib Xutil X XAtom defentry_events Xstruct XStruct_l_3 general keysymdef X10 Xinit dwtrans tohtml index
-@AMM_XGCL_TRUE@X_OBJS = $(addprefix gcl_,$(addsuffix .o,$(X_STUBS)))
+bin_SCRIPTS = bin/gcl
+check_SCRIPTS = ansi-tests/test_results
+info_TEXINFOS = info/gcl.texi info/gcl-si.texi info/gcl-tk.texi
+man1_MANS = man/man1/gcl.1
+lisp_DATA = elisp/ansi-doc.el elisp/dbl.el elisp/doc-to-texi.el elisp/gcl.el \
+          elisp/man1-to-texi.el elisp/sshell.el elisp/smart-complete.el elisp/add-default.el 
+
+my_unixport_DATA = $(addprefix unixport/,init_raw.lsp gcl.script libboot.so \
+				       gcl_cmpnopt_gcl.lsp gcl_cmpnopt_ansi_gcl.lsp)
+
+my_xgcl2_DATA = xgcl-2/sysdef.lisp xgcl-2/gcl_dwtest.lsp xgcl-2/gcl_dwtestcases.lsp
+my_pcl_DATA = pcl/package.lisp
+my_lsp_DATA = lsp/gcl_auto_new.lsp lsp/gcl_autoload.lsp \
+	lsp/gcl_defmacro.lsp lsp/gcl_evalmacros.lsp lsp/gcl_export.lsp \
+	lsp/gcl_module.lsp lsp/gcl_top.lsp
+my_h_DATA = h/cmpinclude.h
+my_cmpnew_DATA = cmpnew/gcl_cmpopt.lsp c/gcl_collectfn.o cmpnew/gcl_lfun_list.lsp
+my_clcs_DATA = clcs/package.lisp
+my_gcltk_DATA = g/tkl.o g/tinfo.o gcl-tk/tk-package.lsp gcl-tk/gcl.tcl
+my_gcltkd_DATA = $(addprefix gcl-tk/demos/,gc-monitor.lisp mkBasic.lisp mkCanvText.lisp mkdialog.lisp \
+	            mkEntry2.lisp mkEntry.lisp mkForm.lisp mkHScale.lisp mkItems.lisp mkLabel.lisp \
+	            mkListbox.lisp mkPlot.lisp mkRadio.lisp mkRuler.lisp mkSearch.lisp mkStyles.lisp \
+	            mkTextBind.lisp mkVScale.lisp nqthm-stack.lisp showVars.lisp widget.lisp) \
+	       $(addprefix g/demos/,gc-monitor.o index.lsp)
+
+doc_DATA = $(DWDOCS) xgcl-2/dwdoc.pdf
+@AMM_GPROF_TRUE@LIBGPROF = lib/libgprof.a
+@AMM_XGCL_TRUE@X_OBJS = $(addprefix gcl_,$(addsuffix .o,\
+@AMM_XGCL_TRUE@	Xlib Xutil X XAtom defentry_events Xstruct XStruct_l_3 \
+@AMM_XGCL_TRUE@	general keysymdef X10 Xinit dwtrans tohtml index))
+
 @AMM_XGCL_TRUE@X_LIB = lib/libxgcl.a
-@AMM_XGCL_TRUE@lib_libxgcl_a_SOURCES = xgcl-2/Events.c xgcl-2/general-c.c xgcl-2/XStruct-2.c xgcl-2/XStruct-4.c xgcl-2/Xutil-2.c
-@AMM_GPROF_TRUE@@AMM_XGCL_TRUE@X_GLIB = lib/libxgcl_gprof.a
-@AMM_GPROF_TRUE@@AMM_XGCL_TRUE@lib_libxgcl_gprof_a_SOURCES = xgcl-2/Events.c xgcl-2/general-c.c xgcl-2/XStruct-2.c xgcl-2/XStruct-4.c xgcl-2/Xutil-2.c
-@AMM_GPROF_TRUE@@AMM_XGCL_TRUE@lib_libxgcl_gprof_a_CFLAGS = $(AM_CFLAGS) -fno-omit-frame-pointer -pg
+
+# end of primaries
+lib_libbase_gcl_a_SOURCES = $(C_SRC)
+EXTRA_lib_libbase_gcl_a_DEPENDENCIES = h/new_decl.h
+lib_libgprof_a_SOURCES = o/gprof.c
+lib_libgprof_a_CFLAGS = $(AM_CFLAGS) -fno-omit-frame-pointer -pg
+EXTRA_lib_libgprof_a_DEPENDENCIES = h/new_decl.h
+lib_libbase_gcl_gprof_a_SOURCES = $(C_SRC) o/gprof.c
+lib_libbase_gcl_gprof_a_CFLAGS = $(AM_CFLAGS) -fno-omit-frame-pointer -pg
+lib_libbase_gcl_gprof_a_CPPFLAGS = $(AM_CPPFLAGS) -DGCL_GPROF
+EXTRA_lib_libbase_gcl_gprof_a_DEPENDENCIES = h/new_decl.h
+X_SRC = xgcl-2/Events.c xgcl-2/general-c.c xgcl-2/XStruct-2.c xgcl-2/XStruct-4.c xgcl-2/Xutil-2.c
+lib_libxgcl_a_SOURCES = $(X_SRC)
+lib_libxgcl_gprof_a_SOURCES = $(X_SRC)
+lib_libxgcl_gprof_a_CFLAGS = $(AM_CFLAGS) -fno-omit-frame-pointer -pg
+unixport_saved_gcl_SOURCES = 
+unixport_saved_ansi_gcl_SOURCES = 
+unixport_saved_gcl_gprof_SOURCES = 
+unixport_saved_ansi_gcl_gprof_SOURCES = 
+g_gcltksrv_SOURCES = 
+g_gcltkaux_SOURCES = gcl-tk/guis.c gcl-tk/tkAppInit.c gcl-tk/tkMain.c
+g_gcltkaux_CPPFLAGS = $(AM_CPPFLAGS) $(TK_INCLUDE) $(TCL_INCLUDE) $(TK_XINCLUDES)
+g_gcltkaux_LDADD = $(TK_LIB_SPEC) $(TCL_LIB_SPEC)
+EXTRA_g_gcltkaux_DEPENDENCIES = h/new_decl.h
+DWDOCS = $(addprefix xgcl-2/dwdoc/dwdoc,$(addsuffix .html,1 2 3 contents index))
+TEXI2DVI = xbin/tdf
+TEXI2PDF = xbin/tdf
+MY_DIRS = gcl0 gcl1 gcl2 gcl3 gcl mod_gcl0 mod_gcl pcl_gcl ansi_gcl
 C_SRC = o/typespec.c o/alloc.c o/gbc.c o/bitop.c o/main.c o/eval.c o/macros.c o/lex.c o/bds.c o/frame.c\
 	 o/predicate.c o/reference.c o/assignment.c o/bind.c o/let.c o/conditional.c o/block.c o/iteration.c\
 	 o/mapfun.c\
@@ -900,12 +918,13 @@ L_OBJS = $(addprefix gcl_,$(addsuffix .o,$(L_STUBS)))
 L_FOBJS = $(addprefix gcl/,$(L_OBJS))
 MOD_STUBS = ansi_io defpackage destructuring_bind loop make_defpackage
 MOD_OBJS = $(addprefix gcl_,$(addsuffix .o,$(MOD_STUBS))) $(X_OBJS)
+MOD_FOBJS = $(addprefix mod_gcl/,$(MOD_OBJS)) $(L_FOBJS) $(X_LIB)
 PCL_STUBS = boot braid cache combin compat cpl ctypes defclass defcombin defs dfun dlisp2\
 	  dlisp env fast_init fin fixup fngen fsc generic_functions impl_low init iterate\
 	  low macros methods pkg precom1 precom2 slots_boot slots std_class vector walk
 
 PCL_OBJS = $(addprefix gcl_pcl_,$(addsuffix .o,$(PCL_STUBS)))
-PCL_FOBJS = $(addprefix pcl_gcl/,$(PCL_OBJS)) $(addprefix mod_gcl/,$(MOD_OBJS)) $(L_FOBJS) $(X_LIB)
+PCL_FOBJS = $(addprefix pcl_gcl/,$(PCL_OBJS)) $(MOD_FOBJS)
 CLCS_STUBS = condition_definitions conditions precom
 CLCS_OBJS = $(addprefix gcl_clcs_,$(addsuffix .o,$(CLCS_STUBS)))
 ANSI_FOBJS = $(addprefix ansi_gcl/,$(CLCS_OBJS)) $(PCL_FOBJS)
@@ -915,60 +934,11 @@ E0_OBJS = $(addprefix gcl_,$(addsuffix .o,$(E0)))
 M0_OBJS = $(filter-out $(E0_OBJS) $(L0_OBJS),$(L_OBJS))
 L0_OBJS = $(addprefix gcl_,$(addsuffix .o,$(L0)))
 CMPINCLUDE_FILES = h/cmpincl1.h h/gclincl.h h/compbas.h h/type.h h/mgmp.h \
-	h/lu.h h/globals.h  h/vs.h \
-	h/bds.h h/frame.h \
-	h/lex.h \
-	h/mstdint.h h/compbas2.h \
-	h/compprotos.h  h/immnum.h
+		 h/lu.h h/globals.h  h/vs.h h/bds.h h/frame.h h/lex.h \
+		 h/mstdint.h h/compbas2.h h/compprotos.h  h/immnum.h
 
 INI_FILES = $(filter-out o/new_init.ini,$(patsubst \
 	%.c,%.ini,$(C_SRC))) $(am__append_6)
-check_SCRIPTS = ansi-tests/test_results
-my_gcltkdir = $(my_libdir)/gcl-tk
-g_gcltksrv_SOURCES = 
-g_gcltkaux_SOURCES = gcl-tk/guis.c gcl-tk/tkAppInit.c gcl-tk/tkMain.c
-g_gcltkaux_CPPFLAGS = $(AM_CPPFLAGS) $(TK_INCLUDE) $(TCL_INCLUDE) $(TK_XINCLUDES)
-g_gcltkaux_LDADD = $(TK_LIB_SPEC) $(TCL_LIB_SPEC)
-EXTRA_g_gcltkaux_DEPENDENCIES = h/new_decl.h
-TEXI2DVI = xbin/tdf
-TEXI2PDF = xbin/tdf
-info_TEXINFOS = info/gcl.texi info/gcl-si.texi info/gcl-tk.texi
-man1_MANS = man/man1/gcl.1
-lisp_DATA = elisp/ansi-doc.el elisp/dbl.el elisp/doc-to-texi.el elisp/gcl.el \
-          elisp/man1-to-texi.el elisp/sshell.el elisp/smart-complete.el elisp/add-default.el 
-
-my_unixport_DATA = $(addprefix unixport/,init_raw.lsp gcl.script libboot.so \
-				       gcl_cmpnopt_gcl.lsp gcl_cmpnopt_ansi_gcl.lsp)
-
-my_xgcl2dir = $(my_libdir)/xgcl-2
-my_xgcl2_DATA = xgcl-2/sysdef.lisp xgcl-2/gcl_dwtest.lsp xgcl-2/gcl_dwtestcases.lsp
-my_pcldir = $(my_libdir)/pcl
-my_pcl_DATA = pcl/package.lisp
-my_lspdir = $(my_libdir)/lsp
-my_lsp_DATA = lsp/gcl_auto_new.lsp lsp/gcl_autoload.lsp \
-	lsp/gcl_defmacro.lsp lsp/gcl_evalmacros.lsp lsp/gcl_export.lsp \
-	lsp/gcl_module.lsp lsp/gcl_top.lsp
-my_hdir = $(my_libdir)/h
-my_h_DATA = h/cmpinclude.h
-my_cmpnewdir = $(my_libdir)/cmpnew
-my_cmpnew_DATA = cmpnew/gcl_cmpopt.lsp c/gcl_collectfn.o cmpnew/gcl_lfun_list.lsp
-my_clcsdir = $(my_libdir)/clcs
-my_clcs_DATA = clcs/package.lisp
-my_gcltk_DATA = g/tkl.o g/tinfo.o gcl-tk/tk-package.lsp gcl-tk/gcl.tcl
-my_gcltkddir = $(my_libdir)/gcl-tk/demos
-my_gcltkd_DATA = gcl-tk/demos/gc-monitor.lisp g/demos/gc-monitor.o g/demos/index.lsp \
-	       gcl-tk/demos/mkBasic.lisp gcl-tk/demos/mkCanvText.lisp gcl-tk/demos/mkdialog.lisp \
-	       gcl-tk/demos/mkEntry2.lisp gcl-tk/demos/mkEntry.lisp gcl-tk/demos/mkForm.lisp \
-	       gcl-tk/demos/mkHScale.lisp gcl-tk/demos/mkItems.lisp gcl-tk/demos/mkLabel.lisp \
-	       gcl-tk/demos/mkListbox.lisp gcl-tk/demos/mkPlot.lisp gcl-tk/demos/mkRadio.lisp \
-	       gcl-tk/demos/mkRuler.lisp gcl-tk/demos/mkSearch.lisp gcl-tk/demos/mkStyles.lisp \
-	       gcl-tk/demos/mkTextBind.lisp gcl-tk/demos/mkVScale.lisp gcl-tk/demos/nqthm-stack.lisp \
-	       gcl-tk/demos/showVars.lisp gcl-tk/demos/widget.lisp
-
-bin_SCRIPTS = bin/gcl
-MY_DIRS = pre_gcl gcl0 gcl1 gcl2 gcl3 gcl mod_gcl0 mod_gcl pcl_gcl ansi_gcl
-DWDOCS = $(addprefix xgcl-2/dwdoc/dwdoc,$(addsuffix .html,1 2 3 contents index))
-doc_DATA = $(DWDOCS) xgcl-2/dwdoc.pdf
 all: all-am
 
 .SUFFIXES:
@@ -1412,8 +1382,6 @@ lib/libbase_gcl_gprof.a: $(lib_libbase_gcl_gprof_a_OBJECTS) $(lib_libbase_gcl_gp
 	$(AM_V_at)-rm -f lib/libbase_gcl_gprof.a
 	$(AM_V_AR)$(lib_libbase_gcl_gprof_a_AR) lib/libbase_gcl_gprof.a $(lib_libbase_gcl_gprof_a_OBJECTS) $(lib_libbase_gcl_gprof_a_LIBADD)
 	$(AM_V_at)$(lib_libbase_gcl_gprof_a_RANLIB) lib/libbase_gcl_gprof.a
-o/lib_libgprof_a-foo.$(OBJEXT): o/$(am__dirstamp) \
-	o/$(DEPDIR)/$(am__dirstamp)
 o/lib_libgprof_a-gprof.$(OBJEXT): o/$(am__dirstamp) \
 	o/$(DEPDIR)/$(am__dirstamp)
 
@@ -1506,14 +1474,6 @@ o/grab_defs.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/grab_defs$(EXEEXT): $(o_grab_defs_OBJECTS) $(o_grab_defs_DEPENDENCIES) $(EXTRA_o_grab_defs_DEPENDENCIES) o/$(am__dirstamp)
 	@rm -f o/grab_defs$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(o_grab_defs_OBJECTS) $(o_grab_defs_LDADD) $(LIBS)
-
-@AMM_GPROF_FALSE@unixport/saved_ansi_gcl_gprof$(EXEEXT): $(unixport_saved_ansi_gcl_gprof_OBJECTS) $(unixport_saved_ansi_gcl_gprof_DEPENDENCIES) $(EXTRA_unixport_saved_ansi_gcl_gprof_DEPENDENCIES) unixport/$(am__dirstamp)
-@AMM_GPROF_FALSE@	@rm -f unixport/saved_ansi_gcl_gprof$(EXEEXT)
-@AMM_GPROF_FALSE@	$(AM_V_CCLD)$(LINK) $(unixport_saved_ansi_gcl_gprof_OBJECTS) $(unixport_saved_ansi_gcl_gprof_LDADD) $(LIBS)
-
-@AMM_GPROF_FALSE@unixport/saved_gcl_gprof$(EXEEXT): $(unixport_saved_gcl_gprof_OBJECTS) $(unixport_saved_gcl_gprof_DEPENDENCIES) $(EXTRA_unixport_saved_gcl_gprof_DEPENDENCIES) unixport/$(am__dirstamp)
-@AMM_GPROF_FALSE@	@rm -f unixport/saved_gcl_gprof$(EXEEXT)
-@AMM_GPROF_FALSE@	$(AM_V_CCLD)$(LINK) $(unixport_saved_gcl_gprof_OBJECTS) $(unixport_saved_gcl_gprof_LDADD) $(LIBS)
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
 	@list='$(bin_SCRIPTS)'; test -n "$(bindir)" || list=; \
@@ -1679,7 +1639,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-usig.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-usig2.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-utils.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libgprof_a-foo.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libgprof_a-gprof.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/list.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/macros.Po@am__quote@ # am--include-marker
@@ -2884,20 +2843,6 @@ o/lib_libbase_gcl_gprof_a-gprof.obj: o/gprof.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libbase_gcl_gprof_a-gprof.obj `if test -f 'o/gprof.c'; then $(CYGPATH_W) 'o/gprof.c'; else $(CYGPATH_W) '$(srcdir)/o/gprof.c'; fi`
 
-o/lib_libgprof_a-foo.o: o/foo.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_libgprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libgprof_a-foo.o -MD -MP -MF o/$(DEPDIR)/lib_libgprof_a-foo.Tpo -c -o o/lib_libgprof_a-foo.o `test -f 'o/foo.c' || echo '$(srcdir)/'`o/foo.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) o/$(DEPDIR)/lib_libgprof_a-foo.Tpo o/$(DEPDIR)/lib_libgprof_a-foo.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='o/foo.c' object='o/lib_libgprof_a-foo.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_libgprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libgprof_a-foo.o `test -f 'o/foo.c' || echo '$(srcdir)/'`o/foo.c
-
-o/lib_libgprof_a-foo.obj: o/foo.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_libgprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libgprof_a-foo.obj -MD -MP -MF o/$(DEPDIR)/lib_libgprof_a-foo.Tpo -c -o o/lib_libgprof_a-foo.obj `if test -f 'o/foo.c'; then $(CYGPATH_W) 'o/foo.c'; else $(CYGPATH_W) '$(srcdir)/o/foo.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) o/$(DEPDIR)/lib_libgprof_a-foo.Tpo o/$(DEPDIR)/lib_libgprof_a-foo.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='o/foo.c' object='o/lib_libgprof_a-foo.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_libgprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libgprof_a-foo.obj `if test -f 'o/foo.c'; then $(CYGPATH_W) 'o/foo.c'; else $(CYGPATH_W) '$(srcdir)/o/foo.c'; fi`
-
 o/lib_libgprof_a-gprof.o: o/gprof.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_libgprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libgprof_a-gprof.o -MD -MP -MF o/$(DEPDIR)/lib_libgprof_a-gprof.Tpo -c -o o/lib_libgprof_a-gprof.o `test -f 'o/gprof.c' || echo '$(srcdir)/'`o/gprof.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) o/$(DEPDIR)/lib_libgprof_a-gprof.Tpo o/$(DEPDIR)/lib_libgprof_a-gprof.Po
@@ -3930,7 +3875,6 @@ distclean: distclean-am
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-usig.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-usig2.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-utils.Po
-	-rm -f o/$(DEPDIR)/lib_libgprof_a-foo.Po
 	-rm -f o/$(DEPDIR)/lib_libgprof_a-gprof.Po
 	-rm -f o/$(DEPDIR)/list.Po
 	-rm -f o/$(DEPDIR)/macros.Po
@@ -4254,7 +4198,6 @@ maintainer-clean: maintainer-clean-am
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-usig.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-usig2.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-utils.Po
-	-rm -f o/$(DEPDIR)/lib_libgprof_a-foo.Po
 	-rm -f o/$(DEPDIR)/lib_libgprof_a-gprof.Po
 	-rm -f o/$(DEPDIR)/list.Po
 	-rm -f o/$(DEPDIR)/macros.Po
@@ -4384,45 +4327,54 @@ uninstall-man: uninstall-man1
 
 .PRECIOUS: Makefile
 
+export C_INCLUDE_PATH=$(srcdir)/h:$(srcdir)/gcl-tk
 unixport/saved_gcl$(EXEEXT):
 unixport/saved_ansi_gcl$(EXEEXT):
+unixport/saved_gcl_gprof$(EXEEXT):
+unixport/saved_ansi_gcl_gprof$(EXEEXT):
 unixport/libgcl.a:
 unixport/libansi_gcl.a:
 unixport/libgcl_gprof.a:
 unixport/libansi_gcl_gprof.a:
-@AMM_GPROF_TRUE@unixport/saved_gcl_gprof$(EXEEXT):
-@AMM_GPROF_TRUE@unixport/saved_ansi_gcl_gprof$(EXEEXT):
 
-$(addprefix unixport/saved_,gcl ansi_gcl gcl_gprof ansi_gcl_gprof): unixport/saved_%: unixport/raw_%
+$(addprefix unixport/saved_,gcl ansi_gcl gcl_gprof ansi_gcl_gprof):\
+unixport/saved_%: unixport/raw_% # rebuild these only when out of date
+
 unixport/saved_%: | unixport/raw_% unixport/gcl_cmpnopt_%.lsp h/cmpinclude.h \
 		    unixport/libboot.so unixport/init_raw.lsp
-	ar x unixport/lib$*.a $$(ar t unixport/lib$*.a |grep ^gcl_)
-	ln -snf gcl_cmpnopt_$*.lsp unixport/gcl_cmpnopt.lsp
-	GCL_LSPSYSDIR=$(srcdir)/unixport/ \
-		unixport/raw_$* $$(pwd)/$(@D)/ -libdir $$(pwd)/ \
-		    < <(cat unixport/init_raw.lsp <(echo "(system:save-system \"$@\")"))
+	rm -rf sb_$* # FIXME sandbox ugliness for parallel builds
+	mkdir sb_$*
+	cd sb_$* && \
+		ar x ../unixport/lib$*.a $$(ar t ../unixport/lib$*.a |grep ^gcl_) && \
+		ln -snf gcl_cmpnopt_$*.lsp ../unixport/gcl_cmpnopt.lsp && \
+		mkdir h && \
+		ln -snf ../../h/cmpinclude.h h/ && \
+		GCL_LSPSYSDIR=../$(srcdir)/unixport/ \
+			../unixport/raw_$* $$(dirname $$(pwd))/unixport/ -libdir $$(dirname $$(pwd))/ \
+			    < <(cat ../unixport/init_raw.lsp <(echo "(system:save-system \"../$@\")"))
+	rm -rf sb_$*
 
 unixport/raw_%: unixport/lib%.a
-	$(CC) $(AM_LDFLAGS) -rdynamic -Wl,-z,relro $(LDFLAGS) -o $@ $< $(LIBS)
+	$(CC) $(AM_LDFLAGS) -rdynamic -Wl,-z,relro $(LDFLAGS) -o $@ $< $(LIBS) #FIXME relro
 
 unixport/gcl_cmpnopt_gcl_gprof.lsp unixport/gcl_cmpnopt_ansi_gcl_gprof.lsp:\
 unixport/gcl_cmpnopt_%_gprof.lsp: unixport/gcl_cmpnopt_%.lsp
 	ln -snf $$(basename $<) $@
-unixport/gcl_cmpnopt_pre_gcl.lsp:
+unixport/gcl_cmpnopt_pre_gcl.lsp: # FIXME necessary?
 	touch $@
 unixport/gcl_cmpnopt_%.lsp: unixport/lib%.a | unixport/%
 	echo "(mapc (quote load) (directory \"$*/*.hsh\"))" \
 	     "(compiler::dump-inl-hash \"$@\")" | $|
 
-$(addprefix unixport/lib,$(addsuffix .a,pre_gcl gcl0 gcl1 gcl2 gcl3 gcl mod_gcl0 mod_gcl pcl_gcl ansi_gcl)): \
-unixport/lib%.a: lib/libbase_gcl.a  lib/libgprof.a unixport/sys_%.o
+$(addprefix unixport/lib,$(addsuffix .a,pre_gcl $(MY_DIRS))): \
+unixport/lib%.a: lib/libbase_gcl.a $(LIBGPROF) unixport/sys_%.o
 $(addprefix unixport/lib,$(addsuffix .a,gcl_gprof ansi_gcl_gprof)): \
 unixport/lib%.a:lib/libbase_gcl_gprof.a unixport/sys_%.o
 
 .POSIX: # parallel job ordering
-unixport/libgcl0.a: $(addprefix gcl0/,$(EO_OBJS) $(MO_OBJS) $(LO_OBJS))
+unixport/libgcl0.a: $(addprefix gcl0/,$(E0_OBJS) $(M0_OBJS) $(L0_OBJS))
 
-$(addprefix unixport/lib,$(addsuffix .a,gcl0 gcl1 gcl2 gcl3 gcl)):\
+$(addprefix unixport/lib,$(addsuffix .a,gcl1 gcl2 gcl3 gcl)):\
 unixport/lib%.a: $(addprefix %/,$(L_OBJS))
 unixport/libmod_gcl0.a unixport/libmod_gcl.a:\
 unixport/lib%.a: $(addprefix %/,$(MOD_OBJS)) $(L_FOBJS) $(X_LIB)
@@ -4446,9 +4398,6 @@ unixport/sys_%.o: unixport/sys_init.c h/new_decl.h
 	i=$$(echo $* | sed 's,[0-9],,g' | sed 's,_gprof,,g'); \
 	   $(CC) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -D $$i -D FLAVOR="$$i" -c $< -o $@
 
-unixport/pre_gcl: | pre_gcl
-	ln -s /bin/true $@
-
 unixport/gcl0: | unixport/saved_pre_gcl
 unixport/gcl1: | unixport/saved_gcl0
 unixport/gcl2: | unixport/saved_gcl1
@@ -4468,6 +4417,7 @@ unixport/mod_gcl0: xgcl-2/sysdef.lisp | mod_gcl0
 	[ "$(X_OBJS)" = "" ] || echo "(load \"$<\")" >$(@D)/in
 	echo "(compiler::cdebug)(si::save-system \"$@\")" >>$(@D)/in
 	$(word 2,$|) <$(@D)/in
+	rm $(@D)/in
 	cp gcl/all.hsh $(word 1,$|) #FIXME
 
 unixport/pcl_gcl: clcs/package.lisp clcs/myload1.lisp cmpnew/gcl_collectfn.lsp pcl/defsys.lisp  | pcl_gcl
@@ -4488,27 +4438,27 @@ unixport/ansi_gcl: clcs/package.lisp clcs/gcl_clcs_precom.lisp \
              "(si::save-system \"$@\")" | $(word 2,$|)
 	cp pcl_gcl/all.hsh $(word 1,$|) #FIXME
 
-gcl0/%.o: */%.lsp | unixport/gcl0
+gcl0/%.o: $(srcdir)/*/%.lsp | unixport/gcl0
 	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" -compile $< -o $@
 	[ "$*" = "gcl_c" ] || [ "$*" = "gcl_listlib" ] || \
 		ln -f $@ $$(echo $@ |sed 's,\.o,\.done,g') #FIXME directory link
 
-gcl1/%.o: */%.lsp  | unixport/gcl1
+gcl1/%.o: $(srcdir)/*/%.lsp  | unixport/gcl1
 	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" \
 	   -eval "(setq compiler::*dump-inl-hash* t)" \
 	   -compile $< -o $@
 	ln -f $@ $$(echo $@ |sed 's,\.o,\.done,g')
 
-gcl2/%.o: */%.lsp  | unixport/gcl2
+gcl2/%.o: $(srcdir)/*/%.lsp  | unixport/gcl2
 	$| -eval "(compiler::cdebug)(setq compiler::*dump-inl-hash* t)" -compile $< -o $@
 
-gcl3/%.o: */%.lsp  | unixport/gcl3
+gcl3/%.o: $(srcdir)/*/%.lsp  | unixport/gcl3
 	$| -eval "(compiler::cdebug)(setq compiler::*dump-inl-hash* t)" -compile $< -o $@
 
 gcl/%.o: gcl3/%.o | gcl
 	cp $(patsubst %.o,%.*,$<) $(@D)
 
-mod_gcl0/%.o: */%.lsp | unixport/mod_gcl0
+mod_gcl0/%.o: $(srcdir)/*/%.lsp | unixport/mod_gcl0
 	$| -eval "(setq compiler::*dump-inl-hash* t)" -compile $< -o $@
 
 mod_gcl/%.o: mod_gcl0/%.o | unixport/mod_gcl
@@ -4559,17 +4509,10 @@ $(addprefix pcl_gcl/,$(PCL_OBJS)): pcl_gcl/all.hsh
 ansi_gcl/%.o: clcs/%.lisp | unixport/ansi_gcl
 	$| -eval "(setq compiler::*dump-inl-hash* t)" -compile $< -o $@
 
-%.go: %.o
+%.go: %.o mod_gcl/recompile #FIXME parallel
 	$(CC) $(AM_CPPFLAGS) -I $(<D) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) \
 	      -fno-omit-frame-pointer -pg -c $*.c -o $@
 	cat $*.data >>$@
-
-clean_gcl_gprof: clean_% :
-	rm -rf unixport/lib$*.a unixport/saved_$* gcl/*.go
-clean_ansi_gcl_gprof: clean_% :
-	rm -rf unixport/lib$*.a unixport/saved_$* $(addsuffix /*.go,mod_gcl pcl_gcl ansi_gcl)
-clean_%:
-	rm -rf $* unixport/$* unixport/lib$*.a unixport/saved_$*
 
 h/mstdint.h:
 	echo "#include <stdint.h>" | $(CC) -E -I./h/ - | $(AWK) '/fsid/ {next} {print}' >$@
@@ -4579,11 +4522,13 @@ h/mcompdefs.h: h/compdefs.h h/new_decl.h
 	$(CC) $(AM_CPPFLAGS) $(AM_CFLAGS) -E -P -I./h/ - |\
 	$(AWK) '/^\-\-\-$$/ {i=1;next} {if (!i) next} {gsub("\"","");print}' >$@
 
-h/cmpincludea.h: $(CMPINCLUDE_FILES)
-	cat $^ | $(CC) $(AM_CPPFLAGS) $(AM_CFLAGS) -E -I./h/ - | $(AWK) '/^# |^$$|^#pragma/ {next}{print}' > $@
+h/cmpincludea.h: $(filter-out gclincl.h,$(CMPINCLUDE_FILES)) | h/gclincl.h # FIXME!
+	cat $< $| $(filter-out $<,$^) | \
+		$(CC) $(AM_CPPFLAGS) $(AM_CFLAGS) -E -I./h/ - | \
+		$(AWK) '/^# |^$$|^#pragma/ {next}{print}' > $@
 
 h/cmpinclude.h: h/mcompdefs.h h/cmpincludea.h h/cmponly_last.h h/config.h | xbin/move-if-changed
-	cat $(filter-out h/config.h,$^) >tmph
+	cat $(filter-out h/config.h,$^) >tmph # FIXME config.h order only
 	$| mv tmph $@
 	rm -f tmph
 
@@ -4591,7 +4536,7 @@ h/new_decl.h: $(INI_FILES) | xbin/move-if-changed
 	echo '#include "make-decl.h"' > foo.c
 	cat $^ |sed 's,DEFBFUN,DEFUN,g' >> foo.c
 	$(CPP) $(AM_CPPFLAGS) $(CPPFLAGS) foo.c | sed -n -e '/#/d' -e '/DO_/d' -e '/[a-zA-Z;]/p' > tmpini
-	$| mv tmpini $@
+	$| mv tmpini $@ # FIXME obsolete
 	rm -f foo.c tmpini
 
 o/boot.h: o/boot.ini
@@ -4604,8 +4549,9 @@ unixport/libboot.so: o/boot.c o/boot.h h/new_decl.h
 	$(CC) $(AM_CPPFLAGS) -Io $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) \
 		-fPIC -shared -Wl,-undefined -Wl,dynamic_lookup $< -o $@
 
+# parallel builds can only have one target accessing an intermediate file
 o/boot.ini: CPPFLAGS += -DNO_BOOT_H
-o/%.ini:  o/%.d | o/grab_defs xbin/move-if-changed xbin/mktmp bin/dpp
+o/%.ini:  o/%.d | o/grab_defs xbin/move-if-changed xbin/mktmp bin/dpp # FIXME parallel ugliness
 	i=$$($(word 3,$|) $<);j=$$i.c;$(word 4,$|) $< $$j;\
 		$(CPP) $(AM_CPPFLAGS) -DINICOMP -DNO_DEFUN $(CPPFLAGS) $$j | $(word 1,$|) > $(@D)/$*.inj;\
 		rm $$j;
@@ -4621,80 +4567,41 @@ o/new_init.c: $(INI_FILES)
 	echo '}' >> $@
 	! cat $@ | awk -F, '/DEFUN/ {print $$1,$$2}' | grep -v object || (rm $@ && false)
 
-o/foo.c:
-	touch $@
-
 ansi-tests/test_results: ansi-tests/*.lsp | unixport/saved_ansi_gcl
-	[ -d $(@D) ] || (mkdir $(@D) && cp $^ $(@D))
+	[ -d $(@D) ] || (mkdir $(@D) && cp $^ $(@D)) # FIXME testsuite in separate directory, hard
 	cd $(@D) && echo '(load "gclload")' | ../$| |tee $(@F)
 
-bin/gcl: bin/in.gcl.sh majvers minvers
+bin/gcl: bin/in.gcl.sh majvers minvers # FIXME configure
 	sed -e "s,@EXT@,,g" \
 	    -e "s,@VERS@,$$(cat $(word 2,$^)).$$(cat $(word 3,$^)),g" \
 	    -e "s,@TKVERS@,$$(echo $(TK_CONFIG_PREFIX) |sed 's,.*/tk,,g'),g" $< >$@
 	chmod a+x $@
 
-bin/gcl%: bin/in.gcl.sh majvers minvers
-	sed -e "s,@EXT@,$*,g" \
-	    -e "s,@VERS@,$$(cat $(word 2,$^)).$$(cat $(word 3,$^)),g" \
-	    -e "s,@TKVERS@,$$(echo $(TK_CONFIG_PREFIX) |sed 's,.*/tk,,g'),g" $< >$@
-	chmod a+x $@
-
-man/man1/gcl%.1: man/man1/gcl.1
-	sed -e 's,\(\b\)gcl\(\b\),\1gcl$*\2,g' $< > $@
-
-info/gcl%-si.texi: info/gcl-si.texi
-	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
-info/gcl%-tk.texi: info/gcl-tk.texi
-	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
-info/gcl%.texi: info/gcl.texi
-	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
-
-%.info: %.texi | xbin/mktmp
-	i=$$($| $<);ln -f $< $$i;$(MAKEINFO) $$i --output $@;rm $$i
-
-%.tex: %.texi | xbin/mktmp
-	i=$$($| $<);ln -f $< $$i;$(MAKEINFO) --latex $$i --output $@;rm $$i
-
-%.pdf: %.tex | xbin/mktmp
-	i=$$($| $<);j=$$i.$$(echo $< | sed 's,.*\.,,g');ln -f $< $$j;\
-		latex -output-format=pdf -output-directory=$(@D) $$j|tail && mv $$i.pdf $@ && rm $$i*
-
-%.dvi: %.tex | xbin/mktmp
-	i=$$($| $<);j=$$i.$$(echo $< | sed 's,.*\.,,g');ln -f $< $$j;\
-		latex -output-directory=$(@D) $$i|tail && mv $$i.dvi $@ && rm $$i*
-
-%.html: %.texi | xbin/mktmp
-	mkdir -p $@
-	i=$$($| $<);ln -f $< $$i;$(MAKEINFO) --html $$i --output $@;rm $$i
-
-g/gcltksrv$(EXEEXT): gcl-tk/gcltksrv.in | g
+g/gcltksrv$(EXEEXT): gcl-tk/gcltksrv.in | g # FIXME configure
 	cat $<  | sed -e "s!TK_LIBRARY=.*!TK_LIBRARY=${TK_LIBRARY}!g" \
 	-e "s!TCL_LIBRARY=.*!TCL_LIBRARY=${TCL_LIBRARY}!g" \
 	-e "s!TK_XLIB_DIR=.*!TK_XLIB_DIR=${TK_XLIB_DIR}!g" \
-	-e "s!GCL_TK_DIR=.*!GCL_TK_DIR=$(my_unixportdir)/gcl-tk!g" > $@
+	-e "s!GCL_TK_DIR=.*!GCL_TK_DIR=$(my_unixportdir)/../gcl-tk!g" > $@
 	chmod a+x $@
 
-g/%.o: gcl-tk/%.lisp | unixport/saved_ansi_gcl g g/demos
+g/%.o: gcl-tk/%.lisp | unixport/saved_ansi_gcl g g/demos # FIXME directory
 	$(word 1,$|) -compile $< -o $@
 
 g/%.o: gcl-tk/%.lsp | unixport/saved_ansi_gcl g
 	$(word 1,$|) -compile $< -o $@
 
-g/foo: $(addprefix g/,gcltksrv tkl.o tinfo.o demos/gc-monitor.o gcltkaux)
-
-install-all: install install-dvi install-pdf install-html
-
-c/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl c
-	$(word 1,$|) -compile $< -o $@
-
 g/demos/index.lsp: g/tkl.o | unixport/saved_gcl
 	cd $(@D) && echo "(load \"../../$<\")(tk::get-autoloads (directory \"*.lisp\"))" | ../../$|
 
+c/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl c # FIXME directory
+	$(word 1,$|) -compile $< -o $@
+
 %.c: %.d | bin/dpp
 	bin/dpp $< $@
+
 g/demos g a c $(MY_DIRS): % :
 	[ -d $@ ] || mkdir -p $@
+
 $(DWDOCS): xgcl-2/dwdoc.tex xgcl-2/gcl_tohtml.lsp xgcl-2/gcl_index.lsp | unixport/saved_mod_gcl
 	mkdir -p $(@D)
 	echo "(in-package :xlib)" \
@@ -4708,12 +4615,54 @@ $(DWDOCS): xgcl-2/dwdoc.tex xgcl-2/gcl_tohtml.lsp xgcl-2/gcl_index.lsp | unixpor
 			"(let ((*standard-output* s))" \
 				"(printindex indexdata \"$(@D)/dwdoc\")))" | $|
 
+# package extension 
+
+bin/gcl%: bin/in.gcl.sh majvers minvers
+	sed -e "s,@EXT@,$*,g" \
+	    -e "s,@VERS@,$$(cat $(word 2,$^)).$$(cat $(word 3,$^)),g" \
+	    -e "s,@TKVERS@,$$(echo $(TK_CONFIG_PREFIX) |sed 's,.*/tk,,g'),g" $< >$@
+	chmod a+x $@
+
+man/man1/gcl%.1: man/man1/gcl.1
+	sed -e 's,\(\b\)gcl\(\b\),\1gcl$*\2,g' $< > $@
+
+info/gcl%-si.texi: info/gcl-si.texi # FIXME one rule
+	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
+info/gcl%-tk.texi: info/gcl-tk.texi
+	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
+info/gcl%.texi: info/gcl.texi
+	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
+
+%.info: %.texi | xbin/mktmp # FIXME parallel ugliness
+	i=$$($| $<);ln -f $< $$i;$(MAKEINFO) $$i --output $@;rm $$i
+%.tex: %.texi | xbin/mktmp
+	i=$$($| $<);ln -f $< $$i;$(MAKEINFO) --latex $$i --output $@;rm $$i
+%.pdf: %.tex | xbin/mktmp
+	i=$$($| $<);j=$$i.$$(echo $< | sed 's,.*\.,,g');ln -f $< $$j;\
+		latex -output-format=pdf -output-directory=$(@D) $$j|tail && mv $$i.pdf $@ && rm $$i*
+%.dvi: %.tex | xbin/mktmp
+	i=$$($| $<);j=$$i.$$(echo $< | sed 's,.*\.,,g');ln -f $< $$j;\
+		latex -output-directory=$(@D) $$i|tail && mv $$i.dvi $@ && rm $$i*
+%.html: %.texi | xbin/mktmp
+	mkdir -p $@
+	i=$$($| $<);ln -f $< $$i;$(MAKEINFO) --html $$i --output $@;rm $$i
+
+# end package extension
+
+install-all: install install-dvi install-pdf install-html
+
+clean_gcl_gprof: clean_% :
+	rm -rf unixport/lib$*.a unixport/saved_$* gcl/*.go
+clean_ansi_gcl_gprof: clean_% :
+	rm -rf unixport/lib$*.a unixport/saved_$* $(addsuffix /*.go,mod_gcl pcl_gcl ansi_gcl)
+clean_%:
+	rm -rf $* unixport/$* unixport/lib$*.a unixport/saved_$*
+
 clean-local:
 	rm -rf $(MY_DIRS) $(addprefix unixport/,$(MY_DIRS))
 	rm -rf unixport/*cmpnopt* unixport/lib* unixport/saved_* #FIXME
 	rm -rf o/*.inj
 	rm -rf h/cmpincludea.h h/mstdint.h # FIXME
-	rm -rf h/stamp-h1 # FIXME
 	rm -rf $$(echo o/*.d | sed 's,\.d,.c,g') #FIXME
 	rm -rf lib g #FIXME
 	rm -rf $(addprefix ansi-tests/,\
