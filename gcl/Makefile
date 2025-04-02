@@ -4660,11 +4660,11 @@ info/gcl%.texi: info/gcl.texi
 
 %.pdf: %.tex | xbin/mktmp
 	i=$$($| $<);j=$$i.$$(echo $< | sed 's,.*\.,,g');ln -f $< $$j;\
-		latex -output-format=pdf -output-directory=$(@D) $$j|tail && mv $$i.pdf $@ && rm $$i.*
+		latex -output-format=pdf -output-directory=$(@D) $$j|tail && mv $$i.pdf $@ && rm $$i*
 
 %.dvi: %.tex | xbin/mktmp
 	i=$$($| $<);j=$$i.$$(echo $< | sed 's,.*\.,,g');ln -f $< $$j;\
-		latex -output-directory=$(@D) $$i|tail && mv $$i.dvi $@ && rm $$i.*
+		latex -output-directory=$(@D) $$i|tail && mv $$i.dvi $@ && rm $$i*
 
 %.html: %.texi | xbin/mktmp
 	mkdir -p $@

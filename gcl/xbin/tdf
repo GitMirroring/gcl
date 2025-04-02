@@ -15,5 +15,6 @@ done
 TFN=$($(dirname $0)/mktmp $1)
 
 $MAKEINFO --latex $1 --output $TFN
-latex -output-format=$E $TFN |tail
+latex -output-format=$E -output-directory=$(dirname $1) $TFN |tail
 mv $TFN $O
+rm -rf $TFN*
