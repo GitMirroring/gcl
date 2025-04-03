@@ -20,7 +20,7 @@ NUMJOBS=$(filter 1 2 3 4,$(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD
 endif
 ifneq (,$(NUMJOBS))
 MAKEFLAGS+=-O -j $(NUMJOBS)
-GCL_MULTIPROCESS_MEMORY_POOL:=$(shell pwd)
+GCL_MULTIPROCESS_MEMORY_POOL?=$(shell pwd)
 export GCL_MULTIPROCESS_MEMORY_POOL
 endif
 
@@ -124,6 +124,7 @@ clean: debian/control debian/gcl.templates
 
 	$(MAKE) $(MAKEFLAGS) clean
 
+	dh_autoreconf_clean
 	dh_clean
 	rm -rf $(INS) debian/substvars debian.upstream
 	rm -rf *stamp build-indep
