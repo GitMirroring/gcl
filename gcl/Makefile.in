@@ -4384,7 +4384,7 @@ unixport/libgcl_gprof.a: $(patsubst %.o,%.go,$(L_FOBJS))
 unixport/libansi_gcl_gprof.a: $(patsubst %.o,%.go,$(ANSI_FOBJS))
 
 unixport/lib%.a: | xbin/ar_merge
-	$| crus $@ $^
+	$| $(ARFLAGS)s $@ $^
 
 %/recompile: | unixport/%
 	$| -batch \
@@ -4445,7 +4445,7 @@ gcl1/%.o: $(srcdir)/*/%.lsp  | unixport/gcl1
 	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" \
 	   -eval "(setq compiler::*dump-inl-hash* t)" \
 	   -compile $< -o $@
-	ln -f $@ $$(echo $@ |sed 's,\.o,\.done,g')
+	[ "$*" = "gcl_sym" ] || ln -f $@ $$(echo $@ |sed 's,\.o,\.done,g') # FIXME listlib must come before sym
 
 gcl2/%.o: $(srcdir)/*/%.lsp  | unixport/gcl2
 	$| -eval "(compiler::cdebug)(setq compiler::*dump-inl-hash* t)" -compile $< -o $@
