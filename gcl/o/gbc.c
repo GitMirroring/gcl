@@ -1255,7 +1255,7 @@ FFN(siLheap_report)(void) {
   vs_check_push(make_fixnum(sizeof(fixnum)*CHAR_SIZE));
   vs_push(make_fixnum(PAGESIZE));
   vs_push(make_fixnum((ufixnum)data_start));
-  vs_push(make_fixnum((real_maxpage<<PAGEWIDTH)));
+  vs_push(make_fixnum(((unsigned long)real_maxpage)<<PAGEWIDTH));
   vs_push(make_fixnum((ufixnum)shared_lib_start));
   i=getpagesize();
   vs_push(make_fixnum(((unsigned long)cs_base+i-1)&-i));
