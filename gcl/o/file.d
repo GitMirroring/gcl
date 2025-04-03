@@ -1726,8 +1726,8 @@ load(const char *s) {
 
   filename = make_simple_string(s);
   vs_push(filename);
-  realpath(s,FN1);
-  tfn = make_simple_string(FN1);
+  massert(realpath(s,FN2));
+  tfn = make_simple_string(FN2);
   bds_bind(sLAload_pathnameA,filename);
   bds_bind(sLAload_truenameA,tfn);
 
