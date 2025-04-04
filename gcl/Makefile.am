@@ -35,7 +35,7 @@ my_h_DATA=h/cmpinclude.h
 my_cmpnew_DATA=cmpnew/gcl_collectfn.o
 my_gcltk_DATA=gcl-tk/tkl.o gcl-tk/tinfo.o
 my_gcltkd_DATA=gcl-tk/demos/gc-monitor.o
-doc_DATA=$(DWDOCS) xgcl-2/dwdoc.pdf
+dist_doc_DATA=$(DWDOCS) xgcl-2/dwdoc.pdf
 
 dist_man1_MANS=man/man1/gcl.1
 dist_lisp_DATA=elisp/add-default.el elisp/ansi-doc.el elisp/dbl.el elisp/doc-to-texi.el \
@@ -484,6 +484,9 @@ cmpnew/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl c # FIXME 
 
 gcl-tk/demos gcl-tk a c $(MY_DIRS): % :
 	[ -d $@ ] || mkdir -p $@
+
+xgcl-2/dwdoc.pdf: xgcl-2/dwdoc.tex
+	latex -output-directory=$(@D) $<
 
 $(DWDOCS): xgcl-2/dwdoc.tex xgcl-2/gcl_tohtml.lsp xgcl-2/gcl_index.lsp | unixport/saved_mod_gcl
 	mkdir -p $(@D)

@@ -109,10 +109,11 @@ am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(top_srcdir)/configure \
-	$(am__configure_deps) $(dist_lisp_DATA) $(dist_my_clcs_DATA) \
-	$(dist_my_cmpnew_DATA) $(dist_my_gcltk_DATA) \
-	$(dist_my_gcltkd_DATA) $(dist_my_lsp_DATA) $(dist_my_pcl_DATA) \
-	$(dist_my_xgcl2_DATA) $(am__DIST_COMMON)
+	$(am__configure_deps) $(dist_doc_DATA) $(dist_lisp_DATA) \
+	$(dist_my_clcs_DATA) $(dist_my_cmpnew_DATA) \
+	$(dist_my_gcltk_DATA) $(dist_my_gcltkd_DATA) \
+	$(dist_my_lsp_DATA) $(dist_my_pcl_DATA) $(dist_my_xgcl2_DATA) \
+	$(am__DIST_COMMON)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
@@ -122,11 +123,11 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(my_gcltkdir)" \
 	"$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(my_unixportdir)" \
 	"$(DESTDIR)$(bindir)" "$(DESTDIR)$(infodir)" \
-	"$(DESTDIR)$(man1dir)" "$(DESTDIR)$(lispdir)" \
-	"$(DESTDIR)$(my_clcsdir)" "$(DESTDIR)$(my_cmpnewdir)" \
-	"$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_gcltkddir)" \
-	"$(DESTDIR)$(my_lspdir)" "$(DESTDIR)$(my_pcldir)" \
-	"$(DESTDIR)$(my_xgcl2dir)" "$(DESTDIR)$(docdir)" \
+	"$(DESTDIR)$(man1dir)" "$(DESTDIR)$(docdir)" \
+	"$(DESTDIR)$(lispdir)" "$(DESTDIR)$(my_clcsdir)" \
+	"$(DESTDIR)$(my_cmpnewdir)" "$(DESTDIR)$(my_gcltkdir)" \
+	"$(DESTDIR)$(my_gcltkddir)" "$(DESTDIR)$(my_lspdir)" \
+	"$(DESTDIR)$(my_pcldir)" "$(DESTDIR)$(my_xgcl2dir)" \
 	"$(DESTDIR)$(my_cmpnewdir)" "$(DESTDIR)$(my_gcltkdir)" \
 	"$(DESTDIR)$(my_gcltkddir)" "$(DESTDIR)$(my_hdir)" \
 	"$(DESTDIR)$(my_unixportdir)"
@@ -610,10 +611,10 @@ am__can_run_installinfo = \
 man1dir = $(mandir)/man1
 NROFF = nroff
 MANS = $(dist_man1_MANS)
-DATA = $(dist_lisp_DATA) $(dist_my_clcs_DATA) $(dist_my_cmpnew_DATA) \
-	$(dist_my_gcltk_DATA) $(dist_my_gcltkd_DATA) \
-	$(dist_my_lsp_DATA) $(dist_my_pcl_DATA) $(dist_my_xgcl2_DATA) \
-	$(doc_DATA) $(my_cmpnew_DATA) $(my_gcltk_DATA) \
+DATA = $(dist_doc_DATA) $(dist_lisp_DATA) $(dist_my_clcs_DATA) \
+	$(dist_my_cmpnew_DATA) $(dist_my_gcltk_DATA) \
+	$(dist_my_gcltkd_DATA) $(dist_my_lsp_DATA) $(dist_my_pcl_DATA) \
+	$(dist_my_xgcl2_DATA) $(my_cmpnew_DATA) $(my_gcltk_DATA) \
 	$(my_gcltkd_DATA) $(my_h_DATA) $(my_unixport_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
@@ -855,7 +856,7 @@ my_h_DATA = h/cmpinclude.h
 my_cmpnew_DATA = cmpnew/gcl_collectfn.o
 my_gcltk_DATA = gcl-tk/tkl.o gcl-tk/tinfo.o
 my_gcltkd_DATA = gcl-tk/demos/gc-monitor.o
-doc_DATA = $(DWDOCS) xgcl-2/dwdoc.pdf
+dist_doc_DATA = $(DWDOCS) xgcl-2/dwdoc.pdf
 dist_man1_MANS = man/man1/gcl.1
 dist_lisp_DATA = elisp/add-default.el elisp/ansi-doc.el elisp/dbl.el elisp/doc-to-texi.el \
 	       elisp/gcl.el elisp/man1-to-texi.el elisp/smart-complete.el elisp/sshell.el
@@ -3281,6 +3282,27 @@ uninstall-man1:
 	} | sed -e 's,.*/,,;h;s,.*\.,,;s,^[^1][0-9a-z]*$$,1,;x' \
 	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,'`; \
 	dir='$(DESTDIR)$(man1dir)'; $(am__uninstall_files_from_dir)
+install-dist_docDATA: $(dist_doc_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(dist_doc_DATA)'; test -n "$(docdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(docdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(docdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(docdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(docdir)" || exit $$?; \
+	done
+
+uninstall-dist_docDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(dist_doc_DATA)'; test -n "$(docdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(docdir)'; $(am__uninstall_files_from_dir)
 install-dist_lispDATA: $(dist_lisp_DATA)
 	@$(NORMAL_INSTALL)
 	@list='$(dist_lisp_DATA)'; test -n "$(lispdir)" || list=; \
@@ -3449,27 +3471,6 @@ uninstall-dist_my_xgcl2DATA:
 	@list='$(dist_my_xgcl2_DATA)'; test -n "$(my_xgcl2dir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(my_xgcl2dir)'; $(am__uninstall_files_from_dir)
-install-docDATA: $(doc_DATA)
-	@$(NORMAL_INSTALL)
-	@list='$(doc_DATA)'; test -n "$(docdir)" || list=; \
-	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(docdir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(docdir)" || exit 1; \
-	fi; \
-	for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  echo "$$d$$p"; \
-	done | $(am__base_list) | \
-	while read files; do \
-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(docdir)'"; \
-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(docdir)" || exit $$?; \
-	done
-
-uninstall-docDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(doc_DATA)'; test -n "$(docdir)" || list=; \
-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(docdir)'; $(am__uninstall_files_from_dir)
 install-my_cmpnewDATA: $(my_cmpnew_DATA)
 	@$(NORMAL_INSTALL)
 	@list='$(my_cmpnew_DATA)'; test -n "$(my_cmpnewdir)" || list=; \
@@ -3816,7 +3817,7 @@ check: $(BUILT_SOURCES)
 all-am: Makefile $(INFO_DEPS) $(PROGRAMS) $(LIBRARIES) $(SCRIPTS) \
 		$(MANS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(infodir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(lispdir)" "$(DESTDIR)$(my_clcsdir)" "$(DESTDIR)$(my_cmpnewdir)" "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_gcltkddir)" "$(DESTDIR)$(my_lspdir)" "$(DESTDIR)$(my_pcldir)" "$(DESTDIR)$(my_xgcl2dir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(my_cmpnewdir)" "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_gcltkddir)" "$(DESTDIR)$(my_hdir)" "$(DESTDIR)$(my_unixportdir)"; do \
+	for dir in "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(infodir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(lispdir)" "$(DESTDIR)$(my_clcsdir)" "$(DESTDIR)$(my_cmpnewdir)" "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_gcltkddir)" "$(DESTDIR)$(my_lspdir)" "$(DESTDIR)$(my_pcldir)" "$(DESTDIR)$(my_xgcl2dir)" "$(DESTDIR)$(my_cmpnewdir)" "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_gcltkddir)" "$(DESTDIR)$(my_hdir)" "$(DESTDIR)$(my_unixportdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -4064,11 +4065,11 @@ info: info-am
 
 info-am: $(INFO_DEPS)
 
-install-data-am: install-dist_lispDATA install-dist_my_clcsDATA \
-	install-dist_my_cmpnewDATA install-dist_my_gcltkDATA \
-	install-dist_my_gcltkdDATA install-dist_my_lspDATA \
-	install-dist_my_pclDATA install-dist_my_xgcl2DATA \
-	install-docDATA install-info-am install-man \
+install-data-am: install-dist_docDATA install-dist_lispDATA \
+	install-dist_my_clcsDATA install-dist_my_cmpnewDATA \
+	install-dist_my_gcltkDATA install-dist_my_gcltkdDATA \
+	install-dist_my_lspDATA install-dist_my_pclDATA \
+	install-dist_my_xgcl2DATA install-info-am install-man \
 	install-my_cmpnewDATA install-my_gcltkDATA \
 	install-my_gcltkPROGRAMS install-my_gcltkdDATA \
 	install-my_hDATA install-my_unixportDATA \
@@ -4386,13 +4387,13 @@ ps: ps-am
 
 ps-am: $(PSS)
 
-uninstall-am: uninstall-binSCRIPTS uninstall-dist_lispDATA \
-	uninstall-dist_my_clcsDATA uninstall-dist_my_cmpnewDATA \
-	uninstall-dist_my_gcltkDATA uninstall-dist_my_gcltkdDATA \
-	uninstall-dist_my_lspDATA uninstall-dist_my_pclDATA \
-	uninstall-dist_my_xgcl2DATA uninstall-docDATA uninstall-dvi-am \
-	uninstall-html-am uninstall-info-am uninstall-man \
-	uninstall-my_cmpnewDATA uninstall-my_gcltkDATA \
+uninstall-am: uninstall-binSCRIPTS uninstall-dist_docDATA \
+	uninstall-dist_lispDATA uninstall-dist_my_clcsDATA \
+	uninstall-dist_my_cmpnewDATA uninstall-dist_my_gcltkDATA \
+	uninstall-dist_my_gcltkdDATA uninstall-dist_my_lspDATA \
+	uninstall-dist_my_pclDATA uninstall-dist_my_xgcl2DATA \
+	uninstall-dvi-am uninstall-html-am uninstall-info-am \
+	uninstall-man uninstall-my_cmpnewDATA uninstall-my_gcltkDATA \
 	uninstall-my_gcltkPROGRAMS uninstall-my_gcltkdDATA \
 	uninstall-my_hDATA uninstall-my_unixportDATA \
 	uninstall-my_unixportLIBRARIES uninstall-my_unixportPROGRAMS \
@@ -4414,15 +4415,16 @@ uninstall-man: uninstall-man1
 	distclean-local distclean-tags distcleancheck distdir \
 	distuninstallcheck dvi dvi-am html html-am info info-am \
 	install install-am install-binSCRIPTS install-data \
-	install-data-am install-dist_lispDATA install-dist_my_clcsDATA \
-	install-dist_my_cmpnewDATA install-dist_my_gcltkDATA \
-	install-dist_my_gcltkdDATA install-dist_my_lspDATA \
-	install-dist_my_pclDATA install-dist_my_xgcl2DATA \
-	install-docDATA install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-man1 install-my_cmpnewDATA \
-	install-my_gcltkDATA install-my_gcltkPROGRAMS \
-	install-my_gcltkdDATA install-my_hDATA install-my_unixportDATA \
+	install-data-am install-dist_docDATA install-dist_lispDATA \
+	install-dist_my_clcsDATA install-dist_my_cmpnewDATA \
+	install-dist_my_gcltkDATA install-dist_my_gcltkdDATA \
+	install-dist_my_lspDATA install-dist_my_pclDATA \
+	install-dist_my_xgcl2DATA install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-man install-man1 \
+	install-my_cmpnewDATA install-my_gcltkDATA \
+	install-my_gcltkPROGRAMS install-my_gcltkdDATA \
+	install-my_hDATA install-my_unixportDATA \
 	install-my_unixportLIBRARIES install-my_unixportPROGRAMS \
 	install-pdf install-pdf-am install-ps install-ps-am \
 	install-strip installcheck installcheck-am installdirs \
@@ -4430,11 +4432,11 @@ uninstall-man: uninstall-man1
 	maintainer-clean-generic mostlyclean mostlyclean-aminfo \
 	mostlyclean-compile mostlyclean-generic pdf pdf-am ps ps-am \
 	tags tags-am uninstall uninstall-am uninstall-binSCRIPTS \
-	uninstall-dist_lispDATA uninstall-dist_my_clcsDATA \
-	uninstall-dist_my_cmpnewDATA uninstall-dist_my_gcltkDATA \
-	uninstall-dist_my_gcltkdDATA uninstall-dist_my_lspDATA \
-	uninstall-dist_my_pclDATA uninstall-dist_my_xgcl2DATA \
-	uninstall-docDATA uninstall-dvi-am uninstall-html-am \
+	uninstall-dist_docDATA uninstall-dist_lispDATA \
+	uninstall-dist_my_clcsDATA uninstall-dist_my_cmpnewDATA \
+	uninstall-dist_my_gcltkDATA uninstall-dist_my_gcltkdDATA \
+	uninstall-dist_my_lspDATA uninstall-dist_my_pclDATA \
+	uninstall-dist_my_xgcl2DATA uninstall-dvi-am uninstall-html-am \
 	uninstall-info-am uninstall-man uninstall-man1 \
 	uninstall-my_cmpnewDATA uninstall-my_gcltkDATA \
 	uninstall-my_gcltkPROGRAMS uninstall-my_gcltkdDATA \
@@ -4718,6 +4720,9 @@ cmpnew/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl c # FIXME 
 
 gcl-tk/demos gcl-tk a c $(MY_DIRS): % :
 	[ -d $@ ] || mkdir -p $@
+
+xgcl-2/dwdoc.pdf: xgcl-2/dwdoc.tex
+	latex -output-directory=$(@D) $<
 
 $(DWDOCS): xgcl-2/dwdoc.tex xgcl-2/gcl_tohtml.lsp xgcl-2/gcl_index.lsp | unixport/saved_mod_gcl
 	mkdir -p $(@D)
