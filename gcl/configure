@@ -700,10 +700,6 @@ HAVE_LONG_LONG
 PAGEWIDTH
 DOUBLE_BIGENDIAN
 WORDS_BIGENDIAN
-LIBIBERTY
-LIBBFD
-BUILD_BFD
-HAVE_OUTPUT_BFD
 X_CFLAGS
 X_LIBS
 AMM_XGCL_FALSE
@@ -714,7 +710,6 @@ GMP
 HAVE_MALLOC_ZONE_MEMALIGN
 AMM_GPROF_FALSE
 AMM_GPROF_TRUE
-GPROF
 GCL_CC
 CPP
 RANLIB
@@ -835,10 +830,6 @@ enable_frssize
 enable_infodir
 enable_emacsdir
 enable_xgcl
-enable_dlopen
-enable_statsysbfd
-enable_dynsysbfd
-enable_custreloc
 enable_debug
 enable_static
 enable_pic
@@ -852,7 +843,6 @@ enable_min_pagewidth
 enable_pargcl
 with_mpicc
 enable_ansi
-enable_japi
 enable_readline
 enable_tcltk
 enable_tkconfig
@@ -1516,10 +1506,6 @@ Optional Features:
 --enable-infodir=XXXX will force the use of a INFO_DIR=XXXXX as place to look for info
   --enable-emacsdir=XXXX will manually specify the location for elisp files
   --enable-xgcl=yes will compile in support for XGCL
-  --enable-dlopen uses dlopen for loading objects, which can then not be retained  in saved images
-  --enable-statsysbfd uses a static system bfd library for loading and relocating object files
-  --enable-dynsysbfd uses a dynamic shared system bfd library for loading and relocating object files
-  --enable-custreloc uses custom gcl code if available for loading  and relocationing object files
   --enable-debug builds gcl with -g in CFLAGS to enable running under gdb
   --enable-static will link your GCL against static as opposed to shared system libraries
   --enable-pic builds gcl with -fPIC in CFLAGS
@@ -1535,7 +1521,6 @@ Optional Features:
  --enable-pargcl        enables ParGCL (for parallel computing),
 			 including subset of MPI (see pargcl/doc/)
   --enable-ansi builds a large gcl aiming for ansi compliance
-  --enable-japi=yes will compile in support for the JAPI graphical interface if present on your system
   --enable-readline    enables command line completion via the readline library
   --enable-tcltk will try to build gcl-tk
   --enable-tkconfig=XXXX will force the use of a TK_CONFIG_PREFIX=XXXXX as place to look for tkConfig.sh and tclConfig.sh
@@ -4168,12 +4153,7 @@ fi
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: use=$use" >&5
 printf "%s\n" "use=$use" >&6; }
 
-def_dlopen="no"
-def_statsysbfd="no"
-def_custreloc="yes"
 def_pic="no";
-def_static="no";
-def_debug="no";
 case $use in
     *kfreebsd)
 	if ! test -d h ; then mkdir h; fi;;
@@ -4185,8 +4165,6 @@ case $use in
 	if ! test -d h ; then mkdir h; fi;
 #	ln -snf ../$srcdir/h/linux.defs h/$use.defs;
 	case $use in
-	    ia64*)
-		def_dlopen="yes" ; def_custreloc="no" ;;
 	    hppa*) # FIXME
 		def_pic="yes" ;;
 	esac;;
@@ -4293,43 +4271,6 @@ esac
 fi
 
 
-# Check whether --enable-dlopen was given.
-if test ${enable_dlopen+y}
-then :
-  enableval=$enable_dlopen;
-else case e in #(
-  e) enable_dlopen=$def_dlopen ;;
-esac
-fi
-
-# Check whether --enable-statsysbfd was given.
-if test ${enable_statsysbfd+y}
-then :
-  enableval=$enable_statsysbfd;
-else case e in #(
-  e) enable_statsysbfd=$def_statsysbfd ;;
-esac
-fi
-
-# Check whether --enable-dynsysbfd was given.
-if test ${enable_dynsysbfd+y}
-then :
-  enableval=$enable_dynsysbfd;
-else case e in #(
-  e) enable_dynsysbfd=no ;;
-esac
-fi
-
-# Check whether --enable-custreloc was given.
-if test ${enable_custreloc+y}
-then :
-  enableval=$enable_custreloc;
-else case e in #(
-  e) enable_custreloc=$def_custreloc ;;
-esac
-fi
-
-
 # Check whether --enable-debug was given.
 if test ${enable_debug+y}
 then :
@@ -4357,38 +4298,6 @@ else case e in #(
 esac
 fi
 
-
-load_opt=0
-if test "$enable_dlopen" = "yes" ; then
-    load_opt=1
-fi
-if test "$enable_statsysbfd" = "yes" ; then
-    case $load_opt in
-	0) load_opt=1;;
-	1) load_opt=2;;
-    esac
-fi
-if test "$enable_dynsysbfd" = "yes" ; then
-    case $load_opt in
-	0) load_opt=1;;
-	1) load_opt=2;;
-	2) load_opt=3;;
-    esac
-fi
-if test "$enable_custreloc" = "yes" ; then
-    case $load_opt in
-	0) load_opt=1;;
-	1) load_opt=2;;
-	2) load_opt=3;;
-	3) load_opt=4;;
-	4) load_opt=5;;
-    esac
-fi
-
-if test "$load_opt" != "1" ; then
-    echo "Exactly one loader option must be chosen: dlopen=$enable_dlopen statsysbfd=$enable_statsysbfd dynsysbfd=$enable_dynsysbfd custreloc=$enable_custreloc"
-    as_fn_error $? "loader option failure" "$LINENO" 5
-fi
 
 
 #
@@ -7244,54 +7153,6 @@ esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
 
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for clang" >&5
-printf %s "checking for clang... " >&6; }
-if test "$cross_compiling" = yes
-then :
-  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in '$ac_pwd':" >&5
-printf "%s\n" "$as_me: error: in '$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See 'config.log' for more details" "$LINENO" 5; }
-else case e in #(
-  e) cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-			 #ifdef __clang__
-			 #define RET 0
-			 #else
-			 #define RET 1
-			 #endif
-
-int
-main (void)
-{
-
-			 return RET;
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_run "$LINENO"
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; }
-     clang="yes"
-     remove_arg_from_ldflags -pie
-
-printf "%s\n" "#define CLANG 1" >>confdefs.h
-
-else case e in #(
-  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; } ;;
-esac
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext ;;
-esac
-fi
-
-
 case $use in
     *mingw*)
 	assert_arg_to_cflags -fno-zero-initialized-in-bss
@@ -7421,16 +7282,10 @@ fi
 
 if test "$GPROF" != "" ; then
    case $use in
-#       powerpc*) if test "$host_cpu" = "powerpc64le" ; then GPROF=""; fi;;
-#       s390*) GPROF="";;#mcount smashes float args in make_shortfloat 20180313
        sh4*)  GPROF="";;
        m68k*) GPROF="";;
        ia64*) GPROF="";;
-#       hppa*) GPROF="";;
        gnuwin95*) GPROF="";;
-#       arm*)  if echo $canonical |grep -q hf$; then GPROF=""; fi;;#FIXME CALL and JUMP24 veneers needed for thumb 20190201 #FIXME mcount compiled as a 24/22 bit reloc even with -mlong-calls, marginally accessible
-#       aarch64*) GPROF="";;#unreproducible buildd bug 20170824
-#       *gnu)  GPROF="";;
    esac
    OLD_CFLAGS=$CFLAGS
    if ! add_arg_to_cflags -pg ; then GPROF="" ; fi
@@ -7448,7 +7303,6 @@ printf "%s\n" "#define USE_GPROF 1" >>confdefs.h
 
    fi
 fi
-
  if test "$GPROF" != ""; then
   AMM_GPROF_TRUE=
   AMM_GPROF_FALSE='#'
@@ -8512,346 +8366,6 @@ esac
 fi
 
 
-if test "$enable_dlopen" = "yes" ; then
-
-
-    TLIBS="$TLIBS -ldl -rdynamic"
-    assert_arg_to_cflags -fPIC
-
-printf "%s\n" "#define USE_DLOPEN 1" >>confdefs.h
-
-
-fi
-
-if test "$enable_statsysbfd" = "yes" || test "$enable_dynsysbfd" = "yes" ; then
-           for ac_header in bfd.h
-do :
-  ac_fn_c_check_header_compile "$LINENO" "bfd.h" "ac_cv_header_bfd_h" "$ac_includes_default"
-if test "x$ac_cv_header_bfd_h" = xyes
-then :
-  printf "%s\n" "#define HAVE_BFD_H 1" >>confdefs.h
- { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for bfd_init in -lbfd" >&5
-printf %s "checking for bfd_init in -lbfd... " >&6; }
-if test ${ac_cv_lib_bfd_bfd_init+y}
-then :
-  printf %s "(cached) " >&6
-else case e in #(
-  e) ac_check_lib_save_LIBS=$LIBS
-LIBS="-lbfd -liberty $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.
-   The 'extern "C"' is for builds by C++ compilers;
-   although this is not generally supported in C code supporting it here
-   has little cost and some practical benefit (sr 110532).  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char bfd_init (void);
-int
-main (void)
-{
-return bfd_init ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"
-then :
-  ac_cv_lib_bfd_bfd_init=yes
-else case e in #(
-  e) ac_cv_lib_bfd_bfd_init=no ;;
-esac
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS ;;
-esac
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_bfd_bfd_init" >&5
-printf "%s\n" "$ac_cv_lib_bfd_bfd_init" >&6; }
-if test "x$ac_cv_lib_bfd_bfd_init" = xyes
-then :
-  #
-	    # Old binutils appear to need CONST defined to const
-	    #
-	    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking need to define CONST for bfd" >&5
-printf %s "checking need to define CONST for bfd... " >&6; }
-	    if test "$cross_compiling" = yes
-then :
-  as_fn_error $? "cannot use bfd" "$LINENO" 5
-else case e in #(
-  e) cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-			    #define IN_GCC
-			    #include <bfd.h>
-
-int
-main (void)
-{
-
-			    symbol_info t;
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_run "$LINENO"
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-else case e in #(
-  e) if test "$cross_compiling" = yes
-then :
-  as_fn_error $? "cannot use bfd" "$LINENO" 5
-else case e in #(
-  e) cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-				#define CONST const
-				#define IN_GCC
-				#include <bfd.h>
-
-int
-main (void)
-{
-
-				symbol_info t;
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_run "$LINENO"
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; }
-
-printf "%s\n" "#define NEED_CONST 1" >>confdefs.h
-
-else case e in #(
-  e) as_fn_error $? "cannot use bfd" "$LINENO" 5 ;;
-esac
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext ;;
-esac
-fi
- ;;
-esac
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext ;;
-esac
-fi
-
-
-fi
-
-fi
-
-done
-
-
-printf "%s\n" "#define HAVE_LIBBFD 1" >>confdefs.h
-
-
-    #
-    # BFD boolean syntax
-    #
-
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for useable bfd_boolean" >&5
-printf %s "checking for useable bfd_boolean... " >&6; }
-    if test "$cross_compiling" = yes
-then :
-  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in '$ac_pwd':" >&5
-printf "%s\n" "$as_me: error: in '$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See 'config.log' for more details" "$LINENO" 5; }
-else case e in #(
-  e) cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-		    #define IN_GCC
-		    #include <bfd.h>
-		    bfd_boolean foo() {return FALSE;}
-
-int
-main (void)
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_run "$LINENO"
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; }
-
-printf "%s\n" "#define HAVE_BFD_BOOLEAN 1" >>confdefs.h
-
-else case e in #(
-  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; } ;;
-esac
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext ;;
-esac
-fi
-
-
-    #
-    # bfd_link_info.output_bfd minimal configure change check
-    #
-
-    ac_fn_c_check_member "$LINENO" "struct bfd_link_info" "output_bfd" "ac_cv_member_struct_bfd_link_info_output_bfd" "
-			#include <bfd.h>
-			#include <bfdlink.h>
-
-"
-if test "x$ac_cv_member_struct_bfd_link_info_output_bfd" = xyes
-then :
-
-printf "%s\n" "#define HAVE_OUTPUT_BFD 1" >>confdefs.h
-
-fi
-
-
-
-    #
-    # FIXME: Need to workaround mingw before this point -- CM
-    #
-    if test "$enable_statsysbfd" = "yes" && ! $CC -v 2>&1 | fgrep ming > /dev/null ; then
-	echo 'int main() {bfd_init();bfd_openr("/dev/null",0);return 0;}' >foo.c
-	MP=`$CC  -Wl,-M  -static -o foo foo.c -lbfd -liberty -ldl 2>&1 | grep -v : | tr '()' '\012\012' | $AWK '{print $NF}' | sort | uniq`
-	rm -f foo.c foo
-	if echo $MP | tr ' ' '\012' | grep libbfd.a >/dev/null; then
-	    LIBBFD="`echo $MP | tr ' ' '\012' | grep libbfd.a | $AWK '{i=split($1,A,\"/\");for (j=1;j<=i;j++) if (j>1 && A[j]==\"..\") {j--;i-=2;for (k=j;k<=i;k++) A[k]=A[k+2];j--;}} END {for (j=1;j<=i;j++) printf(\"%s%s\",A[j],j!=i ? \"/\" : \"\")}'`"
-	else
-	    as_fn_error $? "cannot locate external libbfd.a" "$LINENO" 5
-	fi
-	if echo $MP | tr ' ' '\012' | grep libiberty.a >/dev/null ; then
-	    LIBIBERTY="`echo $MP | tr ' ' '\012' | grep libiberty.a | $AWK '{i=split($1,A,\"/\");for (j=1;j<=i;j++) if (j>1 && A[j]==\"..\") {j--;i-=2;for (k=j;k<=i;k++) A[k]=A[k+2];j--;}} END {for (j=1;j<=i;j++) printf(\"%s%s\",A[j],j!=i ? \"/\" : \"\")}'`"
-	else
-	    as_fn_error $? "cannot locate external libiberty.a" "$LINENO" 5
-	fi
-	BUILD_BFD=copy_bfd
-	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for inflate in -lz" >&5
-printf %s "checking for inflate in -lz... " >&6; }
-if test ${ac_cv_lib_z_inflate+y}
-then :
-  printf %s "(cached) " >&6
-else case e in #(
-  e) ac_check_lib_save_LIBS=$LIBS
-LIBS="-lz  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.
-   The 'extern "C"' is for builds by C++ compilers;
-   although this is not generally supported in C code supporting it here
-   has little cost and some practical benefit (sr 110532).  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char inflate (void);
-int
-main (void)
-{
-return inflate ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"
-then :
-  ac_cv_lib_z_inflate=yes
-else case e in #(
-  e) ac_cv_lib_z_inflate=no ;;
-esac
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS ;;
-esac
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_z_inflate" >&5
-printf "%s\n" "$ac_cv_lib_z_inflate" >&6; }
-if test "x$ac_cv_lib_z_inflate" = xyes
-then :
-  TLIBS="$TLIBS -lz"
-else case e in #(
-  e) as_fn_error $? "Need zlib for bfd linking" "$LINENO" 5 ;;
-esac
-fi
-
-	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for dlsym in -ldl" >&5
-printf %s "checking for dlsym in -ldl... " >&6; }
-if test ${ac_cv_lib_dl_dlsym+y}
-then :
-  printf %s "(cached) " >&6
-else case e in #(
-  e) ac_check_lib_save_LIBS=$LIBS
-LIBS="-ldl  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.
-   The 'extern "C"' is for builds by C++ compilers;
-   although this is not generally supported in C code supporting it here
-   has little cost and some practical benefit (sr 110532).  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char dlsym (void);
-int
-main (void)
-{
-return dlsym ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"
-then :
-  ac_cv_lib_dl_dlsym=yes
-else case e in #(
-  e) ac_cv_lib_dl_dlsym=no ;;
-esac
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS ;;
-esac
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_dl_dlsym" >&5
-printf "%s\n" "$ac_cv_lib_dl_dlsym" >&6; }
-if test "x$ac_cv_lib_dl_dlsym" = xyes
-then :
-  TLIBS="$TLIBS -ldl"
-else case e in #(
-  e) as_fn_error $? "Need libdl for bfd linking" "$LINENO" 5 ;;
-esac
-fi
-
-
-
-
-
-    else
-	TLIBS="$TLIBS -lbfd -liberty -ldl"
-    fi
-fi
 
 # Check whether --enable-xdr was given.
 if test ${enable_xdr+y}
@@ -10815,17 +10329,6 @@ printf "%s\n" "#define NO_UNAME 1" >>confdefs.h
 esac
 fi
 
-ac_fn_c_check_func "$LINENO" "gettimeofday" "ac_cv_func_gettimeofday"
-if test "x$ac_cv_func_gettimeofday" = xyes
-then :
-
-else case e in #(
-  e)
-printf "%s\n" "#define NO_GETTOD 1" >>confdefs.h
- ;;
-esac
-fi
-
 
 
   for ac_func in readlinkat
@@ -10871,199 +10374,6 @@ then :
   printf "%s\n" "#define HAVE_SYS_SOCKIO_H 1" >>confdefs.h
 
 fi
-
-
-
-#--------------------------------------------------------------------
-#	The code below deals with several issues related to gettimeofday:
-#	1. Some systems don't provide a gettimeofday function at all
-#	   (set NO_GETTOD if this is the case).
-#	2. SGI systems don't use the BSD form of the gettimeofday function,
-#	   but they have a BSDgettimeofday function that can be used instead.
-#	3. See if gettimeofday is declared in the <sys/time.h> header file.
-#	   if not, set the GETTOD_NOT_DECLARED flag so that tclPort.h can
-#	   declare it.
-#--------------------------------------------------------------------
-
-ac_fn_c_check_func "$LINENO" "BSDgettimeofday" "ac_cv_func_BSDgettimeofday"
-if test "x$ac_cv_func_BSDgettimeofday" = xyes
-then :
-
-printf "%s\n" "#define HAVE_BSDGETTIMEOFDAY 1" >>confdefs.h
-
-else case e in #(
-  e) ac_fn_c_check_func "$LINENO" "gettimeofday" "ac_cv_func_gettimeofday"
-if test "x$ac_cv_func_gettimeofday" = xyes
-then :
-
-else case e in #(
-  e)
-printf "%s\n" "#define NO_GETTOD 1" >>confdefs.h
- ;;
-esac
-fi
- ;;
-esac
-fi
-
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for egrep -e" >&5
-printf %s "checking for egrep -e... " >&6; }
-if test ${ac_cv_path_EGREP_TRADITIONAL+y}
-then :
-  printf %s "(cached) " >&6
-else case e in #(
-  e) if test -z "$EGREP_TRADITIONAL"; then
-  ac_path_EGREP_TRADITIONAL_found=false
-  # Loop through the user's path and test for each of PROGNAME-LIST
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH$PATH_SEPARATOR/usr/xpg4/bin
-do
-  IFS=$as_save_IFS
-  case $as_dir in #(((
-    '') as_dir=./ ;;
-    */) ;;
-    *) as_dir=$as_dir/ ;;
-  esac
-    for ac_prog in grep ggrep
-   do
-    for ac_exec_ext in '' $ac_executable_extensions; do
-      ac_path_EGREP_TRADITIONAL="$as_dir$ac_prog$ac_exec_ext"
-      as_fn_executable_p "$ac_path_EGREP_TRADITIONAL" || continue
-# Check for GNU ac_path_EGREP_TRADITIONAL and select it if it is found.
-  # Check for GNU $ac_path_EGREP_TRADITIONAL
-case `"$ac_path_EGREP_TRADITIONAL" --version 2>&1` in #(
-*GNU*)
-  ac_cv_path_EGREP_TRADITIONAL="$ac_path_EGREP_TRADITIONAL" ac_path_EGREP_TRADITIONAL_found=:;;
-#(
-*)
-  ac_count=0
-  printf %s 0123456789 >"conftest.in"
-  while :
-  do
-    cat "conftest.in" "conftest.in" >"conftest.tmp"
-    mv "conftest.tmp" "conftest.in"
-    cp "conftest.in" "conftest.nl"
-    printf "%s\n" 'EGREP_TRADITIONAL' >> "conftest.nl"
-    "$ac_path_EGREP_TRADITIONAL" -E 'EGR(EP|AC)_TRADITIONAL$' < "conftest.nl" >"conftest.out" 2>/dev/null || break
-    diff "conftest.out" "conftest.nl" >/dev/null 2>&1 || break
-    as_fn_arith $ac_count + 1 && ac_count=$as_val
-    if test $ac_count -gt ${ac_path_EGREP_TRADITIONAL_max-0}; then
-      # Best one so far, save it but keep looking for a better one
-      ac_cv_path_EGREP_TRADITIONAL="$ac_path_EGREP_TRADITIONAL"
-      ac_path_EGREP_TRADITIONAL_max=$ac_count
-    fi
-    # 10*(2^10) chars as input seems more than enough
-    test $ac_count -gt 10 && break
-  done
-  rm -f conftest.in conftest.tmp conftest.nl conftest.out;;
-esac
-
-      $ac_path_EGREP_TRADITIONAL_found && break 3
-    done
-  done
-  done
-IFS=$as_save_IFS
-  if test -z "$ac_cv_path_EGREP_TRADITIONAL"; then
-    :
-  fi
-else
-  ac_cv_path_EGREP_TRADITIONAL=$EGREP_TRADITIONAL
-fi
-
-    if test "$ac_cv_path_EGREP_TRADITIONAL"
-then :
-  ac_cv_path_EGREP_TRADITIONAL="$ac_cv_path_EGREP_TRADITIONAL -E"
-else case e in #(
-  e) if test -z "$EGREP_TRADITIONAL"; then
-  ac_path_EGREP_TRADITIONAL_found=false
-  # Loop through the user's path and test for each of PROGNAME-LIST
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH$PATH_SEPARATOR/usr/xpg4/bin
-do
-  IFS=$as_save_IFS
-  case $as_dir in #(((
-    '') as_dir=./ ;;
-    */) ;;
-    *) as_dir=$as_dir/ ;;
-  esac
-    for ac_prog in egrep
-   do
-    for ac_exec_ext in '' $ac_executable_extensions; do
-      ac_path_EGREP_TRADITIONAL="$as_dir$ac_prog$ac_exec_ext"
-      as_fn_executable_p "$ac_path_EGREP_TRADITIONAL" || continue
-# Check for GNU ac_path_EGREP_TRADITIONAL and select it if it is found.
-  # Check for GNU $ac_path_EGREP_TRADITIONAL
-case `"$ac_path_EGREP_TRADITIONAL" --version 2>&1` in #(
-*GNU*)
-  ac_cv_path_EGREP_TRADITIONAL="$ac_path_EGREP_TRADITIONAL" ac_path_EGREP_TRADITIONAL_found=:;;
-#(
-*)
-  ac_count=0
-  printf %s 0123456789 >"conftest.in"
-  while :
-  do
-    cat "conftest.in" "conftest.in" >"conftest.tmp"
-    mv "conftest.tmp" "conftest.in"
-    cp "conftest.in" "conftest.nl"
-    printf "%s\n" 'EGREP_TRADITIONAL' >> "conftest.nl"
-    "$ac_path_EGREP_TRADITIONAL" 'EGR(EP|AC)_TRADITIONAL$' < "conftest.nl" >"conftest.out" 2>/dev/null || break
-    diff "conftest.out" "conftest.nl" >/dev/null 2>&1 || break
-    as_fn_arith $ac_count + 1 && ac_count=$as_val
-    if test $ac_count -gt ${ac_path_EGREP_TRADITIONAL_max-0}; then
-      # Best one so far, save it but keep looking for a better one
-      ac_cv_path_EGREP_TRADITIONAL="$ac_path_EGREP_TRADITIONAL"
-      ac_path_EGREP_TRADITIONAL_max=$ac_count
-    fi
-    # 10*(2^10) chars as input seems more than enough
-    test $ac_count -gt 10 && break
-  done
-  rm -f conftest.in conftest.tmp conftest.nl conftest.out;;
-esac
-
-      $ac_path_EGREP_TRADITIONAL_found && break 3
-    done
-  done
-  done
-IFS=$as_save_IFS
-  if test -z "$ac_cv_path_EGREP_TRADITIONAL"; then
-    as_fn_error $? "no acceptable egrep could be found in $PATH$PATH_SEPARATOR/usr/xpg4/bin" "$LINENO" 5
-  fi
-else
-  ac_cv_path_EGREP_TRADITIONAL=$EGREP_TRADITIONAL
-fi
- ;;
-esac
-fi ;;
-esac
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_path_EGREP_TRADITIONAL" >&5
-printf "%s\n" "$ac_cv_path_EGREP_TRADITIONAL" >&6; }
- EGREP_TRADITIONAL=$ac_cv_path_EGREP_TRADITIONAL
-
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <sys/time.h>
-
-_ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP_TRADITIONAL "gettimeofday" >/dev/null 2>&1
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for gettimeofday declaration" >&5
-printf %s "checking for gettimeofday declaration... " >&6; }
-		 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: present" >&5
-printf "%s\n" "present" >&6; }
-else case e in #(
-  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for gettimeofday declaration" >&5
-printf %s "checking for gettimeofday declaration... " >&6; }
-		 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: missing" >&5
-printf "%s\n" "missing" >&6; }
-
-printf "%s\n" "#define GETTOD_NOT_DECLARED 1" >>confdefs.h
- ;;
-esac
-fi
-rm -rf conftest*
 
 
 
@@ -11163,86 +10473,6 @@ esac
 fi
 
 
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for buggy maximum sscanf length" >&5
-printf %s "checking for buggy maximum sscanf length... " >&6; }
-if test "$cross_compiling" = yes
-then :
-  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in '$ac_pwd':" >&5
-printf "%s\n" "$as_me: error: in '$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See 'config.log' for more details" "$LINENO" 5; }
-else case e in #(
-  e) cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-		#include <stdio.h>
-
-int
-main (void)
-{
-
-		char *s= "2.7182818284590452353602874713526624977572470936999595749669676277240766303535475945713821785251664274274663919320030599218174135966290435729003342952605956307381323286279434907632338298807531952510190115738341879307021540891499348841675092447614606680822648001684774118537423454424371075390777449920695517027618386062613313845830007520449338265602976067371132007093287091274437470472306969772093101416928368190255151086574637721112523897844250569536967707854499699679468644549059879316368892300987931277361782154249992295763514822082698951936680331825288693984964651058209392398294887933203625094431173012381970684161404";
-		int n, m;
-		double f;
-		char *endptr;
-		FILE *fp=fopen("conftest1","w");
-
-		n=sscanf(s,"%lf%n",&f,&m);
-		fprintf(fp,"%d",m);
-		fclose(fp);
-		return s[m];
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_run "$LINENO"
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: none" >&5
-printf "%s\n" "none" >&6; }
-else case e in #(
-  e) buggy_maximum_sscanf_length=`cat conftest1`
-     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $buggy_maximum_sscanf_length" >&5
-printf "%s\n" "$buggy_maximum_sscanf_length" >&6; }
-
-printf "%s\n" "#define BUGGY_MAXIMUM_SSCANF_LENGTH $buggy_maximum_sscanf_length" >>confdefs.h
- ;;
-esac
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext ;;
-esac
-fi
-
-
-
-EXTRA_LOBJS=
-# Check whether --enable-japi was given.
-if test ${enable_japi+y}
-then :
-  enableval=$enable_japi; if test "$enable_japi" = "yes" ; then
-		          for ac_header in japi.h
-do :
-  ac_fn_c_check_header_compile "$LINENO" "japi.h" "ac_cv_header_japi_h" "$ac_includes_default"
-if test "x$ac_cv_header_japi_h" = xyes
-then :
-  printf "%s\n" "#define HAVE_JAPI_H 1" >>confdefs.h
- printf "%s\n" "#define HAVE_JAPI_H 1" >>confdefs.h
-
-				     EXTRA_LOBJS="${EXTRA_LOBJS} gcl_japi.o"
-				     LIBS="${LIBS} -ljapi -lwsock32"
-fi
-
-done
-	       fi
-fi
-
-
-# Should really find a way to check for prototypes, but this
-# basically works for now.  CM
-#
-#AC_CHECK_HEADERS(math.h,AC_DEFINE(HAVE_MATH_H,1,[have math.h]))
-#AC_CHECK_HEADERS(complex.h,AC_DEFINE(HAVE_COMPLEX_H,1,[have complex.h]))
 
 #
 # For DBL_MAX et. al. on (only) certain Linux arches, apparently CM

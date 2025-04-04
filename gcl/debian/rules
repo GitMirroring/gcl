@@ -16,7 +16,7 @@
 export DH_OPTIONS
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
-NUMJOBS=$(filter 1 2 3 4,$(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS))))
+NUMJOBS=$(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 endif
 ifneq (,$(NUMJOBS))
 MAKEFLAGS+=-O -j $(NUMJOBS)

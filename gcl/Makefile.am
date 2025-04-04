@@ -66,18 +66,64 @@ noinst_LIBRARIES+=lib/libxgcl_gprof.a
 endif
 endif
 
+EXTRA_DIST=xbin/ar_merge xbin/tdf xbin/mktmp $(D_SRC)
+
 
 # end of primaries
 
+BASE_H= h/compbas2.h h/compbas.h h/compprotos.h h/cstack.h h/enum.h h/error.h h/eval.h h/fixnum.h h/frame.h \
+	h/funlink.h h/globals.h h/gmp_wrappers.h h/immnum.h h/include.h h/lex.h h/linux.h h/lu.h h/make-init.h \
+	h/mp.h h/notcomp.h h/num_include.h h/object.h h/options.h h/page.h h/pageinfo.h h/pbits.h h/pool.h \
+	h/prelink.h h/protoize.h h/ptable.h h/rgbc.h h/sfun_argd.h h/stacks.h h/type.h h/usig.h h/vs.h \
+        h/writable.h o/regexp.h
+ARCHT_H=h/elf32_armhf_reloc.h h/elf32_armhf_reloc_special.h h/elf32_arm_reloc.h h/elf32_arm_reloc_special.h \
+	h/elf32_hppa_reloc.h h/elf32_hppa_reloc_special.h h/elf32_i386_reloc.h h/elf32_m68k_reloc.h \
+	h/elf32_mips_reloc.h h/elf32_mips_reloc_special.h h/elf32_ppc_reloc.h h/elf32_s390_reloc.h \
+	h/elf32_sh4_reloc.h h/elf32_sparc_reloc.h h/elf64_aarch64_reloc.h h/elf64_aarch64_reloc_special.h \
+	h/elf64_alpha_reloc.h h/elf64_alpha_reloc_special.h h/elf64_i386_reloc.h h/elf64_i386_reloc_special.h \
+	h/elf64_loongarch64_reloc.h h/elf64_loongarch64_reloc_special.h h/elf64_mips_reloc.h \
+	h/elf64_mips_reloc_special.h h/elf64_ppcle_reloc.h h/elf64_ppcle_reloc_special.h h/elf64_ppc_reloc.h \
+	h/elf64_ppc_reloc_special.h h/elf64_riscv64_reloc.h h/elf64_s390_reloc.h h/elf64_sparc_reloc.h \
+	h/elf64_sparc_reloc_special.h h/mach32_i386_reloc.h h/mach32_ppc_reloc.h h/mach64_i386_reloc.h \
+	h/sh4-linux.h h/amd64-linux.h h/amd64-kfreebsd.h h/386-linux.h h/riscv64-linux.h \
+	h/386-kfreebsd.h h/amd64-gnu.h h/386-gnu.h h/m68k-linux.h h/alpha-linux.h h/mips-linux.h \
+	h/mipsel-linux.h h/sparc-linux.h h/aarch64-linux.h h/armhf-linux.h h/arm-linux.h h/s390-linux.h \
+	h/ia64-linux.h h/hppa-linux.h h/loongarch64-linux.h h/powerpc-linux.h h/powerpc-macosx.h \
+	h/386-macosx.h h/mingw.h h/gnuwin95.h h/FreeBSD.h h/solaris.h h/solaris-i386.h
+CONF_H= h/gclincl.h h/config.h
+BUILT_H=h/new_decl.h
 
-lib_libbase_gcl_a_SOURCES=$(C_SRC)
+C_SRC=o/typespec.c o/alloc.c o/gbc.c o/bitop.c o/main.c o/eval.c o/macros.c o/lex.c o/bds.c o/frame.c\
+      o/predicate.c o/reference.c o/assignment.c o/bind.c o/let.c o/conditional.c o/block.c o/iteration.c\
+      o/prog.c o/multival.c o/catch.c o/cfun.c o/cmpaux.c o/big.c o/number.c o/num_pred.c o/num_comp.c\
+      o/num_arith.c o/num_sfun.c o/num_co.c o/num_log.c o/num_rand.c o/earith.c\
+      o/array.c o/regexpr.c o/structure.c o/toplevel.c o/backq.c o/format.c\
+      o/unixfsys.c o/unixfasl.c o/error.c o/unixtime.c o/unixsys.c o/unixsave.c o/funlink.c  o/fat_string.c\
+      o/run_process.c o/nfunlink.c o/usig.c o/usig2.c o/utils.c o/makefun.c o/sockets.c o/gmp_wrappers.c\
+      o/clxsocket.c o/nsocket.c o/new_init.c o/prelink.c o/sfasl.c o/msbrk.c \
+      o/bcmp.c o/bcopy.c o/bzero.c o/user_init.c o/user_match.c o/mapfun.c
+
+D_SRC=o/character.d o/file.d o/gcl_readline.d o/hash.d o/list.d o/package.d o/pathname.d o/print.d\
+      o/read.d o/sequence.d o/string.d o/symbol.d
+BUILT_C=o/character.c o/file.c o/gcl_readline.c o/hash.c o/list.c o/package.c o/pathname.c o/print.c\
+        o/read.c o/sequence.c o/string.c o/symbol.c
+
+INI_FILES=$(filter-out o/new_init.ini,$(patsubst %.c,%.ini,$(C_SRC)) $(patsubst %.d,%.ini,$(D_SRC)))
+if AMM_GPROF
+INI_FILES+=o/gprof.ini
+endif
+
+BUILT_SOURCES=$(BUILT_H) $(BUILT_C)
+CLEANFILES=$(BUILT_SOURCES) $(INI_FILES)
+
+lib_libbase_gcl_a_SOURCES=$(C_SRC) $(BASE_H) $(ARCHT_H)
+nodist_lib_libbase_gcl_a_SOURCES=$(BUILT_C)
 lib_libgprof_a_SOURCES=o/gprof.c
 lib_libgprof_a_CFLAGS=$(AM_CFLAGS) -fno-omit-frame-pointer -pg
-$(patsubst %.c,%.o,$(C_SRC)) o/lib_libgprof_a-gprof.o: h/new_decl.h # FIXME
-lib_libbase_gcl_gprof_a_SOURCES=$(C_SRC) o/gprof.c
+lib_libbase_gcl_gprof_a_SOURCES=$(lib_libbase_gcl_a_SOURCES) o/gprof.c
+nodist_lib_libbase_gcl_gprof_a_SOURCES=$(nodist_lib_libbase_gcl_a_SOURCES)
 lib_libbase_gcl_gprof_a_CFLAGS=$(AM_CFLAGS) -fno-omit-frame-pointer -pg
 lib_libbase_gcl_gprof_a_CPPFLAGS=$(AM_CPPFLAGS) -DGCL_GPROF
-$(patsubst %.c,%.o,$(patsubst o/%,o/lib_libbase_gcl_gprof_a-%,$(C_SRC) o/gprof.c)): h/new_decl.h #FIXME
 X_SRC=xgcl-2/Events.c xgcl-2/general-c.c xgcl-2/XStruct-2.c xgcl-2/XStruct-4.c xgcl-2/Xutil-2.c
 lib_libxgcl_a_SOURCES=$(X_SRC)
 lib_libxgcl_gprof_a_SOURCES=$(X_SRC)
@@ -91,9 +137,13 @@ unixport_saved_gcl_gprof_SOURCES=
 unixport/saved_gcl_gprof$(EXEEXT):
 unixport_saved_ansi_gcl_gprof_SOURCES=
 unixport/saved_ansi_gcl_gprof$(EXEEXT):
+unixport_libgcl_a_SOURCES=
 unixport/libgcl.a:
+unixport_libansi_gcl_a_SOURCES=
 unixport/libansi_gcl.a:
+unixport_libgcl_gprof_a_SOURCES=
 unixport/libgcl_gprof.a:
+unixport_libansi_gcl_gprof_a_SOURCES=
 unixport/libansi_gcl_gprof.a:
 
 GCLTK_SRC=gcl-tk/guis.c gcl-tk/tkAppInit.c gcl-tk/tkMain.c
@@ -101,7 +151,6 @@ gcl_tk_gcltksrv_SOURCES=
 gcl_tk_gcltkaux_SOURCES=$(GCLTK_SRC)
 gcl_tk_gcltkaux_CPPFLAGS=$(AM_CPPFLAGS) $(TK_INCLUDE) $(TCL_INCLUDE) $(TK_XINCLUDES)
 gcl_tk_gcltkaux_LDADD=$(TK_LIB_SPEC) $(TCL_LIB_SPEC)
-$(patsubst %.c,%.o,$(patsubst gcl-tk/%,gcl-tk/gcltkaux-%,$(GCLTK_SRC))): h/new_decl.h # FIXME
 
 DWDOCS=$(addprefix xgcl-2/dwdoc/dwdoc,$(addsuffix .html,1 2 3 contents index))
 
@@ -109,19 +158,6 @@ TEXI2DVI=xbin/tdf
 TEXI2PDF=xbin/tdf
 
 MY_DIRS=gcl0 gcl1 gcl2 gcl3 gcl mod_gcl0 mod_gcl pcl_gcl ansi_gcl
-
-C_SRC=   o/typespec.c o/alloc.c o/gbc.c o/bitop.c o/main.c o/eval.c o/macros.c o/lex.c o/bds.c o/frame.c\
-	 o/predicate.c o/reference.c o/assignment.c o/bind.c o/let.c o/conditional.c o/block.c o/iteration.c\
-	 o/mapfun.c\
-	 o/prog.c o/multival.c o/catch.c o/cfun.c o/cmpaux.c o/big.c o/number.c o/num_pred.c o/num_comp.c\
-	 o/num_arith.c o/num_sfun.c o/num_co.c o/num_log.c o/num_rand.c o/earith.c\
-	 o/array.c o/regexpr.c o/structure.c o/toplevel.c o/backq.c o/format.c\
-	 o/unixfsys.c o/unixfasl.c o/error.c o/unixtime.c o/unixsys.c o/unixsave.c o/funlink.c  o/fat_string.c\
-	 o/run_process.c o/nfunlink.c o/usig.c o/usig2.c o/utils.c o/makefun.c o/sockets.c o/gmp_wrappers.c\
-	 o/clxsocket.c o/nsocket.c o/new_init.c o/prelink.c o/sfasl.c o/msbrk.c o/character.c \
-	 o/hash.c o/pathname.c o/sequence.c o/file.c o/list.c o/print.c o/string.c\
-	 o/gcl_readline.c o/package.c o/read.c o/symbol.c \
-	 o/bcmp.c o/bcopy.c o/bzero.c o/user_init.c o/user_match.c
 
 L_STUBS=s sf c listlib predlib deftype typeof subtypep bit type typep typecase arraylib \
         seq seqlib bnum fle dl rm nr lr sym hash sharp \
@@ -212,7 +248,7 @@ unixport/lib%.a: | xbin/ar_merge
 	   -eval "(compiler::dump-inl-hash \"$(@D)/all.hsh\")"
 	touch $@
 
-unixport/sys_%.o: unixport/sys_init.c h/new_decl.h
+unixport/sys_%.o: unixport/sys_init.c
 	i=$$(echo $* | sed 's,[0-9],,g' | sed 's,_gprof,,g'); \
 	   $(CC) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -D $$i -D FLAVOR="$$i" -c $< -o $@
 
@@ -338,6 +374,8 @@ CMPINCLUDE_FILES=h/cmpincl1.h h/gclincl.h h/compbas.h h/type.h h/mgmp.h \
 		 h/lu.h h/globals.h  h/vs.h h/bds.h h/frame.h h/lex.h \
 		 h/mstdint.h h/compbas2.h h/compprotos.h  h/immnum.h
 
+CLEANFILES+=h/cmpinclude.h h/mstdint.h h/cmpincludea.h h/mcompdefs.h
+
 h/mstdint.h:
 	echo "#include <stdint.h>" | $(CC) -E -I./h/ - | $(AWK) '/fsid/ {next} {print}' >$@
 
@@ -351,22 +389,16 @@ h/cmpincludea.h: $(filter-out gclincl.h,$(CMPINCLUDE_FILES)) | h/gclincl.h # FIX
 		$(CC) $(AM_CPPFLAGS) $(AM_CFLAGS) -E -I./h/ - | \
 		$(AWK) '/^# |^$$|^#pragma/ {next}{print}' > $@
 
-h/cmpinclude.h: h/mcompdefs.h h/cmpincludea.h h/cmponly_last.h h/config.h | xbin/move-if-changed
-	cat $(filter-out h/config.h,$^) >tmph # FIXME config.h order only
-	$| mv tmph $@
-	rm -f tmph
+h/cmpinclude.h: h/mcompdefs.h h/cmpincludea.h h/cmponly_last.h
+	@cat $^ >new_$(@F)
+	@([ -e $@ ] && cmp new_$(@F) $@) || mv -v new_$(@F) $@
+	@rm -f new_$(@F)
 
-INI_FILES=$(filter-out o/new_init.ini,$(patsubst %.c,%.ini,$(C_SRC)))
-if AMM_GPROF
-INI_FILES+=o/gprof.ini
-endif
-
-h/new_decl.h: $(INI_FILES) | xbin/move-if-changed
+h/new_decl.h: $(INI_FILES)
 	echo '#include "make-decl.h"' > foo.c
 	cat $^ |sed 's,DEFBFUN,DEFUN,g' >> foo.c
-	$(CPP) $(AM_CPPFLAGS) $(CPPFLAGS) foo.c | sed -n -e '/#/d' -e '/DO_/d' -e '/[a-zA-Z;]/p' > tmpini
-	$| mv tmpini $@ # FIXME obsolete
-	rm -f foo.c tmpini
+	$(CPP) $(AM_CPPFLAGS) $(CPPFLAGS) foo.c | sed -n -e '/#/d' -e '/DO_/d' -e '/[a-zA-Z;]/p' > $@
+	rm -f foo.c
 
 o/boot.h: o/boot.ini
 	echo '#include "make-init.h"' > $@
@@ -374,20 +406,17 @@ o/boot.h: o/boot.ini
 	cat $< >> $@
 	echo '}' >> $@
 
-unixport/libboot.so: o/boot.c o/boot.h h/new_decl.h
+unixport/libboot.so: o/boot.c o/boot.h
 	$(CC) $(AM_CPPFLAGS) -Io $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) \
 		-fPIC -shared -Wl,-undefined -Wl,dynamic_lookup $< -o $@
 
-# parallel builds can only have one target accessing an intermediate file
 o/boot.ini: CPPFLAGS += -DNO_BOOT_H
-o/%.ini:  o/%.d | o/grab_defs xbin/move-if-changed xbin/mktmp bin/dpp # FIXME parallel ugliness
-	i=$$($(word 3,$|) $<);j=$$i.c;$(word 4,$|) $< $$j;\
-		$(CPP) $(AM_CPPFLAGS) -DINICOMP -DNO_DEFUN $(CPPFLAGS) $$j | $(word 1,$|) > $(@D)/$*.inj;\
-		rm $$j;
-	$(word 2,$|) mv $(@D)/$*.inj $@
-o/%.ini:  o/%.c | o/grab_defs xbin/move-if-changed
-	$(CPP) $(AM_CPPFLAGS) -DINICOMP -DNO_DEFUN $(CPPFLAGS) $< | $(word 1,$|) > $(@D)/$*.inj
-	$(word 2,$|) mv $(@D)/$*.inj $@
+# parallel builds can only have one target accessing an intermediate file
+# solved with BUILT_SOURCES
+o/%.ini:  o/%.c | o/grab_defs
+	@$(CPP) $(AM_CPPFLAGS) -DINICOMP -DNO_DEFUN $(CPPFLAGS) $< | $| > new_$(@F)
+	@([ -e $@ ] && cmp new_$(@F) $@) || mv -v new_$(@F) $@
+	@rm -f new_$(@F)
 
 o/new_init.c: $(INI_FILES)
 	echo '#include "make-init.h"' > $@
@@ -492,16 +521,13 @@ clean_%:
 clean-local:
 	rm -rf $(MY_DIRS) $(addprefix unixport/,$(MY_DIRS))
 	rm -rf unixport/*cmpnopt* unixport/lib* unixport/saved_* #FIXME
-	rm -rf o/*.inj
-	rm -rf h/cmpincludea.h h/mstdint.h # FIXME
-	rm -rf $$(echo o/*.d | sed 's,\.d,.c,g') #FIXME
-	rm -rf lib g #FIXME
+	rm -rf lib #FIXME
 	rm -rf $(addprefix ansi-tests/,\
 		compile-file-test-lp.lsp compile-file-test-lp.out \
 		file-that-was-renamed.txt foo.fasl foo.lsp foo.txt \
 		foo.ufsl ldtest.lsp scratch/ temp.dat test_results \
 		tmp.dat tmp.txt)
-	rm -rf info/*.idx unixport/in
+	rm -rf info/*.idx
 
 distclean-local:
 	rm -rf o/.Tpo #FIXME

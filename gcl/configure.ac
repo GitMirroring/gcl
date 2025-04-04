@@ -76,12 +76,7 @@ AC_ARG_ENABLE([machine],[  --enable-machine=XXXX will force the use of one of th
 
 AC_MSG_RESULT([use=$use])
 
-def_dlopen="no"
-def_statsysbfd="no"
-def_custreloc="yes"
 def_pic="no";
-def_static="no";
-def_debug="no";
 case $use in 
     *kfreebsd)
 	if ! test -d h ; then mkdir h; fi;;
@@ -93,8 +88,6 @@ case $use in
 	if ! test -d h ; then mkdir h; fi;
 #	ln -snf ../$srcdir/h/linux.defs h/$use.defs;
 	case $use in
-	    ia64*)
-		def_dlopen="yes" ; def_custreloc="no" ;;
 	    hppa*) # FIXME
 		def_pic="yes" ;;
 	esac;;
@@ -133,52 +126,11 @@ EMACS_SITE_LISP=`eval echo $EMACS_SITE_LISP/`
 
 AC_ARG_ENABLE([xgcl],[  --enable-xgcl=yes will compile in support for XGCL],,[enable_xgcl=yes])
 
-AC_ARG_ENABLE([dlopen],[  --enable-dlopen uses dlopen for loading objects, which can then not be retained  in saved images],
-	      ,[enable_dlopen=$def_dlopen])
-AC_ARG_ENABLE([statsysbfd],[  --enable-statsysbfd uses a static system bfd library for loading and relocating object files],
-	      ,[enable_statsysbfd=$def_statsysbfd])
-AC_ARG_ENABLE([dynsysbfd],[  --enable-dynsysbfd uses a dynamic shared system bfd library for loading and relocating object files],
-	      ,[enable_dynsysbfd=no])
-AC_ARG_ENABLE([custreloc],[  --enable-custreloc uses custom gcl code if available for loading  and relocationing object files],
-	      ,[enable_custreloc=$def_custreloc])
-
 AC_ARG_ENABLE([debug],[  --enable-debug builds gcl with -g in CFLAGS to enable running under gdb],
 	      ,[enable_debug=$def_debug])
 AC_ARG_ENABLE([static],[  --enable-static will link your GCL against static as opposed to shared system libraries],
 	      ,[enable_static=$def_static])
 AC_ARG_ENABLE([pic],[  --enable-pic builds gcl with -fPIC in CFLAGS],,[enable_pic=$def_pic])
-
-load_opt=0
-if test "$enable_dlopen" = "yes" ; then
-    load_opt=1
-fi
-if test "$enable_statsysbfd" = "yes" ; then
-    case $load_opt in
-	0) load_opt=1;;
-	1) load_opt=2;;
-    esac
-fi
-if test "$enable_dynsysbfd" = "yes" ; then
-    case $load_opt in
-	0) load_opt=1;;
-	1) load_opt=2;;
-	2) load_opt=3;;
-    esac
-fi
-if test "$enable_custreloc" = "yes" ; then
-    case $load_opt in
-	0) load_opt=1;;
-	1) load_opt=2;;
-	2) load_opt=3;;
-	3) load_opt=4;;
-	4) load_opt=5;;
-    esac
-fi
-
-if test "$load_opt" != "1" ; then
-    echo "Exactly one loader option must be chosen: dlopen=$enable_dlopen statsysbfd=$enable_statsysbfd dynsysbfd=$enable_dynsysbfd custreloc=$enable_custreloc"
-    AC_MSG_ERROR([loader option failure])
-fi
 
 
 #
@@ -316,24 +268,6 @@ AC_COMPILE_IFELSE(
      fi],
      [AC_MSG_ERROR([need to probe inline semantics])])
 
-AC_MSG_CHECKING([for clang])
-AC_RUN_IFELSE(
-    [AC_LANG_PROGRAM([[
-			 #ifdef __clang__
-			 #define RET 0
-			 #else
-			 #define RET 1
-			 #endif
-		     ]],
-		     [[
-			 return RET;
-		     ]])],
-    [AC_MSG_RESULT([yes])
-     clang="yes"
-     remove_arg_from_ldflags -pie
-     AC_DEFINE([CLANG],[1],[running clang compiler])],
-    [AC_MSG_RESULT([no])])
-
 case $use in
     *mingw*)
 	assert_arg_to_cflags -fno-zero-initialized-in-bss
@@ -410,16 +344,10 @@ AC_ARG_ENABLE([gprof],[  --enable-gprof builds gcl with -pg in CFLAGS to enable 
 
 if test "$GPROF" != "" ; then
    case $use in
-#       powerpc*) if test "$host_cpu" = "powerpc64le" ; then GPROF=""; fi;;
-#       s390*) GPROF="";;#mcount smashes float args in make_shortfloat 20180313
        sh4*)  GPROF="";;
        m68k*) GPROF="";;
        ia64*) GPROF="";;
-#       hppa*) GPROF="";;
        gnuwin95*) GPROF="";;
-#       arm*)  if echo $canonical |grep -q hf$; then GPROF=""; fi;;#FIXME CALL and JUMP24 veneers needed for thumb 20190201 #FIXME mcount compiled as a 24/22 bit reloc even with -mlong-calls, marginally accessible
-#       aarch64*) GPROF="";;#unreproducible buildd bug 20170824
-#       *gnu)  GPROF="";;
    esac
    OLD_CFLAGS=$CFLAGS
    if ! add_arg_to_cflags -pg ; then GPROF="" ; fi
@@ -432,16 +360,8 @@ if test "$GPROF" != "" ; then
        AC_DEFINE(USE_GPROF,1,[use gprof])
    fi
 fi
-AC_SUBST(GPROF)
+dnl AC_SUBST(GPROF)
 AM_CONDITIONAL([AMM_GPROF],[test "$GPROF" != ""])
-dnl GPROF_BIN=""
-dnl GPROF_LIB=""
-dnl if test "$GPROF" != "" ; then
-dnl    GPROF_BIN="unixport/saved_gcl_gprof unixport/saved_ansi_gcl_gprof"
-dnl    GPROF_LIB="lib/libbase_gcl_gprof.a unixport/libgcl_gprof.a unixport/libansi_gcl_gprof.a"
-dnl fi
-dnl AC_SUBST(GPROF_BIN)
-dnl AC_SUBST(GPROF_LIB)
 
 if test "$enable_debug" = "yes" ; then
     assert_arg_to_cflags -g
@@ -795,115 +715,6 @@ AC_SUBST(X_CFLAGS)
 # boot.so requires dlopen
 AC_CHECK_LIB([dl],[dlopen],,AC_MSG_ERROR([Cannot find dlopen]))
 
-if test "$enable_dlopen" = "yes" ; then
-
-    dnl AC_CHECK_LIB([dl],[dlopen],,AC_MSG_ERROR([Cannot find dlopen]))
-
-    TLIBS="$TLIBS -ldl -rdynamic"
-    assert_arg_to_cflags -fPIC
-    AC_DEFINE(USE_DLOPEN,1,[link compiled objects via libdl])
-
-fi
-
-if test "$enable_statsysbfd" = "yes" || test "$enable_dynsysbfd" = "yes" ; then
-    AC_CHECK_HEADERS(
-	[bfd.h],
-	AC_CHECK_LIB(
-	    [bfd],[bfd_init],
-	    #
-	    # Old binutils appear to need CONST defined to const
-	    #
-	    AC_MSG_CHECKING([need to define CONST for bfd])
-	    AC_RUN_IFELSE(
-		[AC_LANG_PROGRAM(
-			[[
-			    #define IN_GCC
-			    #include <bfd.h>
-			]],
-			[[
-			    symbol_info t;
-			]])],
-		AC_MSG_RESULT([no]),
-		AC_RUN_IFELSE(
-		    [AC_LANG_PROGRAM(
-			    [[
-				#define CONST const
-				#define IN_GCC
-				#include <bfd.h>
-			    ]],
-			    [[
-				symbol_info t;
-			    ]])],
-		    AC_MSG_RESULT([yes])
-		    AC_DEFINE(NEED_CONST,1,[binutils requires CONST definition]),
-		    AC_MSG_ERROR([cannot use bfd]),
-		    AC_MSG_ERROR([cannot use bfd])),
-		AC_MSG_ERROR([cannot use bfd]))
-	    ,,-liberty))
-
-    AC_DEFINE(HAVE_LIBBFD,1,[use libbfd])
-
-    #
-    # BFD boolean syntax
-    #
-
-    AC_MSG_CHECKING(for useable bfd_boolean)
-    AC_RUN_IFELSE(
-	[AC_LANG_PROGRAM(
-		[[
-		    #define IN_GCC
-		    #include <bfd.h>
-		    bfd_boolean foo() {return FALSE;}
-		]],
-		[[]])],
-	[AC_MSG_RESULT(yes)
-	 AC_DEFINE(HAVE_BFD_BOOLEAN,1,[bfd_boolean defined])],
-	[AC_MSG_RESULT(no)])
-
-    #
-    # bfd_link_info.output_bfd minimal configure change check
-    #
-
-    AC_CHECK_MEMBER([struct bfd_link_info.output_bfd],
- 		    AC_DEFINE(HAVE_OUTPUT_BFD,1,[output_bfd element present]), [],
-		    [[
-			#include <bfd.h>
-			#include <bfdlink.h>
-		    ]])
-    AC_SUBST(HAVE_OUTPUT_BFD)
-
-    #
-    # FIXME: Need to workaround mingw before this point -- CM
-    #
-    if test "$enable_statsysbfd" = "yes" && ! $CC -v 2>&1 | fgrep ming > /dev/null ; then
-	echo 'int main() {bfd_init();bfd_openr("/dev/null",0);return 0;}' >foo.c
-	MP=`$CC [ -Wl,-M ] -static -o foo foo.c -lbfd -liberty -ldl 2>&1 | grep -v : | tr '()' '\012\012' | $AWK '{print $NF}' | sort | uniq`
-	rm -f foo.c foo
-	if echo $MP | tr ' ' '\012' | grep libbfd.a >/dev/null; then
-	    LIBBFD="`echo $MP | tr ' ' '\012' | grep libbfd.a | $AWK '{i=split($1,A,\"/\");for (j=1;j<=i;j++) if (j>1 && A[[j]]==\"..\") {j--;i-=2;for (k=j;k<=i;k++) A[[k]]=A[[k+2]];j--;}} END {for (j=1;j<=i;j++) printf(\"%s%s\",A[[j]],j!=i ? \"/\" : \"\")}'`"
-	else
-	    AC_MSG_ERROR([cannot locate external libbfd.a])
-	fi
-	if echo $MP | tr ' ' '\012' | grep libiberty.a >/dev/null ; then
-	    LIBIBERTY="`echo $MP | tr ' ' '\012' | grep libiberty.a | $AWK '{i=split($1,A,\"/\");for (j=1;j<=i;j++) if (j>1 && A[[j]]==\"..\") {j--;i-=2;for (k=j;k<=i;k++) A[[k]]=A[[k+2]];j--;}} END {for (j=1;j<=i;j++) printf(\"%s%s\",A[[j]],j!=i ? \"/\" : \"\")}'`"
-	else
-	    AC_MSG_ERROR([cannot locate external libiberty.a])
-	fi
-	BUILD_BFD=copy_bfd
-	AC_CHECK_LIB(z,inflate,
-		     [TLIBS="$TLIBS -lz"],
-		     AC_MSG_ERROR([Need zlib for bfd linking]),[])
-	AC_CHECK_LIB(dl,dlsym,
-		     [TLIBS="$TLIBS -ldl"],
-		     AC_MSG_ERROR([Need libdl for bfd linking]),[])
-	AC_SUBST(BUILD_BFD)
-	AC_SUBST(LIBBFD)
-	AC_SUBST(LIBIBERTY)
-
-    else
-	TLIBS="$TLIBS -lbfd -liberty -ldl"
-    fi
-fi
 
 AC_ARG_ENABLE([xdr],[  --enable-xdr=yes will compile in support for XDR])
 
@@ -1685,7 +1496,6 @@ AC_CHECK_FUNCS(getcwd)
 AC_CHECK_FUNCS(getwd)
 AC_CHECK_FUNCS(rename)
 AC_CHECK_FUNC(uname, , AC_DEFINE(NO_UNAME,1,[no uname call]))
-AC_CHECK_FUNC(gettimeofday,, AC_DEFINE(NO_GETTOD,[1],[no gettimeofday call]))
 
 AC_CHECK_FUNCS(readlinkat,[],[AC_MSG_ERROR([must have readlinkat])])
 
@@ -1697,74 +1507,11 @@ AC_CHECK_HEADERS(elf.h elf_abi.h)
 AC_CHECK_HEADERS(sys/sockio.h)
 
 
-#--------------------------------------------------------------------
-#	The code below deals with several issues related to gettimeofday:
-#	1. Some systems don't provide a gettimeofday function at all
-#	   (set NO_GETTOD if this is the case).
-#	2. SGI systems don't use the BSD form of the gettimeofday function,
-#	   but they have a BSDgettimeofday function that can be used instead.
-#	3. See if gettimeofday is declared in the <sys/time.h> header file.
-#	   if not, set the GETTOD_NOT_DECLARED flag so that tclPort.h can
-#	   declare it.
-#--------------------------------------------------------------------
-
-AC_CHECK_FUNC([BSDgettimeofday],
-              [AC_DEFINE(HAVE_BSDGETTIMEOFDAY,1,[have bsdgettimeofday])],
-	      [AC_CHECK_FUNC([gettimeofday], ,
-	                     [AC_DEFINE([NO_GETTOD],1,[no gettimeofday call])])])
-
-AC_EGREP_HEADER([gettimeofday],
-                [sys/time.h],
-		[AC_MSG_CHECKING([for gettimeofday declaration])
-		 AC_MSG_RESULT([present])],
-		[AC_MSG_CHECKING([for gettimeofday declaration])
-		 AC_MSG_RESULT([missing])
-		 AC_DEFINE(GETTOD_NOT_DECLARED,1,[No gettimeofday call -- fixme])])
-
-
 if test "$use" != "mingw" ; then
    AC_CHECK_LIB(m,sin,LIBS="${LIBS} -lm",true)
 fi
 AC_CHECK_LIB(mingwex,main,LIBS="${LIBS} -lmingwex",true)
 
-AC_MSG_CHECKING([for buggy maximum sscanf length])
-AC_RUN_IFELSE(
-    [AC_LANG_PROGRAM(
-	    [[
-		#include <stdio.h>
-	    ]],
-	    [[
-		char *s= "2.7182818284590452353602874713526624977572470936999595749669676277240766303535475945713821785251664274274663919320030599218174135966290435729003342952605956307381323286279434907632338298807531952510190115738341879307021540891499348841675092447614606680822648001684774118537423454424371075390777449920695517027618386062613313845830007520449338265602976067371132007093287091274437470472306969772093101416928368190255151086574637721112523897844250569536967707854499699679468644549059879316368892300987931277361782154249992295763514822082698951936680331825288693984964651058209392398294887933203625094431173012381970684161404";
-		int n, m;
-		double f;
-		char *endptr;
-		FILE *fp=fopen("conftest1","w");
-
-		n=sscanf(s,"%lf%n",&f,&m);
-		fprintf(fp,"%d",m);
-		fclose(fp);
-		return s[m];
-	    ]])],
-    [AC_MSG_RESULT([none])],
-    [buggy_maximum_sscanf_length=`cat conftest1`
-     AC_MSG_RESULT([$buggy_maximum_sscanf_length])
-     AC_DEFINE_UNQUOTED(BUGGY_MAXIMUM_SSCANF_LENGTH,$buggy_maximum_sscanf_length,[sscanf terminates prematurely (Windows XP)])])
-
-
-EXTRA_LOBJS=
-AC_ARG_ENABLE([japi],[  --enable-japi=yes will compile in support for the JAPI graphical interface if present on your system],
-	      [if test "$enable_japi" = "yes" ; then
-		   AC_CHECK_HEADERS([japi.h],
-				    [AC_DEFINE(HAVE_JAPI_H)
-				     EXTRA_LOBJS="${EXTRA_LOBJS} gcl_japi.o"
-				     LIBS="${LIBS} -ljapi -lwsock32"])
-	       fi])
-
-# Should really find a way to check for prototypes, but this
-# basically works for now.  CM
-#
-#AC_CHECK_HEADERS(math.h,AC_DEFINE(HAVE_MATH_H,1,[have math.h]))
-#AC_CHECK_HEADERS(complex.h,AC_DEFINE(HAVE_COMPLEX_H,1,[have complex.h]))
 
 #
 # For DBL_MAX et. al. on (only) certain Linux arches, apparently CM

@@ -3,12 +3,6 @@
 /* binding stack size */
 #undef BDSSIZE
 
-/* sscanf terminates prematurely (Windows XP) */
-#undef BUGGY_MAXIMUM_SSCANF_LENGTH
-
-/* running clang compiler */
-#undef CLANG
-
 /* maximum C stack size */
 #undef CSSIZE
 
@@ -30,9 +24,6 @@
 /* frame stack size */
 #undef FRSSIZE
 
-/* No gettimeofday call -- fixme */
-#undef GETTOD_NOT_DECLARED
-
 /* using gmp */
 #undef GMP
 
@@ -47,15 +38,6 @@
 
 /* Define to 1 if you have the <asm/signal.h> header file. */
 #undef HAVE_ASM_SIGNAL_H
-
-/* bfd_boolean defined */
-#undef HAVE_BFD_BOOLEAN
-
-/* Define to 1 if you have the <bfd.h> header file. */
-#undef HAVE_BFD_H
-
-/* have bsdgettimeofday */
-#undef HAVE_BSDGETTIMEOFDAY
 
 /* have __builtin__clear_cache instruction */
 #undef HAVE_BUILTIN_CLEAR_CACHE
@@ -120,12 +102,6 @@
 /* Have isnormal function */
 #undef HAVE_ISNORMAL
 
-/* Define to 1 if you have the <japi.h> header file. */
-#undef HAVE_JAPI_H
-
-/* use libbfd */
-#undef HAVE_LIBBFD
-
 /* Define to 1 if you have the 'dl' library (-ldl). */
 #undef HAVE_LIBDL
 
@@ -155,9 +131,6 @@
 
 /* can use nsocket library */
 #undef HAVE_NSOCKET
-
-/* output_bfd element present */
-#undef HAVE_OUTPUT_BFD
 
 /* Define to 1 if you have the 'print_insn_i386' function. */
 #undef HAVE_PRINT_INSN_I386
@@ -276,12 +249,6 @@
 /* sizeof mp_limb in gmp library */
 #undef MP_LIMB_BYTES
 
-/* binutils requires CONST definition */
-#undef NEED_CONST
-
-/* no gettimeofday call */
-#undef NO_GETTOD
-
 /* no profil system call */
 #undef NO_PROFILE
 
@@ -387,9 +354,6 @@
 
 /* have _cleanup function */
 #undef USE_CLEANUP
-
-/* link compiled objects via libdl */
-#undef USE_DLOPEN
 
 /* use fionbio for non-blocking io */
 #undef USE_FIONBIO
