@@ -32,7 +32,7 @@ info_TEXINFOS=info/gcl.texi info/gcl-si.texi info/gcl-tk.texi #?
 my_unixport_DATA=$(addprefix unixport/,init_raw.lsp gcl.script libboot.so \
 				       gcl_cmpnopt_gcl.lsp gcl_cmpnopt_ansi_gcl.lsp)
 my_h_DATA=h/cmpinclude.h
-my_cmpnew_DATA=c/gcl_collectfn.o
+my_cmpnew_DATA=cmpnew/gcl_collectfn.o
 my_gcltk_DATA=gcl-tk/tkl.o gcl-tk/tinfo.o
 my_gcltkd_DATA=gcl-tk/demos/gc-monitor.o
 doc_DATA=$(DWDOCS) xgcl-2/dwdoc.pdf
@@ -74,7 +74,7 @@ noinst_LIBRARIES+=lib/libxgcl_gprof.a
 endif
 endif
 
-EXTRA_DIST=xbin/ar_merge xbin/tdf xbin/mktmp \
+EXTRA_DIST=xbin/ar_merge xbin/mktmp \
 	   $(D_SRC) $(INCL_C) $(INIT_L) \
 	   gcl-tk/gcltksrv.in bin/in.gcl.sh \
 	   $(addsuffix /gcl_*.lsp,lsp cmpnew mod xgcl-2) \
@@ -82,7 +82,10 @@ EXTRA_DIST=xbin/ar_merge xbin/tdf xbin/mktmp \
 	   clcs/myload1.lisp pcl/defsys.lisp \
 	   majvers minvers git.tag release \
 	   gcl-tk/tkl.lisp gcl-tk/tinfo.lsp \
-	   xgcl-2/dwdoc.tex
+	   xgcl-2/dwdoc.tex \
+	   info/gcl.dvi info/gcl.pdf info/gcl.html \
+	   info/gcl-si.dvi info/gcl-si.pdf info/gcl-si.html \
+	   info/gcl-tk.dvi info/gcl-tk.pdf info/gcl-tk.html
 
 # end of primaries
 
@@ -174,9 +177,6 @@ gcl_tk_gcltkaux_CPPFLAGS=$(AM_CPPFLAGS) $(TK_INCLUDE) $(TCL_INCLUDE) $(TK_XINCLU
 gcl_tk_gcltkaux_LDADD=$(TK_LIB_SPEC) $(TCL_LIB_SPEC)
 
 DWDOCS=$(addprefix xgcl-2/dwdoc/dwdoc,$(addsuffix .html,1 2 3 contents index))
-
-TEXI2DVI=xbin/tdf
-TEXI2PDF=xbin/tdf
 
 MY_DIRS=gcl0 gcl1 gcl2 gcl3 gcl mod_gcl0 mod_gcl pcl_gcl ansi_gcl
 
@@ -472,9 +472,11 @@ gcl-tk/%.o: gcl-tk/%.lsp | unixport/saved_ansi_gcl
 	$(word 1,$|) -compile $< -o $@
 
 gcl-tk/demos/index.lsp: gcl-tk/tkl.o | unixport/saved_gcl
+	[ -d $(@D) ] || mkdir -p $(@D)
 	cd $(@D) && echo "(load \"../../$<\")(tk::get-autoloads (directory \"*.lisp\"))" | ../../$|
 
-c/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl c # FIXME directory
+cmpnew/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl c # FIXME directory
+	[ -d $(@D) ] || mkdir -p $(@D)
 	$(word 1,$|) -compile $< -o $@
 
 %.c: %.d | bin/dpp
@@ -516,14 +518,13 @@ info/gcl%.texi: info/gcl.texi
 
 %.info: %.texi | xbin/mktmp # FIXME parallel ugliness
 	i=$$($| $@);ln -f $< $$i;$(MAKEINFO) $$i --output $@;rm -f $$i
-%.tex: %.texi | xbin/mktmp
-	i=$$($| $@);ln -f $< $$i;$(MAKEINFO) --latex $$i --output $@;rm -f $$i
-%.pdf: %.tex | xbin/mktmp
+%.pdf: %.dvi | xbin/mktmp
 	i=$$($| $@);j=$$i.$$(echo $< | sed 's,.*\.,,g');ln -f $< $$j;\
-		latex -output-format=pdf -output-directory=$(@D) $$j|tail && mv $$i.pdf $@ && rm -f $$i*
-%.dvi: %.tex | xbin/mktmp
+		dvipdfm $$j -o $@ && rm -f $$i*
+%.dvi: %.texi | xbin/mktmp
 	i=$$($| $@);j=$$i.$$(echo $< | sed 's,.*\.,,g');ln -f $< $$j;\
-		latex -output-directory=$(@D) $$i|tail && mv $$i.dvi $@ && rm -f $$i*
+		TEXINPUTS=$(srcdir):$$TEXINPUTS \
+		tex -output-directory=$(@D) $$j|tail && mv $$i.dvi $@ && rm -f $$i*
 %.html: %.texi | xbin/mktmp
 	mkdir -p $@
 	i=$$($| $@);ln -f $< $$i;$(MAKEINFO) --html $$i --output $@;rm -f $$i
