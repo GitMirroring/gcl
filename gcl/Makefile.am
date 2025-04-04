@@ -66,16 +66,25 @@ noinst_LIBRARIES+=lib/libxgcl_gprof.a
 endif
 endif
 
-EXTRA_DIST=xbin/ar_merge xbin/tdf xbin/mktmp $(D_SRC)
-
+EXTRA_DIST=xbin/ar_merge xbin/tdf xbin/mktmp $(D_SRC) $(INCL_C) gcl-tk/gcltksrv.in bin/in.gcl.sh \
+	   $(INIT_L) lsp/gcl_*.lsp cmpnew/gcl_*.lsp mod/gcl_*.lsp \
+	   xgcl-2/gcl_*.lsp pcl/gcl_*.lisp clcs/gcl_*.lisp clcs/myload1.lisp pcl/defsys.lisp majvers minvers git.tag release \
+	   man/man1/gcl.1 xgcl-2/dwdoc.tex elisp gcl-tk/demos/*.*sp gcl-tk/tkl.lisp gcl-tk/tinfo.lsp gcl-tk/gcl.tcl
 
 # end of primaries
 
+INCL_C=o/sgbc.c o/gmp_big.c o/gmp.c o/gmp_num_log.c o/cmac.c o/regexp.c o/unexelf.c o/unexmacosx.c o/unexnt.c \
+       o/save.c o/xdrfuns.c o/fasdump.c o/usig2_aux.c o/sfaslelf.c o/sfaslmacho.c o/sfaslcoff.c gcl-tk/comm.c \
+       o/sfasli.c
+INIT_L=unixport/sys_init.c unixport/sys.c o/boot.c unixport/cinit.lisp xgcl-2/sysdef.lisp pcl/package.lisp \
+       clcs/package.lisp gcl-tk/tk-package.lsp
 BASE_H= h/compbas2.h h/compbas.h h/compprotos.h h/cstack.h h/enum.h h/error.h h/eval.h h/fixnum.h h/frame.h \
 	h/funlink.h h/globals.h h/gmp_wrappers.h h/immnum.h h/include.h h/lex.h h/linux.h h/lu.h h/make-init.h \
 	h/mp.h h/notcomp.h h/num_include.h h/object.h h/options.h h/page.h h/pageinfo.h h/pbits.h h/pool.h \
 	h/prelink.h h/protoize.h h/ptable.h h/rgbc.h h/sfun_argd.h h/stacks.h h/type.h h/usig.h h/vs.h \
-        h/writable.h o/regexp.h
+        h/writable.h o/regexp.h h/arth.h h/bsd.h h/bds.h h/att_ext.h h/bfdef.h h/compat.h h/apply_n.h \
+	gcl-tk/sheader.h h/make-decl.h h/defun.h \
+	h/compdefs.h h/cmpincl1.h h/mgmp.h h/compprotos.h h/compbas2.h h/cmponly_last.h
 ARCHT_H=h/elf32_armhf_reloc.h h/elf32_armhf_reloc_special.h h/elf32_arm_reloc.h h/elf32_arm_reloc_special.h \
 	h/elf32_hppa_reloc.h h/elf32_hppa_reloc_special.h h/elf32_i386_reloc.h h/elf32_m68k_reloc.h \
 	h/elf32_mips_reloc.h h/elf32_mips_reloc_special.h h/elf32_ppc_reloc.h h/elf32_s390_reloc.h \
@@ -146,7 +155,7 @@ unixport/libgcl_gprof.a:
 unixport_libansi_gcl_gprof_a_SOURCES=
 unixport/libansi_gcl_gprof.a:
 
-GCLTK_SRC=gcl-tk/guis.c gcl-tk/tkAppInit.c gcl-tk/tkMain.c
+GCLTK_SRC=gcl-tk/guis.c gcl-tk/tkAppInit.c gcl-tk/tkMain.c gcl-tk/guis.h
 gcl_tk_gcltksrv_SOURCES=
 gcl_tk_gcltkaux_SOURCES=$(GCLTK_SRC)
 gcl_tk_gcltkaux_CPPFLAGS=$(AM_CPPFLAGS) $(TK_INCLUDE) $(TCL_INCLUDE) $(TK_XINCLUDES)

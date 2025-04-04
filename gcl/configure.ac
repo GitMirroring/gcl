@@ -2130,6 +2130,7 @@ if test "$use" != ""  ; then
     cat makedefc
 
     echo add-defs1 $use
+    cp h/$use.h h/config.h
 #    CC=$CC srcdir=$srcdir $srcdir/add-defs1 $use
 
 else
