@@ -119,13 +119,13 @@ debian/control: debian/control_$(EXT)
 clean: debian/control debian/gcl.templates
 	dh_testdir
 	dh_testroot
-	rm -f *stamp
 	debconf-updatepo
 
-	$(MAKE) $(MAKEFLAGS) clean
+	! [ -e Makefile ] || $(MAKE) $(MAKEFLAGS) distclean
 
 	dh_autoreconf_clean
 	dh_clean
+
 	rm -rf $(INS) debian/substvars debian.upstream
 	rm -rf *stamp build-indep
 	rm -f  debian/elpa-gcl$(EXT).elpa debian/gcl$(EXT)-pkg.el
