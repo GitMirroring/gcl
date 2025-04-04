@@ -288,7 +288,7 @@
 (defun do-recomp2 (sp fl &aux *sig-discovery-props* *compile-verbose* r)
   (gen-discovery-props)
   (dolist (s (gen-all-ftype-symbols))
-    (let* ((f (file s))(f (if f (namestring (truename f)) ""));FIXME
+    (let* ((f (or (file s) ""))
 	   (sig (car (sym-plist s))))
       (when (and sig (member f fl :test 'string=));e.g. fns in o/, interpreted, wrong-file
 	(push (list s sig) r))))
@@ -308,7 +308,7 @@
 	    (compile-file x :output-file
 			  (merge-pathnames
 			   (make-pathname :type "o" :name (pathname-name x))
-			   (or (truename *do-recomp-output-dir*) x))))
+			   (if *do-recomp-output-dir* (truename *do-recomp-output-dir*) x))))
 	  (remove nil fl))))
 
 (defun gen-all-ftype-symbols (&aux r)
