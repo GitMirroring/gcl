@@ -38,14 +38,23 @@ my_gcltkd_DATA=gcl-tk/demos/gc-monitor.o
 doc_DATA=$(DWDOCS) xgcl-2/dwdoc.pdf
 
 dist_man1_MANS=man/man1/gcl.1
-dist_lisp_DATA=elisp/*.el
+dist_lisp_DATA=elisp/add-default.el elisp/ansi-doc.el elisp/dbl.el elisp/doc-to-texi.el \
+	       elisp/gcl.el elisp/man1-to-texi.el elisp/smart-complete.el elisp/sshell.el
 dist_my_cmpnew_DATA=cmpnew/gcl_lfun_list.lsp
 dist_my_xgcl2_DATA=xgcl-2/sysdef.lisp xgcl-2/gcl_dwtest.lsp xgcl-2/gcl_dwtestcases.lsp
 dist_my_pcl_DATA=pcl/package.lisp
-dist_my_lsp_DATA=$(addprefix lsp/gcl_,$(addsuffix .lsp,auto_new autoload defmacro evalmacros export module top))
+dist_my_lsp_DATA=lsp/gcl_auto_new.lsp lsp/gcl_autoload.lsp lsp/gcl_defmacro.lsp \
+		 lsp/gcl_evalmacros.lsp lsp/gcl_export.lsp lsp/gcl_module.lsp lsp/gcl_top.lsp
 dist_my_clcs_DATA=clcs/package.lisp
 dist_my_gcltk_DATA=gcl-tk/tk-package.lsp gcl-tk/gcl.tcl #?
-dist_my_gcltkd_DATA=gcl-tk/demos/*.*sp
+dist_my_gcltkd_DATA=gcl-tk/demos/gc-monitor.lisp gcl-tk/demos/index.lsp gcl-tk/demos/mkBasic.lisp \
+                    gcl-tk/demos/mkCanvText.lisp gcl-tk/demos/mkdialog.lisp gcl-tk/demos/mkEntry2.lisp \
+		    gcl-tk/demos/mkEntry.lisp gcl-tk/demos/mkForm.lisp gcl-tk/demos/mkHScale.lisp \
+		    gcl-tk/demos/mkItems.lisp gcl-tk/demos/mkLabel.lisp gcl-tk/demos/mkListbox.lisp \
+		    gcl-tk/demos/mkPlot.lisp gcl-tk/demos/mkRadio.lisp gcl-tk/demos/mkRuler.lisp \
+		    gcl-tk/demos/mkSearch.lisp gcl-tk/demos/mkStyles.lisp gcl-tk/demos/mkTextBind.lisp \
+		    gcl-tk/demos/mkVScale.lisp gcl-tk/demos/nqthm-stack.lisp gcl-tk/demos/showVars.lisp \
+		    gcl-tk/demos/widget.lisp
 
 if AMM_GPROF
 LIBGPROF=lib/libgprof.a
@@ -75,8 +84,6 @@ EXTRA_DIST=xbin/ar_merge xbin/tdf xbin/mktmp \
 	   gcl-tk/tkl.lisp gcl-tk/tinfo.lsp \
 	   xgcl-2/dwdoc.tex
 
-bif:
-	echo $(addsuffix /gcl_z.lsp,lsp cmpnew mod xgcl-2 pcl clcs)
 # end of primaries
 
 INCL_C=o/sgbc.c o/gmp_big.c o/gmp.c o/gmp_num_log.c o/cmac.c o/regexp.c o/unexelf.c o/unexmacosx.c o/unexnt.c \
@@ -545,3 +552,10 @@ clean-local:
 
 distclean-local:
 	rm -rf o/.Tpo #FIXME
+
+
+AM_ETAGSFLAGS=--regex='/[ \n\t\#\.`]*(defun[ \n\t]+\([^ \n\t]+\)/' \
+	      --regex='/[ \n\t\#\.`]*(defmfun[ \n\t]+"\([^ \n\t"]+\)"[ \n\t]*)/\1/' \
+	      --regex='/[ \n\t\#\.`]*(defmfun[ \n\t]+"[^ \n\t"]+"[ \n\t]+\([^ \n\t]+\)/\1/'
+
+TAGS_FILES=lsp/*.lsp cmpnew/*.lsp mod/*.lsp pcl/*sp clcs/*sp xgcl-2/*p
