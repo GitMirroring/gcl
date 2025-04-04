@@ -68,12 +68,15 @@ endif
 EXTRA_DIST=xbin/ar_merge xbin/tdf xbin/mktmp \
 	   $(D_SRC) $(INCL_C) $(INIT_L) \
 	   gcl-tk/gcltksrv.in bin/in.gcl.sh \
-	   $(addsuffix /gcl_*.lsp,lsp cmpnew mod xgcl-2 pcl clcs) \
+	   $(addsuffix /gcl_*.lsp,lsp cmpnew mod xgcl-2) \
+	   $(addsuffix /gcl_*.lisp,pcl clcs) \
 	   clcs/myload1.lisp pcl/defsys.lisp \
 	   majvers minvers git.tag release \
 	   gcl-tk/tkl.lisp gcl-tk/tinfo.lsp \
 	   xgcl-2/dwdoc.tex
 
+bif:
+	echo $(addsuffix /gcl_z.lsp,lsp cmpnew mod xgcl-2 pcl clcs)
 # end of primaries
 
 INCL_C=o/sgbc.c o/gmp_big.c o/gmp.c o/gmp_num_log.c o/cmac.c o/regexp.c o/unexelf.c o/unexmacosx.c o/unexnt.c \
