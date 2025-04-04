@@ -352,7 +352,7 @@ a lisp variable indicating the TYPE which caused the current collection.
 Package:SI
 
 Returns 6 values:
-@table @asis
+@table @asis{}
 @item nfree
 number free 
 @item npages
@@ -1105,7 +1105,7 @@ from left to right across the input string and the pattern, and it
 attempts to match longer pieces of the input string before shorter
 ones.  More specifically, the following rules apply in decreasing
 order of priority:
-@itemize @asis
+@itemize @asis{}
 @item
 [1]
 If a regular expression could match two different parts of an input string

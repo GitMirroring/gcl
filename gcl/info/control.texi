@@ -260,7 +260,7 @@ Some of the substitutions are only valid for
 certain types of events;  if they are used for other types of events
 the value substituted is undefined.
 
-@table @asis
+@table @asis{}
 @item @b{%%}
 Replaced with a single percent.
 @item @b{|%#|}
@@ -515,7 +515,7 @@ tk-dialog \- Create modal dialog and wait for response
 This procedure is part of the Tk script library.
 Its arguments describe a dialog box:
 
-@table @asis
+@table @asis{}
 @item @i{window}
 Name of top-level window to use for dialog.  Any existing window
 by this name is destroyed.
@@ -602,7 +602,7 @@ the focus.
 
 The @b{focus} command can take any of the following forms:
 
-@table @asis
+@table @asis{}
 @item @b{focus}
 If invoked with no arguments, @b{focus} returns the path name of
 the current focus window, or @b{none} if there is no focus window.
@@ -750,7 +750,7 @@ grab on a given display at once.
 
 The @b{grab} command can take any of the following forms:
 
-@table @asis
+@table @asis{}
 @item @b{grab }@r{?}@b{:global}@r{? }@i{window}
 Same as @b{grab :set}, described below.
 @item @b{grab :current }@r{?}@i{window}?
@@ -926,7 +926,7 @@ At any given time, the only menus available for traversal
 are those associated with the top-level window containing the
 input focus.
 Menu traversal is initiated by one of the following actions:
-@itemize @asis
+@itemize @asis{}
 @item
 [1]
 If <F10> is typed, then the first menu button in the list for the
@@ -950,7 +950,7 @@ its first entry.
 
 Once a menu has been posted, the input focus is switched to that
 menu and the following actions are possible:
-@itemize @asis
+@itemize @asis{}
 @item
 [1]
 Typing <ESC> or clicking mouse button 1 outside the menu button or
@@ -1039,7 +1039,7 @@ options;  @i{priority}@r{ defaults to }@b{interactive}.
 The @i{priority}@r{ arguments to the }@b{option} command are
 normally specified symbolically using one of the following values:
 
-@table @asis
+@table @asis{}
 @item @b{widgetDefault}
 Level 20.  Used for default values hard-coded into widgets.
 @item @b{startupFile}
@@ -1097,7 +1097,7 @@ the widget @b{.a.b.c}.  Command-line switches may be abbreviated,
 as long as the abbreviation is unambiguous.
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:activebackground}}
 @flushright
 Name=@code{"@b{activeBackground}@r{"} Class=@code{"}@b{Foreground}"}
@@ -1111,7 +1111,7 @@ will cause some action to occur.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:activeborderwidth}}
 @flushright
 Name=@code{"@b{activeBorderWidth}@r{"} Class=@code{"}@b{BorderWidth}"}
@@ -1127,7 +1127,7 @@ than one element at a time (e.g. menus but not buttons).
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:activeforeground}}
 @flushright
 Name=@code{"@b{activeForeground}@r{"} Class=@code{"}@b{Background}"}
@@ -1139,7 +1139,7 @@ See above for definition of active elements.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:anchor}}
 @flushright
 Name=@code{"@b{anchor}@r{"} Class=@code{"}@b{Anchor}"}
@@ -1155,7 +1155,7 @@ top-left corner is at the top-left corner of the widget.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:background or :bg}}
 @flushright
 Name=@code{"@b{background}@r{"} Class=@code{"}@b{Background}"}
@@ -1167,7 +1167,7 @@ widget.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:bitmap}}
 @flushright
 Name=@code{"@b{bitmap}@r{"} Class=@code{"}@b{Bitmap}"}
@@ -1185,7 +1185,7 @@ a text display.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:borderwidth or :bd}}
 @flushright
 Name=@code{"@b{borderWidth}@r{"} Class=@code{"}@b{BorderWidth}"}
@@ -1201,7 +1201,7 @@ The value may have any of the forms acceptable to @b{Tk_GetPixels}.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:cursor}}
 @flushright
 Name=@code{"@b{cursor}@r{"} Class=@code{"}@b{Cursor}"}
@@ -1213,7 +1213,7 @@ The value may have any of the forms acceptable to @b{Tk_GetCursor}.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:cursorbackground}}
 @flushright
 Name=@code{"@b{cursorBackground}@r{"} Class=@code{"}@b{Foreground}"}
@@ -1229,7 +1229,7 @@ the @b{insertBackground}@r{ option.}
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:cursorborderwidth}}
 @flushright
 Name=@code{"@b{cursorBorderWidth}@r{"} Class=@code{"}@b{BorderWidth}"}
@@ -1244,7 +1244,7 @@ the @b{insertBorderWidth}@r{ option.}
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:cursorofftime}}
 @flushright
 Name=@code{"@b{cursorOffTime}@r{"} Class=@code{"}@b{OffTime}"}
@@ -1260,7 +1260,7 @@ the @b{insertOffTime}@r{ option.}
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:cursorontime}}
 @flushright
 Name=@code{"@b{cursorOnTime}@r{"} Class=@code{"}@b{OnTime}"}
@@ -1274,7 +1274,7 @@ the @b{insertOnTime}@r{ option.}
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:cursorwidth}}
 @flushright
 Name=@code{"@b{cursorWidth}@r{"} Class=@code{"}@b{CursorWidth}"}
@@ -1292,7 +1292,7 @@ the @b{insertWidth}@r{ option.}
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:disabledforeground}}
 @flushright
 Name=@code{"@b{disabledForeground}@r{"} Class=@code{"}@b{DisabledForeground}"}
@@ -1307,7 +1307,7 @@ with a stippled fill pattern.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:exportselection}}
 @flushright
 Name=@code{"@b{exportSelection}@r{"} Class=@code{"}@b{ExportSelection}"}
@@ -1326,7 +1326,7 @@ to export selections.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:font}}
 @flushright
 Name=@code{"@b{font}@r{"} Class=@code{"}@b{Font}"}
@@ -1337,7 +1337,7 @@ Specifies the font to use when drawing text inside the widget.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:foreground or :fg}}
 @flushright
 Name=@code{"@b{foreground}@r{"} Class=@code{"}@b{Foreground}"}
@@ -1348,7 +1348,7 @@ Specifies the normal foreground color to use when displaying the widget.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:geometry}}
 @flushright
 Name=@code{"@b{geometry}@r{"} Class=@code{"}@b{Geometry}"}
@@ -1365,7 +1365,7 @@ widgets the units are usually pixels.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:insertbackground}}
 @flushright
 Name=@code{"@b{insertBackground}@r{"} Class=@code{"}@b{Foreground}"}
@@ -1379,7 +1379,7 @@ cursor happens to fall in the selection).
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:insertborderwidth}}
 @flushright
 Name=@code{"@b{insertBorderWidth}@r{"} Class=@code{"}@b{BorderWidth}"}
@@ -1392,7 +1392,7 @@ The value may have any of the forms acceptable to @b{Tk_GetPixels}.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:insertofftime}}
 @flushright
 Name=@code{"@b{insertOffTime}@r{"} Class=@code{"}@b{OffTime}"}
@@ -1406,7 +1406,7 @@ all the time.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:insertontime}}
 @flushright
 Name=@code{"@b{insertOnTime}@r{"} Class=@code{"}@b{OnTime}"}
@@ -1418,7 +1418,7 @@ milliseconds the insertion cursor should remain ``on'' in each blink cycle.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:insertwidth}}
 @flushright
 Name=@code{"@b{insertWidth}@r{"} Class=@code{"}@b{InsertWidth}"}
@@ -1434,7 +1434,7 @@ option.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:orient}}
 @flushright
 Name=@code{"@b{orient}@r{"} Class=@code{"}@b{Orient}"}
@@ -1448,7 +1448,7 @@ or @b{vertical} or an abbreviation of one of these.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:padx}}
 @flushright
 Name=@code{"@b{padX}@r{"} Class=@code{"}@b{Pad}"}
@@ -1466,7 +1466,7 @@ internal space to the left and/or right of what it displays inside.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:pady}}
 @flushright
 Name=@code{"@b{padY}@r{"} Class=@code{"}@b{Pad}"}
@@ -1484,7 +1484,7 @@ internal space above and/or below what it displays inside.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:relief}}
 @flushright
 Name=@code{"@b{relief}@r{"} Class=@code{"}@b{Relief}"}
@@ -1502,7 +1502,7 @@ the exterior of the widget.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:repeatdelay}}
 @flushright
 Name=@code{"@b{repeatDelay}@r{"} Class=@code{"}@b{RepeatDelay}"}
@@ -1515,7 +1515,7 @@ up- and down-arrows in scrollbars.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:repeatinterval}}
 @flushright
 Name=@code{"@b{repeatInterval}@r{"} Class=@code{"}@b{RepeatInterval}"}
@@ -1528,7 +1528,7 @@ auto-repeats.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:scrollcommand}}
 @flushright
 Name=@code{"@b{scrollCommand}@r{"} Class=@code{"}@b{ScrollCommand}"}
@@ -1563,7 +1563,7 @@ options.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:selectbackground}}
 @flushright
 Name=@code{"@b{selectBackground}@r{"} Class=@code{"}@b{Foreground}"}
@@ -1575,7 +1575,7 @@ items.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:selectborderwidth}}
 @flushright
 Name=@code{"@b{selectBorderWidth}@r{"} Class=@code{"}@b{BorderWidth}"}
@@ -1588,7 +1588,7 @@ The value may have any of the forms acceptable to @b{Tk_GetPixels}.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:selectforeground}}
 @flushright
 Name=@code{"@b{selectForeground}@r{"} Class=@code{"}@b{Background}"}
@@ -1600,7 +1600,7 @@ items.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:setgrid}}
 @flushright
 Name=@code{"@b{setGrid}@r{"} Class=@code{"}@b{SetGrid}"}
@@ -1623,7 +1623,7 @@ entry for more details.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:text}}
 @flushright
 Name=@code{"@b{text}@r{"} Class=@code{"}@b{Text}"}
@@ -1636,7 +1636,7 @@ determined by other options, such as @b{anchor}@r{ or }@b{justify}.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:textvariable}}
 @flushright
 Name=@code{"@b{textVariable}@r{"} Class=@code{"}@b{Variable}"}
@@ -1652,7 +1652,7 @@ particular widget and may be determined by other options, such as
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:underline}}
 @flushright
 Name=@code{"@b{underline}@r{"} Class=@code{"}@b{Underline}"}
@@ -1667,7 +1667,7 @@ on.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:xscrollcommand}}
 @flushright
 Name=@code{"@b{xScrollCommand}@r{"} Class=@code{"}@b{ScrollCommand}"}
@@ -1684,7 +1684,7 @@ on how this option is used.
 @end table
 
 
-@table @asis
+@table @asis{}
 @item @code{@b{:yscrollcommand}}
 @flushright
 Name=@code{"@b{yScrollCommand}@r{"} Class=@code{"}@b{ScrollCommand}"}
@@ -1768,7 +1768,7 @@ The first step in placing a child is to determine which side of
 the cavity it will lie against.  Any one of the following options
 may be used to specify a side:
 
-@table @asis
+@table @asis{}
 @item @b{top}
 Position the child's parcel against the top of the cavity,
 occupying the full width of the cavity.
@@ -1796,7 +1796,7 @@ desired width is the window's requested width.  However, extra
 space may be requested for the window using any of the following
 options:
 
-@table @asis
+@table @asis{}
 @item @b{padx }@i{num}
 Add @i{num} pixels to the window's requested width before computing
 the parcel size as described above.
@@ -1825,7 +1825,7 @@ is smaller.  If the parcel is larger than the window's requested
 size, then the following options may be used to expand the
 window to partially or completely fill the parcel:
 
-@table @asis
+@table @asis{}
 @item @b{fill}
 Set the window's size to equal the parcel size.
 @item @b{fillx}
@@ -1912,7 +1912,7 @@ packing them in order around the edges of the parent.
 The @b{pack} command can have any of several forms, depending
 on the @i{option} argument:
 
-@table @asis
+@table @asis{}
 @item @b{pack }@i{slave }@r{?}@i{slave ...}@r{? ?}@i{options}?
 If the first argument to @b{pack} is a window name (any value
 starting with ``.''), then the command is processed in the same
@@ -1947,7 +1947,7 @@ Defaults to 0.
 If a slave's parcel is larger than its requested dimensions, this
 option may be used to stretch the slave.
 @i{Style} must have one of the following values:
-@table @asis
+@table @asis{}
 @item @b{none}
 Give the slave its requested dimensions plus any internal padding
 requested with @b{:ipadx}@r{ or }@b{:ipady}.  This is the default.
@@ -1998,7 +1998,7 @@ then any unspecified options for them retain their previous values rather
 than receiving default values.
 .RE
 
-@table @asis
+@table @asis{}
 @item @b{pack :forget }@i{slave }@r{?}@i{slave ...}?
 Removes each of the @i{slave}s from the packing order for its
 master and unmaps their windows.
@@ -2046,7 +2046,7 @@ This area is called the @i{cavity};  for the first slave it
 is the entire area of the master.
 
 For each slave the packer carries out the following steps:
-@itemize @asis
+@itemize @asis{}
 @item
 [1]
 The packer allocates a rectangular @i{parcel} for the slave
@@ -2185,7 +2185,7 @@ If the placer is already managing @i{window}, then the
 In this form the @b{place} command returns an empty string as result.
 The following @i{option:value} pairs are supported:
 
-@table @asis
+@table @asis{}
 @item @b{:in }@i{master}
 @i{Master} specifes the path name of the window relative
 to which @i{window} is to be placed.
@@ -2395,7 +2395,7 @@ The first argument to @b{selection} determines the format of the
 rest of the arguments and the behavior of the command.  The following
 forms are currently supported:
 
-@table @asis
+@table @asis{}
 @item @b{selection :clear }@i{window}
 If there is a selection anywhere on @i{window}'s display, clear it
 so that no window owns the selection anymore.  Returns an empty string.
@@ -2544,7 +2544,7 @@ particular window.
 The command can take any of a number of different forms
 depending on the @i{option} argument.  The legal forms are:
 
-@table @asis
+@table @asis{}
 @item @b{tk :colormodel }@i{window}@r{ ?}@i{newValue}?
 If @i{newValue} isn't specified, this command returns the current
 color model in use for @i{window}'s screen, which will be either
@@ -2631,7 +2631,7 @@ tkvars \- Variables used or set by Tk
 The following Tcl variables are either set or used by Tk at various times
 in its execution:
 
-@table @asis
+@table @asis{}
 @item @b{tk_library}
 Tk sets this variable hold the name of a directory containing a library
 of Tcl scripts related to Tk.  These scripts include an initialization
@@ -2763,7 +2763,7 @@ The @b{winfo} command is used to retrieve information about windows
 managed by Tk.  It can take any of a number of different forms,
 depending on the @i{option} argument.  The legal forms are:
 
-@table @asis
+@table @asis{}
 @item @b{winfo :atom }@i{name}
 Returns a decimal string giving the integer identifier for the
 atom whose name is @i{name}.  If no atom exists with the name
@@ -2964,7 +2964,7 @@ top-level window.
 
 The legal forms for the @b{wm} command are:
 
-@table @asis
+@table @asis{}
 @item @b{wm :aspect }@i{window}@r{ ?}@i{minNumer minDenom maxNumer maxDenom}?
 If @i{minNumer}@r{, }@i{minDenom}@r{, }@i{maxNumer}@r{, and }@i{maxDenom}
 are all specified, then they will be passed to the window manager
@@ -3251,7 +3251,7 @@ a handler, then Tk handles the message by destroying the window for
 which it was received.
 .RE
 
-@table @asis
+@table @asis{}
 @item @b{wm :sizefrom }@i{window}@r{ ?}@i{who}?
 If @i{who}@r{ is specified, it must be either }@b{program} or
 @b{user}, or an abbreviation of one of these two.  It indicates
