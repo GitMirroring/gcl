@@ -642,7 +642,6 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
-use
 LI_INIT_LSP
 LI_OPT_TWO
 LI_OPT_THREE
@@ -12216,12 +12215,7 @@ LI_INIT_LSP="\"init_raw.lsp\""
 ac_config_files="$ac_config_files unixport/init_raw.lsp"
 
 
-
-
 if test "$use" != ""  ; then
-
-
-    ac_config_files="$ac_config_files makedefc windows/gcl.iss windows/sysdir.bat windows/install.lsp"
 
     cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -12974,10 +12968,6 @@ do
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "unixport/init_raw.lsp") CONFIG_FILES="$CONFIG_FILES unixport/init_raw.lsp" ;;
-    "makedefc") CONFIG_FILES="$CONFIG_FILES makedefc" ;;
-    "windows/gcl.iss") CONFIG_FILES="$CONFIG_FILES windows/gcl.iss" ;;
-    "windows/sysdir.bat") CONFIG_FILES="$CONFIG_FILES windows/sysdir.bat" ;;
-    "windows/install.lsp") CONFIG_FILES="$CONFIG_FILES windows/install.lsp" ;;
 
   *) as_fn_error $? "invalid argument: '$ac_config_target'" "$LINENO" 5;;
   esac
@@ -13707,15 +13697,12 @@ if test -n "$ac_unrecognized_opts" && test "$enable_option_checking" != no; then
 printf "%s\n" "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
 fi
 
-    echo makedefc
-    cat makedefc
-
-    echo add-defs1 $use
-    cp $srcdir/h/$use.h h/config.h
-#    CC=$CC srcdir=$srcdir $srcdir/add-defs1 $use
+    cmp $srcdir/h/$use.h h/config.h || cp $srcdir/h/$use.h h/config.h
+    echo configuration for $use done
 
 else
     echo "Unable to guess machine type"
     echo use configure --enable-machine=XXX,  for XXX such that h/XXX.defs exists, ie in h/*.defs
+    exit 1
 fi
 

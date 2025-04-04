@@ -21,32 +21,31 @@ docdir=$(datarootdir)/doc/$(PACKAGE)
 # primaries
 
 noinst_PROGRAMS=bin/dpp o/grab_defs
+noinst_LIBRARIES=lib/libbase_gcl.a
+
 my_unixport_PROGRAMS=unixport/saved_gcl unixport/saved_ansi_gcl
 my_gcltk_PROGRAMS=gcl-tk/gcltkaux gcl-tk/gcltksrv
-noinst_LIBRARIES=lib/libbase_gcl.a
 my_unixport_LIBRARIES=unixport/libgcl.a unixport/libansi_gcl.a
 bin_SCRIPTS=bin/gcl
 check_SCRIPTS=ansi-tests/test_results
-info_TEXINFOS=info/gcl.texi info/gcl-si.texi info/gcl-tk.texi
-man1_MANS=man/man1/gcl.1
-lisp_DATA=elisp/ansi-doc.el elisp/dbl.el elisp/doc-to-texi.el elisp/gcl.el \
-          elisp/man1-to-texi.el elisp/sshell.el elisp/smart-complete.el elisp/add-default.el
+info_TEXINFOS=info/gcl.texi info/gcl-si.texi info/gcl-tk.texi #?
 my_unixport_DATA=$(addprefix unixport/,init_raw.lsp gcl.script libboot.so \
 				       gcl_cmpnopt_gcl.lsp gcl_cmpnopt_ansi_gcl.lsp)
-my_xgcl2_DATA=xgcl-2/sysdef.lisp xgcl-2/gcl_dwtest.lsp xgcl-2/gcl_dwtestcases.lsp
-my_pcl_DATA=pcl/package.lisp
-my_lsp_DATA=lsp/gcl_auto_new.lsp lsp/gcl_autoload.lsp lsp/gcl_defmacro.lsp
-my_lsp_DATA+=lsp/gcl_evalmacros.lsp lsp/gcl_export.lsp lsp/gcl_module.lsp lsp/gcl_top.lsp
 my_h_DATA=h/cmpinclude.h
-my_cmpnew_DATA=cmpnew/gcl_cmpopt.lsp c/gcl_collectfn.o cmpnew/gcl_lfun_list.lsp
-my_clcs_DATA=clcs/package.lisp
-my_gcltk_DATA=gcl-tk/tkl.o gcl-tk/tinfo.o gcl-tk/tk-package.lsp gcl-tk/gcl.tcl
-my_gcltkd_DATA=$(addprefix gcl-tk/demos/,gc-monitor.lisp mkBasic.lisp mkCanvText.lisp mkdialog.lisp \
-	            mkEntry2.lisp mkEntry.lisp mkForm.lisp mkHScale.lisp mkItems.lisp mkLabel.lisp \
-	            mkListbox.lisp mkPlot.lisp mkRadio.lisp mkRuler.lisp mkSearch.lisp mkStyles.lisp \
-	            mkTextBind.lisp mkVScale.lisp nqthm-stack.lisp showVars.lisp widget.lisp) \
-	       $(addprefix gcl-tk/demos/,gc-monitor.o index.lsp)
+my_cmpnew_DATA=c/gcl_collectfn.o
+my_gcltk_DATA=gcl-tk/tkl.o gcl-tk/tinfo.o
+my_gcltkd_DATA=gcl-tk/demos/gc-monitor.o
 doc_DATA=$(DWDOCS) xgcl-2/dwdoc.pdf
+
+dist_man1_MANS=man/man1/gcl.1
+dist_lisp_DATA=elisp/*.el
+dist_my_cmpnew_DATA=cmpnew/gcl_lfun_list.lsp
+dist_my_xgcl2_DATA=xgcl-2/sysdef.lisp xgcl-2/gcl_dwtest.lsp xgcl-2/gcl_dwtestcases.lsp
+dist_my_pcl_DATA=pcl/package.lisp
+dist_my_lsp_DATA=$(addprefix lsp/gcl_,$(addsuffix .lsp,auto_new autoload defmacro evalmacros export module top))
+dist_my_clcs_DATA=clcs/package.lisp
+dist_my_gcltk_DATA=gcl-tk/tk-package.lsp gcl-tk/gcl.tcl #?
+dist_my_gcltkd_DATA=gcl-tk/demos/*.*sp
 
 if AMM_GPROF
 LIBGPROF=lib/libgprof.a
@@ -66,18 +65,21 @@ noinst_LIBRARIES+=lib/libxgcl_gprof.a
 endif
 endif
 
-EXTRA_DIST=xbin/ar_merge xbin/tdf xbin/mktmp $(D_SRC) $(INCL_C) gcl-tk/gcltksrv.in bin/in.gcl.sh \
-	   $(INIT_L) lsp/gcl_*.lsp cmpnew/gcl_*.lsp mod/gcl_*.lsp \
-	   xgcl-2/gcl_*.lsp pcl/gcl_*.lisp clcs/gcl_*.lisp clcs/myload1.lisp pcl/defsys.lisp majvers minvers git.tag release \
-	   man/man1/gcl.1 xgcl-2/dwdoc.tex elisp gcl-tk/demos/*.*sp gcl-tk/tkl.lisp gcl-tk/tinfo.lsp gcl-tk/gcl.tcl
+EXTRA_DIST=xbin/ar_merge xbin/tdf xbin/mktmp \
+	   $(D_SRC) $(INCL_C) $(INIT_L) \
+	   gcl-tk/gcltksrv.in bin/in.gcl.sh \
+	   $(addsuffix /gcl_*.lsp,lsp cmpnew mod xgcl-2 pcl clcs) \
+	   clcs/myload1.lisp pcl/defsys.lisp \
+	   majvers minvers git.tag release \
+	   gcl-tk/tkl.lisp gcl-tk/tinfo.lsp \
+	   xgcl-2/dwdoc.tex
 
 # end of primaries
 
 INCL_C=o/sgbc.c o/gmp_big.c o/gmp.c o/gmp_num_log.c o/cmac.c o/regexp.c o/unexelf.c o/unexmacosx.c o/unexnt.c \
        o/save.c o/xdrfuns.c o/fasdump.c o/usig2_aux.c o/sfaslelf.c o/sfaslmacho.c o/sfaslcoff.c gcl-tk/comm.c \
        o/sfasli.c
-INIT_L=unixport/sys_init.c unixport/sys.c o/boot.c unixport/cinit.lisp xgcl-2/sysdef.lisp pcl/package.lisp \
-       clcs/package.lisp gcl-tk/tk-package.lsp
+INIT_L=unixport/sys_init.c unixport/sys.c o/boot.c unixport/cinit.lisp
 BASE_H= h/compbas2.h h/compbas.h h/compprotos.h h/cstack.h h/enum.h h/error.h h/eval.h h/fixnum.h h/frame.h \
 	h/funlink.h h/globals.h h/gmp_wrappers.h h/immnum.h h/include.h h/lex.h h/linux.h h/lu.h h/make-init.h \
 	h/mp.h h/notcomp.h h/num_include.h h/object.h h/options.h h/page.h h/pageinfo.h h/pbits.h h/pool.h \
@@ -503,18 +505,18 @@ info/gcl%.texi: info/gcl.texi
 	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
 
 %.info: %.texi | xbin/mktmp # FIXME parallel ugliness
-	i=$$($| $<);ln -f $< $$i;$(MAKEINFO) $$i --output $@;rm $$i
+	i=$$($| $@);ln -f $< $$i;$(MAKEINFO) $$i --output $@;rm -f $$i
 %.tex: %.texi | xbin/mktmp
-	i=$$($| $<);ln -f $< $$i;$(MAKEINFO) --latex $$i --output $@;rm $$i
+	i=$$($| $@);ln -f $< $$i;$(MAKEINFO) --latex $$i --output $@;rm -f $$i
 %.pdf: %.tex | xbin/mktmp
-	i=$$($| $<);j=$$i.$$(echo $< | sed 's,.*\.,,g');ln -f $< $$j;\
-		latex -output-format=pdf -output-directory=$(@D) $$j|tail && mv $$i.pdf $@ && rm $$i*
+	i=$$($| $@);j=$$i.$$(echo $< | sed 's,.*\.,,g');ln -f $< $$j;\
+		latex -output-format=pdf -output-directory=$(@D) $$j|tail && mv $$i.pdf $@ && rm -f $$i*
 %.dvi: %.tex | xbin/mktmp
-	i=$$($| $<);j=$$i.$$(echo $< | sed 's,.*\.,,g');ln -f $< $$j;\
-		latex -output-directory=$(@D) $$i|tail && mv $$i.dvi $@ && rm $$i*
+	i=$$($| $@);j=$$i.$$(echo $< | sed 's,.*\.,,g');ln -f $< $$j;\
+		latex -output-directory=$(@D) $$i|tail && mv $$i.dvi $@ && rm -f $$i*
 %.html: %.texi | xbin/mktmp
 	mkdir -p $@
-	i=$$($| $<);ln -f $< $$i;$(MAKEINFO) --html $$i --output $@;rm $$i
+	i=$$($| $@);ln -f $< $$i;$(MAKEINFO) --html $$i --output $@;rm -f $$i
 
 # end package extension
 

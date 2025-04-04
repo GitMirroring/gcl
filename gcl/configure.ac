@@ -2119,21 +2119,14 @@ AC_SUBST(LI_INIT_LSP)
 
 AC_CONFIG_FILES([unixport/init_raw.lsp])
 
-
-
 if test "$use" != ""  ; then
 
-    AC_SUBST(use)
-    AC_CONFIG_FILES([makedefc windows/gcl.iss windows/sysdir.bat windows/install.lsp ])
     AC_OUTPUT
-    echo makedefc
-    cat makedefc
-
-    echo add-defs1 $use
-    cp $srcdir/h/$use.h h/config.h
-#    CC=$CC srcdir=$srcdir $srcdir/add-defs1 $use
+    cmp $srcdir/h/$use.h h/config.h || cp $srcdir/h/$use.h h/config.h
+    echo configuration for $use done
 
 else
     echo "Unable to guess machine type"
     echo use configure --enable-machine=XXX,  for XXX such that h/XXX.defs exists, ie in h/*.defs
+    exit 1
 fi
