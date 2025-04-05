@@ -688,8 +688,6 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EMACS = @EMACS@
 EMACSLOADPATH = @EMACSLOADPATH@
-EMACS_DEFAULT_EL = @EMACS_DEFAULT_EL@
-EMACS_SITE_LISP = @EMACS_SITE_LISP@
 ETAGS = @ETAGS@
 EXEEXT = @EXEEXT@
 EXTRA_LOBJS = @EXTRA_LOBJS@
@@ -706,7 +704,6 @@ HAVE_SETENV = @HAVE_SETENV@
 HAVE_SIGEMT = @HAVE_SIGEMT@
 HAVE_SIGSYS = @HAVE_SIGSYS@
 HAVE_SV_ONSTACK = @HAVE_SV_ONSTACK@
-INFO_DIR = @INFO_DIR@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -732,7 +729,6 @@ LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
 NIFLAGS = @NIFLAGS@
-NOTIFY = @NOTIFY@
 NO_PROFILE = @NO_PROFILE@
 O2FLAGS = @O2FLAGS@
 O3FLAGS = @O3FLAGS@
@@ -896,7 +892,7 @@ EXTRA_DIST = xbin/ar_merge xbin/mktmp \
 	   info/gcl.dvi info/gcl.pdf info/gcl.html \
 	   info/gcl-si.dvi info/gcl-si.pdf info/gcl-si.html \
 	   info/gcl-tk.dvi info/gcl-tk.pdf info/gcl-tk.html \
-	   info/*.texi
+	   info/*.texi ansi-tests/*.lsp
 
 
 # end of primaries

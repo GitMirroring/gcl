@@ -86,7 +86,7 @@ EXTRA_DIST=xbin/ar_merge xbin/mktmp \
 	   info/gcl.dvi info/gcl.pdf info/gcl.html \
 	   info/gcl-si.dvi info/gcl-si.pdf info/gcl-si.html \
 	   info/gcl-tk.dvi info/gcl-tk.pdf info/gcl-tk.html \
-	   info/*.texi
+	   info/*.texi ansi-tests/*.lsp
 
 # end of primaries
 
