@@ -120,10 +120,6 @@ AC_ARG_ENABLE([infodir],[--enable-infodir=XXXX will force the use of a INFO_DIR=
 	      [INFO_DIR=$enableval],[INFO_DIR=$prefix/share/info])
 INFO_DIR=`eval echo $INFO_DIR/`
 
-AC_ARG_ENABLE([emacsdir],[  --enable-emacsdir=XXXX will manually specify the location for elisp files],
-	      [EMACS_SITE_LISP=$enableval],[EMACS_SITE_LISP=$prefix/share/emacs/site-lisp])
-EMACS_SITE_LISP=`eval echo $EMACS_SITE_LISP/`
-
 AC_ARG_ENABLE([xgcl],[  --enable-xgcl=yes will compile in support for XGCL],,[enable_xgcl=yes])
 
 AC_ARG_ENABLE([debug],[  --enable-debug builds gcl with -g in CFLAGS to enable running under gdb],
@@ -1815,118 +1811,6 @@ AC_CHECK_HEADERS(dis-asm.h,
 		 AC_CHECK_LIB(dl,dlopen,#opcodes changes too quickly to link directly
 			      AC_CHECK_FUNCS(print_insn_i386,LIBS="$MLIBS -ldl")))
 
-#if test $use = "386-linux" ; then
-AC_CHECK_HEADERS(asm/sigcontext.h)
-AC_CHECK_HEADERS(asm/signal.h)
-AC_MSG_CHECKING([for sigcontext...])
-AC_COMPILE_IFELSE(
-    [AC_LANG_PROGRAM(
-	    [[
-		#include <signal.h>
-	    ]],
-	    [[
-		struct sigcontext foo;
-	    ]])],
-    [AC_DEFINE(SIGNAL_H_HAS_SIGCONTEXT,1,[have sigcontext of signal.h])
-     AC_MSG_RESULT([sigcontext of signal.h])],
-    [AC_MSG_RESULT([sigcontext NOT of signal.h])
-     AC_MSG_CHECKING([for sigcontext...])
-     AC_COMPILE_IFELSE(
-	 [AC_LANG_PROGRAM(
-		 [[
-		     #include <signal.h>
-		     #ifdef HAVE_ASM_SIGCONTEXT_H
-		     #include <asm/sigcontext.h>
-		     #endif
-		     #ifdef HAVE_ASM_SIGNAL_H
-		     #include <asm/signal.h>
-		     #endif
-		 ]],
-		 [[
-		     struct sigcontext foo;
-		 ]])],
-	 [AC_DEFINE(HAVE_SIGCONTEXT,1,[have sigcontext])
-	  AC_MSG_RESULT(sigcontext asm files)],
-	 [AC_MSG_RESULT([no sigcontext found])])])
-
-AC_PATH_PROG(EMACS,emacs)
-
-
-# check for where the emacs site lisp directory is.
-rm -f conftest.el
-cat >> conftest.el <<EOF
-(let ((ans ".") (tem load-path) cur)
- (while (setq cur (car tem))
-   (setq tem (cdr tem))
-   (cond ((and (string-match "site-lisp/?$" cur) (file-directory-p cur))
-          (setq ans cur)
-           (if (string-match "-[0-9.]+$" cur) nil
-               (setq tem nil)))))
-  (message ans))
-EOF
-
-AC_MSG_CHECKING([emacs site lisp directory])
-if [[ "$EMACS_SITE_LISP" = "unknown" ]] ; then
-    if [[ "$EMACS" != "" ]] ; then
-	EMACS_SITE_LISP=`$EMACS -q -batch --no-site-file -l conftest.el 2>&1 | sed -e /Loading/d | sed -e /load/d  |sed -e /Warning:/d`
-    else
-	EMACS_SITE_LISP=""
-    fi
-fi
-AC_MSG_RESULT($EMACS_SITE_LISP)
-AC_SUBST(EMACS_SITE_LISP)
-
-# check for where the emacs site lisp default.el is
-rm -f conftest.el
-cat >> conftest.el <<EOF
-(let ((ans "./default.el") file (tem load-path))
- (while tem
-   (cond ((file-exists-p
-           (setq file (expand-file-name "/default.el" (car tem))))
-	  (setq tem nil) (setq ans file)))
-   (setq tem (cdr tem)))
-  (message ans))
-EOF
-
-AC_MSG_CHECKING([emacs default.el])
-if [[ "$EMACS" != "" ]] ; then
-    EMACS_DEFAULT_EL=`$EMACS -q -batch --no-site-file -l conftest.el 2>&1 | sed -e /Loading/d | sed -e /load/d |sed -e /Warning:/d`
-else
-    EMACS_DEFAULT_EL=""
-fi
-if  test -f "${EMACS_DEFAULT_EL}"  ; then true;else
-    if test -d $EMACS_SITE_LISP ; then
-	EMACS_DEFAULT_EL=${EMACS_SITE_LISP}/default.el
-    fi
-fi
-AC_MSG_RESULT($EMACS_DEFAULT_EL)
-AC_SUBST(EMACS_DEFAULT_EL)
-
-
-
-# check for where the emacs site lisp info/dir is
-rm -f conftest.el
-cat >> conftest.el <<EOF
-(let ((ans "") file (tem Info-default-directory-list))
- (while tem
-   (cond ((file-exists-p (setq file (expand-file-name "dir" (car tem))))
-          (setq ans (file-name-as-directory (car tem)))		
-	  (setq tem nil) ))
-   (setq tem (cdr tem)))
-  (message ans))
-EOF
-
-AC_MSG_CHECKING([emacs info/dir])
-if test "$use" = "mingw" ; then
-    INFO_DIR=\$\(prefix\)/lib/gcl-$VERSION/info/
-else
-    if [[ "$EMACS" != "" ]] && [[ "$INFO_DIR" = "unknown" ]] ; then
-	INFO_DIR=`$EMACS -q -batch --no-site-file -l conftest.el 2>&1 | sed -e /Loading/d | sed -e /load/d  |sed -e /Warning:/d`
-    fi
-fi
-
-AC_MSG_RESULT($INFO_DIR)
-AC_SUBST(INFO_DIR)
 
 AC_ARG_ENABLE([tcltk],[  --enable-tcltk will try to build gcl-tk])
 AC_ARG_ENABLE([tkconfig],
@@ -2027,31 +1911,12 @@ AC_SUBST(TCL_LIB_SPEC)
 AC_SUBST(TCL_DL_LIBS)
 AC_SUBST(TCL_LIBS)
 
-if test "${TK_BUILTIN_PREFIX}" = "yes"; then
-  AC_MSG_RESULT([Builtin TK requested, checking Tk library header])
-  if test "${TK_INCLUDE}" = "" ; then 
-    AC_MSG_RESULT([Builtin TK requested but libraries not found so ignoring])
-  else
-    CFLAGS="$CFLAGS -DBUILD_tcl $TCL_DEFS $TK_DEFS $TK_INCLUDE $TCL_INCLUDE $TK_XINCLUDES"
-    LIBS="$LIBS $TK_LIB_SPEC $TCL_LIB_SPEC $TK_LIBS"
-    AC_DEFINE(HAVE_TK,1,[have tk library])
-    EXTRA_LOBJS="${EXTRA_LOBJS} gcl_tk.o"
-  fi
-else
-  AC_MSG_RESULT([Builtin TK not requested])
-fi
-
 AC_MSG_CHECKING([for tcl/tk])
 if test -d "${TK_CONFIG_PREFIX}" ; then
     AC_MSG_RESULT([using TK_VERSION=${TK_VERSION} of ${TK_CONFIG_PREFIX}])
 else
     AC_MSG_RESULT([not found])
 fi
-
-AC_ARG_ENABLE([notify],[  --enable-notify=no will disable the automatic notification of gcl maintainers of successful builds/problems],
-	      [NOTIFY=$enable_notify
-	       AC_SUBST(NOTIFY)])
-
 
 # for sgbc the mprotect capabilities.
 

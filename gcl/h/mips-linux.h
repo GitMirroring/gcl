@@ -1,12 +1,5 @@
 #include "linux.h"
 
-#undef MPROTECT_ACTION_FLAGS
-#define MPROTECT_ACTION_FLAGS SA_RESTART|SA_SIGINFO
-#ifdef IN_GBC
-#define GET_FAULT_ADDR(sig,code,scp,addr) \
-  ((siginfo_t *)code )->si_addr
-#endif
-
 /* Reenable when recent mips kernel bug fixed -- SIGBUS passed on
    occasion instead of SIGSEGV with no address passed in siginfo_t*/
 /* kernel bug now fixed, but likely not everywhere.  Add additional
