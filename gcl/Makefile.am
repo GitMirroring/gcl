@@ -85,7 +85,7 @@ endif
 EXTRA_DIST=xbin/ar_merge xbin/mktmp \
 	   $(D_SRC) $(INCL_C) $(INIT_L) \
 	   gcl-tk/gcltksrv.in bin/in.gcl.sh \
-	   lsp cmpnew mod gcl-2 pcl clcs info ansi-tests \
+	   lsp cmpnew mod xgcl-2 pcl clcs info ansi-tests \
 	   majvers minvers git.tag release \
 	   gcl-tk/tkl.lisp gcl-tk/tinfo.lsp \
 	   info/gcl.dvi info/gcl.pdf info/gcl.html \
