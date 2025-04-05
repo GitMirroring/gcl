@@ -1882,45 +1882,30 @@ if test "$enable_tcltk" != "no" ; then
 	fi
     fi
 
-    TCL_VERSION_DOT_FREE=`echo ${TCL_VERSION} | tr -d .`
-    if test -e ${TK_CONFIG_PREFIX}/../bin/tcl${TCL_VERSION_DOT_FREE}.dll  ; then
-	TCL_LIBS="-L${TK_CONFIG_PREFIX}/../bin -ltk${TCL_VERSION_DOT_FREE} -ltcl${TCL_VERSION_DOT_FREE}"
-	TCL_STUB_LIBS="-L${TK_CONFIG_PREFIX}/lib -ltkstub${TCL_VERSION_DOT_FREE} -ltclstub${TCL_VERSION_DOT_FREE}"
-    else
-	AC_CHECK_LIB(lieee,main,have_ieee=1,have_ieee=0)
-	if test "$have_ieee" = "0" ; then
-	    TCL_LIBS=`echo ${TCL_LIBS} | sed -e "s:-lieee::g" `
-	fi
-	TCL_STUB_LIBS=""
-    fi
-
 fi
+AM_CONDITIONAL([AMM_TK],[test "$TK_CONFIG_PREFIX" != ""])
 
-AC_SUBST(TK_CONFIG_PREFIX)
-
-AC_SUBST(TK_LIBRARY)
-AC_SUBST(TCL_LIBRARY)
-AC_SUBST(TK_XINCLUDES)
-AC_SUBST(TK_INCLUDE)
-AC_SUBST(TCL_INCLUDE)
-AC_SUBST(TK_LIB_SPEC)
-AC_SUBST(TK_BUILD_LIB_SPEC)
-AC_SUBST(TK_XLIBSW)
-AC_SUBST(TK_XINCLUDES)
-AC_SUBST(TCL_LIB_SPEC)
-AC_SUBST(TCL_DL_LIBS)
-AC_SUBST(TCL_LIBS)
 
 AC_MSG_CHECKING([for tcl/tk])
 if test -d "${TK_CONFIG_PREFIX}" ; then
     AC_MSG_RESULT([using TK_VERSION=${TK_VERSION} of ${TK_CONFIG_PREFIX}])
+    AC_SUBST(TK_CONFIG_PREFIX)
+    AC_SUBST(TK_XLIB_DIR)
+    AC_SUBST(TK_LIBRARY)
+    AC_SUBST(TCL_LIBRARY)
+    AC_SUBST(TK_INCLUDE)
+    AC_SUBST(TCL_INCLUDE)
+    AC_SUBST(TK_LIB_SPEC)
+    AC_SUBST(TCL_LIB_SPEC)
+    AC_CONFIG_FILES([gcl-tk/gcltksrv])
 else
     AC_MSG_RESULT([not found])
 fi
 
-# for sgbc the mprotect capabilities.
+AC_SUBST(EXT)
+AC_CONFIG_FILES([bin/gcl])
 
-# the time handling for unixtime, add timezone
+
 AC_CHECK_HEADERS(sys/mman.h,AC_CHECK_FUNCS(mprotect))
 AC_CHECK_HEADERS(alloca.h)
 AC_FUNC_ALLOCA

@@ -25,7 +25,6 @@ noinst_PROGRAMS=bin/dpp o/grab_defs
 noinst_LIBRARIES=lib/libbase_gcl.a
 
 my_unixport_PROGRAMS=unixport/saved_gcl unixport/saved_ansi_gcl
-my_gcltk_PROGRAMS=gcl-tk/gcltkaux gcl-tk/gcltksrv
 my_unixport_LIBRARIES=unixport/libgcl.a unixport/libansi_gcl.a
 bin_SCRIPTS=bin/gcl
 check_SCRIPTS=ansi-tests/test_results
@@ -34,8 +33,6 @@ my_unixport_DATA=$(addprefix unixport/,init_raw.lsp gcl.script libboot.so \
 				       gcl_cmpnopt_gcl.lsp gcl_cmpnopt_ansi_gcl.lsp)
 my_h_DATA=h/cmpinclude.h
 my_cmpnew_DATA=cmpnew/gcl_collectfn.o
-my_gcltk_DATA=gcl-tk/tkl.o gcl-tk/tinfo.o
-my_gcltkd_DATA=gcl-tk/demos/gc-monitor.o
 
 dist_xgcl2doc_DATA=$(DWDOCS) xgcl-2/dwdoc.dvi xgcl-2/dwdoc.pdf \
 		      xgcl-2/gcl_menu-set.lsp xgcl-2/gcl_pcalc.lsp xgcl-2/gcl_draw.lsp \
@@ -54,15 +51,6 @@ dist_my_pcl_DATA=pcl/package.lisp
 dist_my_lsp_DATA=lsp/gcl_auto_new.lsp lsp/gcl_autoload.lsp lsp/gcl_defmacro.lsp \
 		 lsp/gcl_evalmacros.lsp lsp/gcl_export.lsp lsp/gcl_module.lsp lsp/gcl_top.lsp
 dist_my_clcs_DATA=clcs/package.lisp
-dist_my_gcltk_DATA=gcl-tk/tk-package.lsp gcl-tk/gcl.tcl #?
-dist_my_gcltkd_DATA=gcl-tk/demos/gc-monitor.lisp gcl-tk/demos/index.lsp gcl-tk/demos/mkBasic.lisp \
-                    gcl-tk/demos/mkCanvText.lisp gcl-tk/demos/mkdialog.lisp gcl-tk/demos/mkEntry2.lisp \
-		    gcl-tk/demos/mkEntry.lisp gcl-tk/demos/mkForm.lisp gcl-tk/demos/mkHScale.lisp \
-		    gcl-tk/demos/mkItems.lisp gcl-tk/demos/mkLabel.lisp gcl-tk/demos/mkListbox.lisp \
-		    gcl-tk/demos/mkPlot.lisp gcl-tk/demos/mkRadio.lisp gcl-tk/demos/mkRuler.lisp \
-		    gcl-tk/demos/mkSearch.lisp gcl-tk/demos/mkStyles.lisp gcl-tk/demos/mkTextBind.lisp \
-		    gcl-tk/demos/mkVScale.lisp gcl-tk/demos/nqthm-stack.lisp gcl-tk/demos/showVars.lisp \
-		    gcl-tk/demos/widget.lisp
 
 if AMM_GPROF
 LIBGPROF=lib/libgprof.a
@@ -82,12 +70,28 @@ noinst_LIBRARIES+=lib/libxgcl_gprof.a
 endif
 endif
 
+if AMM_TK
+my_gcltk_PROGRAMS=gcl-tk/gcltkaux
+my_gcltk_SCRIPTS=gcl-tk/gcltksrv
+my_gcltk_DATA=gcl-tk/tkl.o gcl-tk/tinfo.o
+my_gcltkd_DATA=gcl-tk/demos/gc-monitor.o
+dist_my_gcltk_DATA=gcl-tk/tk-package.lsp
+dist_my_gcltkd_DATA=gcl-tk/demos/gc-monitor.lisp gcl-tk/demos/index.lsp gcl-tk/demos/mkBasic.lisp \
+                    gcl-tk/demos/mkCanvText.lisp gcl-tk/demos/mkdialog.lisp gcl-tk/demos/mkEntry2.lisp \
+		    gcl-tk/demos/mkEntry.lisp gcl-tk/demos/mkForm.lisp gcl-tk/demos/mkHScale.lisp \
+		    gcl-tk/demos/mkItems.lisp gcl-tk/demos/mkLabel.lisp gcl-tk/demos/mkListbox.lisp \
+		    gcl-tk/demos/mkPlot.lisp gcl-tk/demos/mkRadio.lisp gcl-tk/demos/mkRuler.lisp \
+		    gcl-tk/demos/mkSearch.lisp gcl-tk/demos/mkStyles.lisp gcl-tk/demos/mkTextBind.lisp \
+		    gcl-tk/demos/mkVScale.lisp gcl-tk/demos/nqthm-stack.lisp gcl-tk/demos/showVars.lisp \
+		    gcl-tk/demos/widget.lisp
+endif
+
+
 EXTRA_DIST=xbin/ar_merge xbin/mktmp \
 	   $(D_SRC) $(INCL_C) $(INIT_L) \
-	   gcl-tk/gcltksrv.in bin/in.gcl.sh \
-	   lsp cmpnew mod xgcl-2 pcl clcs info ansi-tests \
+	   bin/gcl.in \
+	   lsp cmpnew mod xgcl-2 pcl clcs info ansi-tests gcl-tk \
 	   majvers minvers git.tag release \
-	   gcl-tk/tkl.lisp gcl-tk/tinfo.lsp \
 	   info/gcl.dvi info/gcl.pdf info/gcl.html \
 	   info/gcl-si.dvi info/gcl-si.pdf info/gcl-si.html \
 	   info/gcl-tk.dvi info/gcl-tk.pdf info/gcl-tk.html
@@ -468,19 +472,6 @@ ansi-tests/test_results: ansi-tests | unixport/saved_ansi_gcl
 	[ -d $(@D) ] || (mkdir $(@D) && cp $</*.lsp $(@D)) # FIXME testsuite in separate directory, hard
 	cd $(@D) && echo '(load "gclload")' | ../$| |tee $(@F)
 
-bin/gcl: bin/in.gcl.sh majvers minvers # FIXME configure
-	sed -e "s,@EXT@,,g" \
-	    -e "s,@VERS@,$$(cat $(word 2,$^)).$$(cat $(word 3,$^)),g" \
-	    -e "s,@TKVERS@,$$(echo $(TK_CONFIG_PREFIX) |sed 's,.*/tk,,g'),g" $< >$@
-	chmod a+x $@
-
-gcl-tk/gcltksrv$(EXEEXT): gcl-tk/gcltksrv.in | gcl-tk # FIXME configure
-	cat $<  | sed -e "s!TK_LIBRARY=.*!TK_LIBRARY=${TK_LIBRARY}!g" \
-	-e "s!TCL_LIBRARY=.*!TCL_LIBRARY=${TCL_LIBRARY}!g" \
-	-e "s!TK_XLIB_DIR=.*!TK_XLIB_DIR=${TK_XLIB_DIR}!g" \
-	-e "s!GCL_TK_DIR=.*!GCL_TK_DIR=$(my_unixportdir)/../gcl-tk!g" > $@
-	chmod a+x $@
-
 gcl-tk/%.o: gcl-tk/%.lisp | unixport/saved_ansi_gcl
 	[ -d $(@D) ] || mkdir -p $(@D)
 	$(word 1,$|) -compile $< -o $@
@@ -521,10 +512,8 @@ $(DWDOCS): xgcl-2/dwdoc.tex xgcl-2/gcl_tohtml.lsp xgcl-2/gcl_index.lsp | unixpor
 
 # package extension
 
-bin/gcl%: bin/in.gcl.sh majvers minvers
-	sed -e "s,@EXT@,$*,g" \
-	    -e "s,@VERS@,$$(cat $(word 2,$^)).$$(cat $(word 3,$^)),g" \
-	    -e "s,@TKVERS@,$$(echo $(TK_CONFIG_PREFIX) |sed 's,.*/tk,,g'),g" $< >$@
+bin/gcl%: bin/gcl
+	sed -e "s,^EXT=.*,EXT=$*,g" $< >$@
 	chmod a+x $@
 
 man/man1/gcl%.1: man/man1/gcl.1
@@ -570,7 +559,14 @@ clean-local:
 		file-that-was-renamed.txt foo.fasl foo.lsp foo.txt \
 		foo.ufsl ldtest.lsp scratch/ temp.dat test_results \
 		tmp.dat tmp.txt)
-	rm -rf info/*.idx
+	mv xgcl-2/dwdoc.tex xgcl-2/ori_dwdoc.tex && \
+		rm -rf xgcl-2/dwdoc* xgcl-2/*.o &&  \
+		mv xgcl-2/ori_dwdoc.tex xgcl-2/dwdoc.tex
+	rm -rf $(addprefix info/,*.idx *.t2p *.t2d *.info* *.dvi *.pdf *.html)
+	rm -rf $(addprefix ansi-tests/,test.out *.o foo.txt temp.dat file-that-was-renamed.txt \
+				       tmp.dat tmp.dat.BAK tmp2.dat scratch tmp.txt foo.lsp \
+				       'CLTEST:foo.txt')
+
 
 distclean-local:
 	rm -rf o/.Tpo #FIXME

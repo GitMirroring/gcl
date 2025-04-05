@@ -96,12 +96,12 @@ host_triplet = @host@
 noinst_PROGRAMS = bin/dpp$(EXEEXT) o/grab_defs$(EXEEXT)
 my_unixport_PROGRAMS = unixport/saved_gcl$(EXEEXT) \
 	unixport/saved_ansi_gcl$(EXEEXT) $(am__EXEEXT_1)
-my_gcltk_PROGRAMS = gcl-tk/gcltkaux$(EXEEXT) gcl-tk/gcltksrv$(EXEEXT)
 @AMM_GPROF_TRUE@am__append_1 = $(LIBGPROF) lib/libbase_gcl_gprof.a
 @AMM_GPROF_TRUE@am__append_2 = unixport/saved_gcl_gprof unixport/saved_ansi_gcl_gprof
 @AMM_GPROF_TRUE@am__append_3 = unixport/libgcl_gprof.a unixport/libansi_gcl_gprof.a
 @AMM_XGCL_TRUE@am__append_4 = $(X_LIB)
 @AMM_GPROF_TRUE@@AMM_XGCL_TRUE@am__append_5 = lib/libxgcl_gprof.a
+@AMM_TK_TRUE@my_gcltk_PROGRAMS = gcl-tk/gcltkaux$(EXEEXT)
 @AMM_GPROF_TRUE@am__append_6 = o/gprof.ini
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -110,26 +110,27 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(top_srcdir)/configure \
 	$(am__configure_deps) $(dist_lisp_DATA) $(dist_my_clcs_DATA) \
-	$(dist_my_cmpnew_DATA) $(dist_my_gcltk_DATA) \
-	$(dist_my_gcltkd_DATA) $(dist_my_lsp_DATA) $(dist_my_pcl_DATA) \
-	$(dist_my_xgcl2_DATA) $(dist_xgcl2doc_DATA) $(am__DIST_COMMON)
+	$(dist_my_cmpnew_DATA) $(am__dist_my_gcltk_DATA_DIST) \
+	$(am__dist_my_gcltkd_DATA_DIST) $(dist_my_lsp_DATA) \
+	$(dist_my_pcl_DATA) $(dist_my_xgcl2_DATA) \
+	$(dist_xgcl2doc_DATA) $(am__DIST_COMMON)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/h/gclincl.h
-CONFIG_CLEAN_FILES = unixport/init_raw.lsp
+CONFIG_CLEAN_FILES = gcl-tk/gcltksrv bin/gcl unixport/init_raw.lsp
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(my_gcltkdir)" \
 	"$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(my_unixportdir)" \
-	"$(DESTDIR)$(bindir)" "$(DESTDIR)$(infodir)" \
-	"$(DESTDIR)$(man1dir)" "$(DESTDIR)$(lispdir)" \
-	"$(DESTDIR)$(my_clcsdir)" "$(DESTDIR)$(my_cmpnewdir)" \
-	"$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_gcltkddir)" \
-	"$(DESTDIR)$(my_lspdir)" "$(DESTDIR)$(my_pcldir)" \
-	"$(DESTDIR)$(my_xgcl2dir)" "$(DESTDIR)$(xgcl2docdir)" \
+	"$(DESTDIR)$(bindir)" "$(DESTDIR)$(my_gcltkdir)" \
+	"$(DESTDIR)$(infodir)" "$(DESTDIR)$(man1dir)" \
+	"$(DESTDIR)$(lispdir)" "$(DESTDIR)$(my_clcsdir)" \
 	"$(DESTDIR)$(my_cmpnewdir)" "$(DESTDIR)$(my_gcltkdir)" \
-	"$(DESTDIR)$(my_gcltkddir)" "$(DESTDIR)$(my_hdir)" \
-	"$(DESTDIR)$(my_unixportdir)"
+	"$(DESTDIR)$(my_gcltkddir)" "$(DESTDIR)$(my_lspdir)" \
+	"$(DESTDIR)$(my_pcldir)" "$(DESTDIR)$(my_xgcl2dir)" \
+	"$(DESTDIR)$(xgcl2docdir)" "$(DESTDIR)$(my_cmpnewdir)" \
+	"$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_gcltkddir)" \
+	"$(DESTDIR)$(my_hdir)" "$(DESTDIR)$(my_unixportdir)"
 @AMM_GPROF_TRUE@am__EXEEXT_1 = unixport/saved_gcl_gprof$(EXEEXT) \
 @AMM_GPROF_TRUE@	unixport/saved_ansi_gcl_gprof$(EXEEXT)
 PROGRAMS = $(my_gcltk_PROGRAMS) $(my_unixport_PROGRAMS) \
@@ -352,9 +353,6 @@ gcl_tk_gcltkaux_OBJECTS = $(am_gcl_tk_gcltkaux_OBJECTS)
 am__DEPENDENCIES_1 =
 gcl_tk_gcltkaux_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-am_gcl_tk_gcltksrv_OBJECTS =
-gcl_tk_gcltksrv_OBJECTS = $(am_gcl_tk_gcltksrv_OBJECTS)
-gcl_tk_gcltksrv_LDADD = $(LDADD)
 o_grab_defs_SOURCES = o/grab_defs.c
 o_grab_defs_OBJECTS = o/grab_defs.$(OBJEXT)
 o_grab_defs_LDADD = $(LDADD)
@@ -373,7 +371,7 @@ am_unixport_saved_gcl_gprof_OBJECTS =
 unixport_saved_gcl_gprof_OBJECTS =  \
 	$(am_unixport_saved_gcl_gprof_OBJECTS)
 unixport_saved_gcl_gprof_LDADD = $(LDADD)
-SCRIPTS = $(bin_SCRIPTS)
+SCRIPTS = $(bin_SCRIPTS) $(my_gcltk_SCRIPTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -545,8 +543,8 @@ SOURCES = $(lib_libbase_gcl_a_SOURCES) \
 	$(unixport_libansi_gcl_gprof_a_SOURCES) \
 	$(unixport_libgcl_a_SOURCES) \
 	$(unixport_libgcl_gprof_a_SOURCES) bin/dpp.c \
-	$(gcl_tk_gcltkaux_SOURCES) $(gcl_tk_gcltksrv_SOURCES) \
-	o/grab_defs.c $(unixport_saved_ansi_gcl_SOURCES) \
+	$(gcl_tk_gcltkaux_SOURCES) o/grab_defs.c \
+	$(unixport_saved_ansi_gcl_SOURCES) \
 	$(unixport_saved_ansi_gcl_gprof_SOURCES) \
 	$(unixport_saved_gcl_SOURCES) \
 	$(unixport_saved_gcl_gprof_SOURCES)
@@ -557,8 +555,8 @@ DIST_SOURCES = $(lib_libbase_gcl_a_SOURCES) \
 	$(unixport_libansi_gcl_gprof_a_SOURCES) \
 	$(unixport_libgcl_a_SOURCES) \
 	$(unixport_libgcl_gprof_a_SOURCES) bin/dpp.c \
-	$(gcl_tk_gcltkaux_SOURCES) $(gcl_tk_gcltksrv_SOURCES) \
-	o/grab_defs.c $(unixport_saved_ansi_gcl_SOURCES) \
+	$(gcl_tk_gcltkaux_SOURCES) o/grab_defs.c \
+	$(unixport_saved_ansi_gcl_SOURCES) \
 	$(unixport_saved_ansi_gcl_gprof_SOURCES) \
 	$(unixport_saved_gcl_SOURCES) \
 	$(unixport_saved_gcl_gprof_SOURCES)
@@ -610,6 +608,19 @@ am__can_run_installinfo = \
 man1dir = $(mandir)/man1
 NROFF = nroff
 MANS = $(dist_man1_MANS)
+am__dist_my_gcltk_DATA_DIST = gcl-tk/tk-package.lsp
+am__dist_my_gcltkd_DATA_DIST = gcl-tk/demos/gc-monitor.lisp \
+	gcl-tk/demos/index.lsp gcl-tk/demos/mkBasic.lisp \
+	gcl-tk/demos/mkCanvText.lisp gcl-tk/demos/mkdialog.lisp \
+	gcl-tk/demos/mkEntry2.lisp gcl-tk/demos/mkEntry.lisp \
+	gcl-tk/demos/mkForm.lisp gcl-tk/demos/mkHScale.lisp \
+	gcl-tk/demos/mkItems.lisp gcl-tk/demos/mkLabel.lisp \
+	gcl-tk/demos/mkListbox.lisp gcl-tk/demos/mkPlot.lisp \
+	gcl-tk/demos/mkRadio.lisp gcl-tk/demos/mkRuler.lisp \
+	gcl-tk/demos/mkSearch.lisp gcl-tk/demos/mkStyles.lisp \
+	gcl-tk/demos/mkTextBind.lisp gcl-tk/demos/mkVScale.lisp \
+	gcl-tk/demos/nqthm-stack.lisp gcl-tk/demos/showVars.lisp \
+	gcl-tk/demos/widget.lisp
 DATA = $(dist_lisp_DATA) $(dist_my_clcs_DATA) $(dist_my_cmpnew_DATA) \
 	$(dist_my_gcltk_DATA) $(dist_my_gcltkd_DATA) \
 	$(dist_my_lsp_DATA) $(dist_my_pcl_DATA) $(dist_my_xgcl2_DATA) \
@@ -634,6 +645,7 @@ am__define_uniq_tagged_files = \
   done | $(am__uniquify_input)`
 AM_RECURSIVE_TARGETS = cscope
 am__DIST_COMMON = $(dist_man1_MANS) $(srcdir)/Makefile.in \
+	$(top_srcdir)/bin/gcl.in $(top_srcdir)/gcl-tk/gcltksrv.in \
 	$(top_srcdir)/h/gclincl.h.in \
 	$(top_srcdir)/unixport/init_raw.lsp.in AUTHORS COPYING \
 	ChangeLog INSTALL NEWS README compile config.guess config.sub \
@@ -689,6 +701,7 @@ EMACS = @EMACS@
 EMACSLOADPATH = @EMACSLOADPATH@
 ETAGS = @ETAGS@
 EXEEXT = @EXEEXT@
+EXT = @EXT@
 EXTRA_LOBJS = @EXTRA_LOBJS@
 FINAL_CFLAGS = @FINAL_CFLAGS@
 FLISP = @FLISP@
@@ -751,18 +764,14 @@ SHELL = @SHELL@
 STRIP = @STRIP@
 SYSTEM = @SYSTEM@
 TCLSH = @TCLSH@
-TCL_DL_LIBS = @TCL_DL_LIBS@
 TCL_INCLUDE = @TCL_INCLUDE@
 TCL_LIBRARY = @TCL_LIBRARY@
-TCL_LIBS = @TCL_LIBS@
 TCL_LIB_SPEC = @TCL_LIB_SPEC@
-TK_BUILD_LIB_SPEC = @TK_BUILD_LIB_SPEC@
 TK_CONFIG_PREFIX = @TK_CONFIG_PREFIX@
 TK_INCLUDE = @TK_INCLUDE@
 TK_LIBRARY = @TK_LIBRARY@
 TK_LIB_SPEC = @TK_LIB_SPEC@
-TK_XINCLUDES = @TK_XINCLUDES@
-TK_XLIBSW = @TK_XLIBSW@
+TK_XLIB_DIR = @TK_XLIB_DIR@
 USE_CLEANUP = @USE_CLEANUP@
 VERSION = @VERSION@
 WORDS_BIGENDIAN = @WORDS_BIGENDIAN@
@@ -850,8 +859,6 @@ my_unixport_DATA = $(addprefix unixport/,init_raw.lsp gcl.script libboot.so \
 
 my_h_DATA = h/cmpinclude.h
 my_cmpnew_DATA = cmpnew/gcl_collectfn.o
-my_gcltk_DATA = gcl-tk/tkl.o gcl-tk/tinfo.o
-my_gcltkd_DATA = gcl-tk/demos/gc-monitor.o
 dist_xgcl2doc_DATA = $(DWDOCS) xgcl-2/dwdoc.dvi xgcl-2/dwdoc.pdf \
 		      xgcl-2/gcl_menu-set.lsp xgcl-2/gcl_pcalc.lsp xgcl-2/gcl_draw.lsp \
 		      xgcl-2/gcl_dwindow.lsp xgcl-2/gcl_editors.lsp xgcl-2/gcl_ice-cream.lsp \
@@ -872,28 +879,30 @@ dist_my_lsp_DATA = lsp/gcl_auto_new.lsp lsp/gcl_autoload.lsp lsp/gcl_defmacro.ls
 		 lsp/gcl_evalmacros.lsp lsp/gcl_export.lsp lsp/gcl_module.lsp lsp/gcl_top.lsp
 
 dist_my_clcs_DATA = clcs/package.lisp
-dist_my_gcltk_DATA = gcl-tk/tk-package.lsp gcl-tk/gcl.tcl #?
-dist_my_gcltkd_DATA = gcl-tk/demos/gc-monitor.lisp gcl-tk/demos/index.lsp gcl-tk/demos/mkBasic.lisp \
-                    gcl-tk/demos/mkCanvText.lisp gcl-tk/demos/mkdialog.lisp gcl-tk/demos/mkEntry2.lisp \
-		    gcl-tk/demos/mkEntry.lisp gcl-tk/demos/mkForm.lisp gcl-tk/demos/mkHScale.lisp \
-		    gcl-tk/demos/mkItems.lisp gcl-tk/demos/mkLabel.lisp gcl-tk/demos/mkListbox.lisp \
-		    gcl-tk/demos/mkPlot.lisp gcl-tk/demos/mkRadio.lisp gcl-tk/demos/mkRuler.lisp \
-		    gcl-tk/demos/mkSearch.lisp gcl-tk/demos/mkStyles.lisp gcl-tk/demos/mkTextBind.lisp \
-		    gcl-tk/demos/mkVScale.lisp gcl-tk/demos/nqthm-stack.lisp gcl-tk/demos/showVars.lisp \
-		    gcl-tk/demos/widget.lisp
-
 @AMM_GPROF_TRUE@LIBGPROF = lib/libgprof.a
 @AMM_XGCL_TRUE@X_OBJS = $(addprefix gcl_,$(addsuffix .o,\
 @AMM_XGCL_TRUE@	Xlib Xutil X XAtom defentry_events Xstruct XStruct_l_3 \
 @AMM_XGCL_TRUE@	general keysymdef X10 Xinit dwtrans tohtml index))
 
 @AMM_XGCL_TRUE@X_LIB = lib/libxgcl.a
+@AMM_TK_TRUE@my_gcltk_SCRIPTS = gcl-tk/gcltksrv
+@AMM_TK_TRUE@my_gcltk_DATA = gcl-tk/tkl.o gcl-tk/tinfo.o
+@AMM_TK_TRUE@my_gcltkd_DATA = gcl-tk/demos/gc-monitor.o
+@AMM_TK_TRUE@dist_my_gcltk_DATA = gcl-tk/tk-package.lsp
+@AMM_TK_TRUE@dist_my_gcltkd_DATA = gcl-tk/demos/gc-monitor.lisp gcl-tk/demos/index.lsp gcl-tk/demos/mkBasic.lisp \
+@AMM_TK_TRUE@                    gcl-tk/demos/mkCanvText.lisp gcl-tk/demos/mkdialog.lisp gcl-tk/demos/mkEntry2.lisp \
+@AMM_TK_TRUE@		    gcl-tk/demos/mkEntry.lisp gcl-tk/demos/mkForm.lisp gcl-tk/demos/mkHScale.lisp \
+@AMM_TK_TRUE@		    gcl-tk/demos/mkItems.lisp gcl-tk/demos/mkLabel.lisp gcl-tk/demos/mkListbox.lisp \
+@AMM_TK_TRUE@		    gcl-tk/demos/mkPlot.lisp gcl-tk/demos/mkRadio.lisp gcl-tk/demos/mkRuler.lisp \
+@AMM_TK_TRUE@		    gcl-tk/demos/mkSearch.lisp gcl-tk/demos/mkStyles.lisp gcl-tk/demos/mkTextBind.lisp \
+@AMM_TK_TRUE@		    gcl-tk/demos/mkVScale.lisp gcl-tk/demos/nqthm-stack.lisp gcl-tk/demos/showVars.lisp \
+@AMM_TK_TRUE@		    gcl-tk/demos/widget.lisp
+
 EXTRA_DIST = xbin/ar_merge xbin/mktmp \
 	   $(D_SRC) $(INCL_C) $(INIT_L) \
-	   gcl-tk/gcltksrv.in bin/in.gcl.sh \
-	   lsp cmpnew mod xgcl-2 pcl clcs info ansi-tests \
+	   bin/gcl.in \
+	   lsp cmpnew mod xgcl-2 pcl clcs info ansi-tests gcl-tk \
 	   majvers minvers git.tag release \
-	   gcl-tk/tkl.lisp gcl-tk/tinfo.lsp \
 	   info/gcl.dvi info/gcl.pdf info/gcl.html \
 	   info/gcl-si.dvi info/gcl-si.pdf info/gcl-si.html \
 	   info/gcl-tk.dvi info/gcl-tk.pdf info/gcl-tk.html
@@ -1073,6 +1082,10 @@ $(top_srcdir)/h/gclincl.h.in:  $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f h/gclincl.h h/stamp-h1
+gcl-tk/gcltksrv: $(top_builddir)/config.status $(top_srcdir)/gcl-tk/gcltksrv.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+bin/gcl: $(top_builddir)/config.status $(top_srcdir)/bin/gcl.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 unixport/init_raw.lsp: $(top_builddir)/config.status $(top_srcdir)/unixport/init_raw.lsp.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 install-my_gcltkPROGRAMS: $(my_gcltk_PROGRAMS)
@@ -1569,6 +1582,41 @@ uninstall-binSCRIPTS:
 	files=`for p in $$list; do echo "$$p"; done | \
 	       sed -e 's,.*/,,;$(transform)'`; \
 	dir='$(DESTDIR)$(bindir)'; $(am__uninstall_files_from_dir)
+install-my_gcltkSCRIPTS: $(my_gcltk_SCRIPTS)
+	@$(NORMAL_INSTALL)
+	@list='$(my_gcltk_SCRIPTS)'; test -n "$(my_gcltkdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(my_gcltkdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(my_gcltkdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  if test -f "$$d$$p"; then echo "$$d$$p"; echo "$$p"; else :; fi; \
+	done | \
+	sed -e 'p;s,.*/,,;n' \
+	    -e 'h;s|.*|.|' \
+	    -e 'p;x;s,.*/,,;$(transform)' | sed 'N;N;N;s,\n, ,g' | \
+	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1; } \
+	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
+	    if ($$2 == $$4) { files[d] = files[d] " " $$1; \
+	      if (++n[d] == $(am__install_max)) { \
+		print "f", d, files[d]; n[d] = 0; files[d] = "" } } \
+	    else { print "f", d "/" $$4, $$1 } } \
+	  END { for (d in files) print "f", d, files[d] }' | \
+	while read type dir files; do \
+	     if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
+	     test -z "$$files" || { \
+	       echo " $(INSTALL_SCRIPT) $$files '$(DESTDIR)$(my_gcltkdir)$$dir'"; \
+	       $(INSTALL_SCRIPT) $$files "$(DESTDIR)$(my_gcltkdir)$$dir" || exit $$?; \
+	     } \
+	; done
+
+uninstall-my_gcltkSCRIPTS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(my_gcltk_SCRIPTS)'; test -n "$(my_gcltkdir)" || exit 0; \
+	files=`for p in $$list; do echo "$$p"; done | \
+	       sed -e 's,.*/,,;$(transform)'`; \
+	dir='$(DESTDIR)$(my_gcltkdir)'; $(am__uninstall_files_from_dir)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -3821,7 +3869,7 @@ check: $(BUILT_SOURCES)
 all-am: Makefile $(INFO_DEPS) $(PROGRAMS) $(LIBRARIES) $(SCRIPTS) \
 		$(MANS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(infodir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(lispdir)" "$(DESTDIR)$(my_clcsdir)" "$(DESTDIR)$(my_cmpnewdir)" "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_gcltkddir)" "$(DESTDIR)$(my_lspdir)" "$(DESTDIR)$(my_pcldir)" "$(DESTDIR)$(my_xgcl2dir)" "$(DESTDIR)$(xgcl2docdir)" "$(DESTDIR)$(my_cmpnewdir)" "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_gcltkddir)" "$(DESTDIR)$(my_hdir)" "$(DESTDIR)$(my_unixportdir)"; do \
+	for dir in "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(infodir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(lispdir)" "$(DESTDIR)$(my_clcsdir)" "$(DESTDIR)$(my_cmpnewdir)" "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_gcltkddir)" "$(DESTDIR)$(my_lspdir)" "$(DESTDIR)$(my_pcldir)" "$(DESTDIR)$(my_xgcl2dir)" "$(DESTDIR)$(xgcl2docdir)" "$(DESTDIR)$(my_cmpnewdir)" "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_gcltkddir)" "$(DESTDIR)$(my_hdir)" "$(DESTDIR)$(my_unixportdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -4075,8 +4123,8 @@ install-data-am: install-dist_lispDATA install-dist_my_clcsDATA \
 	install-dist_my_pclDATA install-dist_my_xgcl2DATA \
 	install-dist_xgcl2docDATA install-info-am install-man \
 	install-my_cmpnewDATA install-my_gcltkDATA \
-	install-my_gcltkPROGRAMS install-my_gcltkdDATA \
-	install-my_hDATA install-my_unixportDATA \
+	install-my_gcltkPROGRAMS install-my_gcltkSCRIPTS \
+	install-my_gcltkdDATA install-my_hDATA install-my_unixportDATA \
 	install-my_unixportLIBRARIES install-my_unixportPROGRAMS
 
 install-dvi: install-dvi-am
@@ -4398,10 +4446,10 @@ uninstall-am: uninstall-binSCRIPTS uninstall-dist_lispDATA \
 	uninstall-dist_my_xgcl2DATA uninstall-dist_xgcl2docDATA \
 	uninstall-dvi-am uninstall-html-am uninstall-info-am \
 	uninstall-man uninstall-my_cmpnewDATA uninstall-my_gcltkDATA \
-	uninstall-my_gcltkPROGRAMS uninstall-my_gcltkdDATA \
-	uninstall-my_hDATA uninstall-my_unixportDATA \
-	uninstall-my_unixportLIBRARIES uninstall-my_unixportPROGRAMS \
-	uninstall-pdf-am uninstall-ps-am
+	uninstall-my_gcltkPROGRAMS uninstall-my_gcltkSCRIPTS \
+	uninstall-my_gcltkdDATA uninstall-my_hDATA \
+	uninstall-my_unixportDATA uninstall-my_unixportLIBRARIES \
+	uninstall-my_unixportPROGRAMS uninstall-pdf-am uninstall-ps-am
 
 uninstall-man: uninstall-man1
 
@@ -4427,8 +4475,8 @@ uninstall-man: uninstall-man1
 	install-exec install-exec-am install-html install-html-am \
 	install-info install-info-am install-man install-man1 \
 	install-my_cmpnewDATA install-my_gcltkDATA \
-	install-my_gcltkPROGRAMS install-my_gcltkdDATA \
-	install-my_hDATA install-my_unixportDATA \
+	install-my_gcltkPROGRAMS install-my_gcltkSCRIPTS \
+	install-my_gcltkdDATA install-my_hDATA install-my_unixportDATA \
 	install-my_unixportLIBRARIES install-my_unixportPROGRAMS \
 	install-pdf install-pdf-am install-ps install-ps-am \
 	install-strip installcheck installcheck-am installdirs \
@@ -4443,10 +4491,10 @@ uninstall-man: uninstall-man1
 	uninstall-dist_xgcl2docDATA uninstall-dvi-am uninstall-html-am \
 	uninstall-info-am uninstall-man uninstall-man1 \
 	uninstall-my_cmpnewDATA uninstall-my_gcltkDATA \
-	uninstall-my_gcltkPROGRAMS uninstall-my_gcltkdDATA \
-	uninstall-my_hDATA uninstall-my_unixportDATA \
-	uninstall-my_unixportLIBRARIES uninstall-my_unixportPROGRAMS \
-	uninstall-pdf-am uninstall-ps-am
+	uninstall-my_gcltkPROGRAMS uninstall-my_gcltkSCRIPTS \
+	uninstall-my_gcltkdDATA uninstall-my_hDATA \
+	uninstall-my_unixportDATA uninstall-my_unixportLIBRARIES \
+	uninstall-my_unixportPROGRAMS uninstall-pdf-am uninstall-ps-am
 
 .PRECIOUS: Makefile
 
@@ -4700,19 +4748,6 @@ ansi-tests/test_results: ansi-tests | unixport/saved_ansi_gcl
 	[ -d $(@D) ] || (mkdir $(@D) && cp $</*.lsp $(@D)) # FIXME testsuite in separate directory, hard
 	cd $(@D) && echo '(load "gclload")' | ../$| |tee $(@F)
 
-bin/gcl: bin/in.gcl.sh majvers minvers # FIXME configure
-	sed -e "s,@EXT@,,g" \
-	    -e "s,@VERS@,$$(cat $(word 2,$^)).$$(cat $(word 3,$^)),g" \
-	    -e "s,@TKVERS@,$$(echo $(TK_CONFIG_PREFIX) |sed 's,.*/tk,,g'),g" $< >$@
-	chmod a+x $@
-
-gcl-tk/gcltksrv$(EXEEXT): gcl-tk/gcltksrv.in | gcl-tk # FIXME configure
-	cat $<  | sed -e "s!TK_LIBRARY=.*!TK_LIBRARY=${TK_LIBRARY}!g" \
-	-e "s!TCL_LIBRARY=.*!TCL_LIBRARY=${TCL_LIBRARY}!g" \
-	-e "s!TK_XLIB_DIR=.*!TK_XLIB_DIR=${TK_XLIB_DIR}!g" \
-	-e "s!GCL_TK_DIR=.*!GCL_TK_DIR=$(my_unixportdir)/../gcl-tk!g" > $@
-	chmod a+x $@
-
 gcl-tk/%.o: gcl-tk/%.lisp | unixport/saved_ansi_gcl
 	[ -d $(@D) ] || mkdir -p $(@D)
 	$(word 1,$|) -compile $< -o $@
@@ -4753,10 +4788,8 @@ $(DWDOCS): xgcl-2/dwdoc.tex xgcl-2/gcl_tohtml.lsp xgcl-2/gcl_index.lsp | unixpor
 
 # package extension
 
-bin/gcl%: bin/in.gcl.sh majvers minvers
-	sed -e "s,@EXT@,$*,g" \
-	    -e "s,@VERS@,$$(cat $(word 2,$^)).$$(cat $(word 3,$^)),g" \
-	    -e "s,@TKVERS@,$$(echo $(TK_CONFIG_PREFIX) |sed 's,.*/tk,,g'),g" $< >$@
+bin/gcl%: bin/gcl
+	sed -e "s,^EXT=.*,EXT=$*,g" $< >$@
 	chmod a+x $@
 
 man/man1/gcl%.1: man/man1/gcl.1
@@ -4802,7 +4835,13 @@ clean-local:
 		file-that-was-renamed.txt foo.fasl foo.lsp foo.txt \
 		foo.ufsl ldtest.lsp scratch/ temp.dat test_results \
 		tmp.dat tmp.txt)
-	rm -rf info/*.idx
+	mv xgcl-2/dwdoc.tex xgcl-2/ori_dwdoc.tex && \
+		rm -rf xgcl-2/dwdoc* xgcl-2/*.o &&  \
+		mv xgcl-2/ori_dwdoc.tex xgcl-2/dwdoc.tex
+	rm -rf $(addprefix info/,*.idx *.t2p *.t2d *.info* *.dvi *.pdf *.html)
+	rm -rf $(addprefix ansi-tests/,test.out *.o foo.txt temp.dat file-that-was-renamed.txt \
+				       tmp.dat tmp.dat.BAK tmp2.dat scratch tmp.txt foo.lsp \
+				       'CLTEST:foo.txt')
 
 distclean-local:
 	rm -rf o/.Tpo #FIXME

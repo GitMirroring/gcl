@@ -665,18 +665,17 @@ NIFLAGS
 FINAL_CFLAGS
 BASE_LDFLAGS
 ALLOCA
-TCL_LIBS
-TCL_DL_LIBS
+EXT
 TCL_LIB_SPEC
-TK_XLIBSW
-TK_BUILD_LIB_SPEC
 TK_LIB_SPEC
 TCL_INCLUDE
 TK_INCLUDE
-TK_XINCLUDES
 TCL_LIBRARY
 TK_LIBRARY
+TK_XLIB_DIR
 TK_CONFIG_PREFIX
+AMM_TK_FALSE
+AMM_TK_TRUE
 TCLSH
 HAVE_SIGEMT
 HAVE_SIGSYS
@@ -11713,73 +11712,14 @@ fi
 	fi
     fi
 
-    TCL_VERSION_DOT_FREE=`echo ${TCL_VERSION} | tr -d .`
-    if test -e ${TK_CONFIG_PREFIX}/../bin/tcl${TCL_VERSION_DOT_FREE}.dll  ; then
-	TCL_LIBS="-L${TK_CONFIG_PREFIX}/../bin -ltk${TCL_VERSION_DOT_FREE} -ltcl${TCL_VERSION_DOT_FREE}"
-	TCL_STUB_LIBS="-L${TK_CONFIG_PREFIX}/lib -ltkstub${TCL_VERSION_DOT_FREE} -ltclstub${TCL_VERSION_DOT_FREE}"
-    else
-	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for main in -llieee" >&5
-printf %s "checking for main in -llieee... " >&6; }
-if test ${ac_cv_lib_lieee_main+y}
-then :
-  printf %s "(cached) " >&6
-else case e in #(
-  e) ac_check_lib_save_LIBS=$LIBS
-LIBS="-llieee  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-int
-main (void)
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"
-then :
-  ac_cv_lib_lieee_main=yes
-else case e in #(
-  e) ac_cv_lib_lieee_main=no ;;
-esac
 fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS ;;
-esac
+ if test "$TK_CONFIG_PREFIX" != ""; then
+  AMM_TK_TRUE=
+  AMM_TK_FALSE='#'
+else
+  AMM_TK_TRUE='#'
+  AMM_TK_FALSE=
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_lieee_main" >&5
-printf "%s\n" "$ac_cv_lib_lieee_main" >&6; }
-if test "x$ac_cv_lib_lieee_main" = xyes
-then :
-  have_ieee=1
-else case e in #(
-  e) have_ieee=0 ;;
-esac
-fi
-
-	if test "$have_ieee" = "0" ; then
-	    TCL_LIBS=`echo ${TCL_LIBS} | sed -e "s:-lieee::g" `
-	fi
-	TCL_STUB_LIBS=""
-    fi
-
-fi
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -11788,14 +11728,26 @@ printf %s "checking for tcl/tk... " >&6; }
 if test -d "${TK_CONFIG_PREFIX}" ; then
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: using TK_VERSION=${TK_VERSION} of ${TK_CONFIG_PREFIX}" >&5
 printf "%s\n" "using TK_VERSION=${TK_VERSION} of ${TK_CONFIG_PREFIX}" >&6; }
+
+
+
+
+
+
+
+
+    ac_config_files="$ac_config_files gcl-tk/gcltksrv"
+
 else
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: not found" >&5
 printf "%s\n" "not found" >&6; }
 fi
 
-# for sgbc the mprotect capabilities.
 
-# the time handling for unixtime, add timezone
+ac_config_files="$ac_config_files bin/gcl"
+
+
+
        for ac_header in sys/mman.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "sys/mman.h" "ac_cv_header_sys_mman_h" "$ac_includes_default"
@@ -12201,6 +12153,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${AMM_XGCL_TRUE}" && test -z "${AMM_XGCL_FALSE}"; then
   as_fn_error $? "conditional \"AMM_XGCL\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${AMM_TK_TRUE}" && test -z "${AMM_TK_FALSE}"; then
+  as_fn_error $? "conditional \"AMM_TK\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 
@@ -12796,6 +12752,8 @@ do
     "h/gclincl.h") CONFIG_HEADERS="$CONFIG_HEADERS h/gclincl.h" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
+    "gcl-tk/gcltksrv") CONFIG_FILES="$CONFIG_FILES gcl-tk/gcltksrv" ;;
+    "bin/gcl") CONFIG_FILES="$CONFIG_FILES bin/gcl" ;;
     "unixport/init_raw.lsp") CONFIG_FILES="$CONFIG_FILES unixport/init_raw.lsp" ;;
 
   *) as_fn_error $? "invalid argument: '$ac_config_target'" "$LINENO" 5;;
