@@ -447,7 +447,7 @@ o/new_init.c: $(INI_FILES)
 	echo '}' >> $@
 	! cat $@ | awk -F, '/DEFUN/ {print $$1,$$2}' | grep -v object || (rm $@ && false)
 
-ansi-tests/test_results: ansi-tests/*.lsp | unixport/saved_ansi_gcl
+ansi-tests/test_results: $(srcdir)/ansi-tests/*.lsp | unixport/saved_ansi_gcl
 	[ -d $(@D) ] || (mkdir $(@D) && cp $^ $(@D)) # FIXME testsuite in separate directory, hard
 	cd $(@D) && echo '(load "gclload")' | ../$| |tee $(@F)
 
