@@ -67,10 +67,7 @@ configure-stamp:
 	CC=$(MCC) CFLAGS="$$CFLAGS $(CFLAGS_APPEND)" ./configure \
 		--host=$$(dpkg-architecture -qDEB_HOST_GNU_TYPE) \
 		$(DEBUG) \
-		--prefix=/usr \
-		--mandir=\$${prefix}/share/man \
-		--enable-infodir=\$${prefix}/share/info \
-		--enable-emacsdir=\$${prefix}/share/emacs/site-lisp
+		--prefix=/usr
 
 	touch $@
 
