@@ -2653,6 +2653,7 @@
                 (#\^E (EDITMENU-END M))
                 (#\^K (EDITMENU-KILL M))
                 (#\^Y (EDITMENU-YANK M))
+                (#\^Q (setq done t))
                 (T NIL))
               (IF (> (CHAR-CODE CHAR) 128)
                   (PROGN

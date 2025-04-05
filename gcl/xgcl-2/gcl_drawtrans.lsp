@@ -21,7 +21,7 @@
 ; Written by: Gordon S. Novak Jr., Department of Computer Sciences,
 ; University of Texas at Austin  78712.    novak@cs.utexas.edu
 
-(IN-PACKAGE :USER)
+(IN-PACKAGE :xlib)
 
 (defmacro while (test &rest forms) `(loop (unless ,test (return)) ,@forms) )
 
@@ -86,6 +86,8 @@
       '((W WINDOW) (&OPTIONAL NIL)))
 (SETF (GET 'MENU-SET-CREATE 'GLFNRESULTTYPE) 'MENU-SET)
 
+
+(defun between (x y z) (<= y x z))
 
 (DEFUN MENU-SET-SELECT (MS &OPTIONAL REDRAW ENABLED)
   (LET (RES RESB ITM SEL LASTX LASTY)

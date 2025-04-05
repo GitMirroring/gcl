@@ -383,9 +383,9 @@
 (gldefun edit-color-init ((w window))
   (let (rm gm bm rgb)
     (rgb = (a rgb))
-    (glcc 'edit-color-red)
-    (glcc 'edit-color-green)
-    (glcc 'edit-color-blue)
+    ;; (glcc 'edit-color-red)
+    ;; (glcc 'edit-color-green)
+    ;; (glcc 'edit-color-blue)
     (*edit-color-menu-set* = (menu-set-create w nil))
     (rm = (barmenu-create 256 200 10 "" nil #'edit-color-red (list rgb) w
 			    120 40 nil t (a rgb with red = 65535)))

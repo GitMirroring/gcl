@@ -204,7 +204,7 @@
 (AUTOLOAD 'offer-choices '|tinfo|)
 (AUTOLOAD 'tkconnect '|tkl|)
 
-(AUTOLOAD 'user::xgcl-demo '|gcl_dwtest|)
+(AUTOLOAD 'user::xgcl-demo '|gcl_dwtestcases|)
 (defun user::xgcl nil
  (use-package :xlib)
  (format t "Welcome to xgcl! Try (xgcl-demo) for a demonstration."))
