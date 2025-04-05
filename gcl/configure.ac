@@ -2,7 +2,7 @@
 AC_INIT(gcl,2.7.0)
 AC_PREREQ([2.0])
 AC_CONFIG_HEADERS([h/gclincl.h])
-AM_INIT_AUTOMAKE([1.16 -Wno-portability])
+AM_INIT_AUTOMAKE([1.16 -Wno-portability tar-pax])
 AM_PATH_LISPDIR
 AC_CONFIG_FILES([Makefile])
 #AC_USE_SYSTEM_EXTENSIONS
