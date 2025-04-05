@@ -128,6 +128,7 @@
 	      (format t "~60T& ~D \\\\~%" n))  ) ) ) ))
 
 (defvar *prefix* "")
+(defvar *outdir* "")
 (defvar *feof* nil)
 (defvar *done* nil)
 (defvar *pagenumber* 0)
@@ -169,10 +170,11 @@
 ; Translate a file of LaTex slides to HTML
 ; prefix is a prefix string for output files
 ; pagenumber is first page number.
-(defun tohtml (filenm prefix &optional (pagenumber 1))
+(defun tohtml (filenm prefix &optional (pagenumber 1) (outdir prefix))
   (let (c)
     (setq *pagenumber* pagenumber)
     (setq *prefix* (stringify prefix))
+    (setq *outdir* (stringify outdir))
     (setq *feof* nil)
     (setq *ignore* t)
     (setq *center* nil)
@@ -202,7 +204,7 @@
 (defun dohtml (infile)
   (let (c)
     (setq *done* nil)
-    (with-open-file (outfile (concatenate 'string *prefix*
+    (with-open-file (outfile (concatenate 'string *outdir* *prefix*
 					  (stringify *pagenumber*) ".html")
 			     :direction :output :if-exists :supersede)
       (princ "<HTML> <HEAD> <TITLE>" outfile)

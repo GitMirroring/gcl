@@ -10,6 +10,7 @@ my_libdir=$(libdir)/$(PACKAGE)-$(PACKAGE_VERSION)
 my_unixportdir=$(my_libdir)/unixport
 my_gcltkdir=$(my_libdir)/gcl-tk
 my_xgcl2dir=$(my_libdir)/xgcl-2
+xgcl2docdir=$(docdir)/xgcl-2
 my_pcldir=$(my_libdir)/pcl
 my_lspdir=$(my_libdir)/lsp
 my_hdir=$(my_libdir)/h
@@ -35,13 +36,20 @@ my_h_DATA=h/cmpinclude.h
 my_cmpnew_DATA=cmpnew/gcl_collectfn.o
 my_gcltk_DATA=gcl-tk/tkl.o gcl-tk/tinfo.o
 my_gcltkd_DATA=gcl-tk/demos/gc-monitor.o
-dist_doc_DATA=$(DWDOCS) xgcl-2/dwdoc.pdf
+
+dist_xgcl2doc_DATA=$(DWDOCS) xgcl-2/dwdoc.dvi xgcl-2/dwdoc.pdf \
+		      xgcl-2/gcl_menu-set.lsp xgcl-2/gcl_pcalc.lsp xgcl-2/gcl_draw.lsp \
+		      xgcl-2/gcl_dwindow.lsp xgcl-2/gcl_editors.lsp xgcl-2/gcl_ice-cream.lsp \
+		      xgcl-2/gcl_lispserver.lsp xgcl-2/Xakcl.paper xgcl-2/gcl_Xakcl.example.lsp \
+		      xgcl-2/README
 
 dist_man1_MANS=man/man1/gcl.1
 dist_lisp_DATA=elisp/add-default.el elisp/ansi-doc.el elisp/dbl.el elisp/doc-to-texi.el \
 	       elisp/gcl.el elisp/man1-to-texi.el elisp/smart-complete.el elisp/sshell.el
 dist_my_cmpnew_DATA=cmpnew/gcl_lfun_list.lsp
-dist_my_xgcl2_DATA=xgcl-2/sysdef.lisp xgcl-2/gcl_dwtest.lsp xgcl-2/gcl_dwtestcases.lsp
+dist_my_xgcl2_DATA=xgcl-2/sysdef.lisp xgcl-2/gcl_dwtest.lsp xgcl-2/gcl_dwtestcases.lsp \
+		   xgcl-2/gcl_drawtrans.lsp xgcl-2/gcl_editorstrans.lsp xgcl-2/gcl_lispservertrans.lsp \
+		   xgcl-2/gcl_menu-settrans.lsp xgcl-2/gcl_draw-gates.lsp
 dist_my_pcl_DATA=pcl/package.lisp
 dist_my_lsp_DATA=lsp/gcl_auto_new.lsp lsp/gcl_autoload.lsp lsp/gcl_defmacro.lsp \
 		 lsp/gcl_evalmacros.lsp lsp/gcl_export.lsp lsp/gcl_module.lsp lsp/gcl_top.lsp
@@ -77,16 +85,12 @@ endif
 EXTRA_DIST=xbin/ar_merge xbin/mktmp \
 	   $(D_SRC) $(INCL_C) $(INIT_L) \
 	   gcl-tk/gcltksrv.in bin/in.gcl.sh \
-	   $(addsuffix /gcl_*.lsp,lsp cmpnew mod xgcl-2) \
-	   $(addsuffix /gcl_*.lisp,pcl clcs) \
-	   clcs/myload1.lisp pcl/defsys.lisp \
+	   lsp cmpne mod gcl-2 pcl clcs info ansi-tests \
 	   majvers minvers git.tag release \
 	   gcl-tk/tkl.lisp gcl-tk/tinfo.lsp \
-	   xgcl-2/dwdoc.tex \
 	   info/gcl.dvi info/gcl.pdf info/gcl.html \
 	   info/gcl-si.dvi info/gcl-si.pdf info/gcl-si.html \
-	   info/gcl-tk.dvi info/gcl-tk.pdf info/gcl-tk.html \
-	   info/*.texi ansi-tests/*.lsp
+	   info/gcl-tk.dvi info/gcl-tk.pdf info/gcl-tk.html
 
 # end of primaries
 
@@ -192,10 +196,13 @@ L_STUBS=s sf c listlib predlib deftype typeof subtypep bit type typep typecase a
 	truename directory rename_file restart iolib mislib module numlib packlib \
 	setf top trace sloop debug info serror mnum fpe
 L_OBJS=$(addprefix gcl_,$(addsuffix .o,$(L_STUBS)))
+LC_OBJS=$(filter gcl_cmp%,$(L_OBJS))
+LL_OBJS=$(filter-out gcl_cmp%,$(L_OBJS))
 L_FOBJS=$(addprefix gcl/,$(L_OBJS))
 
 MOD_STUBS=ansi_io defpackage destructuring_bind loop make_defpackage
-MOD_OBJS=$(addprefix gcl_,$(addsuffix .o,$(MOD_STUBS))) $(X_OBJS)
+MMOD_OBJS=$(addprefix gcl_,$(addsuffix .o,$(MOD_STUBS)))
+MOD_OBJS=$(MMOD_OBJS) $(X_OBJS)
 MOD_FOBJS=$(addprefix mod_gcl/,$(MOD_OBJS)) $(L_FOBJS) $(X_LIB)
 
 PCL_STUBS=boot braid cache combin compat cpl ctypes defclass defcombin defs dfun dlisp2\
@@ -296,11 +303,11 @@ unixport/mod_gcl0: xgcl-2/sysdef.lisp | mod_gcl0
 	rm $(@D)/in
 	cp gcl/all.hsh $(word 1,$|) #FIXME
 
-unixport/pcl_gcl: clcs/package.lisp clcs/myload1.lisp cmpnew/gcl_collectfn.lsp pcl/defsys.lisp  | pcl_gcl
+unixport/pcl_gcl: clcs/package.lisp cmpnew/gcl_collectfn.lsp pcl/defsys.lisp  | pcl_gcl
 	echo  "(let ((*features* (remove :kcl *features*))) (mapc (quote load) (list $(patsubst %,\"%\",$^))))" \
 	      "(compiler::cdebug)" \
 	      "(setq compiler::*assert-ftype-proclamations* t)" \
-	      "(setq pcl::*pcl-directory* (cons \"$$(dirname $(word 4,$^))/\" \"$(@F)/\"))" \
+	      "(setq pcl::*pcl-directory* (cons \"$$(dirname $(word 3,$^))/\" \"$(@F)/\"))" \
 	      "(print pcl::*pcl-directory*)" \
 	      "(setq pcl::*default-pathname-extensions* (cons \"lisp\" \"o\"))" \
 	      "(setq pcl::*pathname-extensions* (cons \"lisp\" \"o\"))" \
@@ -314,27 +321,37 @@ unixport/ansi_gcl: clcs/package.lisp clcs/gcl_clcs_precom.lisp \
              "(si::save-system \"$@\")" | $(word 2,$|)
 	cp pcl_gcl/all.hsh $(word 1,$|) #FIXME
 
-gcl0/%.o: $(srcdir)/*/%.lsp | unixport/gcl0
+$(addprefix gcl0/,$(LL_OBJS)): gcl0/%.o : lsp/%.lsp
+$(addprefix gcl0/,$(LC_OBJS)): gcl0/%.o : cmpnew/%.lsp
+gcl0/%.o: | unixport/gcl0
 	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" -compile $< -o $@
 	[ "$*" = "gcl_c" ] || [ "$*" = "gcl_listlib" ] || \
 		ln -f $@ $$(echo $@ |sed 's,\.o,\.done,g') #FIXME directory link
 
-gcl1/%.o: $(srcdir)/*/%.lsp  | unixport/gcl1
+$(addprefix gcl1/,$(LL_OBJS)): gcl1/%.o : lsp/%.lsp
+$(addprefix gcl1/,$(LC_OBJS)): gcl1/%.o : cmpnew/%.lsp
+gcl1/%.o: | unixport/gcl1
 	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" \
 	   -eval "(setq compiler::*dump-inl-hash* t)" \
 	   -compile $< -o $@
 	[ "$*" = "gcl_sym" ] || ln -f $@ $$(echo $@ |sed 's,\.o,\.done,g') # FIXME listlib must come before sym
 
-gcl2/%.o: $(srcdir)/*/%.lsp  | unixport/gcl2
+$(addprefix gcl2/,$(LL_OBJS)): gcl2/%.o : lsp/%.lsp
+$(addprefix gcl2/,$(LC_OBJS)): gcl2/%.o : cmpnew/%.lsp
+gcl2/%.o: | unixport/gcl2
 	$| -eval "(compiler::cdebug)(setq compiler::*dump-inl-hash* t)" -compile $< -o $@
 
-gcl3/%.o: $(srcdir)/*/%.lsp  | unixport/gcl3
+$(addprefix gcl3/,$(LL_OBJS)): gcl3/%.o : lsp/%.lsp
+$(addprefix gcl3/,$(LC_OBJS)): gcl3/%.o : cmpnew/%.lsp
+gcl3/%.o: | unixport/gcl3
 	$| -eval "(compiler::cdebug)(setq compiler::*dump-inl-hash* t)" -compile $< -o $@
 
 gcl/%.o: gcl3/%.o | gcl
 	cp $(patsubst %.o,%.*,$<) $(@D)
 
-mod_gcl0/%.o: $(srcdir)/*/%.lsp | unixport/mod_gcl0
+$(addprefix mod_gcl0/,$(MMOD_OBJS)): mod_gcl0/%.o : mod/%.lsp
+$(addprefix mod_gcl0/,$(X_OBJS)):    mod_gcl0/%.o : xgcl-2/%.lsp
+mod_gcl0/%.o: | unixport/mod_gcl0
 	$| -eval "(setq compiler::*dump-inl-hash* t)" -compile $< -o $@
 
 mod_gcl/%.o: mod_gcl0/%.o | unixport/mod_gcl
@@ -447,8 +464,8 @@ o/new_init.c: $(INI_FILES)
 	echo '}' >> $@
 	! cat $@ | awk -F, '/DEFUN/ {print $$1,$$2}' | grep -v object || (rm $@ && false)
 
-ansi-tests/test_results: $(srcdir)/ansi-tests/*.lsp | unixport/saved_ansi_gcl
-	[ -d $(@D) ] || (mkdir $(@D) && cp $^ $(@D)) # FIXME testsuite in separate directory, hard
+ansi-tests/test_results: ansi-tests | unixport/saved_ansi_gcl
+	[ -d $(@D) ] || (mkdir $(@D) && cp $</*.lsp $(@D)) # FIXME testsuite in separate directory, hard
 	cd $(@D) && echo '(load "gclload")' | ../$| |tee $(@F)
 
 bin/gcl: bin/in.gcl.sh majvers minvers # FIXME configure
@@ -488,19 +505,20 @@ gcl-tk/demos gcl-tk a c $(MY_DIRS): % :
 
 xgcl-2/dwdoc.pdf: xgcl-2/dwdoc.tex
 	latex -output-directory=$(@D) $<
+	dvipdfm $$(echo $@ |sed 's,\.pdf,\.dvi,g') -o $@
 
 $(DWDOCS): xgcl-2/dwdoc.tex xgcl-2/gcl_tohtml.lsp xgcl-2/gcl_index.lsp | unixport/saved_mod_gcl
 	mkdir -p $(@D)
 	echo "(in-package :xlib)" \
 	     "(progn " \
 		"(mapc (quote load) (list $(patsubst %,\"%\",$(filter-out $<,$^))))" \
-		"(tohtml \"$<\" \"$(@D)/dwdoc\"))" \
+		"(tohtml \"$<\" \"dwdoc\" 1 \"$(@D)/\"))" \
 		"(with-open-file (s \"$(@D)/dwdoccontents.html\" :direction :output)" \
 			"(let ((*standard-output* s))" \
-				"(makecont \"$<\" 1 \"$(@D)/dwdoc\")))" \
+				"(makecont \"$<\" 1 \"dwdoc\")))" \
 	        "(with-open-file (s \"$(@D)/dwdocindex.html\" :direction :output)" \
 			"(let ((*standard-output* s))" \
-				"(printindex indexdata \"$(@D)/dwdoc\")))" | $|
+				"(printindex indexdata \"dwdoc\")))" | $|
 
 # package extension
 
