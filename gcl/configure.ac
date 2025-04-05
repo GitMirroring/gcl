@@ -1815,10 +1815,10 @@ AC_CHECK_HEADERS(dis-asm.h,
 AC_ARG_ENABLE([tcltk],[  --enable-tcltk will try to build gcl-tk])
 AC_ARG_ENABLE([tkconfig],
 	      [  --enable-tkconfig=XXXX will force the use of a TK_CONFIG_PREFIX=XXXXX as place to look for tkConfig.sh and tclConfig.sh],
-	      [TK_CONFIG_PREFIX=$enableval],[TK_CONFIG_PREFIX=unknown])
+	      [TK_CONFIG_PREFIX=$enableval],)
 AC_ARG_ENABLE([tclconfig],
 	      [  --enable-tclconfig=XXXX will force the use of a TCL_CONFIG_PREFIX=XXXXX as place to look for tclConfig.sh and tclConfig.sh],
-	      [TCL_CONFIG_PREFIX=$enableval],[TCL_CONFIG_PREFIX=unknown])
+	      [TCL_CONFIG_PREFIX=$enableval],)
 
 if test "$enable_tcltk" != "no" ; then
 

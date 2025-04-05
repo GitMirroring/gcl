@@ -11592,18 +11592,12 @@ fi
 if test ${enable_tkconfig+y}
 then :
   enableval=$enable_tkconfig; TK_CONFIG_PREFIX=$enableval
-else case e in #(
-  e) TK_CONFIG_PREFIX=unknown ;;
-esac
 fi
 
 # Check whether --enable-tclconfig was given.
 if test ${enable_tclconfig+y}
 then :
   enableval=$enable_tclconfig; TCL_CONFIG_PREFIX=$enableval
-else case e in #(
-  e) TCL_CONFIG_PREFIX=unknown ;;
-esac
 fi
 
 
