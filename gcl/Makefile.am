@@ -28,17 +28,11 @@ my_unixport_PROGRAMS=unixport/saved_gcl unixport/saved_ansi_gcl
 my_unixport_LIBRARIES=unixport/libgcl.a unixport/libansi_gcl.a
 bin_SCRIPTS=bin/gcl
 check_SCRIPTS=ansi-tests/test_results
-info_TEXINFOS=info/gcl.texi info/gcl-si.texi info/gcl-tk.texi #?
+info_TEXINFOS=info/gcl.texi info/gcl-si.texi
 my_unixport_DATA=$(addprefix unixport/,init_raw.lsp gcl.script libboot.so \
 				       gcl_cmpnopt_gcl.lsp gcl_cmpnopt_ansi_gcl.lsp)
 my_h_DATA=h/cmpinclude.h
 my_cmpnew_DATA=cmpnew/gcl_collectfn.o
-
-dist_xgcl2doc_DATA=$(DWDOCS) xgcl-2/dwdoc.dvi xgcl-2/dwdoc.pdf \
-		      xgcl-2/gcl_menu-set.lsp xgcl-2/gcl_pcalc.lsp xgcl-2/gcl_draw.lsp \
-		      xgcl-2/gcl_dwindow.lsp xgcl-2/gcl_editors.lsp xgcl-2/gcl_ice-cream.lsp \
-		      xgcl-2/gcl_lispserver.lsp xgcl-2/Xakcl.paper xgcl-2/gcl_Xakcl.example.lsp \
-		      xgcl-2/README
 
 dist_man1_MANS=man/man1/gcl.1
 dist_lisp_DATA=elisp/add-default.el elisp/ansi-doc.el elisp/dbl.el elisp/doc-to-texi.el \
@@ -65,6 +59,12 @@ X_OBJS=$(addprefix gcl_,$(addsuffix .o,\
 	general keysymdef X10 Xinit dwtrans tohtml index))
 X_LIB=lib/libxgcl.a
 noinst_LIBRARIES+=$(X_LIB)
+xgcl2doc_DATA=$(DWDOCS) xgcl-2/dwdoc.dvi xgcl-2/dwdoc.pdf \
+	      xgcl-2/gcl_menu-set.lsp xgcl-2/gcl_pcalc.lsp xgcl-2/gcl_draw.lsp \
+	      xgcl-2/gcl_dwindow.lsp xgcl-2/gcl_editors.lsp xgcl-2/gcl_ice-cream.lsp \
+	      xgcl-2/gcl_lispserver.lsp xgcl-2/Xakcl.paper xgcl-2/gcl_Xakcl.example.lsp \
+	      xgcl-2/README
+
 if AMM_GPROF
 noinst_LIBRARIES+=lib/libxgcl_gprof.a
 endif
@@ -74,9 +74,9 @@ if AMM_TK
 my_gcltk_PROGRAMS=gcl-tk/gcltkaux
 my_gcltk_SCRIPTS=gcl-tk/gcltksrv
 my_gcltk_DATA=gcl-tk/tkl.o gcl-tk/tinfo.o
-my_gcltkd_DATA=gcl-tk/demos/gc-monitor.o
+my_gcltkd_DATA=gcl-tk/demos/gc-monitor.o gcl-tk/demos/index.lsp
 dist_my_gcltk_DATA=gcl-tk/tk-package.lsp
-dist_my_gcltkd_DATA=gcl-tk/demos/gc-monitor.lisp gcl-tk/demos/index.lsp gcl-tk/demos/mkBasic.lisp \
+dist_my_gcltkd_DATA=gcl-tk/demos/gc-monitor.lisp gcl-tk/demos/mkBasic.lisp \
                     gcl-tk/demos/mkCanvText.lisp gcl-tk/demos/mkdialog.lisp gcl-tk/demos/mkEntry2.lisp \
 		    gcl-tk/demos/mkEntry.lisp gcl-tk/demos/mkForm.lisp gcl-tk/demos/mkHScale.lisp \
 		    gcl-tk/demos/mkItems.lisp gcl-tk/demos/mkLabel.lisp gcl-tk/demos/mkListbox.lisp \
@@ -84,6 +84,7 @@ dist_my_gcltkd_DATA=gcl-tk/demos/gc-monitor.lisp gcl-tk/demos/index.lsp gcl-tk/d
 		    gcl-tk/demos/mkSearch.lisp gcl-tk/demos/mkStyles.lisp gcl-tk/demos/mkTextBind.lisp \
 		    gcl-tk/demos/mkVScale.lisp gcl-tk/demos/nqthm-stack.lisp gcl-tk/demos/showVars.lisp \
 		    gcl-tk/demos/widget.lisp
+info_TEXINFOS+=info/gcl-tk.texi
 endif
 
 
@@ -92,6 +93,7 @@ EXTRA_DIST=xbin/ar_merge xbin/mktmp \
 	   bin/gcl.in \
 	   lsp cmpnew mod xgcl-2 pcl clcs info ansi-tests gcl-tk \
 	   majvers minvers git.tag release \
+	   xgcl-2/dwdoc.dvi xgcl-2/dwdoc.pdf \
 	   info/gcl.dvi info/gcl.pdf info/gcl.html \
 	   info/gcl-si.dvi info/gcl-si.pdf info/gcl-si.html \
 	   info/gcl-tk.dvi info/gcl-tk.pdf info/gcl-tk.html
@@ -133,15 +135,15 @@ C_SRC=o/typespec.c o/alloc.c o/gbc.c o/bitop.c o/main.c o/eval.c o/macros.c o/le
       o/array.c o/regexpr.c o/structure.c o/toplevel.c o/backq.c o/format.c\
       o/unixfsys.c o/unixfasl.c o/error.c o/unixtime.c o/unixsys.c o/unixsave.c o/funlink.c  o/fat_string.c\
       o/run_process.c o/nfunlink.c o/usig.c o/usig2.c o/utils.c o/makefun.c o/sockets.c o/gmp_wrappers.c\
-      o/clxsocket.c o/nsocket.c o/new_init.c o/prelink.c o/sfasl.c o/msbrk.c \
+      o/clxsocket.c o/nsocket.c o/prelink.c o/sfasl.c o/msbrk.c \
       o/bcmp.c o/bcopy.c o/bzero.c o/user_init.c o/user_match.c o/mapfun.c
 
 D_SRC=o/character.d o/file.d o/gcl_readline.d o/hash.d o/list.d o/package.d o/pathname.d o/print.d\
       o/read.d o/sequence.d o/string.d o/symbol.d
 BUILT_C=o/character.c o/file.c o/gcl_readline.c o/hash.c o/list.c o/package.c o/pathname.c o/print.c\
-        o/read.c o/sequence.c o/string.c o/symbol.c
+        o/read.c o/sequence.c o/string.c o/symbol.c o/new_init.c
 
-INI_FILES=$(filter-out o/new_init.ini,$(patsubst %.c,%.ini,$(C_SRC)) $(patsubst %.d,%.ini,$(D_SRC)))
+INI_FILES=$(patsubst %.c,%.ini,$(C_SRC)) $(patsubst %.d,%.ini,$(D_SRC))
 if AMM_GPROF
 INI_FILES+=o/gprof.ini
 endif
@@ -180,7 +182,6 @@ unixport_libansi_gcl_gprof_a_SOURCES=
 unixport/libansi_gcl_gprof.a:
 
 GCLTK_SRC=gcl-tk/guis.c gcl-tk/tkAppInit.c gcl-tk/tkMain.c gcl-tk/guis.h
-gcl_tk_gcltksrv_SOURCES=
 gcl_tk_gcltkaux_SOURCES=$(GCLTK_SRC)
 gcl_tk_gcltkaux_CPPFLAGS=$(AM_CPPFLAGS) $(TK_INCLUDE) $(TCL_INCLUDE) $(TK_XINCLUDES)
 gcl_tk_gcltkaux_LDADD=$(TK_LIB_SPEC) $(TCL_LIB_SPEC)
@@ -512,6 +513,8 @@ $(DWDOCS): xgcl-2/dwdoc.tex xgcl-2/gcl_tohtml.lsp xgcl-2/gcl_index.lsp | unixpor
 
 # package extension
 
+bin/gcl.in:
+
 bin/gcl%: bin/gcl
 	sed -e "s,^EXT=.*,EXT=$*,g" $< >$@
 	chmod a+x $@
@@ -559,6 +562,7 @@ clean-local:
 		file-that-was-renamed.txt foo.fasl foo.lsp foo.txt \
 		foo.ufsl ldtest.lsp scratch/ temp.dat test_results \
 		tmp.dat tmp.txt)
+	rm -rf gcl-tk/demos/index.lsp
 	mv xgcl-2/dwdoc.tex xgcl-2/ori_dwdoc.tex && \
 		rm -rf xgcl-2/dwdoc* xgcl-2/*.o &&  \
 		mv xgcl-2/ori_dwdoc.tex xgcl-2/dwdoc.tex
