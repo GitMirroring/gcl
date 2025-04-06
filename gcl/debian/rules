@@ -82,13 +82,6 @@ build-arch: build-stamp
 build-indep: build-stamp
 	touch $@
 
-install-stamp: build-stamp
-	dh_testdir
-	dh_testroot
-	dh_prep
-	$(MAKE) $(MAKEFLAGS) install-all DESTDIR=$$(pwd)/debian/tmp
-	touch $@
-
 DOC_STUBS=gcl$(EXT) gcl$(EXT)-si gcl$(EXT)-tk
 DOC_FILES=$(addsuffix  .info,$(DOC_STUBS))
 DOC_FILES+=$(addsuffix .dvi,$(DOC_STUBS))
@@ -110,8 +103,40 @@ ext-install: $(EXT_TARGS) | install-stamp
 		done ; \
 	done
 
+install-stamp: build-stamp
+	dh_testdir
+	dh_testroot
+	dh_prep
+	$(MAKE) $(MAKEFLAGS) install-all DESTDIR=$$(pwd)/debian/tmp
+	$(MAKE) $(MAKEFLAGS) $(EXT_TARGS)
+	for i in $(EXT_TARGS); do \
+		for j in $$i*; do \
+			if [ -d $$j ] ; then l=d ; r=-r ; else l=f ; fi ; \
+			k=$$(find debian/tmp -type $$l -name $$(echo $$(basename $$j) | sed 's,$(EXT),,g')); \
+			[ "$$k" = "" ] || cp $$r $$j $$(dirname $$k) ; \
+			echo $$i $$j $$k; \
+			[ "$$k" = "" ] || chmod $$(dirname $$k)/$$(basename $$j) --reference=$$k ; \
+			[ "$$k" = "" ] || rm $$r $$k ; \
+		done ; \
+	done
+	mv debian/tmp/usr/share/doc/gcl debian/tmp/usr/share/doc/gcl$(EXT)
+	touch $@
+
+INS:=$(shell for i in `find debian -name "in.*"` ; do \
+		echo $$i | sed 's,in.,,1' ; \
+		done |\
+	     sed "s,\([^x]gcl\),\1$(EXT),g")
+
+gcl$(EXT)% : in.gcl%
+	cat $< | sed -e 's,@EXT@,$(EXT),g' -e 's,@VERS@,$(VERS),g' >$@
+
 debian/control: debian/control_$(EXT)
 	cp $< $@
+
+install: DH_OPTIONS:=
+install: install-stamp debian/control $(INS)
+	dh_installdirs
+	dh_install
 
 clean: debian/control debian/gcl.templates
 	dh_testdir
@@ -128,44 +153,6 @@ clean: debian/control debian/gcl.templates
 	rm -f  debian/elpa-gcl$(EXT).elpa debian/gcl$(EXT)-pkg.el
 	rm -rf $(EXT_TARGS)
 
-INS:=$(shell for i in `find debian -name "in.*"` ; do \
-		echo $$i | sed 's,in.,,1' ; \
-		done |\
-	     sed "s,\([^x]gcl\),\1$(EXT),g")
-
-gcl$(EXT)% : in.gcl%
-	cat $< | sed 's,@EXT@,$(EXT),g' >$@
-
-foo:
-	echo $(EXT_TARGS)
-
-install: DH_OPTIONS:=
-install: install-stamp debian/control $(INS)
-
-	dh_installdirs
-
-	$(MAKE) $(MAKEFLAGS) $(EXT_TARGS)
-
-	for i in $(EXT_TARGS); do \
-		for j in $$i*; do \
-			if [ -d $$j ] ; then l=d ; r=-r ; else l=f ; fi ; \
-			k=$$(find debian/tmp -type $$l -name $$(echo $$(basename $$j) | sed 's,$(EXT),,g')); \
-			[ "$$k" = "" ] || cp $$r $$j $$(dirname $$k) ; \
-			echo $$i $$j $$k; \
-			[ "$$k" = "" ] || chmod $$(dirname $$k)/$$(basename $$j) --reference=$$k ; \
-			[ "$$k" = "" ] || rm $$r $$k ; \
-		done ; \
-	done
-
-	mv debian/tmp/usr/share/doc/gcl debian/tmp/usr/share/doc/gcl$(EXT)
-
-	dh_install
-
-	mkdir -p debian/gcl$(EXT)-tk/usr/lib/gcl-$(VERS)/
-	mv debian/gcl$(EXT)/usr/lib/gcl-$(VERS)/gcl-tk debian/gcl$(EXT)-tk/usr/lib/gcl-$(VERS)/
-
-	mkdir -p debian/gcl$(EXT)-tk-doc/usr/share/doc/gcl$(EXT)/
-	mv debian/gcl$(EXT)-doc/usr/share/doc/gcl$(EXT)/gcl$(EXT)-tk.html debian/gcl$(EXT)-tk-doc/usr/share/doc/gcl$(EXT)/
 
 # Build architecture-independent files here.
 # Pass -i to all debhelper commands in this target to reduce clutter.

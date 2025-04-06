@@ -1,1 +1,7 @@
-debian/tmp/usr/share/doc/gcl@EXT@
+debian/tmp/usr/share/doc/gcl@EXT@/gcl27.dvi
+debian/tmp/usr/share/doc/gcl@EXT@/gcl27.html
+debian/tmp/usr/share/doc/gcl@EXT@/gcl27.pdf
+debian/tmp/usr/share/doc/gcl@EXT@/gcl27-si.dvi
+debian/tmp/usr/share/doc/gcl@EXT@/gcl27-si.html
+debian/tmp/usr/share/doc/gcl@EXT@/gcl27-si.pdf
+debian/tmp/usr/share/doc/gcl@EXT@/xgcl-2

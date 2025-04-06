@@ -1,3 +1,9 @@
-debian/tmp/usr/lib
 debian/tmp/usr/bin
 debian/tmp/usr/share/man
+debian/tmp/usr/lib/gcl-@VERS@/clcs
+debian/tmp/usr/lib/gcl-@VERS@/cmpnew
+debian/tmp/usr/lib/gcl-@VERS@/h
+debian/tmp/usr/lib/gcl-@VERS@/lsp
+debian/tmp/usr/lib/gcl-@VERS@/pcl
+debian/tmp/usr/lib/gcl-@VERS@/unixport
+debian/tmp/usr/lib/gcl-@VERS@/xgcl-2
