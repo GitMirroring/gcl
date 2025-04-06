@@ -88,7 +88,7 @@ if AMM_TK
 
 my_gcltk_PROGRAMS=gcl-tk/gcltkaux
 my_gcltk_SCRIPTS=gcl-tk/gcltksrv
-my_gcltk_DATA=gcl-tk/tkl.o gcl-tk/tinfo.o
+my_gcltk_DATA=gcl-tk/tkl.o gcl-tk/tinfo.o gcl-tk/gcl.tcl
 my_gcltkd_DATA=gcl-tk/demos/gc-monitor.o gcl-tk/demos/index.lsp
 dist_my_gcltk_DATA=gcl-tk/tk-package.lsp
 dist_gcltkdoc_DATA=$(addprefix gcl-tk/demos/,$(addsuffix .lisp,\
@@ -523,6 +523,7 @@ $(DWDOCS): xgcl-2/dwdoc.tex xgcl-2/gcl_tohtml.lsp xgcl-2/gcl_index.lsp | unixpor
 # package extension
 
 bin/gcl.in:
+	echo
 
 bin/gcl%: bin/gcl
 	sed -e "s,^EXT=.*,EXT=$*,g" $< >$@

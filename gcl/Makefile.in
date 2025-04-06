@@ -900,7 +900,7 @@ dist_noinst_DATA = $(am__append_5) $(am__append_7)
 @AMM_XGCL_TRUE@		general keysymdef X10 Xinit dwtrans tohtml index))
 
 @AMM_TK_TRUE@my_gcltk_SCRIPTS = gcl-tk/gcltksrv
-@AMM_TK_TRUE@my_gcltk_DATA = gcl-tk/tkl.o gcl-tk/tinfo.o
+@AMM_TK_TRUE@my_gcltk_DATA = gcl-tk/tkl.o gcl-tk/tinfo.o gcl-tk/gcl.tcl
 @AMM_TK_TRUE@my_gcltkd_DATA = gcl-tk/demos/gc-monitor.o gcl-tk/demos/index.lsp
 @AMM_TK_TRUE@dist_my_gcltk_DATA = gcl-tk/tk-package.lsp
 @AMM_TK_TRUE@dist_gcltkdoc_DATA = $(addprefix gcl-tk/demos/,$(addsuffix .lisp,\
@@ -4795,6 +4795,7 @@ $(DWDOCS): xgcl-2/dwdoc.tex xgcl-2/gcl_tohtml.lsp xgcl-2/gcl_index.lsp | unixpor
 # package extension
 
 bin/gcl.in:
+	echo
 
 bin/gcl%: bin/gcl
 	sed -e "s,^EXT=.*,EXT=$*,g" $< >$@
