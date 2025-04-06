@@ -43,6 +43,8 @@ dist_man1_MANS=man/man1/gcl.1
 lisp_DATA=elisp/add-default.el elisp/ansi-doc.el elisp/dbl.el elisp/doc-to-texi.el \
 	  elisp/gcl.el elisp/man1-to-texi.el elisp/smart-complete.el elisp/sshell.el
 
+dist_noinst_DATA=
+
 # conditionals
 
 if AMM_GPROF
@@ -55,7 +57,6 @@ my_unixport_LIBRARIES+=unixport/libgcl_gprof.a unixport/libansi_gcl_gprof.a
 endif
 
 #it would be nice someday to sandbox xgcl-2 and gcl-tk builds in tmpdirs
-dist_noinst_DATA=
 
 if AMM_XGCL
 
@@ -99,7 +100,7 @@ info_TEXINFOS+=info/gcl-tk.texi
 
 endif
 
-EXTRA_DIST=$(D_SRC) $(INCL_C) $(INIT_L) \
+EXTRA_DIST=$(D_SRC) $(INCL_C) $(INIT_L) $(INCL_TEXI)\
 	   lsp cmpnew mod pcl clcs ansi-tests elisp xbin \
 	   majvers minvers git.tag release \
 	   $(patsubst %.texi,%.dvi,$(info_TEXINFOS)) \
@@ -107,6 +108,13 @@ EXTRA_DIST=$(D_SRC) $(INCL_C) $(INIT_L) \
 	   $(patsubst %.texi,%.html,$(info_TEXINFOS))
 
 # end of primaries
+
+INCL_TEXI=$(addprefix info/,$(addsuffix .texi,\
+   bind c-interface chap-1 chap-10 chap-11 chap-12 chap-13 chap-14 chap-15 chap-16 chap-17 chap-18 chap-19 \
+   chap-2 chap-20 chap-21 chap-22 chap-23 chap-24 chap-25 chap-26 chap-3 chap-4 chap-5 chap-6 chap-7 chap-8 \
+   chap-9 chap-a character compile compiler-defs control debug doc form \
+   general internal io iteration japi list misc number sequence si-defs structure symbol system type \
+   user-interface widgets))
 
 INCL_C=o/sgbc.c o/gmp_big.c o/gmp.c o/gmp_num_log.c o/cmac.c o/regexp.c o/unexelf.c o/unexmacosx.c o/unexnt.c \
        o/save.c o/xdrfuns.c o/fasdump.c o/usig2_aux.c o/sfaslelf.c o/sfaslmacho.c o/sfaslcoff.c gcl-tk/comm.c \
