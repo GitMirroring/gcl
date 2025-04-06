@@ -10,14 +10,16 @@ my_libdir=$(libdir)/$(PACKAGE)-$(PACKAGE_VERSION)
 my_unixportdir=$(my_libdir)/unixport
 my_gcltkdir=$(my_libdir)/gcl-tk
 my_xgcl2dir=$(my_libdir)/xgcl-2
-xgcl2docdir=$(docdir)/xgcl-2
 my_pcldir=$(my_libdir)/pcl
 my_lspdir=$(my_libdir)/lsp
 my_hdir=$(my_libdir)/h
 my_cmpnewdir=$(my_libdir)/cmpnew
 my_clcsdir=$(my_libdir)/clcs
 my_gcltkddir=$(my_libdir)/gcl-tk/demos
+
 docdir=$(datarootdir)/doc/$(PACKAGE)
+xgcl2docdir=$(docdir)/xgcl-2
+gcltkdocdir=$(docdir)/gcl-tk
 
 # primaries
 
@@ -27,76 +29,83 @@ noinst_LIBRARIES=lib/libbase_gcl.a
 my_unixport_PROGRAMS=unixport/saved_gcl unixport/saved_ansi_gcl
 my_unixport_LIBRARIES=unixport/libgcl.a unixport/libansi_gcl.a
 bin_SCRIPTS=bin/gcl
-check_SCRIPTS=ansi-tests/test_results
+check_SCRIPTS=sb_ansi-tests/test_results
 info_TEXINFOS=info/gcl.texi info/gcl-si.texi
 my_unixport_DATA=$(addprefix unixport/,init_raw.lsp gcl.script libboot.so \
 				       gcl_cmpnopt_gcl.lsp gcl_cmpnopt_ansi_gcl.lsp)
 my_h_DATA=h/cmpinclude.h
-my_cmpnew_DATA=cmpnew/gcl_collectfn.o
+my_cmpnew_DATA=sb_cmpnew/gcl_collectfn.o cmpnew/gcl_lfun_list.lsp
+my_pcl_DATA=pcl/package.lisp
+my_lsp_DATA=lsp/gcl_auto_new.lsp lsp/gcl_autoload.lsp lsp/gcl_defmacro.lsp \
+	    lsp/gcl_evalmacros.lsp lsp/gcl_export.lsp lsp/gcl_module.lsp lsp/gcl_top.lsp
+my_clcs_DATA=clcs/package.lisp
 
 dist_man1_MANS=man/man1/gcl.1
-dist_lisp_DATA=elisp/add-default.el elisp/ansi-doc.el elisp/dbl.el elisp/doc-to-texi.el \
-	       elisp/gcl.el elisp/man1-to-texi.el elisp/smart-complete.el elisp/sshell.el
-dist_my_cmpnew_DATA=cmpnew/gcl_lfun_list.lsp
-dist_my_xgcl2_DATA=xgcl-2/sysdef.lisp xgcl-2/gcl_dwtest.lsp xgcl-2/gcl_dwtestcases.lsp \
-		   xgcl-2/gcl_drawtrans.lsp xgcl-2/gcl_editorstrans.lsp xgcl-2/gcl_lispservertrans.lsp \
-		   xgcl-2/gcl_menu-settrans.lsp xgcl-2/gcl_draw-gates.lsp
-dist_my_pcl_DATA=pcl/package.lisp
-dist_my_lsp_DATA=lsp/gcl_auto_new.lsp lsp/gcl_autoload.lsp lsp/gcl_defmacro.lsp \
-		 lsp/gcl_evalmacros.lsp lsp/gcl_export.lsp lsp/gcl_module.lsp lsp/gcl_top.lsp
-dist_my_clcs_DATA=clcs/package.lisp
+lisp_DATA=elisp/add-default.el elisp/ansi-doc.el elisp/dbl.el elisp/doc-to-texi.el \
+	  elisp/gcl.el elisp/man1-to-texi.el elisp/smart-complete.el elisp/sshell.el
+
+# conditionals
 
 if AMM_GPROF
+
 LIBGPROF=lib/libgprof.a
 noinst_LIBRARIES+=$(LIBGPROF) lib/libbase_gcl_gprof.a
 my_unixport_PROGRAMS+=unixport/saved_gcl_gprof unixport/saved_ansi_gcl_gprof
 my_unixport_LIBRARIES+=unixport/libgcl_gprof.a unixport/libansi_gcl_gprof.a
+
 endif
 
+#it would be nice someday to sandbox xgcl-2 and gcl-tk builds in tmpdirs
+dist_noinst_DATA=
+
 if AMM_XGCL
-X_OBJS=$(addprefix gcl_,$(addsuffix .o,\
-	Xlib Xutil X XAtom defentry_events Xstruct XStruct_l_3 \
-	general keysymdef X10 Xinit dwtrans tohtml index))
+
 X_LIB=lib/libxgcl.a
 noinst_LIBRARIES+=$(X_LIB)
-xgcl2doc_DATA=$(DWDOCS) xgcl-2/dwdoc.dvi xgcl-2/dwdoc.pdf \
-	      xgcl-2/gcl_menu-set.lsp xgcl-2/gcl_pcalc.lsp xgcl-2/gcl_draw.lsp \
-	      xgcl-2/gcl_dwindow.lsp xgcl-2/gcl_editors.lsp xgcl-2/gcl_ice-cream.lsp \
-	      xgcl-2/gcl_lispserver.lsp xgcl-2/Xakcl.paper xgcl-2/gcl_Xakcl.example.lsp \
-	      xgcl-2/README
+
+xgcl2doc_DATA=$(DWDOCS) #requires gcl to build
+dist_xgcl2doc_DATA=xgcl-2/dwdoc.dvi xgcl-2/dwdoc.pdf xgcl-2/Xakcl.paper xgcl-2/README
+dist_xgcl2doc_DATA+=$(addprefix xgcl-2/gcl_,\
+			$(addsuffix .lsp,\
+				menu-set pcalc draw dwindow editors ice-cream lispserver Xakcl.example))
+dist_my_xgcl2_DATA=xgcl-2/sysdef.lisp \
+		   $(addprefix xgcl-2/gcl_,$(addsuffix .lsp,\
+			dwtest dwtestcases drawtrans editorstrans lispservertrans menu-settrans draw-gates))
+
+X_OBJS=$(addprefix gcl_,$(addsuffix .o,\
+		Xlib Xutil X XAtom defentry_events Xstruct XStruct_l_3 \
+		general keysymdef X10 Xinit dwtrans tohtml index))
+dist_noinst_DATA+=$(addprefix xgcl-2/,dwdoc.tex gnu.license dec.copyright version\
+			$(patsubst %.o,%.lsp,$(X_OBJS)))
 
 if AMM_GPROF
 noinst_LIBRARIES+=lib/libxgcl_gprof.a
 endif
+
 endif
 
 if AMM_TK
+
 my_gcltk_PROGRAMS=gcl-tk/gcltkaux
 my_gcltk_SCRIPTS=gcl-tk/gcltksrv
 my_gcltk_DATA=gcl-tk/tkl.o gcl-tk/tinfo.o
 my_gcltkd_DATA=gcl-tk/demos/gc-monitor.o gcl-tk/demos/index.lsp
 dist_my_gcltk_DATA=gcl-tk/tk-package.lsp
-dist_my_gcltkd_DATA=gcl-tk/demos/gc-monitor.lisp gcl-tk/demos/mkBasic.lisp \
-                    gcl-tk/demos/mkCanvText.lisp gcl-tk/demos/mkdialog.lisp gcl-tk/demos/mkEntry2.lisp \
-		    gcl-tk/demos/mkEntry.lisp gcl-tk/demos/mkForm.lisp gcl-tk/demos/mkHScale.lisp \
-		    gcl-tk/demos/mkItems.lisp gcl-tk/demos/mkLabel.lisp gcl-tk/demos/mkListbox.lisp \
-		    gcl-tk/demos/mkPlot.lisp gcl-tk/demos/mkRadio.lisp gcl-tk/demos/mkRuler.lisp \
-		    gcl-tk/demos/mkSearch.lisp gcl-tk/demos/mkStyles.lisp gcl-tk/demos/mkTextBind.lisp \
-		    gcl-tk/demos/mkVScale.lisp gcl-tk/demos/nqthm-stack.lisp gcl-tk/demos/showVars.lisp \
-		    gcl-tk/demos/widget.lisp
+dist_gcltkdoc_DATA=$(addprefix gcl-tk/demos/,$(addsuffix .lisp,\
+			gc-monitor mkBasic mkCanvText mkdialog mkEntry2 mkEntry mkForm mkHScale  mkItems \
+			mkLabel mkListbox mkPlot mkRadio mkRuler mkSearch mkStyles mkTextBind mkVScale \
+			nqthm-stack showVars widget))
+dist_noinst_DATA+=gcl-tk/tkl.lisp gcl-tk/tinfo.lsp
 info_TEXINFOS+=info/gcl-tk.texi
+
 endif
 
-
-EXTRA_DIST=xbin/ar_merge xbin/mktmp \
-	   $(D_SRC) $(INCL_C) $(INIT_L) \
-	   bin/gcl.in \
-	   lsp cmpnew mod xgcl-2 pcl clcs info ansi-tests gcl-tk \
+EXTRA_DIST=$(D_SRC) $(INCL_C) $(INIT_L) \
+	   lsp cmpnew mod pcl clcs ansi-tests elisp xbin \
 	   majvers minvers git.tag release \
-	   xgcl-2/dwdoc.dvi xgcl-2/dwdoc.pdf \
-	   info/gcl.dvi info/gcl.pdf info/gcl.html \
-	   info/gcl-si.dvi info/gcl-si.pdf info/gcl-si.html \
-	   info/gcl-tk.dvi info/gcl-tk.pdf info/gcl-tk.html
+	   $(patsubst %.texi,%.dvi,$(info_TEXINFOS)) \
+	   $(patsubst %.texi,%.pdf,$(info_TEXINFOS)) \
+	   $(patsubst %.texi,%.html,$(info_TEXINFOS))
 
 # end of primaries
 
@@ -109,8 +118,8 @@ BASE_H= h/compbas2.h h/compbas.h h/compprotos.h h/cstack.h h/enum.h h/error.h h/
 	h/mp.h h/notcomp.h h/num_include.h h/object.h h/options.h h/page.h h/pageinfo.h h/pbits.h h/pool.h \
 	h/prelink.h h/protoize.h h/ptable.h h/rgbc.h h/sfun_argd.h h/stacks.h h/type.h h/usig.h h/vs.h \
         h/writable.h o/regexp.h h/arth.h h/bsd.h h/bds.h h/att_ext.h h/bfdef.h h/compat.h h/apply_n.h \
-	gcl-tk/sheader.h h/make-decl.h h/defun.h \
-	h/compdefs.h h/cmpincl1.h h/mgmp.h h/compprotos.h h/compbas2.h h/cmponly_last.h
+	gcl-tk/sheader.h h/make-decl.h h/defun.h
+CMPI_H=	h/compdefs.h h/cmpincl1.h h/mgmp.h h/compprotos.h h/compbas2.h h/cmponly_last.h
 ARCHT_H=h/elf32_armhf_reloc.h h/elf32_armhf_reloc_special.h h/elf32_arm_reloc.h h/elf32_arm_reloc_special.h \
 	h/elf32_hppa_reloc.h h/elf32_hppa_reloc_special.h h/elf32_i386_reloc.h h/elf32_m68k_reloc.h \
 	h/elf32_mips_reloc.h h/elf32_mips_reloc_special.h h/elf32_ppc_reloc.h h/elf32_s390_reloc.h \
@@ -125,7 +134,6 @@ ARCHT_H=h/elf32_armhf_reloc.h h/elf32_armhf_reloc_special.h h/elf32_arm_reloc.h 
 	h/mipsel-linux.h h/sparc-linux.h h/aarch64-linux.h h/armhf-linux.h h/arm-linux.h h/s390-linux.h \
 	h/ia64-linux.h h/hppa-linux.h h/loongarch64-linux.h h/powerpc-linux.h h/powerpc-macosx.h \
 	h/386-macosx.h h/mingw.h h/gnuwin95.h h/FreeBSD.h h/solaris.h h/solaris-i386.h
-CONF_H= h/gclincl.h h/config.h
 BUILT_H=h/new_decl.h
 
 C_SRC=o/typespec.c o/alloc.c o/gbc.c o/bitop.c o/main.c o/eval.c o/macros.c o/lex.c o/bds.c o/frame.c\
@@ -151,7 +159,7 @@ endif
 BUILT_SOURCES=$(BUILT_H) $(BUILT_C)
 CLEANFILES=$(BUILT_SOURCES) $(INI_FILES)
 
-lib_libbase_gcl_a_SOURCES=$(C_SRC) $(BASE_H) $(ARCHT_H)
+lib_libbase_gcl_a_SOURCES=$(C_SRC) $(BASE_H) $(CMPI_H) $(ARCHT_H)
 nodist_lib_libbase_gcl_a_SOURCES=$(BUILT_C)
 lib_libgprof_a_SOURCES=o/gprof.c
 lib_libgprof_a_CFLAGS=$(AM_CFLAGS) -fno-omit-frame-pointer -pg
@@ -469,7 +477,7 @@ o/new_init.c: $(INI_FILES)
 	echo '}' >> $@
 	! cat $@ | awk -F, '/DEFUN/ {print $$1,$$2}' | grep -v object || (rm $@ && false)
 
-ansi-tests/test_results: ansi-tests | unixport/saved_ansi_gcl
+sb_ansi-tests/test_results: ansi-tests | unixport/saved_ansi_gcl
 	[ -d $(@D) ] || (mkdir $(@D) && cp $</*.lsp $(@D)) # FIXME testsuite in separate directory, hard
 	cd $(@D) && echo '(load "gclload")' | ../$| |tee $(@F)
 
@@ -485,7 +493,7 @@ gcl-tk/demos/index.lsp: gcl-tk/tkl.o | unixport/saved_gcl
 	[ -d $(@D) ] || mkdir -p $(@D)
 	cd $(@D) && echo "(load \"../../$<\")(tk::get-autoloads (directory \"*.lisp\"))" | ../../$|
 
-cmpnew/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl c # FIXME directory
+sb_cmpnew/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl c # FIXME directory
 	[ -d $(@D) ] || mkdir -p $(@D)
 	$(word 1,$|) -compile $< -o $@
 
@@ -497,6 +505,7 @@ gcl-tk/demos gcl-tk a c $(MY_DIRS): % :
 
 xgcl-2/dwdoc.dvi: xgcl-2/dwdoc.tex
 	latex -output-directory=$(@D) $<
+	rm -f $$(echo $@ | sed 's,\.dvi,.aux,g') $$(echo $@ | sed 's,\.dvi,.log,g')
 
 $(DWDOCS): xgcl-2/dwdoc.tex xgcl-2/gcl_tohtml.lsp xgcl-2/gcl_index.lsp | unixport/saved_mod_gcl
 	mkdir -p $(@D)
@@ -554,22 +563,11 @@ clean_%:
 	rm -rf $* unixport/$* unixport/lib$*.a unixport/saved_$*
 
 clean-local:
-	rm -rf $(MY_DIRS) $(addprefix unixport/,$(MY_DIRS))
+	rm -rf $(MY_DIRS) $(addprefix unixport/,$(MY_DIRS)) sb_ansi-tests sb_cmpnew
 	rm -rf unixport/*cmpnopt* unixport/lib* unixport/saved_* #FIXME
 	rm -rf lib #FIXME
-	rm -rf $(addprefix ansi-tests/,\
-		compile-file-test-lp.lsp compile-file-test-lp.out \
-		file-that-was-renamed.txt foo.fasl foo.lsp foo.txt \
-		foo.ufsl ldtest.lsp scratch/ temp.dat test_results \
-		tmp.dat tmp.txt)
 	rm -rf gcl-tk/demos/index.lsp
-	mv xgcl-2/dwdoc.tex xgcl-2/ori_dwdoc.tex && \
-		rm -rf xgcl-2/dwdoc* xgcl-2/*.o &&  \
-		mv xgcl-2/ori_dwdoc.tex xgcl-2/dwdoc.tex
 	rm -rf $(addprefix info/,*.idx *.t2p *.t2d *.info* *.dvi *.pdf *.html)
-	rm -rf $(addprefix ansi-tests/,test.out *.o foo.txt temp.dat file-that-was-renamed.txt \
-				       tmp.dat tmp.dat.BAK tmp2.dat scratch tmp.txt foo.lsp \
-				       'CLTEST:foo.txt')
 
 
 distclean-local:

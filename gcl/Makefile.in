@@ -100,20 +100,24 @@ my_unixport_PROGRAMS = unixport/saved_gcl$(EXEEXT) \
 @AMM_GPROF_TRUE@am__append_2 = unixport/saved_gcl_gprof unixport/saved_ansi_gcl_gprof
 @AMM_GPROF_TRUE@am__append_3 = unixport/libgcl_gprof.a unixport/libansi_gcl_gprof.a
 @AMM_XGCL_TRUE@am__append_4 = $(X_LIB)
-@AMM_GPROF_TRUE@@AMM_XGCL_TRUE@am__append_5 = lib/libxgcl_gprof.a
+@AMM_XGCL_TRUE@am__append_5 = $(addprefix xgcl-2/,dwdoc.tex gnu.license dec.copyright version\
+@AMM_XGCL_TRUE@			$(patsubst %.o,%.lsp,$(X_OBJS)))
+
+@AMM_GPROF_TRUE@@AMM_XGCL_TRUE@am__append_6 = lib/libxgcl_gprof.a
 @AMM_TK_TRUE@my_gcltk_PROGRAMS = gcl-tk/gcltkaux$(EXEEXT)
-@AMM_TK_TRUE@am__append_6 = info/gcl-tk.texi
-@AMM_GPROF_TRUE@am__append_7 = o/gprof.ini
+@AMM_TK_TRUE@am__append_7 = gcl-tk/tkl.lisp gcl-tk/tinfo.lsp
+@AMM_TK_TRUE@am__append_8 = info/gcl-tk.texi
+@AMM_GPROF_TRUE@am__append_9 = o/gprof.ini
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(top_srcdir)/configure \
-	$(am__configure_deps) $(dist_lisp_DATA) $(dist_my_clcs_DATA) \
-	$(dist_my_cmpnew_DATA) $(am__dist_my_gcltk_DATA_DIST) \
-	$(am__dist_my_gcltkd_DATA_DIST) $(dist_my_lsp_DATA) \
-	$(dist_my_pcl_DATA) $(dist_my_xgcl2_DATA) $(am__DIST_COMMON)
+	$(am__configure_deps) $(am__dist_gcltkdoc_DATA_DIST) \
+	$(am__dist_my_gcltk_DATA_DIST) $(am__dist_my_xgcl2_DATA_DIST) \
+	$(am__dist_noinst_DATA_DIST) $(am__dist_xgcl2doc_DATA_DIST) \
+	$(am__DIST_COMMON)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
@@ -124,12 +128,12 @@ am__installdirs = "$(DESTDIR)$(my_gcltkdir)" \
 	"$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(my_unixportdir)" \
 	"$(DESTDIR)$(bindir)" "$(DESTDIR)$(my_gcltkdir)" \
 	"$(DESTDIR)$(infodir)" "$(DESTDIR)$(man1dir)" \
+	"$(DESTDIR)$(gcltkdocdir)" "$(DESTDIR)$(my_gcltkdir)" \
+	"$(DESTDIR)$(my_xgcl2dir)" "$(DESTDIR)$(xgcl2docdir)" \
 	"$(DESTDIR)$(lispdir)" "$(DESTDIR)$(my_clcsdir)" \
 	"$(DESTDIR)$(my_cmpnewdir)" "$(DESTDIR)$(my_gcltkdir)" \
-	"$(DESTDIR)$(my_gcltkddir)" "$(DESTDIR)$(my_lspdir)" \
-	"$(DESTDIR)$(my_pcldir)" "$(DESTDIR)$(my_xgcl2dir)" \
-	"$(DESTDIR)$(my_cmpnewdir)" "$(DESTDIR)$(my_gcltkdir)" \
 	"$(DESTDIR)$(my_gcltkddir)" "$(DESTDIR)$(my_hdir)" \
+	"$(DESTDIR)$(my_lspdir)" "$(DESTDIR)$(my_pcldir)" \
 	"$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(xgcl2docdir)"
 @AMM_GPROF_TRUE@am__EXEEXT_1 = unixport/saved_gcl_gprof$(EXEEXT) \
 @AMM_GPROF_TRUE@	unixport/saved_ansi_gcl_gprof$(EXEEXT)
@@ -198,7 +202,7 @@ am__objects_1 = o/typespec.$(OBJEXT) o/alloc.$(OBJEXT) o/gbc.$(OBJEXT) \
 	o/mapfun.$(OBJEXT)
 am__objects_2 =
 am_lib_libbase_gcl_a_OBJECTS = $(am__objects_1) $(am__objects_2) \
-	$(am__objects_2)
+	$(am__objects_2) $(am__objects_2)
 am__objects_3 = o/character.$(OBJEXT) o/file.$(OBJEXT) \
 	o/gcl_readline.$(OBJEXT) o/hash.$(OBJEXT) o/list.$(OBJEXT) \
 	o/package.$(OBJEXT) o/pathname.$(OBJEXT) o/print.$(OBJEXT) \
@@ -276,7 +280,8 @@ am__objects_4 = o/lib_libbase_gcl_gprof_a-typespec.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-user_init.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-user_match.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-mapfun.$(OBJEXT)
-am__objects_5 = $(am__objects_4) $(am__objects_2) $(am__objects_2)
+am__objects_5 = $(am__objects_4) $(am__objects_2) $(am__objects_2) \
+	$(am__objects_2)
 am_lib_libbase_gcl_gprof_a_OBJECTS = $(am__objects_5) \
 	o/lib_libbase_gcl_gprof_a-gprof.$(OBJEXT)
 am__objects_6 = o/lib_libbase_gcl_gprof_a-character.$(OBJEXT) \
@@ -594,7 +599,7 @@ DVIS = info/gcl.dvi info/gcl-si.dvi info/gcl-tk.dvi
 PDFS = info/gcl.pdf info/gcl-si.pdf info/gcl-tk.pdf
 PSS = info/gcl.ps info/gcl-si.ps info/gcl-tk.ps
 HTMLS = info/gcl.html info/gcl-si.html info/gcl-tk.html
-TEXINFOS = info/gcl.texi info/gcl-si.texi $(am__append_6)
+TEXINFOS = info/gcl.texi info/gcl-si.texi $(am__append_8)
 TEXI2DVI = texi2dvi
 TEXI2PDF = $(TEXI2DVI) --pdf --batch
 MAKEINFOHTML = $(MAKEINFO) --html
@@ -608,23 +613,28 @@ am__can_run_installinfo = \
 man1dir = $(mandir)/man1
 NROFF = nroff
 MANS = $(dist_man1_MANS)
+am__dist_gcltkdoc_DATA_DIST = $(addprefix gcl-tk/demos/,$(addsuffix \
+	.lisp, gc-monitor mkBasic mkCanvText mkdialog mkEntry2 mkEntry \
+	mkForm mkHScale mkItems mkLabel mkListbox mkPlot mkRadio \
+	mkRuler mkSearch mkStyles mkTextBind mkVScale nqthm-stack \
+	showVars widget))
 am__dist_my_gcltk_DATA_DIST = gcl-tk/tk-package.lsp
-am__dist_my_gcltkd_DATA_DIST = gcl-tk/demos/gc-monitor.lisp \
-	gcl-tk/demos/mkBasic.lisp gcl-tk/demos/mkCanvText.lisp \
-	gcl-tk/demos/mkdialog.lisp gcl-tk/demos/mkEntry2.lisp \
-	gcl-tk/demos/mkEntry.lisp gcl-tk/demos/mkForm.lisp \
-	gcl-tk/demos/mkHScale.lisp gcl-tk/demos/mkItems.lisp \
-	gcl-tk/demos/mkLabel.lisp gcl-tk/demos/mkListbox.lisp \
-	gcl-tk/demos/mkPlot.lisp gcl-tk/demos/mkRadio.lisp \
-	gcl-tk/demos/mkRuler.lisp gcl-tk/demos/mkSearch.lisp \
-	gcl-tk/demos/mkStyles.lisp gcl-tk/demos/mkTextBind.lisp \
-	gcl-tk/demos/mkVScale.lisp gcl-tk/demos/nqthm-stack.lisp \
-	gcl-tk/demos/showVars.lisp gcl-tk/demos/widget.lisp
-DATA = $(dist_lisp_DATA) $(dist_my_clcs_DATA) $(dist_my_cmpnew_DATA) \
-	$(dist_my_gcltk_DATA) $(dist_my_gcltkd_DATA) \
-	$(dist_my_lsp_DATA) $(dist_my_pcl_DATA) $(dist_my_xgcl2_DATA) \
+am__dist_my_xgcl2_DATA_DIST = xgcl-2/sysdef.lisp $(addprefix \
+	xgcl-2/gcl_,$(addsuffix .lsp, dwtest dwtestcases drawtrans \
+	editorstrans lispservertrans menu-settrans draw-gates))
+am__dist_noinst_DATA_DIST = $(addprefix xgcl-2/,dwdoc.tex gnu.license \
+	dec.copyright version $(patsubst %.o,%.lsp,$(X_OBJS))) \
+	gcl-tk/tkl.lisp gcl-tk/tinfo.lsp
+am__dist_xgcl2doc_DATA_DIST = xgcl-2/dwdoc.dvi xgcl-2/dwdoc.pdf \
+	xgcl-2/Xakcl.paper xgcl-2/README $(addprefix xgcl-2/gcl_, \
+	$(addsuffix .lsp, menu-set pcalc draw dwindow editors \
+	ice-cream lispserver Xakcl.example))
+DATA = $(dist_gcltkdoc_DATA) $(dist_my_gcltk_DATA) \
+	$(dist_my_xgcl2_DATA) $(dist_noinst_DATA) \
+	$(dist_xgcl2doc_DATA) $(lisp_DATA) $(my_clcs_DATA) \
 	$(my_cmpnew_DATA) $(my_gcltk_DATA) $(my_gcltkd_DATA) \
-	$(my_h_DATA) $(my_unixport_DATA) $(xgcl2doc_DATA)
+	$(my_h_DATA) $(my_lsp_DATA) $(my_pcl_DATA) $(my_unixport_DATA) \
+	$(xgcl2doc_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -839,73 +849,71 @@ my_libdir = $(libdir)/$(PACKAGE)-$(PACKAGE_VERSION)
 my_unixportdir = $(my_libdir)/unixport
 my_gcltkdir = $(my_libdir)/gcl-tk
 my_xgcl2dir = $(my_libdir)/xgcl-2
-xgcl2docdir = $(docdir)/xgcl-2
 my_pcldir = $(my_libdir)/pcl
 my_lspdir = $(my_libdir)/lsp
 my_hdir = $(my_libdir)/h
 my_cmpnewdir = $(my_libdir)/cmpnew
 my_clcsdir = $(my_libdir)/clcs
 my_gcltkddir = $(my_libdir)/gcl-tk/demos
+xgcl2docdir = $(docdir)/xgcl-2
+gcltkdocdir = $(docdir)/gcl-tk
 noinst_LIBRARIES = lib/libbase_gcl.a $(am__append_1) $(am__append_4) \
-	$(am__append_5)
+	$(am__append_6)
 my_unixport_LIBRARIES = unixport/libgcl.a unixport/libansi_gcl.a \
 	$(am__append_3)
 bin_SCRIPTS = bin/gcl
-check_SCRIPTS = ansi-tests/test_results
-info_TEXINFOS = info/gcl.texi info/gcl-si.texi $(am__append_6)
+check_SCRIPTS = sb_ansi-tests/test_results
+info_TEXINFOS = info/gcl.texi info/gcl-si.texi $(am__append_8)
 my_unixport_DATA = $(addprefix unixport/,init_raw.lsp gcl.script libboot.so \
 				       gcl_cmpnopt_gcl.lsp gcl_cmpnopt_ansi_gcl.lsp)
 
 my_h_DATA = h/cmpinclude.h
-my_cmpnew_DATA = cmpnew/gcl_collectfn.o
+my_cmpnew_DATA = sb_cmpnew/gcl_collectfn.o cmpnew/gcl_lfun_list.lsp
+my_pcl_DATA = pcl/package.lisp
+my_lsp_DATA = lsp/gcl_auto_new.lsp lsp/gcl_autoload.lsp lsp/gcl_defmacro.lsp \
+	    lsp/gcl_evalmacros.lsp lsp/gcl_export.lsp lsp/gcl_module.lsp lsp/gcl_top.lsp
+
+my_clcs_DATA = clcs/package.lisp
 dist_man1_MANS = man/man1/gcl.1
-dist_lisp_DATA = elisp/add-default.el elisp/ansi-doc.el elisp/dbl.el elisp/doc-to-texi.el \
-	       elisp/gcl.el elisp/man1-to-texi.el elisp/smart-complete.el elisp/sshell.el
+lisp_DATA = elisp/add-default.el elisp/ansi-doc.el elisp/dbl.el elisp/doc-to-texi.el \
+	  elisp/gcl.el elisp/man1-to-texi.el elisp/smart-complete.el elisp/sshell.el
 
-dist_my_cmpnew_DATA = cmpnew/gcl_lfun_list.lsp
-dist_my_xgcl2_DATA = xgcl-2/sysdef.lisp xgcl-2/gcl_dwtest.lsp xgcl-2/gcl_dwtestcases.lsp \
-		   xgcl-2/gcl_drawtrans.lsp xgcl-2/gcl_editorstrans.lsp xgcl-2/gcl_lispservertrans.lsp \
-		   xgcl-2/gcl_menu-settrans.lsp xgcl-2/gcl_draw-gates.lsp
 
-dist_my_pcl_DATA = pcl/package.lisp
-dist_my_lsp_DATA = lsp/gcl_auto_new.lsp lsp/gcl_autoload.lsp lsp/gcl_defmacro.lsp \
-		 lsp/gcl_evalmacros.lsp lsp/gcl_export.lsp lsp/gcl_module.lsp lsp/gcl_top.lsp
-
-dist_my_clcs_DATA = clcs/package.lisp
+# conditionals
 @AMM_GPROF_TRUE@LIBGPROF = lib/libgprof.a
-@AMM_XGCL_TRUE@X_OBJS = $(addprefix gcl_,$(addsuffix .o,\
-@AMM_XGCL_TRUE@	Xlib Xutil X XAtom defentry_events Xstruct XStruct_l_3 \
-@AMM_XGCL_TRUE@	general keysymdef X10 Xinit dwtrans tohtml index))
 
+#it would be nice someday to sandbox xgcl-2 and gcl-tk builds in tmpdirs
+dist_noinst_DATA = $(am__append_5) $(am__append_7)
 @AMM_XGCL_TRUE@X_LIB = lib/libxgcl.a
-@AMM_XGCL_TRUE@xgcl2doc_DATA = $(DWDOCS) xgcl-2/dwdoc.dvi xgcl-2/dwdoc.pdf \
-@AMM_XGCL_TRUE@	      xgcl-2/gcl_menu-set.lsp xgcl-2/gcl_pcalc.lsp xgcl-2/gcl_draw.lsp \
-@AMM_XGCL_TRUE@	      xgcl-2/gcl_dwindow.lsp xgcl-2/gcl_editors.lsp xgcl-2/gcl_ice-cream.lsp \
-@AMM_XGCL_TRUE@	      xgcl-2/gcl_lispserver.lsp xgcl-2/Xakcl.paper xgcl-2/gcl_Xakcl.example.lsp \
-@AMM_XGCL_TRUE@	      xgcl-2/README
+@AMM_XGCL_TRUE@xgcl2doc_DATA = $(DWDOCS) #requires gcl to build
+@AMM_XGCL_TRUE@dist_xgcl2doc_DATA = xgcl-2/dwdoc.dvi xgcl-2/dwdoc.pdf \
+@AMM_XGCL_TRUE@	xgcl-2/Xakcl.paper xgcl-2/README $(addprefix \
+@AMM_XGCL_TRUE@	xgcl-2/gcl_, $(addsuffix .lsp, menu-set pcalc \
+@AMM_XGCL_TRUE@	draw dwindow editors ice-cream lispserver \
+@AMM_XGCL_TRUE@	Xakcl.example))
+@AMM_XGCL_TRUE@dist_my_xgcl2_DATA = xgcl-2/sysdef.lisp \
+@AMM_XGCL_TRUE@		   $(addprefix xgcl-2/gcl_,$(addsuffix .lsp,\
+@AMM_XGCL_TRUE@			dwtest dwtestcases drawtrans editorstrans lispservertrans menu-settrans draw-gates))
+
+@AMM_XGCL_TRUE@X_OBJS = $(addprefix gcl_,$(addsuffix .o,\
+@AMM_XGCL_TRUE@		Xlib Xutil X XAtom defentry_events Xstruct XStruct_l_3 \
+@AMM_XGCL_TRUE@		general keysymdef X10 Xinit dwtrans tohtml index))
 
 @AMM_TK_TRUE@my_gcltk_SCRIPTS = gcl-tk/gcltksrv
 @AMM_TK_TRUE@my_gcltk_DATA = gcl-tk/tkl.o gcl-tk/tinfo.o
-@AMM_TK_TRUE@my_gcltkd_DATA = gcl-tk/demos/gc-monitor.o gcl-tk/demos/index.lsp 
+@AMM_TK_TRUE@my_gcltkd_DATA = gcl-tk/demos/gc-monitor.o gcl-tk/demos/index.lsp
 @AMM_TK_TRUE@dist_my_gcltk_DATA = gcl-tk/tk-package.lsp
-@AMM_TK_TRUE@dist_my_gcltkd_DATA = gcl-tk/demos/gc-monitor.lisp gcl-tk/demos/mkBasic.lisp \
-@AMM_TK_TRUE@                    gcl-tk/demos/mkCanvText.lisp gcl-tk/demos/mkdialog.lisp gcl-tk/demos/mkEntry2.lisp \
-@AMM_TK_TRUE@		    gcl-tk/demos/mkEntry.lisp gcl-tk/demos/mkForm.lisp gcl-tk/demos/mkHScale.lisp \
-@AMM_TK_TRUE@		    gcl-tk/demos/mkItems.lisp gcl-tk/demos/mkLabel.lisp gcl-tk/demos/mkListbox.lisp \
-@AMM_TK_TRUE@		    gcl-tk/demos/mkPlot.lisp gcl-tk/demos/mkRadio.lisp gcl-tk/demos/mkRuler.lisp \
-@AMM_TK_TRUE@		    gcl-tk/demos/mkSearch.lisp gcl-tk/demos/mkStyles.lisp gcl-tk/demos/mkTextBind.lisp \
-@AMM_TK_TRUE@		    gcl-tk/demos/mkVScale.lisp gcl-tk/demos/nqthm-stack.lisp gcl-tk/demos/showVars.lisp \
-@AMM_TK_TRUE@		    gcl-tk/demos/widget.lisp
+@AMM_TK_TRUE@dist_gcltkdoc_DATA = $(addprefix gcl-tk/demos/,$(addsuffix .lisp,\
+@AMM_TK_TRUE@			gc-monitor mkBasic mkCanvText mkdialog mkEntry2 mkEntry mkForm mkHScale  mkItems \
+@AMM_TK_TRUE@			mkLabel mkListbox mkPlot mkRadio mkRuler mkSearch mkStyles mkTextBind mkVScale \
+@AMM_TK_TRUE@			nqthm-stack showVars widget))
 
-EXTRA_DIST = xbin/ar_merge xbin/mktmp \
-	   $(D_SRC) $(INCL_C) $(INIT_L) \
-	   bin/gcl.in \
-	   lsp cmpnew mod xgcl-2 pcl clcs info ansi-tests gcl-tk \
+EXTRA_DIST = $(D_SRC) $(INCL_C) $(INIT_L) \
+	   lsp cmpnew mod pcl clcs ansi-tests elisp xbin \
 	   majvers minvers git.tag release \
-	   xgcl-2/dwdoc.dvi xgcl-2/dwdoc.pdf \
-	   info/gcl.dvi info/gcl.pdf info/gcl.html \
-	   info/gcl-si.dvi info/gcl-si.pdf info/gcl-si.html \
-	   info/gcl-tk.dvi info/gcl-tk.pdf info/gcl-tk.html
+	   $(patsubst %.texi,%.dvi,$(info_TEXINFOS)) \
+	   $(patsubst %.texi,%.pdf,$(info_TEXINFOS)) \
+	   $(patsubst %.texi,%.html,$(info_TEXINFOS))
 
 
 # end of primaries
@@ -919,9 +927,9 @@ BASE_H = h/compbas2.h h/compbas.h h/compprotos.h h/cstack.h h/enum.h h/error.h h
 	h/mp.h h/notcomp.h h/num_include.h h/object.h h/options.h h/page.h h/pageinfo.h h/pbits.h h/pool.h \
 	h/prelink.h h/protoize.h h/ptable.h h/rgbc.h h/sfun_argd.h h/stacks.h h/type.h h/usig.h h/vs.h \
         h/writable.h o/regexp.h h/arth.h h/bsd.h h/bds.h h/att_ext.h h/bfdef.h h/compat.h h/apply_n.h \
-	gcl-tk/sheader.h h/make-decl.h h/defun.h \
-	h/compdefs.h h/cmpincl1.h h/mgmp.h h/compprotos.h h/compbas2.h h/cmponly_last.h
+	gcl-tk/sheader.h h/make-decl.h h/defun.h
 
+CMPI_H = h/compdefs.h h/cmpincl1.h h/mgmp.h h/compprotos.h h/compbas2.h h/cmponly_last.h
 ARCHT_H = h/elf32_armhf_reloc.h h/elf32_armhf_reloc_special.h h/elf32_arm_reloc.h h/elf32_arm_reloc_special.h \
 	h/elf32_hppa_reloc.h h/elf32_hppa_reloc_special.h h/elf32_i386_reloc.h h/elf32_m68k_reloc.h \
 	h/elf32_mips_reloc.h h/elf32_mips_reloc_special.h h/elf32_ppc_reloc.h h/elf32_s390_reloc.h \
@@ -937,7 +945,6 @@ ARCHT_H = h/elf32_armhf_reloc.h h/elf32_armhf_reloc_special.h h/elf32_arm_reloc.
 	h/ia64-linux.h h/hppa-linux.h h/loongarch64-linux.h h/powerpc-linux.h h/powerpc-macosx.h \
 	h/386-macosx.h h/mingw.h h/gnuwin95.h h/FreeBSD.h h/solaris.h h/solaris-i386.h
 
-CONF_H = h/gclincl.h h/config.h
 BUILT_H = h/new_decl.h
 C_SRC = o/typespec.c o/alloc.c o/gbc.c o/bitop.c o/main.c o/eval.c o/macros.c o/lex.c o/bds.c o/frame.c\
       o/predicate.c o/reference.c o/assignment.c o/bind.c o/let.c o/conditional.c o/block.c o/iteration.c\
@@ -953,14 +960,14 @@ D_SRC = o/character.d o/file.d o/gcl_readline.d o/hash.d o/list.d o/package.d o/
       o/read.d o/sequence.d o/string.d o/symbol.d
 
 BUILT_C = o/character.c o/file.c o/gcl_readline.c o/hash.c o/list.c o/package.c o/pathname.c o/print.c\
-        o/read.c o/sequence.c o/string.c o/symbol.c o/new_init.c 
+        o/read.c o/sequence.c o/string.c o/symbol.c o/new_init.c
 
 INI_FILES = $(patsubst %.c,%.ini,$(C_SRC)) $(patsubst \
-	%.d,%.ini,$(D_SRC)) $(am__append_7)
+	%.d,%.ini,$(D_SRC)) $(am__append_9)
 BUILT_SOURCES = $(BUILT_H) $(BUILT_C)
 CLEANFILES = $(BUILT_SOURCES) $(INI_FILES) h/cmpinclude.h h/mstdint.h \
 	h/cmpincludea.h h/mcompdefs.h
-lib_libbase_gcl_a_SOURCES = $(C_SRC) $(BASE_H) $(ARCHT_H)
+lib_libbase_gcl_a_SOURCES = $(C_SRC) $(BASE_H) $(CMPI_H) $(ARCHT_H)
 nodist_lib_libbase_gcl_a_SOURCES = $(BUILT_C)
 lib_libgprof_a_SOURCES = o/gprof.c
 lib_libgprof_a_CFLAGS = $(AM_CFLAGS) -fno-omit-frame-pointer -pg
@@ -3333,69 +3340,27 @@ uninstall-man1:
 	} | sed -e 's,.*/,,;h;s,.*\.,,;s,^[^1][0-9a-z]*$$,1,;x' \
 	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,'`; \
 	dir='$(DESTDIR)$(man1dir)'; $(am__uninstall_files_from_dir)
-install-dist_lispDATA: $(dist_lisp_DATA)
+install-dist_gcltkdocDATA: $(dist_gcltkdoc_DATA)
 	@$(NORMAL_INSTALL)
-	@list='$(dist_lisp_DATA)'; test -n "$(lispdir)" || list=; \
+	@list='$(dist_gcltkdoc_DATA)'; test -n "$(gcltkdocdir)" || list=; \
 	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(lispdir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(lispdir)" || exit 1; \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(gcltkdocdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(gcltkdocdir)" || exit 1; \
 	fi; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
 	done | $(am__base_list) | \
 	while read files; do \
-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(lispdir)'"; \
-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(lispdir)" || exit $$?; \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(gcltkdocdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(gcltkdocdir)" || exit $$?; \
 	done
 
-uninstall-dist_lispDATA:
+uninstall-dist_gcltkdocDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(dist_lisp_DATA)'; test -n "$(lispdir)" || list=; \
+	@list='$(dist_gcltkdoc_DATA)'; test -n "$(gcltkdocdir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(lispdir)'; $(am__uninstall_files_from_dir)
-install-dist_my_clcsDATA: $(dist_my_clcs_DATA)
-	@$(NORMAL_INSTALL)
-	@list='$(dist_my_clcs_DATA)'; test -n "$(my_clcsdir)" || list=; \
-	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(my_clcsdir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(my_clcsdir)" || exit 1; \
-	fi; \
-	for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  echo "$$d$$p"; \
-	done | $(am__base_list) | \
-	while read files; do \
-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(my_clcsdir)'"; \
-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(my_clcsdir)" || exit $$?; \
-	done
-
-uninstall-dist_my_clcsDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(dist_my_clcs_DATA)'; test -n "$(my_clcsdir)" || list=; \
-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(my_clcsdir)'; $(am__uninstall_files_from_dir)
-install-dist_my_cmpnewDATA: $(dist_my_cmpnew_DATA)
-	@$(NORMAL_INSTALL)
-	@list='$(dist_my_cmpnew_DATA)'; test -n "$(my_cmpnewdir)" || list=; \
-	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(my_cmpnewdir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(my_cmpnewdir)" || exit 1; \
-	fi; \
-	for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  echo "$$d$$p"; \
-	done | $(am__base_list) | \
-	while read files; do \
-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(my_cmpnewdir)'"; \
-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(my_cmpnewdir)" || exit $$?; \
-	done
-
-uninstall-dist_my_cmpnewDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(dist_my_cmpnew_DATA)'; test -n "$(my_cmpnewdir)" || list=; \
-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(my_cmpnewdir)'; $(am__uninstall_files_from_dir)
+	dir='$(DESTDIR)$(gcltkdocdir)'; $(am__uninstall_files_from_dir)
 install-dist_my_gcltkDATA: $(dist_my_gcltk_DATA)
 	@$(NORMAL_INSTALL)
 	@list='$(dist_my_gcltk_DATA)'; test -n "$(my_gcltkdir)" || list=; \
@@ -3417,69 +3382,6 @@ uninstall-dist_my_gcltkDATA:
 	@list='$(dist_my_gcltk_DATA)'; test -n "$(my_gcltkdir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(my_gcltkdir)'; $(am__uninstall_files_from_dir)
-install-dist_my_gcltkdDATA: $(dist_my_gcltkd_DATA)
-	@$(NORMAL_INSTALL)
-	@list='$(dist_my_gcltkd_DATA)'; test -n "$(my_gcltkddir)" || list=; \
-	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(my_gcltkddir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(my_gcltkddir)" || exit 1; \
-	fi; \
-	for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  echo "$$d$$p"; \
-	done | $(am__base_list) | \
-	while read files; do \
-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(my_gcltkddir)'"; \
-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(my_gcltkddir)" || exit $$?; \
-	done
-
-uninstall-dist_my_gcltkdDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(dist_my_gcltkd_DATA)'; test -n "$(my_gcltkddir)" || list=; \
-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(my_gcltkddir)'; $(am__uninstall_files_from_dir)
-install-dist_my_lspDATA: $(dist_my_lsp_DATA)
-	@$(NORMAL_INSTALL)
-	@list='$(dist_my_lsp_DATA)'; test -n "$(my_lspdir)" || list=; \
-	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(my_lspdir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(my_lspdir)" || exit 1; \
-	fi; \
-	for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  echo "$$d$$p"; \
-	done | $(am__base_list) | \
-	while read files; do \
-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(my_lspdir)'"; \
-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(my_lspdir)" || exit $$?; \
-	done
-
-uninstall-dist_my_lspDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(dist_my_lsp_DATA)'; test -n "$(my_lspdir)" || list=; \
-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(my_lspdir)'; $(am__uninstall_files_from_dir)
-install-dist_my_pclDATA: $(dist_my_pcl_DATA)
-	@$(NORMAL_INSTALL)
-	@list='$(dist_my_pcl_DATA)'; test -n "$(my_pcldir)" || list=; \
-	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(my_pcldir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(my_pcldir)" || exit 1; \
-	fi; \
-	for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  echo "$$d$$p"; \
-	done | $(am__base_list) | \
-	while read files; do \
-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(my_pcldir)'"; \
-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(my_pcldir)" || exit $$?; \
-	done
-
-uninstall-dist_my_pclDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(dist_my_pcl_DATA)'; test -n "$(my_pcldir)" || list=; \
-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(my_pcldir)'; $(am__uninstall_files_from_dir)
 install-dist_my_xgcl2DATA: $(dist_my_xgcl2_DATA)
 	@$(NORMAL_INSTALL)
 	@list='$(dist_my_xgcl2_DATA)'; test -n "$(my_xgcl2dir)" || list=; \
@@ -3501,6 +3403,69 @@ uninstall-dist_my_xgcl2DATA:
 	@list='$(dist_my_xgcl2_DATA)'; test -n "$(my_xgcl2dir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(my_xgcl2dir)'; $(am__uninstall_files_from_dir)
+install-dist_xgcl2docDATA: $(dist_xgcl2doc_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(dist_xgcl2doc_DATA)'; test -n "$(xgcl2docdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(xgcl2docdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(xgcl2docdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(xgcl2docdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(xgcl2docdir)" || exit $$?; \
+	done
+
+uninstall-dist_xgcl2docDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(dist_xgcl2doc_DATA)'; test -n "$(xgcl2docdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(xgcl2docdir)'; $(am__uninstall_files_from_dir)
+install-lispDATA: $(lisp_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(lisp_DATA)'; test -n "$(lispdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(lispdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(lispdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(lispdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(lispdir)" || exit $$?; \
+	done
+
+uninstall-lispDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(lisp_DATA)'; test -n "$(lispdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(lispdir)'; $(am__uninstall_files_from_dir)
+install-my_clcsDATA: $(my_clcs_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(my_clcs_DATA)'; test -n "$(my_clcsdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(my_clcsdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(my_clcsdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(my_clcsdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(my_clcsdir)" || exit $$?; \
+	done
+
+uninstall-my_clcsDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(my_clcs_DATA)'; test -n "$(my_clcsdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(my_clcsdir)'; $(am__uninstall_files_from_dir)
 install-my_cmpnewDATA: $(my_cmpnew_DATA)
 	@$(NORMAL_INSTALL)
 	@list='$(my_cmpnew_DATA)'; test -n "$(my_cmpnewdir)" || list=; \
@@ -3585,6 +3550,48 @@ uninstall-my_hDATA:
 	@list='$(my_h_DATA)'; test -n "$(my_hdir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(my_hdir)'; $(am__uninstall_files_from_dir)
+install-my_lspDATA: $(my_lsp_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(my_lsp_DATA)'; test -n "$(my_lspdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(my_lspdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(my_lspdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(my_lspdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(my_lspdir)" || exit $$?; \
+	done
+
+uninstall-my_lspDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(my_lsp_DATA)'; test -n "$(my_lspdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(my_lspdir)'; $(am__uninstall_files_from_dir)
+install-my_pclDATA: $(my_pcl_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(my_pcl_DATA)'; test -n "$(my_pcldir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(my_pcldir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(my_pcldir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(my_pcldir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(my_pcldir)" || exit $$?; \
+	done
+
+uninstall-my_pclDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(my_pcl_DATA)'; test -n "$(my_pcldir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(my_pcldir)'; $(am__uninstall_files_from_dir)
 install-my_unixportDATA: $(my_unixport_DATA)
 	@$(NORMAL_INSTALL)
 	@list='$(my_unixport_DATA)'; test -n "$(my_unixportdir)" || list=; \
@@ -3868,7 +3875,7 @@ check: $(BUILT_SOURCES)
 all-am: Makefile $(INFO_DEPS) $(PROGRAMS) $(LIBRARIES) $(SCRIPTS) \
 		$(MANS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(infodir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(lispdir)" "$(DESTDIR)$(my_clcsdir)" "$(DESTDIR)$(my_cmpnewdir)" "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_gcltkddir)" "$(DESTDIR)$(my_lspdir)" "$(DESTDIR)$(my_pcldir)" "$(DESTDIR)$(my_xgcl2dir)" "$(DESTDIR)$(my_cmpnewdir)" "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_gcltkddir)" "$(DESTDIR)$(my_hdir)" "$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(xgcl2docdir)"; do \
+	for dir in "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(infodir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(gcltkdocdir)" "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_xgcl2dir)" "$(DESTDIR)$(xgcl2docdir)" "$(DESTDIR)$(lispdir)" "$(DESTDIR)$(my_clcsdir)" "$(DESTDIR)$(my_cmpnewdir)" "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_gcltkddir)" "$(DESTDIR)$(my_hdir)" "$(DESTDIR)$(my_lspdir)" "$(DESTDIR)$(my_pcldir)" "$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(xgcl2docdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -4116,15 +4123,15 @@ info: info-am
 
 info-am: $(INFO_DEPS)
 
-install-data-am: install-dist_lispDATA install-dist_my_clcsDATA \
-	install-dist_my_cmpnewDATA install-dist_my_gcltkDATA \
-	install-dist_my_gcltkdDATA install-dist_my_lspDATA \
-	install-dist_my_pclDATA install-dist_my_xgcl2DATA \
-	install-info-am install-man install-my_cmpnewDATA \
-	install-my_gcltkDATA install-my_gcltkPROGRAMS \
-	install-my_gcltkSCRIPTS install-my_gcltkdDATA install-my_hDATA \
-	install-my_unixportDATA install-my_unixportLIBRARIES \
-	install-my_unixportPROGRAMS install-xgcl2docDATA
+install-data-am: install-dist_gcltkdocDATA install-dist_my_gcltkDATA \
+	install-dist_my_xgcl2DATA install-dist_xgcl2docDATA \
+	install-info-am install-lispDATA install-man \
+	install-my_clcsDATA install-my_cmpnewDATA install-my_gcltkDATA \
+	install-my_gcltkPROGRAMS install-my_gcltkSCRIPTS \
+	install-my_gcltkdDATA install-my_hDATA install-my_lspDATA \
+	install-my_pclDATA install-my_unixportDATA \
+	install-my_unixportLIBRARIES install-my_unixportPROGRAMS \
+	install-xgcl2docDATA
 
 install-dvi: install-dvi-am
 
@@ -4438,17 +4445,17 @@ ps: ps-am
 
 ps-am: $(PSS)
 
-uninstall-am: uninstall-binSCRIPTS uninstall-dist_lispDATA \
-	uninstall-dist_my_clcsDATA uninstall-dist_my_cmpnewDATA \
-	uninstall-dist_my_gcltkDATA uninstall-dist_my_gcltkdDATA \
-	uninstall-dist_my_lspDATA uninstall-dist_my_pclDATA \
-	uninstall-dist_my_xgcl2DATA uninstall-dvi-am uninstall-html-am \
-	uninstall-info-am uninstall-man uninstall-my_cmpnewDATA \
+uninstall-am: uninstall-binSCRIPTS uninstall-dist_gcltkdocDATA \
+	uninstall-dist_my_gcltkDATA uninstall-dist_my_xgcl2DATA \
+	uninstall-dist_xgcl2docDATA uninstall-dvi-am uninstall-html-am \
+	uninstall-info-am uninstall-lispDATA uninstall-man \
+	uninstall-my_clcsDATA uninstall-my_cmpnewDATA \
 	uninstall-my_gcltkDATA uninstall-my_gcltkPROGRAMS \
 	uninstall-my_gcltkSCRIPTS uninstall-my_gcltkdDATA \
-	uninstall-my_hDATA uninstall-my_unixportDATA \
-	uninstall-my_unixportLIBRARIES uninstall-my_unixportPROGRAMS \
-	uninstall-pdf-am uninstall-ps-am uninstall-xgcl2docDATA
+	uninstall-my_hDATA uninstall-my_lspDATA uninstall-my_pclDATA \
+	uninstall-my_unixportDATA uninstall-my_unixportLIBRARIES \
+	uninstall-my_unixportPROGRAMS uninstall-pdf-am uninstall-ps-am \
+	uninstall-xgcl2docDATA
 
 uninstall-man: uninstall-man1
 
@@ -4466,15 +4473,15 @@ uninstall-man: uninstall-man1
 	distclean-local distclean-tags distcleancheck distdir \
 	distuninstallcheck dvi dvi-am html html-am info info-am \
 	install install-am install-binSCRIPTS install-data \
-	install-data-am install-dist_lispDATA install-dist_my_clcsDATA \
-	install-dist_my_cmpnewDATA install-dist_my_gcltkDATA \
-	install-dist_my_gcltkdDATA install-dist_my_lspDATA \
-	install-dist_my_pclDATA install-dist_my_xgcl2DATA install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-man1 install-my_cmpnewDATA install-my_gcltkDATA \
-	install-my_gcltkPROGRAMS install-my_gcltkSCRIPTS \
-	install-my_gcltkdDATA install-my_hDATA install-my_unixportDATA \
+	install-data-am install-dist_gcltkdocDATA \
+	install-dist_my_gcltkDATA install-dist_my_xgcl2DATA \
+	install-dist_xgcl2docDATA install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-lispDATA install-man \
+	install-man1 install-my_clcsDATA install-my_cmpnewDATA \
+	install-my_gcltkDATA install-my_gcltkPROGRAMS \
+	install-my_gcltkSCRIPTS install-my_gcltkdDATA install-my_hDATA \
+	install-my_lspDATA install-my_pclDATA install-my_unixportDATA \
 	install-my_unixportLIBRARIES install-my_unixportPROGRAMS \
 	install-pdf install-pdf-am install-ps install-ps-am \
 	install-strip install-xgcl2docDATA installcheck \
@@ -4482,15 +4489,14 @@ uninstall-man: uninstall-man1
 	maintainer-clean-aminfo maintainer-clean-generic mostlyclean \
 	mostlyclean-aminfo mostlyclean-compile mostlyclean-generic pdf \
 	pdf-am ps ps-am tags tags-am uninstall uninstall-am \
-	uninstall-binSCRIPTS uninstall-dist_lispDATA \
-	uninstall-dist_my_clcsDATA uninstall-dist_my_cmpnewDATA \
-	uninstall-dist_my_gcltkDATA uninstall-dist_my_gcltkdDATA \
-	uninstall-dist_my_lspDATA uninstall-dist_my_pclDATA \
-	uninstall-dist_my_xgcl2DATA uninstall-dvi-am uninstall-html-am \
-	uninstall-info-am uninstall-man uninstall-man1 \
-	uninstall-my_cmpnewDATA uninstall-my_gcltkDATA \
-	uninstall-my_gcltkPROGRAMS uninstall-my_gcltkSCRIPTS \
-	uninstall-my_gcltkdDATA uninstall-my_hDATA \
+	uninstall-binSCRIPTS uninstall-dist_gcltkdocDATA \
+	uninstall-dist_my_gcltkDATA uninstall-dist_my_xgcl2DATA \
+	uninstall-dist_xgcl2docDATA uninstall-dvi-am uninstall-html-am \
+	uninstall-info-am uninstall-lispDATA uninstall-man \
+	uninstall-man1 uninstall-my_clcsDATA uninstall-my_cmpnewDATA \
+	uninstall-my_gcltkDATA uninstall-my_gcltkPROGRAMS \
+	uninstall-my_gcltkSCRIPTS uninstall-my_gcltkdDATA \
+	uninstall-my_hDATA uninstall-my_lspDATA uninstall-my_pclDATA \
 	uninstall-my_unixportDATA uninstall-my_unixportLIBRARIES \
 	uninstall-my_unixportPROGRAMS uninstall-pdf-am uninstall-ps-am \
 	uninstall-xgcl2docDATA
@@ -4743,7 +4749,7 @@ o/new_init.c: $(INI_FILES)
 	echo '}' >> $@
 	! cat $@ | awk -F, '/DEFUN/ {print $$1,$$2}' | grep -v object || (rm $@ && false)
 
-ansi-tests/test_results: ansi-tests | unixport/saved_ansi_gcl
+sb_ansi-tests/test_results: ansi-tests | unixport/saved_ansi_gcl
 	[ -d $(@D) ] || (mkdir $(@D) && cp $</*.lsp $(@D)) # FIXME testsuite in separate directory, hard
 	cd $(@D) && echo '(load "gclload")' | ../$| |tee $(@F)
 
@@ -4759,7 +4765,7 @@ gcl-tk/demos/index.lsp: gcl-tk/tkl.o | unixport/saved_gcl
 	[ -d $(@D) ] || mkdir -p $(@D)
 	cd $(@D) && echo "(load \"../../$<\")(tk::get-autoloads (directory \"*.lisp\"))" | ../../$|
 
-cmpnew/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl c # FIXME directory
+sb_cmpnew/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl c # FIXME directory
 	[ -d $(@D) ] || mkdir -p $(@D)
 	$(word 1,$|) -compile $< -o $@
 
@@ -4771,6 +4777,7 @@ gcl-tk/demos gcl-tk a c $(MY_DIRS): % :
 
 xgcl-2/dwdoc.dvi: xgcl-2/dwdoc.tex
 	latex -output-directory=$(@D) $<
+	rm -f $$(echo $@ | sed 's,\.dvi,.aux,g') $$(echo $@ | sed 's,\.dvi,.log,g')
 
 $(DWDOCS): xgcl-2/dwdoc.tex xgcl-2/gcl_tohtml.lsp xgcl-2/gcl_index.lsp | unixport/saved_mod_gcl
 	mkdir -p $(@D)
@@ -4828,22 +4835,11 @@ clean_%:
 	rm -rf $* unixport/$* unixport/lib$*.a unixport/saved_$*
 
 clean-local:
-	rm -rf $(MY_DIRS) $(addprefix unixport/,$(MY_DIRS))
+	rm -rf $(MY_DIRS) $(addprefix unixport/,$(MY_DIRS)) sb_ansi-tests sb_cmpnew
 	rm -rf unixport/*cmpnopt* unixport/lib* unixport/saved_* #FIXME
 	rm -rf lib #FIXME
-	rm -rf $(addprefix ansi-tests/,\
-		compile-file-test-lp.lsp compile-file-test-lp.out \
-		file-that-was-renamed.txt foo.fasl foo.lsp foo.txt \
-		foo.ufsl ldtest.lsp scratch/ temp.dat test_results \
-		tmp.dat tmp.txt)
 	rm -rf gcl-tk/demos/index.lsp
-	mv xgcl-2/dwdoc.tex xgcl-2/ori_dwdoc.tex && \
-		rm -rf xgcl-2/dwdoc* xgcl-2/*.o &&  \
-		mv xgcl-2/ori_dwdoc.tex xgcl-2/dwdoc.tex
 	rm -rf $(addprefix info/,*.idx *.t2p *.t2d *.info* *.dvi *.pdf *.html)
-	rm -rf $(addprefix ansi-tests/,test.out *.o foo.txt temp.dat file-that-was-renamed.txt \
-				       tmp.dat tmp.dat.BAK tmp2.dat scratch tmp.txt foo.lsp \
-				       'CLTEST:foo.txt')
 
 distclean-local:
 	rm -rf o/.Tpo #FIXME
