@@ -22,4 +22,4 @@ if [ $# -ge 4 ] ;then
 DISPLAY=$4 ;
 export DISPLAY;
 fi
-exec ${dirname $0}/gcltkaux $1 $2 $3
+exec $(dirname $0)/gcltkaux $1 $2 $3
