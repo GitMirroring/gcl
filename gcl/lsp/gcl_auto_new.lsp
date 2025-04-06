@@ -212,7 +212,7 @@
   (in-package :tk)
   (tkconnect)
   (load (file-search "gc-monitor" *load-path* (list ".o" ".lsp") nil))
-  (mkgcmonitor))
+  (tk::mkgcmonitor))
 
 ;; the sun has a broken ypbind business, if one wants to save.
 ;; So to stop users from invoking this
