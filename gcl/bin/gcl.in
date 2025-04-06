@@ -1,7 +1,7 @@
 #!/bin/sh
 
-EXT=.in
-VERS=2.7.0
+EXT=@EXT@
+VERS=@VERSION@
 
 if [ -e /etc/default/gcl$EXT ] ; then
     . /etc/default/gcl$EXT ;
@@ -28,6 +28,6 @@ SYS=$DIR/unixport
 
 exec $SYS/$EXE -dir $SYS/ -libdir $DIR/ \
    -eval '(setq si::*allow-gzipped-file* t)' \
-   -eval '(setq si::*tk-library* "/usr/lib/tk8.6")' \
-   -eval '(setq si::*default-info-files* (list "gcl-si.info" "gcl-tk.info" "gcl.info"))' \
+   -eval '(setq si::*tk-library* "@TK_CONFIG_PREFIX@")' \
+   -eval "(setq si::*default-info-files* (list \"gcl$EXT-si.info\" \"gcl$EXT-tk.info\" \"gcl$EXT.info\"))" \
    "$@"
