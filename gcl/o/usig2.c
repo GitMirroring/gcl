@@ -148,6 +148,7 @@ void
 gcl_init_safety(void)
 { safety_required[SIGINT]=sig_try_to_delay;
   safety_required[SIGALRM]=sig_normal;
+  safety_required[SIGUSR1]=sig_normal;
 }
   
 DEFUN("SIGNAL-SAFETY-REQUIRED",object,sSsignal_safety_required,SI,2,2,

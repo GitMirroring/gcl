@@ -208,6 +208,11 @@
 (defun user::xgcl nil
  (use-package :xlib)
  (format t "Welcome to xgcl! Try (xgcl-demo) for a demonstration."))
+(defun user::gcl-tk-demo nil
+  (in-package :tk)
+  (tkconnect)
+  (load (file-search "gc-monitor" *load-path* (list ".o" ".lsp") nil))
+  (mkgcmonitor))
 
 ;; the sun has a broken ypbind business, if one wants to save.
 ;; So to stop users from invoking this

@@ -116,8 +116,8 @@
 
 ;;; Help.
 
-(defun help (&optional (symbol nil s))
-  (if s (si::print-doc symbol)
+(defun user::help (&optional (symbol nil s))
+  (if s (print-doc symbol)
       (progn
         (princ "
 Welcome to GNU Common Lisp (GCL for short).
@@ -140,13 +140,17 @@ Here are some functions you should learn first.
 
 	(DESCRIBE '<symbol>) or (HELP '<symbol>) describe particular symbols.
 
+	(XGCL-DEMO) will demo the xgcl interface if installed.
+
+	(GCL-TK-DEMO) will demo the gcl-tk interface if installed.
+
 	(BYE) or (BY) ends the current GCL session.
 
 Good luck!				 The GCL Development Team")
         (values))))
 
-(defun help* (string &optional (package (find-package "LISP")))
-  (si::apropos-doc string package))
+(defun user::help* (string &optional (package (find-package "LISP")))
+  (apropos-doc string package))
 
 ;;; Pretty-print-formats.
 ;;;

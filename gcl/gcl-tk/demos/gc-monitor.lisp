@@ -48,7 +48,8 @@
     (dolist (v *gc-monitor-types*)
       (let* ((nfree (aref ar i))
 	     (npages (aref ar (setq i(+ i 1))))
-	     (nppage (aref ar (setq i(+ i 2))))
+	     (maxpage (aref ar (setq i(+ i 1))))
+	     (nppage (aref ar (setq i(+ i 1))))
 	     (gccount (aref ar (setq i (+ i 1))))
 	     (nused   (aref ar (setq i (+ i 1))))
 	     (wid (/ (the short-float(* npages width)) max-size))
@@ -96,7 +97,7 @@
 
 (defun do-allocation ()
   (when *prev-special-type*
-    (allocate *prev-special-type* 
+    (si::allocate *prev-special-type*
 	      (.gc.amount :get :return 'number)
 	      t)
     (draw-status *prev-special-type*)))

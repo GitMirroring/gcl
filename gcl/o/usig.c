@@ -282,8 +282,12 @@ DEF_ORDINARY("SIGUSR1-INTERRUPT",sSsigusr1_interrupt,SI,"");
 DEF_ORDINARY("SIGIO-INTERRUPT",sSsigio_interrupt,SI,"");
 
 static void
-sigusr1(int s,siginfo_t *a,void *b)
-{ifuncall1(sSsigusr1_interrupt,Cnil);}
+sigusr1(int s,siginfo_t *a,void *b) {
+
+  unblock_signals(SIGUSR1,SIGUSR1);
+  ifuncall1(sSsigusr1_interrupt,Cnil);
+
+}
 
 static void
 sigio(int s,siginfo_t *a,void *b)

@@ -741,10 +741,9 @@
 		      (setq ans (format nil "~a ~a" ans (car tem))))
 		     (t (error "bad arg"))))
 	    (if ans (setq ans (concatenate 'string "{(" ans ")}")))
-	    (setq command `(lambda ,*percent-symbols-used*
-			     ,command))
+	    (setq command (eval `(lambda ,*percent-symbols-used* ,command)))
 	    (if ans (setq name (concatenate 'string "{"name " " ans"}"))))
-	   (t (setq command `(lambda (&rest *arglist*) ,command))))
+	   (t (setq command (eval `(lambda (&rest *arglist*) ,command)))))
      (setf (aref *call-backs* ind)  command)
      ;; the command must NOT appear as "{[...]}" or it will be eval'd. 
      (cons 'a name)

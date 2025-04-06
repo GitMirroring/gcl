@@ -15,7 +15,6 @@ my_lspdir=$(my_libdir)/lsp
 my_hdir=$(my_libdir)/h
 my_cmpnewdir=$(my_libdir)/cmpnew
 my_clcsdir=$(my_libdir)/clcs
-my_gcltkddir=$(my_libdir)/gcl-tk/demos
 
 docdir=$(datarootdir)/doc/$(PACKAGE)
 xgcl2docdir=$(docdir)/xgcl-2
@@ -88,8 +87,8 @@ if AMM_TK
 
 my_gcltk_PROGRAMS=gcl-tk/gcltkaux
 my_gcltk_SCRIPTS=gcl-tk/gcltksrv
-my_gcltk_DATA=gcl-tk/tkl.o gcl-tk/tinfo.o gcl-tk/gcl.tcl
-my_gcltkd_DATA=gcl-tk/demos/gc-monitor.o gcl-tk/demos/index.lsp
+my_gcltk_DATA=gcl-tk/tkl.o gcl-tk/tinfo.o gcl-tk/gcl.tcl gcl-tk/demos/gc-monitor.o
+gcltkdoc_DATA=gcl-tk/demos/index.lsp
 dist_my_gcltk_DATA=gcl-tk/tk-package.lsp
 dist_gcltkdoc_DATA=$(addprefix gcl-tk/demos/,$(addsuffix .lisp,\
 			gc-monitor mkBasic mkCanvText mkdialog mkEntry2 mkEntry mkForm mkHScale  mkItems \
