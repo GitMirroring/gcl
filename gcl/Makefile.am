@@ -87,9 +87,9 @@ if AMM_TK
 
 my_gcltk_PROGRAMS=gcl-tk/gcltkaux
 my_gcltk_SCRIPTS=gcl-tk/gcltksrv
-my_gcltk_DATA=gcl-tk/tkl.o gcl-tk/tinfo.o gcl-tk/gcl.tcl gcl-tk/demos/gc-monitor.o
+my_gcltk_DATA=gcl-tk/tkl.o gcl-tk/tinfo.o gcl-tk/demos/gc-monitor.o
 gcltkdoc_DATA=gcl-tk/demos/index.lsp
-dist_my_gcltk_DATA=gcl-tk/tk-package.lsp
+dist_my_gcltk_DATA=gcl-tk/tk-package.lsp gcl-tk/gcl.tcl
 dist_gcltkdoc_DATA=$(addprefix gcl-tk/demos/,$(addsuffix .lisp,\
 			gc-monitor mkBasic mkCanvText mkdialog mkEntry2 mkEntry mkForm mkHScale  mkItems \
 			mkLabel mkListbox mkPlot mkRadio mkRuler mkSearch mkStyles mkTextBind mkVScale \

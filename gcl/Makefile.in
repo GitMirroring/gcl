@@ -618,7 +618,7 @@ am__dist_gcltkdoc_DATA_DIST = $(addprefix gcl-tk/demos/,$(addsuffix \
 	mkForm mkHScale mkItems mkLabel mkListbox mkPlot mkRadio \
 	mkRuler mkSearch mkStyles mkTextBind mkVScale nqthm-stack \
 	showVars widget))
-am__dist_my_gcltk_DATA_DIST = gcl-tk/tk-package.lsp
+am__dist_my_gcltk_DATA_DIST = gcl-tk/tk-package.lsp gcl-tk/gcl.tcl
 am__dist_my_xgcl2_DATA_DIST = xgcl-2/sysdef.lisp $(addprefix \
 	xgcl-2/gcl_,$(addsuffix .lsp, dwtest dwtestcases drawtrans \
 	editorstrans lispservertrans menu-settrans draw-gates))
@@ -899,9 +899,9 @@ dist_noinst_DATA = $(am__append_5) $(am__append_7)
 @AMM_XGCL_TRUE@		general keysymdef X10 Xinit dwtrans tohtml index))
 
 @AMM_TK_TRUE@my_gcltk_SCRIPTS = gcl-tk/gcltksrv
-@AMM_TK_TRUE@my_gcltk_DATA = gcl-tk/tkl.o gcl-tk/tinfo.o gcl-tk/gcl.tcl gcl-tk/demos/gc-monitor.o
+@AMM_TK_TRUE@my_gcltk_DATA = gcl-tk/tkl.o gcl-tk/tinfo.o gcl-tk/demos/gc-monitor.o
 @AMM_TK_TRUE@gcltkdoc_DATA = gcl-tk/demos/index.lsp
-@AMM_TK_TRUE@dist_my_gcltk_DATA = gcl-tk/tk-package.lsp
+@AMM_TK_TRUE@dist_my_gcltk_DATA = gcl-tk/tk-package.lsp gcl-tk/gcl.tcl
 @AMM_TK_TRUE@dist_gcltkdoc_DATA = $(addprefix gcl-tk/demos/,$(addsuffix .lisp,\
 @AMM_TK_TRUE@			gc-monitor mkBasic mkCanvText mkdialog mkEntry2 mkEntry mkForm mkHScale  mkItems \
 @AMM_TK_TRUE@			mkLabel mkListbox mkPlot mkRadio mkRuler mkSearch mkStyles mkTextBind mkVScale \
