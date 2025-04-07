@@ -63,8 +63,7 @@ if AMM_XGCL
 X_LIB=lib/libxgcl.a
 noinst_LIBRARIES+=$(X_LIB)
 
-xgcl2doc_DATA=$(DWDOCS) #requires gcl to build
-dist_xgcl2doc_DATA=xgcl-2/dwdoc.dvi xgcl-2/dwdoc.pdf xgcl-2/Xakcl.paper xgcl-2/README
+dist_xgcl2doc_DATA=xgcl-2/Xakcl.paper xgcl-2/README
 dist_xgcl2doc_DATA+=$(addprefix xgcl-2/gcl_,\
 			$(addsuffix .lsp,\
 				menu-set pcalc draw dwindow editors ice-cream lispserver Xakcl.example))
@@ -77,6 +76,8 @@ X_OBJS=$(addprefix gcl_,$(addsuffix .o,\
 		general keysymdef X10 Xinit dwtrans tohtml index))
 dist_noinst_DATA+=$(addprefix xgcl-2/,dwdoc.tex gnu.license dec.copyright version\
 			$(patsubst %.o,%.lsp,$(X_OBJS)))
+
+info_TEXINFOS+=info/gcl-dwdoc.texi
 
 if AMM_GPROF
 noinst_LIBRARIES+=lib/libxgcl_gprof.a
@@ -102,10 +103,7 @@ endif
 
 EXTRA_DIST=$(D_SRC) $(INCL_C) $(INIT_L) $(INCL_TEXI)\
 	   lsp cmpnew mod pcl clcs ansi-tests elisp xbin \
-	   majvers minvers git.tag release \
-	   $(patsubst %.texi,%.dvi,$(info_TEXINFOS)) \
-	   $(patsubst %.texi,%.pdf,$(info_TEXINFOS)) \
-	   $(patsubst %.texi,%.html,$(info_TEXINFOS))
+	   majvers minvers git.tag release
 
 # end of primaries
 
@@ -141,7 +139,7 @@ ARCHT_H=h/elf32_armhf_reloc.h h/elf32_armhf_reloc_special.h h/elf32_arm_reloc.h 
 	h/mipsel-linux.h h/sparc-linux.h h/aarch64-linux.h h/armhf-linux.h h/arm-linux.h h/s390-linux.h \
 	h/ia64-linux.h h/hppa-linux.h h/loongarch64-linux.h h/powerpc-linux.h h/powerpc-macosx.h \
 	h/386-macosx.h h/mingw.h h/gnuwin95.h h/FreeBSD.h h/solaris.h h/solaris-i386.h
-BUILT_H=h/new_decl.h
+BUILT_H=h/new_decl.h o/boot.h h/cmpinclude.h
 
 C_SRC=o/typespec.c o/alloc.c o/gbc.c o/bitop.c o/main.c o/eval.c o/macros.c o/lex.c o/bds.c o/frame.c\
       o/predicate.c o/reference.c o/assignment.c o/bind.c o/let.c o/conditional.c o/block.c o/iteration.c\
@@ -164,7 +162,7 @@ INI_FILES+=o/gprof.ini
 endif
 
 BUILT_SOURCES=$(BUILT_H) $(BUILT_C)
-CLEANFILES=$(BUILT_SOURCES) $(INI_FILES)
+CLEANFILES=$(BUILT_SOURCES) $(INI_FILES) o/boot.ini
 
 lib_libbase_gcl_a_SOURCES=$(C_SRC) $(BASE_H) $(CMPI_H) $(ARCHT_H)
 nodist_lib_libbase_gcl_a_SOURCES=$(BUILT_C)
@@ -201,8 +199,6 @@ gcl_tk_gcltkaux_SOURCES=$(GCLTK_SRC)
 gcl_tk_gcltkaux_CPPFLAGS=$(AM_CPPFLAGS) $(TK_INCLUDE) $(TCL_INCLUDE) $(TK_XINCLUDES)
 gcl_tk_gcltkaux_LDADD=$(TK_LIB_SPEC) $(TCL_LIB_SPEC)
 
-DWDOCS=$(addprefix xgcl-2/dwdoc/dwdoc,$(addsuffix .html,1 2 3 contents index))
-
 MY_DIRS=gcl0 gcl1 gcl2 gcl3 gcl mod_gcl0 mod_gcl pcl_gcl ansi_gcl
 
 L_STUBS=s sf c listlib predlib deftype typeof subtypep bit type typep typecase arraylib \
@@ -235,10 +231,11 @@ CLCS_STUBS=condition_definitions conditions precom
 CLCS_OBJS=$(addprefix gcl_clcs_,$(addsuffix .o,$(CLCS_STUBS)))
 ANSI_FOBJS=$(addprefix ansi_gcl/,$(CLCS_OBJS)) $(PCL_FOBJS)
 
+CLEANFILES+=$(addprefix unixport/raw_,gcl gcl_gprof ansi_gcl ansi_gcl_gprof)
 $(addprefix unixport/saved_,gcl ansi_gcl gcl_gprof ansi_gcl_gprof):\
 unixport/saved_%: unixport/raw_% # rebuild these only when out of date
 
-unixport/saved_%: | unixport/raw_% unixport/gcl_cmpnopt_%.lsp h/cmpinclude.h \
+unixport/saved_%: | unixport/raw_% unixport/gcl_cmpnopt_%.lsp \
 		    unixport/libboot.so unixport/init_raw.lsp
 	rm -rf sb_$* # FIXME sandbox ugliness for parallel builds
 	mkdir sb_$*
@@ -249,7 +246,8 @@ unixport/saved_%: | unixport/raw_% unixport/gcl_cmpnopt_%.lsp h/cmpinclude.h \
 		ln -snf ../../h/cmpinclude.h h/ && \
 		GCL_LSPSYSDIR=../$(srcdir)/unixport/ \
 			../unixport/raw_$* $$(dirname $$(pwd))/unixport/ -libdir $$(dirname $$(pwd))/ \
-			    < <(cat ../unixport/init_raw.lsp <(echo "(system:save-system \"../$@\")"))
+			    < <(cat ../unixport/init_raw.lsp <(echo "(system:save-system \"../$@\")")) && \
+		rm -f ../unixport/gcl_cmpnopt.lsp
 	rm -rf sb_$*
 
 unixport/raw_%: unixport/lib%.a
@@ -459,12 +457,13 @@ h/new_decl.h: $(INI_FILES)
 	$(CPP) $(AM_CPPFLAGS) $(CPPFLAGS) foo.c | sed -n -e '/#/d' -e '/DO_/d' -e '/[a-zA-Z;]/p' > $@
 	rm -f foo.c
 
-o/boot.h: o/boot.ini
+o/boot.h: %.h: %.ini
 	echo '#include "make-init.h"' > $@
 	echo 'void gcl_init_boot(void){' >> $@
 	cat $< >> $@
 	echo '}' >> $@
 
+CLEANFILES+=unixport/libboot.so
 unixport/libboot.so: o/boot.c o/boot.h
 	$(CC) $(AM_CPPFLAGS) -Io $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) \
 		-fPIC -shared -Wl,-undefined -Wl,dynamic_lookup $< -o $@
@@ -496,11 +495,12 @@ gcl-tk/%.o: gcl-tk/%.lsp | unixport/saved_ansi_gcl
 	[ -d $(@D) ] || mkdir -p $(@D)
 	$(word 1,$|) -compile $< -o $@
 
+CLEANFILES+=gcl-tk/demos/index.lsp gcl-tk/demos/gc-monitor.o
 gcl-tk/demos/index.lsp: gcl-tk/tkl.o | unixport/saved_gcl
 	[ -d $(@D) ] || mkdir -p $(@D)
 	cd $(@D) && echo "(load \"../../$<\")(tk::get-autoloads (directory \"*.lisp\"))" | ../../$|
 
-sb_cmpnew/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl c # FIXME directory
+sb_cmpnew/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl
 	[ -d $(@D) ] || mkdir -p $(@D)
 	$(word 1,$|) -compile $< -o $@
 
@@ -509,23 +509,6 @@ sb_cmpnew/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl c # FIX
 
 gcl-tk/demos gcl-tk a c $(MY_DIRS): % :
 	[ -d $@ ] || mkdir -p $@
-
-xgcl-2/dwdoc.dvi: xgcl-2/dwdoc.tex
-	latex -output-directory=$(@D) $<
-	rm -f $$(echo $@ | sed 's,\.dvi,.aux,g') $$(echo $@ | sed 's,\.dvi,.log,g')
-
-$(DWDOCS): xgcl-2/dwdoc.tex xgcl-2/gcl_tohtml.lsp xgcl-2/gcl_index.lsp | unixport/saved_mod_gcl
-	mkdir -p $(@D)
-	echo "(in-package :xlib)" \
-	     "(progn " \
-		"(mapc (quote load) (list $(patsubst %,\"%\",$(filter-out $<,$^))))" \
-		"(tohtml \"$<\" \"dwdoc\" 1 \"$(@D)/\"))" \
-		"(with-open-file (s \"$(@D)/dwdoccontents.html\" :direction :output)" \
-			"(let ((*standard-output* s))" \
-				"(makecont \"$<\" 1 \"dwdoc\")))" \
-	        "(with-open-file (s \"$(@D)/dwdocindex.html\" :direction :output)" \
-			"(let ((*standard-output* s))" \
-				"(printindex indexdata \"dwdoc\")))" | $|
 
 # package extension
 
@@ -563,29 +546,15 @@ info/gcl%.texi: info/gcl.texi
 
 install-all: install install-dvi install-pdf install-html
 
-clean_gcl_gprof: clean_% :
-	rm -rf unixport/lib$*.a unixport/saved_$* gcl/*.go
-clean_ansi_gcl_gprof: clean_% :
-	rm -rf unixport/lib$*.a unixport/saved_$* $(addsuffix /*.go,mod_gcl pcl_gcl ansi_gcl)
 clean_%:
-	rm -rf $* unixport/$* unixport/lib$*.a unixport/saved_$*
+	rm -rf $* $(addprefix unixport/,$* lib$*.a saved_$* sys_$*.o gcl_cmpnopt_$*.lsp)
 
-clean-local:
-	rm -rf $(MY_DIRS) $(addprefix unixport/,$(MY_DIRS)) sb_ansi-tests sb_cmpnew
-	rm -rf unixport/*cmpnopt* unixport/lib* unixport/saved_* #FIXME
-	rm -rf lib #FIXME
-	rm -rf gcl-tk/demos/index.lsp
-	rm -rf $(addprefix info/,*.idx *.t2p *.t2d *.info* *.dvi *.pdf *.html)
-	rm -rf xgcl-2/dwdoc #FIXME
-	rm -rf ./gcl-tk/demos/gc-monitor.o #FIXME
-	rm -rf unixport/sys_*.o #FIXME
-	rm -rf o/boot.h o/boot.ini #FIXME
+clean-local: $(addprefix clean_,pre_gcl $(MY_DIRS) gcl_gprof ansi_gcl_gprof)
+	rm -rf sb_ansi-tests sb_cmpnew
 
 distclean-local:
-	rm -rf o/.Tpo #FIXME
 	rm -rf gcl.script unixport/gcl.script #FIXME
 	rm -rf h/config.h #FIXME
-	rm -rf makedefsafter #FIXME
 
 AM_ETAGSFLAGS=--regex='/[ \n\t\#\.`]*(defun[ \n\t]+\([^ \n\t]+\)/' \
 	      --regex='/[ \n\t\#\.`]*(defmfun[ \n\t]+"\([^ \n\t"]+\)"[ \n\t]*)/\1/' \

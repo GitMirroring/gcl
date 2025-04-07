@@ -103,11 +103,12 @@ my_unixport_PROGRAMS = unixport/saved_gcl$(EXEEXT) \
 @AMM_XGCL_TRUE@am__append_5 = $(addprefix xgcl-2/,dwdoc.tex gnu.license dec.copyright version\
 @AMM_XGCL_TRUE@			$(patsubst %.o,%.lsp,$(X_OBJS)))
 
-@AMM_GPROF_TRUE@@AMM_XGCL_TRUE@am__append_6 = lib/libxgcl_gprof.a
+@AMM_XGCL_TRUE@am__append_6 = info/gcl-dwdoc.texi
+@AMM_GPROF_TRUE@@AMM_XGCL_TRUE@am__append_7 = lib/libxgcl_gprof.a
 @AMM_TK_TRUE@my_gcltk_PROGRAMS = gcl-tk/gcltkaux$(EXEEXT)
-@AMM_TK_TRUE@am__append_7 = gcl-tk/tkl.lisp gcl-tk/tinfo.lsp
-@AMM_TK_TRUE@am__append_8 = info/gcl-tk.texi
-@AMM_GPROF_TRUE@am__append_9 = o/gprof.ini
+@AMM_TK_TRUE@am__append_8 = gcl-tk/tkl.lisp gcl-tk/tinfo.lsp
+@AMM_TK_TRUE@am__append_9 = info/gcl-tk.texi
+@AMM_GPROF_TRUE@am__append_10 = o/gprof.ini
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -134,7 +135,7 @@ am__installdirs = "$(DESTDIR)$(my_gcltkdir)" \
 	"$(DESTDIR)$(my_clcsdir)" "$(DESTDIR)$(my_cmpnewdir)" \
 	"$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_hdir)" \
 	"$(DESTDIR)$(my_lspdir)" "$(DESTDIR)$(my_pcldir)" \
-	"$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(xgcl2docdir)"
+	"$(DESTDIR)$(my_unixportdir)"
 @AMM_GPROF_TRUE@am__EXEEXT_1 = unixport/saved_gcl_gprof$(EXEEXT) \
 @AMM_GPROF_TRUE@	unixport/saved_ansi_gcl_gprof$(EXEEXT)
 PROGRAMS = $(my_gcltk_PROGRAMS) $(my_unixport_PROGRAMS) \
@@ -593,13 +594,16 @@ AM_V_texidevnull = $(am__v_texidevnull_@AM_V@)
 am__v_texidevnull_ = $(am__v_texidevnull_@AM_DEFAULT_V@)
 am__v_texidevnull_0 = > /dev/null
 am__v_texidevnull_1 = 
-INFO_DEPS = info/gcl.info info/gcl-si.info info/gcl-tk.info
+INFO_DEPS = info/gcl.info info/gcl-si.info info/gcl-dwdoc.info \
+	info/gcl-tk.info
 am__TEXINFO_TEX_DIR = $(srcdir)
-DVIS = info/gcl.dvi info/gcl-si.dvi info/gcl-tk.dvi
-PDFS = info/gcl.pdf info/gcl-si.pdf info/gcl-tk.pdf
-PSS = info/gcl.ps info/gcl-si.ps info/gcl-tk.ps
-HTMLS = info/gcl.html info/gcl-si.html info/gcl-tk.html
-TEXINFOS = info/gcl.texi info/gcl-si.texi $(am__append_8)
+DVIS = info/gcl.dvi info/gcl-si.dvi info/gcl-dwdoc.dvi info/gcl-tk.dvi
+PDFS = info/gcl.pdf info/gcl-si.pdf info/gcl-dwdoc.pdf info/gcl-tk.pdf
+PSS = info/gcl.ps info/gcl-si.ps info/gcl-dwdoc.ps info/gcl-tk.ps
+HTMLS = info/gcl.html info/gcl-si.html info/gcl-dwdoc.html \
+	info/gcl-tk.html
+TEXINFOS = info/gcl.texi info/gcl-si.texi $(am__append_6) \
+	$(am__append_9)
 TEXI2DVI = texi2dvi
 TEXI2PDF = $(TEXI2DVI) --pdf --batch
 MAKEINFOHTML = $(MAKEINFO) --html
@@ -625,16 +629,14 @@ am__dist_my_xgcl2_DATA_DIST = xgcl-2/sysdef.lisp $(addprefix \
 am__dist_noinst_DATA_DIST = $(addprefix xgcl-2/,dwdoc.tex gnu.license \
 	dec.copyright version $(patsubst %.o,%.lsp,$(X_OBJS))) \
 	gcl-tk/tkl.lisp gcl-tk/tinfo.lsp
-am__dist_xgcl2doc_DATA_DIST = xgcl-2/dwdoc.dvi xgcl-2/dwdoc.pdf \
-	xgcl-2/Xakcl.paper xgcl-2/README $(addprefix xgcl-2/gcl_, \
-	$(addsuffix .lsp, menu-set pcalc draw dwindow editors \
-	ice-cream lispserver Xakcl.example))
+am__dist_xgcl2doc_DATA_DIST = xgcl-2/Xakcl.paper xgcl-2/README \
+	$(addprefix xgcl-2/gcl_, $(addsuffix .lsp, menu-set pcalc draw \
+	dwindow editors ice-cream lispserver Xakcl.example))
 DATA = $(dist_gcltkdoc_DATA) $(dist_my_gcltk_DATA) \
 	$(dist_my_xgcl2_DATA) $(dist_noinst_DATA) \
 	$(dist_xgcl2doc_DATA) $(gcltkdoc_DATA) $(lisp_DATA) \
 	$(my_clcs_DATA) $(my_cmpnew_DATA) $(my_gcltk_DATA) \
-	$(my_h_DATA) $(my_lsp_DATA) $(my_pcl_DATA) $(my_unixport_DATA) \
-	$(xgcl2doc_DATA)
+	$(my_h_DATA) $(my_lsp_DATA) $(my_pcl_DATA) $(my_unixport_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -857,12 +859,13 @@ my_clcsdir = $(my_libdir)/clcs
 xgcl2docdir = $(docdir)/xgcl-2
 gcltkdocdir = $(docdir)/gcl-tk
 noinst_LIBRARIES = lib/libbase_gcl.a $(am__append_1) $(am__append_4) \
-	$(am__append_6)
+	$(am__append_7)
 my_unixport_LIBRARIES = unixport/libgcl.a unixport/libansi_gcl.a \
 	$(am__append_3)
 bin_SCRIPTS = bin/gcl
 check_SCRIPTS = sb_ansi-tests/test_results
-info_TEXINFOS = info/gcl.texi info/gcl-si.texi $(am__append_8)
+info_TEXINFOS = info/gcl.texi info/gcl-si.texi $(am__append_6) \
+	$(am__append_9)
 my_unixport_DATA = $(addprefix unixport/,init_raw.lsp gcl.script libboot.so \
 				       gcl_cmpnopt_gcl.lsp gcl_cmpnopt_ansi_gcl.lsp)
 
@@ -877,19 +880,17 @@ dist_man1_MANS = man/man1/gcl.1
 lisp_DATA = elisp/add-default.el elisp/ansi-doc.el elisp/dbl.el elisp/doc-to-texi.el \
 	  elisp/gcl.el elisp/man1-to-texi.el elisp/smart-complete.el elisp/sshell.el
 
-dist_noinst_DATA = $(am__append_5) $(am__append_7)
+dist_noinst_DATA = $(am__append_5) $(am__append_8)
 
 # conditionals
 @AMM_GPROF_TRUE@LIBGPROF = lib/libgprof.a
 
 #it would be nice someday to sandbox xgcl-2 and gcl-tk builds in tmpdirs
 @AMM_XGCL_TRUE@X_LIB = lib/libxgcl.a
-@AMM_XGCL_TRUE@xgcl2doc_DATA = $(DWDOCS) #requires gcl to build
-@AMM_XGCL_TRUE@dist_xgcl2doc_DATA = xgcl-2/dwdoc.dvi xgcl-2/dwdoc.pdf \
-@AMM_XGCL_TRUE@	xgcl-2/Xakcl.paper xgcl-2/README $(addprefix \
-@AMM_XGCL_TRUE@	xgcl-2/gcl_, $(addsuffix .lsp, menu-set pcalc \
-@AMM_XGCL_TRUE@	draw dwindow editors ice-cream lispserver \
-@AMM_XGCL_TRUE@	Xakcl.example))
+@AMM_XGCL_TRUE@dist_xgcl2doc_DATA = xgcl-2/Xakcl.paper xgcl-2/README \
+@AMM_XGCL_TRUE@	$(addprefix xgcl-2/gcl_, $(addsuffix .lsp, \
+@AMM_XGCL_TRUE@	menu-set pcalc draw dwindow editors ice-cream \
+@AMM_XGCL_TRUE@	lispserver Xakcl.example))
 @AMM_XGCL_TRUE@dist_my_xgcl2_DATA = xgcl-2/sysdef.lisp \
 @AMM_XGCL_TRUE@		   $(addprefix xgcl-2/gcl_,$(addsuffix .lsp,\
 @AMM_XGCL_TRUE@			dwtest dwtestcases drawtrans editorstrans lispservertrans menu-settrans draw-gates))
@@ -909,10 +910,7 @@ dist_noinst_DATA = $(am__append_5) $(am__append_7)
 
 EXTRA_DIST = $(D_SRC) $(INCL_C) $(INIT_L) $(INCL_TEXI)\
 	   lsp cmpnew mod pcl clcs ansi-tests elisp xbin \
-	   majvers minvers git.tag release \
-	   $(patsubst %.texi,%.dvi,$(info_TEXINFOS)) \
-	   $(patsubst %.texi,%.pdf,$(info_TEXINFOS)) \
-	   $(patsubst %.texi,%.html,$(info_TEXINFOS))
+	   majvers minvers git.tag release
 
 
 # end of primaries
@@ -951,7 +949,7 @@ ARCHT_H = h/elf32_armhf_reloc.h h/elf32_armhf_reloc_special.h h/elf32_arm_reloc.
 	h/ia64-linux.h h/hppa-linux.h h/loongarch64-linux.h h/powerpc-linux.h h/powerpc-macosx.h \
 	h/386-macosx.h h/mingw.h h/gnuwin95.h h/FreeBSD.h h/solaris.h h/solaris-i386.h
 
-BUILT_H = h/new_decl.h
+BUILT_H = h/new_decl.h o/boot.h h/cmpinclude.h
 C_SRC = o/typespec.c o/alloc.c o/gbc.c o/bitop.c o/main.c o/eval.c o/macros.c o/lex.c o/bds.c o/frame.c\
       o/predicate.c o/reference.c o/assignment.c o/bind.c o/let.c o/conditional.c o/block.c o/iteration.c\
       o/prog.c o/multival.c o/catch.c o/cfun.c o/cmpaux.c o/big.c o/number.c o/num_pred.c o/num_comp.c\
@@ -969,10 +967,13 @@ BUILT_C = o/character.c o/file.c o/gcl_readline.c o/hash.c o/list.c o/package.c 
         o/read.c o/sequence.c o/string.c o/symbol.c o/new_init.c
 
 INI_FILES = $(patsubst %.c,%.ini,$(C_SRC)) $(patsubst \
-	%.d,%.ini,$(D_SRC)) $(am__append_9)
+	%.d,%.ini,$(D_SRC)) $(am__append_10)
 BUILT_SOURCES = $(BUILT_H) $(BUILT_C)
-CLEANFILES = $(BUILT_SOURCES) $(INI_FILES) h/cmpinclude.h h/mstdint.h \
-	h/cmpincludea.h h/mcompdefs.h
+CLEANFILES = $(BUILT_SOURCES) $(INI_FILES) o/boot.ini $(addprefix \
+	unixport/raw_,gcl gcl_gprof ansi_gcl ansi_gcl_gprof) \
+	h/cmpinclude.h h/mstdint.h h/cmpincludea.h h/mcompdefs.h \
+	unixport/libboot.so gcl-tk/demos/index.lsp \
+	gcl-tk/demos/gc-monitor.o
 lib_libbase_gcl_a_SOURCES = $(C_SRC) $(BASE_H) $(CMPI_H) $(ARCHT_H)
 nodist_lib_libbase_gcl_a_SOURCES = $(BUILT_C)
 lib_libgprof_a_SOURCES = o/gprof.c
@@ -997,7 +998,6 @@ GCLTK_SRC = gcl-tk/guis.c gcl-tk/tkAppInit.c gcl-tk/tkMain.c gcl-tk/guis.h
 gcl_tk_gcltkaux_SOURCES = $(GCLTK_SRC)
 gcl_tk_gcltkaux_CPPFLAGS = $(AM_CPPFLAGS) $(TK_INCLUDE) $(TCL_INCLUDE) $(TK_XINCLUDES)
 gcl_tk_gcltkaux_LDADD = $(TK_LIB_SPEC) $(TCL_LIB_SPEC)
-DWDOCS = $(addprefix xgcl-2/dwdoc/dwdoc,$(addsuffix .html,1 2 3 contents index))
 MY_DIRS = gcl0 gcl1 gcl2 gcl3 gcl mod_gcl0 mod_gcl pcl_gcl ansi_gcl
 L_STUBS = s sf c listlib predlib deftype typeof subtypep bit type typep typecase arraylib \
         seq seqlib bnum fle dl rm nr lr sym hash sharp \
@@ -3169,6 +3169,47 @@ info/gcl-si.html: info/gcl-si.texi  info/$(am__dirstamp)
 	  rm -rf $(@:.html=.htp); exit 1; \
 	fi
 
+info/gcl-dwdoc.info: info/gcl-dwdoc.texi 
+	@test -f info/$(am__dirstamp) || $(MAKE) $(AM_MAKEFLAGS) info/$(am__dirstamp)
+	$(AM_V_MAKEINFO)restore=: && backupdir="$(am__leading_dot)am$$$$" && \
+	rm -rf $$backupdir && mkdir $$backupdir && \
+	if ($(MAKEINFO) --version) >/dev/null 2>&1; then \
+	  for f in $@ $@-[0-9] $@-[0-9][0-9] $(@:.info=).i[0-9] $(@:.info=).i[0-9][0-9]; do \
+	    if test -f $$f; then mv $$f $$backupdir; restore=mv; else :; fi; \
+	  done; \
+	else :; fi && \
+	if $(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I info -I $(srcdir)/info \
+	 -o $@ `test -f 'info/gcl-dwdoc.texi' || echo '$(srcdir)/'`info/gcl-dwdoc.texi; \
+	then \
+	  rc=0; \
+	else \
+	  rc=$$?; \
+	  $$restore $$backupdir/* `echo "./$@" | sed 's|[^/]*$$||'`; \
+	fi; \
+	rm -rf $$backupdir; exit $$rc
+
+info/gcl-dwdoc.dvi: info/gcl-dwdoc.texi  info/$(am__dirstamp)
+	$(AM_V_TEXI2DVI)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
+	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I info -I $(srcdir)/info' \
+	$(TEXI2DVI) $(AM_TEXI2FLAGS) -I info -I $(srcdir)/info $(AM_V_texinfo) --build-dir=$(@:.dvi=.t2d) -o $@ $(AM_V_texidevnull) \
+	`test -f 'info/gcl-dwdoc.texi' || echo '$(srcdir)/'`info/gcl-dwdoc.texi
+
+info/gcl-dwdoc.pdf: info/gcl-dwdoc.texi  info/$(am__dirstamp)
+	$(AM_V_TEXI2PDF)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
+	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I info -I $(srcdir)/info' \
+	$(TEXI2PDF) $(AM_TEXI2FLAGS) -I info -I $(srcdir)/info $(AM_V_texinfo) --build-dir=$(@:.pdf=.t2p) -o $@ $(AM_V_texidevnull) \
+	`test -f 'info/gcl-dwdoc.texi' || echo '$(srcdir)/'`info/gcl-dwdoc.texi
+
+info/gcl-dwdoc.html: info/gcl-dwdoc.texi  info/$(am__dirstamp)
+	$(AM_V_MAKEINFO)rm -rf $(@:.html=.htp)
+	$(AM_V_at)if $(MAKEINFOHTML) $(AM_MAKEINFOHTMLFLAGS) $(MAKEINFOFLAGS) -I info -I $(srcdir)/info \
+	 -o $(@:.html=.htp) `test -f 'info/gcl-dwdoc.texi' || echo '$(srcdir)/'`info/gcl-dwdoc.texi; \
+	then \
+	  rm -rf $@ && mv $(@:.html=.htp) $@; \
+	else \
+	  rm -rf $(@:.html=.htp); exit 1; \
+	fi
+
 info/gcl-tk.info: info/gcl-tk.texi 
 	@test -f info/$(am__dirstamp) || $(MAKE) $(AM_MAKEFLAGS) info/$(am__dirstamp)
 	$(AM_V_MAKEINFO)restore=: && backupdir="$(am__leading_dot)am$$$$" && \
@@ -3291,13 +3332,15 @@ dist-info: $(INFO_DEPS)
 
 mostlyclean-aminfo:
 	-$(am__rm_rf) info/gcl.t2d info/gcl.t2p info/gcl-si.t2d info/gcl-si.t2p \
-	  info/gcl-tk.t2d info/gcl-tk.t2p
+	  info/gcl-dwdoc.t2d info/gcl-dwdoc.t2p info/gcl-tk.t2d \
+	  info/gcl-tk.t2p
 
 clean-aminfo:
 	-$(am__rm_rf) info/gcl.dvi info/gcl.pdf info/gcl.ps info/gcl.html info/gcl-si.dvi \
 	  info/gcl-si.pdf info/gcl-si.ps info/gcl-si.html \
-	  info/gcl-tk.dvi info/gcl-tk.pdf info/gcl-tk.ps \
-	  info/gcl-tk.html
+	  info/gcl-dwdoc.dvi info/gcl-dwdoc.pdf info/gcl-dwdoc.ps \
+	  info/gcl-dwdoc.html info/gcl-tk.dvi info/gcl-tk.pdf \
+	  info/gcl-tk.ps info/gcl-tk.html
 
 maintainer-clean-aminfo:
 	@list='$(INFO_DEPS)'; for i in $$list; do \
@@ -3619,27 +3662,6 @@ uninstall-my_unixportDATA:
 	@list='$(my_unixport_DATA)'; test -n "$(my_unixportdir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(my_unixportdir)'; $(am__uninstall_files_from_dir)
-install-xgcl2docDATA: $(xgcl2doc_DATA)
-	@$(NORMAL_INSTALL)
-	@list='$(xgcl2doc_DATA)'; test -n "$(xgcl2docdir)" || list=; \
-	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(xgcl2docdir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(xgcl2docdir)" || exit 1; \
-	fi; \
-	for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  echo "$$d$$p"; \
-	done | $(am__base_list) | \
-	while read files; do \
-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(xgcl2docdir)'"; \
-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(xgcl2docdir)" || exit $$?; \
-	done
-
-uninstall-xgcl2docDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(xgcl2doc_DATA)'; test -n "$(xgcl2docdir)" || list=; \
-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(xgcl2docdir)'; $(am__uninstall_files_from_dir)
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -3881,7 +3903,7 @@ check: $(BUILT_SOURCES)
 all-am: Makefile $(INFO_DEPS) $(PROGRAMS) $(LIBRARIES) $(SCRIPTS) \
 		$(MANS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(infodir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(gcltkdocdir)" "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_xgcl2dir)" "$(DESTDIR)$(xgcl2docdir)" "$(DESTDIR)$(gcltkdocdir)" "$(DESTDIR)$(lispdir)" "$(DESTDIR)$(my_clcsdir)" "$(DESTDIR)$(my_cmpnewdir)" "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_hdir)" "$(DESTDIR)$(my_lspdir)" "$(DESTDIR)$(my_pcldir)" "$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(xgcl2docdir)"; do \
+	for dir in "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(my_unixportdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(infodir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(gcltkdocdir)" "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_xgcl2dir)" "$(DESTDIR)$(xgcl2docdir)" "$(DESTDIR)$(gcltkdocdir)" "$(DESTDIR)$(lispdir)" "$(DESTDIR)$(my_clcsdir)" "$(DESTDIR)$(my_cmpnewdir)" "$(DESTDIR)$(my_gcltkdir)" "$(DESTDIR)$(my_hdir)" "$(DESTDIR)$(my_lspdir)" "$(DESTDIR)$(my_pcldir)" "$(DESTDIR)$(my_unixportdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -4136,8 +4158,7 @@ install-data-am: install-dist_gcltkdocDATA install-dist_my_gcltkDATA \
 	install-my_gcltkDATA install-my_gcltkPROGRAMS \
 	install-my_gcltkSCRIPTS install-my_hDATA install-my_lspDATA \
 	install-my_pclDATA install-my_unixportDATA \
-	install-my_unixportLIBRARIES install-my_unixportPROGRAMS \
-	install-xgcl2docDATA
+	install-my_unixportLIBRARIES install-my_unixportPROGRAMS
 
 install-dvi: install-dvi-am
 
@@ -4460,8 +4481,7 @@ uninstall-am: uninstall-binSCRIPTS uninstall-dist_gcltkdocDATA \
 	uninstall-my_gcltkPROGRAMS uninstall-my_gcltkSCRIPTS \
 	uninstall-my_hDATA uninstall-my_lspDATA uninstall-my_pclDATA \
 	uninstall-my_unixportDATA uninstall-my_unixportLIBRARIES \
-	uninstall-my_unixportPROGRAMS uninstall-pdf-am uninstall-ps-am \
-	uninstall-xgcl2docDATA
+	uninstall-my_unixportPROGRAMS uninstall-pdf-am uninstall-ps-am
 
 uninstall-man: uninstall-man1
 
@@ -4490,8 +4510,8 @@ uninstall-man: uninstall-man1
 	install-my_hDATA install-my_lspDATA install-my_pclDATA \
 	install-my_unixportDATA install-my_unixportLIBRARIES \
 	install-my_unixportPROGRAMS install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip install-xgcl2docDATA \
-	installcheck installcheck-am installdirs maintainer-clean \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-aminfo maintainer-clean-generic mostlyclean \
 	mostlyclean-aminfo mostlyclean-compile mostlyclean-generic pdf \
 	pdf-am ps ps-am tags tags-am uninstall uninstall-am \
@@ -4505,8 +4525,7 @@ uninstall-man: uninstall-man1
 	uninstall-my_gcltkSCRIPTS uninstall-my_hDATA \
 	uninstall-my_lspDATA uninstall-my_pclDATA \
 	uninstall-my_unixportDATA uninstall-my_unixportLIBRARIES \
-	uninstall-my_unixportPROGRAMS uninstall-pdf-am uninstall-ps-am \
-	uninstall-xgcl2docDATA
+	uninstall-my_unixportPROGRAMS uninstall-pdf-am uninstall-ps-am
 
 .PRECIOUS: Makefile
 
@@ -4519,11 +4538,10 @@ unixport/libgcl.a:
 unixport/libansi_gcl.a:
 unixport/libgcl_gprof.a:
 unixport/libansi_gcl_gprof.a:
-
 $(addprefix unixport/saved_,gcl ansi_gcl gcl_gprof ansi_gcl_gprof):\
 unixport/saved_%: unixport/raw_% # rebuild these only when out of date
 
-unixport/saved_%: | unixport/raw_% unixport/gcl_cmpnopt_%.lsp h/cmpinclude.h \
+unixport/saved_%: | unixport/raw_% unixport/gcl_cmpnopt_%.lsp \
 		    unixport/libboot.so unixport/init_raw.lsp
 	rm -rf sb_$* # FIXME sandbox ugliness for parallel builds
 	mkdir sb_$*
@@ -4534,7 +4552,8 @@ unixport/saved_%: | unixport/raw_% unixport/gcl_cmpnopt_%.lsp h/cmpinclude.h \
 		ln -snf ../../h/cmpinclude.h h/ && \
 		GCL_LSPSYSDIR=../$(srcdir)/unixport/ \
 			../unixport/raw_$* $$(dirname $$(pwd))/unixport/ -libdir $$(dirname $$(pwd))/ \
-			    < <(cat ../unixport/init_raw.lsp <(echo "(system:save-system \"../$@\")"))
+			    < <(cat ../unixport/init_raw.lsp <(echo "(system:save-system \"../$@\")")) && \
+		rm -f ../unixport/gcl_cmpnopt.lsp
 	rm -rf sb_$*
 
 unixport/raw_%: unixport/lib%.a
@@ -4731,12 +4750,11 @@ h/new_decl.h: $(INI_FILES)
 	$(CPP) $(AM_CPPFLAGS) $(CPPFLAGS) foo.c | sed -n -e '/#/d' -e '/DO_/d' -e '/[a-zA-Z;]/p' > $@
 	rm -f foo.c
 
-o/boot.h: o/boot.ini
+o/boot.h: %.h: %.ini
 	echo '#include "make-init.h"' > $@
 	echo 'void gcl_init_boot(void){' >> $@
 	cat $< >> $@
 	echo '}' >> $@
-
 unixport/libboot.so: o/boot.c o/boot.h
 	$(CC) $(AM_CPPFLAGS) -Io $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) \
 		-fPIC -shared -Wl,-undefined -Wl,dynamic_lookup $< -o $@
@@ -4767,12 +4785,11 @@ gcl-tk/%.o: gcl-tk/%.lisp | unixport/saved_ansi_gcl
 gcl-tk/%.o: gcl-tk/%.lsp | unixport/saved_ansi_gcl
 	[ -d $(@D) ] || mkdir -p $(@D)
 	$(word 1,$|) -compile $< -o $@
-
 gcl-tk/demos/index.lsp: gcl-tk/tkl.o | unixport/saved_gcl
 	[ -d $(@D) ] || mkdir -p $(@D)
 	cd $(@D) && echo "(load \"../../$<\")(tk::get-autoloads (directory \"*.lisp\"))" | ../../$|
 
-sb_cmpnew/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl c # FIXME directory
+sb_cmpnew/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl
 	[ -d $(@D) ] || mkdir -p $(@D)
 	$(word 1,$|) -compile $< -o $@
 
@@ -4781,23 +4798,6 @@ sb_cmpnew/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl c # FIX
 
 gcl-tk/demos gcl-tk a c $(MY_DIRS): % :
 	[ -d $@ ] || mkdir -p $@
-
-xgcl-2/dwdoc.dvi: xgcl-2/dwdoc.tex
-	latex -output-directory=$(@D) $<
-	rm -f $$(echo $@ | sed 's,\.dvi,.aux,g') $$(echo $@ | sed 's,\.dvi,.log,g')
-
-$(DWDOCS): xgcl-2/dwdoc.tex xgcl-2/gcl_tohtml.lsp xgcl-2/gcl_index.lsp | unixport/saved_mod_gcl
-	mkdir -p $(@D)
-	echo "(in-package :xlib)" \
-	     "(progn " \
-		"(mapc (quote load) (list $(patsubst %,\"%\",$(filter-out $<,$^))))" \
-		"(tohtml \"$<\" \"dwdoc\" 1 \"$(@D)/\"))" \
-		"(with-open-file (s \"$(@D)/dwdoccontents.html\" :direction :output)" \
-			"(let ((*standard-output* s))" \
-				"(makecont \"$<\" 1 \"dwdoc\")))" \
-	        "(with-open-file (s \"$(@D)/dwdocindex.html\" :direction :output)" \
-			"(let ((*standard-output* s))" \
-				"(printindex indexdata \"dwdoc\")))" | $|
 
 # package extension
 
@@ -4835,29 +4835,15 @@ info/gcl%.texi: info/gcl.texi
 
 install-all: install install-dvi install-pdf install-html
 
-clean_gcl_gprof: clean_% :
-	rm -rf unixport/lib$*.a unixport/saved_$* gcl/*.go
-clean_ansi_gcl_gprof: clean_% :
-	rm -rf unixport/lib$*.a unixport/saved_$* $(addsuffix /*.go,mod_gcl pcl_gcl ansi_gcl)
 clean_%:
-	rm -rf $* unixport/$* unixport/lib$*.a unixport/saved_$*
+	rm -rf $* $(addprefix unixport/,$* lib$*.a saved_$* sys_$*.o gcl_cmpnopt_$*.lsp)
 
-clean-local:
-	rm -rf $(MY_DIRS) $(addprefix unixport/,$(MY_DIRS)) sb_ansi-tests sb_cmpnew
-	rm -rf unixport/*cmpnopt* unixport/lib* unixport/saved_* #FIXME
-	rm -rf lib #FIXME
-	rm -rf gcl-tk/demos/index.lsp
-	rm -rf $(addprefix info/,*.idx *.t2p *.t2d *.info* *.dvi *.pdf *.html)
-	rm -rf xgcl-2/dwdoc #FIXME
-	rm -rf ./gcl-tk/demos/gc-monitor.o #FIXME
-	rm -rf unixport/sys_*.o #FIXME
-	rm -rf o/boot.h o/boot.ini #FIXME
+clean-local: $(addprefix clean_,pre_gcl $(MY_DIRS) gcl_gprof ansi_gcl_gprof)
+	rm -rf sb_ansi-tests sb_cmpnew
 
 distclean-local:
-	rm -rf o/.Tpo #FIXME
 	rm -rf gcl.script unixport/gcl.script #FIXME
 	rm -rf h/config.h #FIXME
-	rm -rf makedefsafter #FIXME
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
