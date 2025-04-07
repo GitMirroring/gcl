@@ -576,11 +576,16 @@ clean-local:
 	rm -rf lib #FIXME
 	rm -rf gcl-tk/demos/index.lsp
 	rm -rf $(addprefix info/,*.idx *.t2p *.t2d *.info* *.dvi *.pdf *.html)
-
+	rm -rf xgcl-2/dwdoc #FIXME
+	rm -rf ./gcl-tk/demos/gc-monitor.o #FIXME
+	rm -rf unixport/sys_*.o #FIXME
+	rm -rf o/boot.h o/boot.ini #FIXME
 
 distclean-local:
 	rm -rf o/.Tpo #FIXME
-
+	rm -rf gcl.script unixport/gcl.script #FIXME
+	rm -rf h/config.h #FIXME
+	rm -rf makedefsafter #FIXME
 
 AM_ETAGSFLAGS=--regex='/[ \n\t\#\.`]*(defun[ \n\t]+\([^ \n\t]+\)/' \
 	      --regex='/[ \n\t\#\.`]*(defmfun[ \n\t]+"\([^ \n\t"]+\)"[ \n\t]*)/\1/' \
