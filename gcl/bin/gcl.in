@@ -9,7 +9,7 @@ if [ -e /etc/default/gcl$EXT ] ; then
     if ! set | grep -q -w GCL_PROF ; then GCL_PROF=$DEFAULT_GCL_PROF ; fi
 fi
 
-DIR=/usr/lib/gcl-$VERS;
+DIR=@prefix@/lib/gcl-$VERS;
 
 if [ "$GCL_ANSI" = "" ] ; then
     if [ "$GCL_PROF" = "" ] ; then
