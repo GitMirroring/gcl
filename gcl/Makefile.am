@@ -522,7 +522,9 @@ bin/gcl%: bin/gcl
 man/man1/gcl%.1: man/man1/gcl.1
 	sed -e 's,\(\b\)gcl\(\b\),\1gcl$*\2,g' $< > $@
 
-info/gcl%-si.texi: info/gcl-si.texi # FIXME one rule
+info/gcl%-dwdoc.texi: info/gcl-dwdoc.texi # FIXME one rule
+	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
+info/gcl%-si.texi: info/gcl-si.texi
 	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
 info/gcl%-tk.texi: info/gcl-tk.texi
 	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
