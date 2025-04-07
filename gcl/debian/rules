@@ -82,26 +82,13 @@ build-arch: build-stamp
 build-indep: build-stamp
 	touch $@
 
-DOC_STUBS=gcl$(EXT) gcl$(EXT)-si gcl$(EXT)-tk
+DOC_STUBS=gcl$(EXT) gcl$(EXT)-si gcl$(EXT)-tk gcl$(EXT)-dwdoc
 DOC_FILES=$(addsuffix  .info,$(DOC_STUBS))
 DOC_FILES+=$(addsuffix .dvi,$(DOC_STUBS))
 DOC_FILES+=$(addsuffix .pdf,$(DOC_STUBS))
 DOC_FILES+=$(addsuffix .html,$(DOC_STUBS))
 DOC_FFILES=$(addprefix info/,$(DOC_FILES))
 EXT_TARGS=$(DOC_FFILES) man/man1/gcl$(EXT).1 bin/gcl$(EXT)
-$(EXT_TARGS):
-	$(MAKE) $(MAKEFLAGS) $@
-ext-install: $(EXT_TARGS) | install-stamp
-	for i in $^; do \
-		for j in $$i*; do \
-			if [ -d $$j ] ; then l=d ; r=-r ; else l=f ; fi ; \
-			k=$$(find debian/tmp -type $$l -name $$(echo $$(basename $$j) | sed 's,$(EXT),,g')); \
-			[ "$$k" = "" ] || cp $$r $$j $$(dirname $$k) ; \
-			echo $$i $$j $$k; \
-			[ "$$k" = "" ] || chmod $$(dirname $$k)/$$(basename $$j) --reference=$$k ; \
-			[ "$$k" = "" ] || rm $$r $$k ; \
-		done ; \
-	done
 
 install-stamp: build-stamp
 	dh_testdir
@@ -152,6 +139,19 @@ clean: debian/control debian/gcl.templates
 	rm -rf *stamp build-indep
 	rm -f  debian/elpa-gcl$(EXT).elpa debian/gcl$(EXT)-pkg.el
 	rm -rf $(EXT_TARGS)
+
+debian-clean: debian/control debian/gcl.templates
+	dh_testdir
+	dh_testroot
+	debconf-updatepo
+
+	dh_clean
+
+	rm -rf $(INS) debian/substvars debian.upstream
+	rm -rf *stamp build-indep
+	rm -f  debian/elpa-gcl$(EXT).elpa debian/gcl$(EXT)-pkg.el
+	rm -rf $(EXT_TARGS) info/gcl$(EXT)*.info*
+
 
 
 # Build architecture-independent files here.
