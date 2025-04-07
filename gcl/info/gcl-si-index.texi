@@ -1,9 +1,0 @@
-@node Function Index,Variable Index ,JAPI GUI Library Binding, Top
-@appendix Function Index
-@printindex fn
-
-@node Variable Index, ,Function Index, Top
-@appendix Variable Index
-@printindex vr
-
-
