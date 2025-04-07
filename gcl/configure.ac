@@ -578,8 +578,6 @@ AC_CHECK_HEADERS(
 	     AC_MSG_RESULT($hz)])])
 
 
-rm -f makedefsafter
-
 AC_CHECK_HEADERS([gmp.h],
    [AC_CHECK_LIB([gmp],[__gmpz_init],
 	[AC_MSG_CHECKING([for external gmp version])
@@ -666,11 +664,6 @@ GMP=1
 AC_DEFINE(GMP,1,[using gmp])
 AC_SUBST(GMP)
 AC_SUBST(GMPDIR)
-echo > makedefsafter
-echo "MPFILES=$MPFILES" >> makedefsafter
-echo "PATCHED_SYMBOLS=$PATCHED_SYMBOLS" >> makedefsafter
-echo >> makedefsafter
-
 
 AC_MSG_CHECKING([for GNU ld option -Map])
 touch map foo.c

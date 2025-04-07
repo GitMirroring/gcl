@@ -7777,8 +7777,6 @@ fi
 done
 
 
-rm -f makedefsafter
-
        for ac_header in gmp.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "gmp.h" "ac_cv_header_gmp_h" "$ac_includes_default"
@@ -8047,11 +8045,6 @@ GMP=1
 printf "%s\n" "#define GMP 1" >>confdefs.h
 
 
-
-echo > makedefsafter
-echo "MPFILES=$MPFILES" >> makedefsafter
-echo "PATCHED_SYMBOLS=$PATCHED_SYMBOLS" >> makedefsafter
-echo >> makedefsafter
 
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for GNU ld option -Map" >&5
