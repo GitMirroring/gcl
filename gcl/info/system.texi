@@ -434,27 +434,40 @@ be any non-negative, non-complex number.
 
 Several environment variables affect GCL:
 
-@vtable @code
-@item GCL_MEM_MULTIPLE -- default 1.0
+@defvr {Environment Variable} GCL_MEM_MULTIPLE
 A positive float indicating the fraction of available memory
-GCL should use.
-@item GCL_MEM_BOUND -- default sizeof(long)-1
+GCL should use. Defaults to 1.0.
+@end defvr
+
+@defvr {Environment Variable}  GCL_MEM_BOUND
 A positive integer bounding GCL's heap to 1<<(n+1) bytes.  Trumps
-GCL_MEM_MULTIPLE.
-@item GCL_GC_ALLOC_MIN -- default 0.05
+GCL_MEM_MULTIPLE. Defaults to sizeof(long)-1.
+@end defvr
+
+@defvr {Environment Variable}  GCL_GC_ALLOC_MIN
 A positive float indicating the minimum fraction of heap to be
-allocated between garbage collection (GC) cycles.
-@item GCL_GC_PAGE_MIN -- default 0.5
+allocated between garbage collection (GC) cycles. Defaults to 0.05.
+@end defvr
+
+@defvr {Environment Variable}  GCL_GC_PAGE_MIN
 A positive float indicating the minimum fraction of heap to be
-allocated before garbage collection (GC) commences.
-@item GCL_GC_PAGE_MAX -- default 0.75
+allocated before garbage collection (GC) commences. Defaults to 0.5.
+@end defvr
+
+@defvr {Environment Variable}  GCL_GC_PAGE_MAX
 A positive float indicating the maximum fraction of heap to be
-allocated after which garbage collection (GC) is mandatory.
-@item GCL_MULTIPROCESS_MEMORY_POOL -- default unset
+allocated after which garbage collection (GC) is mandatory. Defaults
+to 0.75.
+@end defvr
+
+@defvr {Environment Variable}  GCL_MULTIPROCESS_MEMORY_POOL
 A string when set indicating a directory in which to place the file
 gcl_pool used for coordinating memory management among multiple GCL
 processes.  This should be a local directory for performance reasons.
-@item GCL_WAIT_ON_ABORT -- default 0
+Default is unset.
+@end defvr
+
+@defvr {Environment Variable}  GCL_WAIT_ON_ABORT
 A non-negative integer indicating how many seconds to sleep before
-aborting on fatal error.
-@end vtable
+aborting on fatal error.  Defaults to 0.
+@end defvr
