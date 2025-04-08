@@ -176,7 +176,7 @@ binary-arch: DH_OPTIONS=-a
 binary-arch: build install #debian/substvars
 	dh_testdir 
 	dh_testroot 
-	dh_installdocs  -XRELEASE-2.6.2.html
+	dh_installdocs
 	dh_installdebconf 
 	sed -i -e 's,@EXT@,$(EXT),g' debian/gcl$(EXT)/DEBIAN/templates
 	dh_installchangelogs ChangeLog 
