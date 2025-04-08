@@ -4,7 +4,7 @@
 #+excl
 (eval-when (compile) (setq comp::register-use-threshold 6))
 
-(proclaim '(function tak (fixnum fixnum fixnum) fixnum))
+(declaim (ftype (function (fixnum fixnum fixnum) fixnum) tak))
 
 (defun tak (x y z)
   (declare (fixnum x y z))

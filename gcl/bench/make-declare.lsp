@@ -1,8 +1,6 @@
 ;; By W. Schelter
 ;; Usage: (si::proclaim-file "foo.lsp") (compile-file "foo.lsp")
 
-(in-package 'si)
-
 (proclaim (quote (optimize (compilation-speed 0) (safety 0) (speed 3)
 			   (space 0)
 			   (debug 0))))
@@ -81,5 +79,3 @@
 		((FIXNUM CHARACTER FLOAT LONG-FLOAT SHORT-FLOAT )
 		 (IF (MEMBER V (CDR D)) (RETURN-FROM DECL-TYPE (CAR D))))))
   T)
-			    
-	      

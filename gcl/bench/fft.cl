@@ -15,10 +15,10 @@
   (make-array 1025. :element-type 'double-float
 	      :initial-element 0.0))
 
-(proclaim '(type (vector double-float) **fft-re** **fft-im**))
+(declaim (type (vector double-float) **fft-re** **fft-im**))
 
 (defvar s-pi (float pi 0.0))
-(proclaim '(double-float s-pi))
+(declaim (double-float s-pi))
 
 (defun fft (areal aimag)
   (declare (type (simple-array double-float (*)) areal aimag))

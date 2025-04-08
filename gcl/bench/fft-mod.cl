@@ -27,11 +27,11 @@
  `(the double-float (/ (the double-float ,a) (the double-float ,b))))
 
 
-(proclaim '(type (simple-array double-float (*))
+(declaim (type (simple-array double-float (*))
 		   **fft-re** **fft-im**))
 
 (defvar s-pi (float pi 0.0))
-(proclaim '(double-float s-pi))
+(declaim (double-float s-pi))
 
 (defun fft (areal aimag)
   (declare (type (simple-array double-float (*)) areal aimag))
@@ -81,8 +81,8 @@
 	     le1 (the (values fixnum fixnum) (floor le 2))
 	     ur 1.0
 	     ui 0.0
-	     wr (cos (ff/ s-pi (float le1)))
-	     wi (sin (ff/ s-pi (float le1))))
+	     wr (cos (ff/ s-pi (float le1 0.0d0)))
+	     wi (sin (ff/ s-pi (float le1 0.0d0))))
        (do ((j 1 (the fixnum (1+ (the fixnum j)))))
 	   ((> (the fixnum j) le1)) 	;loop thru butterflies
 	 (declare (type fixnum j))
