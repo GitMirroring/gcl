@@ -501,13 +501,15 @@ sb_bench/timing_results: $(addprefix sb_bench/,$(addsuffix .tim,$(BENCH))) \
 		>$@
 	cat $@
 
-sb_bench/%.tim: bench/%.cl | unixport/saved_ansi_gcl
-	[ -d $(@D) ] || mkdir $(@D)
+sb_bench:
+	mkdir $@
+
+sb_bench/%.tim: bench/%.cl | unixport/saved_ansi_gcl sb_bench
 	echo "(load \"$(<D)/make-declare.lsp\")" \
 	     "(proclaim-file \"$<\")" \
 	     "(compile-file \"$<\" :output-file \"$(@D)/$*.o\")" \
 	     "(load \"$(<D)/test-help.lsp\")" \
-	     "(do-test \"$(@D)/$*\" \"$(@D)/$*.tim\")" | $|
+	     "(do-test \"$(@D)/$*\" \"$(@D)/$*.tim\")" | $(word 1,$|)
 
 gcl-tk/%.o: gcl-tk/%.lisp | unixport/saved_ansi_gcl
 	[ -d $(@D) ] || mkdir -p $(@D)
@@ -529,7 +531,7 @@ sb_cmpnew/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl
 %.c: %.d | bin/dpp
 	bin/dpp $< $@
 
-gcl-tk/demos gcl-tk a c $(MY_DIRS): % :
+gcl-tk/demos gcl-tk $(MY_DIRS): % :
 	[ -d $@ ] || mkdir -p $@
 
 # package extension

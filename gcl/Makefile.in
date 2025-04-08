@@ -696,7 +696,6 @@ BASE_LDFLAGS = @BASE_LDFLAGS@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
-CLSTANDARD = @CLSTANDARD@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CSCOPE = @CSCOPE@
@@ -715,7 +714,6 @@ EXEEXT = @EXEEXT@
 EXT = @EXT@
 EXTRA_LOBJS = @EXTRA_LOBJS@
 FINAL_CFLAGS = @FINAL_CFLAGS@
-FLISP = @FLISP@
 GCL_CC = @GCL_CC@
 GMP = @GMP@
 GMPDIR = @GMPDIR@
@@ -764,7 +762,6 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PAGEWIDTH = @PAGEWIDTH@
-PARGCLDIR = @PARGCLDIR@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PRELINK_CHECK = @PRELINK_CHECK@
 RANLIB = @RANLIB@
@@ -773,7 +770,6 @@ RL_OBJS = @RL_OBJS@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
-SYSTEM = @SYSTEM@
 TCLSH = @TCLSH@
 TCL_INCLUDE = @TCL_INCLUDE@
 TCL_LIBRARY = @TCL_LIBRARY@
@@ -4792,13 +4788,15 @@ sb_bench/timing_results: $(addprefix sb_bench/,$(addsuffix .tim,$(BENCH))) \
 		>$@
 	cat $@
 
-sb_bench/%.tim: bench/%.cl | unixport/saved_ansi_gcl
-	[ -d $(@D) ] || mkdir $(@D)
+sb_bench:
+	mkdir $@
+
+sb_bench/%.tim: bench/%.cl | unixport/saved_ansi_gcl sb_bench
 	echo "(load \"$(<D)/make-declare.lsp\")" \
 	     "(proclaim-file \"$<\")" \
 	     "(compile-file \"$<\" :output-file \"$(@D)/$*.o\")" \
 	     "(load \"$(<D)/test-help.lsp\")" \
-	     "(do-test \"$(@D)/$*\" \"$(@D)/$*.tim\")" | $|
+	     "(do-test \"$(@D)/$*\" \"$(@D)/$*.tim\")" | $(word 1,$|)
 
 gcl-tk/%.o: gcl-tk/%.lisp | unixport/saved_ansi_gcl
 	[ -d $(@D) ] || mkdir -p $(@D)
@@ -4818,7 +4816,7 @@ sb_cmpnew/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl
 %.c: %.d | bin/dpp
 	bin/dpp $< $@
 
-gcl-tk/demos gcl-tk a c $(MY_DIRS): % :
+gcl-tk/demos gcl-tk $(MY_DIRS): % :
 	[ -d $@ ] || mkdir -p $@
 
 # package extension
