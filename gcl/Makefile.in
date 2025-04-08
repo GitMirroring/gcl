@@ -4861,7 +4861,7 @@ clean_%:
 	rm -rf $* $(addprefix unixport/,$* lib$*.a saved_$* sys_$*.o gcl_cmpnopt_$*.lsp)
 
 clean-local: $(addprefix clean_,pre_gcl $(MY_DIRS) gcl_gprof ansi_gcl_gprof)
-	rm -rf sb_ansi-tests sb_cmpnew
+	rm -rf sb_ansi-tests sb_cmpnew sb_bench
 
 distclean-local:
 	rm -rf gcl.script unixport/gcl.script #FIXME
