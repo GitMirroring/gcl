@@ -504,6 +504,7 @@ sb_bench/timing_results: $(addprefix sb_bench/,$(addsuffix .tim,$(BENCH))) \
 sb_bench:
 	mkdir $@
 
+sb_bench/fread.tim: sb_bench/fprint.tim
 sb_bench/%.tim: bench/%.cl | unixport/saved_ansi_gcl sb_bench
 	echo "(load \"$(<D)/make-declare.lsp\")" \
 	     "(proclaim-file \"$<\")" \
