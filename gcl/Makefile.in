@@ -4790,6 +4790,7 @@ sb_bench/timing_results: $(addprefix sb_bench/,$(addsuffix .tim,$(BENCH))) \
 		    printf("%-10.10s %15.3f %15.3f %15.3f %15.3f %15.3f\n",$$1,$$2,$$4,$$6,$$8,$$10); else \
 		    printf("%-10.10s %15.15s %15.15s %15.15s %15.15s %15.15s\n",$$1,$$2,$$4,$$7,$$10,$$13);}' \
 		>$@
+	cat $@
 
 sb_bench/%.tim: bench/%.cl | unixport/saved_ansi_gcl
 	[ -d $(@D) ] || mkdir $(@D)
