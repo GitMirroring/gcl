@@ -1,2 +1,0 @@
-#!/bin/sh
-gcc -I@PWD@/include $* -L@PWD@/lib -lmpi @LIBSFORSOCKETS@ @LIBSFORPTHREAD@
