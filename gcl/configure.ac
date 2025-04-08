@@ -1419,66 +1419,6 @@ AC_CHECK_HEADERS([dirent.h],
 		     [AC_MSG_RESULT([yes]) AC_DEFINE(HAVE_D_TYPE,1,[have struct dirent d_type field])],
 		     AC_MSG_RESULT([no]),AC_MSG_RESULT([no])))
 
-#
-# ParGCL
-#
-
-# ParGCL (includes MPINU)
-AC_ARG_ENABLE(pargcl,
-[ --enable-pargcl        enables ParGCL (for parallel computing),
-			 including subset of MPI (see pargcl/doc/)],
-,enable_pargcl="no")
-AC_ARG_WITH(mpicc,
-[  --with-mpicc=PATH       define path to mpicc (default is built-in MPI subset)],
-, with_mpicc=no)
-
-# ansi lisp
-SYSTEM=ansi_gcl
-CLSTANDARD=ANSI
-AC_ARG_ENABLE([ansi],[  --enable-ansi builds a large gcl aiming for ansi compliance],
-	      [if test "$enable_ansi" = "no" ; then
-		   SYSTEM=gcl
-		   CLSTANDARD=CLtL1
-	       fi])
-
-if test "$enable_pargcl" != "no" ; then			
-
-	 AC_MSG_CHECKING([enable_pargcl=yes, doing configure in pargcl directory])
-	 if test -d pargcl; then
-	   PARGCLDIR=pargcl
-	 fi
-	 echo
-	 echo "#"
-	 echo "#"
-	 echo "# -------------------"
-	 echo "# Subconfigure of ParGCL"
-	 echo "#"
-	 echo "#"
-
-	 #SYSTEM is either gcl or ansi_gcl.  This must come after def of SYSTEM
-	 PARGCL_GCLDIR=`pwd`
-	 ( cd $PARGCLDIR && ./configure --with-gcl=$PARGCL_GCLDIR/bin/$SYSTEM \
-	        --with-gcl-build-dir=$PARGCL_GCLDIR --with-mpicc=$with_mpicc )
-	#MY_SUBDIRS="$MY_SUBDIRS $PARGCLDIR" 
-
-	 echo "#"
-	 echo "#"
-	 echo "#"
-	 echo "# Subconfigure of ParGCL done"
-	 echo "# ------------------------"
-	 echo "#"
-	 AC_SUBST(PARGCLDIR)
-
-fi
-
-FLISP="saved_$SYSTEM"
-AC_SUBST(FLISP)
-AC_SUBST(SYSTEM)
-AC_SUBST(CLSTANDARD)
-
-# Maximum number of pages
-
-
 
 # Check if Posix compliant getcwd exists, if not we'll use getwd.
 AC_CHECK_FUNCS(getcwd)

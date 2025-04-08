@@ -686,10 +686,6 @@ HAVE_SETENV
 NO_PROFILE
 RL_LIB
 RL_OBJS
-CLSTANDARD
-SYSTEM
-FLISP
-PARGCLDIR
 HAVE_LONG_LONG
 PAGEWIDTH
 DOUBLE_BIGENDIAN
@@ -833,9 +829,6 @@ enable_xdr
 enable_immfix
 enable_fastimmfix
 enable_min_pagewidth
-enable_pargcl
-with_mpicc
-enable_ansi
 enable_readline
 enable_tcltk
 enable_tkconfig
@@ -1509,9 +1502,6 @@ Optional Features:
   --enable-immfix will enable an immediate fixnum table above the C stack
   --enable-fastimmfix=XXXX will reject low immediate fixnums unless 2^XXX can be attained
  --enable-min_pagewidth=xxx sets 1<<xxx byte pages
- --enable-pargcl        enables ParGCL (for parallel computing),
-			 including subset of MPI (see pargcl/doc/)
-  --enable-ansi builds a large gcl aiming for ansi compliance
   --enable-readline    enables command line completion via the readline library
   --enable-tcltk will try to build gcl-tk
   --enable-tkconfig=XXXX will force the use of a TK_CONFIG_PREFIX=XXXXX as place to look for tkConfig.sh and tclConfig.sh
@@ -1522,7 +1512,6 @@ Optional Packages:
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-lispdir          override the default lisp directory
   --with-x                use the X Window System
-  --with-mpicc=PATH       define path to mpicc (default is built-in MPI subset)
 
 Some influential environment variables:
   EMACS       the Emacs editor command
@@ -10276,83 +10265,6 @@ fi
 fi
 
 done
-
-#
-# ParGCL
-#
-
-# ParGCL (includes MPINU)
-# Check whether --enable-pargcl was given.
-if test ${enable_pargcl+y}
-then :
-  enableval=$enable_pargcl;
-else case e in #(
-  e) enable_pargcl="no" ;;
-esac
-fi
-
-
-# Check whether --with-mpicc was given.
-if test ${with_mpicc+y}
-then :
-  withval=$with_mpicc;
-else case e in #(
-  e) with_mpicc=no ;;
-esac
-fi
-
-
-# ansi lisp
-SYSTEM=ansi_gcl
-CLSTANDARD=ANSI
-# Check whether --enable-ansi was given.
-if test ${enable_ansi+y}
-then :
-  enableval=$enable_ansi; if test "$enable_ansi" = "no" ; then
-		   SYSTEM=gcl
-		   CLSTANDARD=CLtL1
-	       fi
-fi
-
-
-if test "$enable_pargcl" != "no" ; then
-
-	 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking enable_pargcl=yes, doing configure in pargcl directory" >&5
-printf %s "checking enable_pargcl=yes, doing configure in pargcl directory... " >&6; }
-	 if test -d pargcl; then
-	   PARGCLDIR=pargcl
-	 fi
-	 echo
-	 echo "#"
-	 echo "#"
-	 echo "# -------------------"
-	 echo "# Subconfigure of ParGCL"
-	 echo "#"
-	 echo "#"
-
-	 #SYSTEM is either gcl or ansi_gcl.  This must come after def of SYSTEM
-	 PARGCL_GCLDIR=`pwd`
-	 ( cd $PARGCLDIR && ./configure --with-gcl=$PARGCL_GCLDIR/bin/$SYSTEM \
-	        --with-gcl-build-dir=$PARGCL_GCLDIR --with-mpicc=$with_mpicc )
-	#MY_SUBDIRS="$MY_SUBDIRS $PARGCLDIR"
-
-	 echo "#"
-	 echo "#"
-	 echo "#"
-	 echo "# Subconfigure of ParGCL done"
-	 echo "# ------------------------"
-	 echo "#"
-
-
-fi
-
-FLISP="saved_$SYSTEM"
-
-
-
-
-# Maximum number of pages
-
 
 
 # Check if Posix compliant getcwd exists, if not we'll use getwd.
