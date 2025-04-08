@@ -863,7 +863,7 @@ noinst_LIBRARIES = lib/libbase_gcl.a $(am__append_1) $(am__append_4) \
 my_unixport_LIBRARIES = unixport/libgcl.a unixport/libansi_gcl.a \
 	$(am__append_3)
 bin_SCRIPTS = bin/gcl
-check_SCRIPTS = sb_ansi-tests/test_results
+check_SCRIPTS = sb_ansi-tests/test_results sb_bench/timing_results
 info_TEXINFOS = info/gcl.texi info/gcl-si.texi $(am__append_6) \
 	$(am__append_9)
 my_unixport_DATA = $(addprefix unixport/,init_raw.lsp gcl.script libboot.so \
@@ -909,7 +909,7 @@ dist_noinst_DATA = $(am__append_5) $(am__append_8)
 @AMM_TK_TRUE@			nqthm-stack showVars widget))
 
 EXTRA_DIST = $(D_SRC) $(INCL_C) $(INIT_L) $(INCL_TEXI)\
-	   lsp cmpnew mod pcl clcs ansi-tests elisp xbin \
+	   lsp cmpnew mod pcl clcs ansi-tests elisp xbin bench \
 	   majvers minvers git.tag release
 
 
@@ -1035,6 +1035,9 @@ L0_OBJS = $(addprefix gcl_,$(addsuffix .o,$(L0)))
 CMPINCLUDE_FILES = h/cmpincl1.h h/gclincl.h h/compbas.h h/type.h h/mgmp.h \
 		 h/lu.h h/globals.h  h/vs.h h/bds.h h/frame.h h/lex.h \
 		 h/mstdint.h h/compbas2.h h/compprotos.h  h/immnum.h
+
+BENCH = boyer browse ctak dderiv deriv destru destru-mod div2 fft fft-mod fprint fread frpoly \
+      puzzle puzzle-mod stak tak takl tak-mod takr tprint traverse triang triang-mod
 
 AM_ETAGSFLAGS = --regex='/[ \n\t\#\.`]*(defun[ \n\t]+\([^ \n\t]+\)/' \
 	      --regex='/[ \n\t\#\.`]*(defmfun[ \n\t]+"\([^ \n\t"]+\)"[ \n\t]*)/\1/' \
@@ -4777,6 +4780,24 @@ o/new_init.c: $(INI_FILES)
 sb_ansi-tests/test_results: ansi-tests | unixport/saved_ansi_gcl
 	[ -d $(@D) ] || (mkdir $(@D) && cp $</*.lsp $(@D)) # FIXME testsuite in separate directory, hard
 	cd $(@D) && echo '(load "gclload")' | ../$| |tee $(@F)
+
+sb_bench/timing_results: $(addprefix sb_bench/,$(addsuffix .tim,$(BENCH))) \
+			 | bench/gcl_tim bench/sbcl_tim bench/ecl_tim bench/clisp_tim
+	echo "_            gcl_$$(date +'%m%d')" >$(@D)/tmp
+	cat $^ >>$(@D)/tmp
+	paste $(@D)/tmp $| | \
+		$(AWK) '{if (n++) \
+		    printf("%-10.10s %15.3f %15.3f %15.3f %15.3f %15.3f\n",$$1,$$2,$$4,$$6,$$8,$$10); else \
+		    printf("%-10.10s %15.15s %15.15s %15.15s %15.15s %15.15s\n",$$1,$$2,$$4,$$7,$$10,$$13);}' \
+		>$@
+
+sb_bench/%.tim: bench/%.cl | unixport/saved_ansi_gcl
+	[ -d $(@D) ] || mkdir $(@D)
+	echo "(load \"$(<D)/make-declare.lsp\")" \
+	     "(proclaim-file \"$<\")" \
+	     "(compile-file \"$<\" :output-file \"$(@D)/$*.o\")" \
+	     "(load \"$(<D)/test-help.lsp\")" \
+	     "(do-test \"$(@D)/$*\" \"$(@D)/$*.tim\")" | $|
 
 gcl-tk/%.o: gcl-tk/%.lisp | unixport/saved_ansi_gcl
 	[ -d $(@D) ] || mkdir -p $(@D)

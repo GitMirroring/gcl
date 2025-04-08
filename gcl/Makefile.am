@@ -28,7 +28,7 @@ noinst_LIBRARIES=lib/libbase_gcl.a
 my_unixport_PROGRAMS=unixport/saved_gcl unixport/saved_ansi_gcl
 my_unixport_LIBRARIES=unixport/libgcl.a unixport/libansi_gcl.a
 bin_SCRIPTS=bin/gcl
-check_SCRIPTS=sb_ansi-tests/test_results
+check_SCRIPTS=sb_ansi-tests/test_results sb_bench/timing_results
 info_TEXINFOS=info/gcl.texi info/gcl-si.texi
 my_unixport_DATA=$(addprefix unixport/,init_raw.lsp gcl.script libboot.so \
 				       gcl_cmpnopt_gcl.lsp gcl_cmpnopt_ansi_gcl.lsp)
@@ -102,7 +102,7 @@ info_TEXINFOS+=info/gcl-tk.texi
 endif
 
 EXTRA_DIST=$(D_SRC) $(INCL_C) $(INIT_L) $(INCL_TEXI)\
-	   lsp cmpnew mod pcl clcs ansi-tests elisp xbin \
+	   lsp cmpnew mod pcl clcs ansi-tests elisp xbin bench \
 	   majvers minvers git.tag release
 
 # end of primaries
@@ -486,6 +486,28 @@ o/new_init.c: $(INI_FILES)
 sb_ansi-tests/test_results: ansi-tests | unixport/saved_ansi_gcl
 	[ -d $(@D) ] || (mkdir $(@D) && cp $</*.lsp $(@D)) # FIXME testsuite in separate directory, hard
 	cd $(@D) && echo '(load "gclload")' | ../$| |tee $(@F)
+
+BENCH=boyer browse ctak dderiv deriv destru destru-mod div2 fft fft-mod fprint fread frpoly \
+      puzzle puzzle-mod stak tak takl tak-mod takr tprint traverse triang triang-mod
+
+sb_bench/timing_results: $(addprefix sb_bench/,$(addsuffix .tim,$(BENCH))) \
+			 | bench/gcl_tim bench/sbcl_tim bench/ecl_tim bench/clisp_tim
+	echo "_            gcl_$$(date +'%m%d')" >$(@D)/tmp
+	cat $^ >>$(@D)/tmp
+	paste $(@D)/tmp $| | \
+		$(AWK) '{if (n++) \
+		    printf("%-10.10s %15.3f %15.3f %15.3f %15.3f %15.3f\n",$$1,$$2,$$4,$$6,$$8,$$10); else \
+		    printf("%-10.10s %15.15s %15.15s %15.15s %15.15s %15.15s\n",$$1,$$2,$$4,$$7,$$10,$$13);}' \
+		>$@
+	cat $@
+
+sb_bench/%.tim: bench/%.cl | unixport/saved_ansi_gcl
+	[ -d $(@D) ] || mkdir $(@D)
+	echo "(load \"$(<D)/make-declare.lsp\")" \
+	     "(proclaim-file \"$<\")" \
+	     "(compile-file \"$<\" :output-file \"$(@D)/$*.o\")" \
+	     "(load \"$(<D)/test-help.lsp\")" \
+	     "(do-test \"$(@D)/$*\" \"$(@D)/$*.tim\")" | $|
 
 gcl-tk/%.o: gcl-tk/%.lisp | unixport/saved_ansi_gcl
 	[ -d $(@D) ] || mkdir -p $(@D)
