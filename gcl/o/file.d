@@ -2123,8 +2123,6 @@ LFD(siLfile_column)()
 
 
 
-DEFVAR("*LOAD-PATHNAME*",sLAload_pathnameA,LISP,sLnil,"");
-DEFVAR("*LOAD-TRUENAME*",sLAload_truenameA,LISP,sLnil,"");
 DEFVAR("*COLLECT-BINARY-MODULES*",sSAcollect_binary_modulesA,SI,sLnil,"");
 DEFVAR("*BINARY-MODULES*",sSAbinary_modulesA,SI,Cnil,"");
 DEFVAR("*DISABLE-RECOMPILE*",sSAdisable_recompile,SI,Ct,"");
@@ -2795,7 +2793,7 @@ gcl_init_file(void)
 
 DEFVAR("*IGNORE-EOF-ON-TERMINAL-IO*",sSAignore_eof_on_terminal_ioA,SI,Cnil,"");
 DEFVAR("*LOAD-PATHNAME*",sLAload_pathnameA,LISP,Cnil,"");
-DEFVAR("*LOAD-TRUENAME*",sSAload_truenameA,LISP,Cnil,"");
+DEFVAR("*LOAD-TRUENAME*",sLAload_truenameA,LISP,Cnil,"");
 DEFVAR("*LOAD-VERBOSE*",sLAload_verboseA,LISP,Ct,"");
 DEFVAR("*LOAD-PRINT*",sLAload_printA,LISP,Cnil,"");
 
