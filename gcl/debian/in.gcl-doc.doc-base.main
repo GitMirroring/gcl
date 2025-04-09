@@ -4,6 +4,12 @@ Author: W. Schelter
 Abstract: A Common Lisp compiler and interpreter based on C
 Section: Programming
 
+Format: DVI
+Files: /usr/share/doc/gcl@EXT@/gcl@EXT@.dvi.gz
+
+Format: PDF
+Files: /usr/share/doc/gcl@EXT@/gcl@EXT@.pdf.gz
+
 Format: HTML
 Index: /usr/share/doc/gcl@EXT@/gcl@EXT@.html/index.html
 Files: /usr/share/doc/gcl@EXT@/gcl@EXT@.html/*.html

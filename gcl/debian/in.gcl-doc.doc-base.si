@@ -4,8 +4,11 @@ Author: W. Schelter
 Abstract: Documentation on GCL-specific Lisp system functions
 Section: Programming
 
+Format: DVI
+Files: /usr/share/doc/gcl@EXT@/gcl@EXT@-si.dvi.gz
+
 Format: PDF
-Files: /usr/share/doc/gcl@EXT@-doc/gcl@EXT@-si*.pdf.gz /usr/share/doc/gcl@EXT@-doc/gcl@EXT@-si*.pdf.gz
+Files: /usr/share/doc/gcl@EXT@/gcl@EXT@-si.pdf.gz
 
 Format: HTML
 Index: /usr/share/doc/gcl@EXT@/gcl@EXT@-si.html/index.html
