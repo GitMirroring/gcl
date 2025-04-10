@@ -33,7 +33,7 @@ info_TEXINFOS=info/gcl.texi info/gcl-si.texi
 my_unixport_DATA=$(addprefix unixport/,init_raw.lsp gcl.script libboot.so \
 				       gcl_cmpnopt_gcl.lsp gcl_cmpnopt_ansi_gcl.lsp)
 my_h_DATA=h/cmpinclude.h
-my_cmpnew_DATA=sb_cmpnew/gcl_collectfn.o cmpnew/gcl_lfun_list.lsp
+my_cmpnew_DATA=sb_cmpnew/gcl_collectfn.o cmpnew/gcl_lfun_list.lsp cmpnew/gcl_cmpopt.lsp
 my_pcl_DATA=pcl/package.lisp
 my_lsp_DATA=lsp/gcl_auto_new.lsp lsp/gcl_autoload.lsp lsp/gcl_defmacro.lsp \
 	    lsp/gcl_evalmacros.lsp lsp/gcl_export.lsp lsp/gcl_module.lsp lsp/gcl_top.lsp
