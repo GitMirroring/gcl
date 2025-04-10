@@ -120,5 +120,5 @@
 
 (format t "~s heap words available~%" (multiple-value-bind (a b c d) (si::heap-report) (/ (- d c) (/ a 8))))
 
-(progn (setq si::*code-block-reserve* (make-array 30000000 :element-type 'character :static t)) nil)
+(progn (setq si::*code-block-reserve* (make-array 30000000 :element-type 'character :static t :initial-element (code-char 0))) nil)
 (setq *optimize-maximum-pages* t)
