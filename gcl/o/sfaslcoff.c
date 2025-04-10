@@ -249,6 +249,8 @@ load_memory(struct scnhdr *sec1,struct scnhdr *sece,void *st,ul *init_address) {
       sec->s_paddr+=a;
       if (LOAD_SEC(sec))
 	memcpy((void *)memory->cfd.cfd_start+sec->s_paddr,st+sec->s_scnptr,sec->s_size);
+      else
+	bzero((void *)memory->cfd.cfd_start+sec->s_paddr,sec->s_size);
     }
   }
 

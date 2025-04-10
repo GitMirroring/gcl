@@ -328,6 +328,8 @@ load_memory(Shdr *sec1,Shdr *sece,void *v1,ul **got,ul **gote) {
       sec->sh_addr+=a;
       if (LOAD_SEC(sec))
 	memcpy((void *)sec->sh_addr,v1+sec->sh_offset,sec->sh_size);
+      else
+	bzero((void *)sec->sh_addr,sec->sh_size);
     }
   
   if (**got) {
