@@ -19,7 +19,7 @@ ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 NUMJOBS=$(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 endif
 ifneq (,$(NUMJOBS))
-MAKEFLAGS+=-O -j $(NUMJOBS)
+MAKEFLAGS+=-j $(NUMJOBS)
 GCL_MULTIPROCESS_MEMORY_POOL?=$(shell pwd)
 export GCL_MULTIPROCESS_MEMORY_POOL
 endif
