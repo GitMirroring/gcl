@@ -1,3 +1,9 @@
+gcl27 (1:2.7.0-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Camm Maguire <camm@debian.org>  Thu, 10 Apr 2025 21:39:17 -0400
+
 gcl27 (2.7.0-36) unstable; urgency=medium
 
   * Version_2_7_0pre39
