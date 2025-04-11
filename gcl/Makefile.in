@@ -359,6 +359,8 @@ gcl_tk_gcltkaux_OBJECTS = $(am_gcl_tk_gcltkaux_OBJECTS)
 am__DEPENDENCIES_1 =
 gcl_tk_gcltkaux_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
+gcl_tk_gcltkaux_LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(gcl_tk_gcltkaux_LDFLAGS) $(LDFLAGS) -o $@
 o_grab_defs_SOURCES = o/grab_defs.c
 o_grab_defs_OBJECTS = o/grab_defs.$(OBJEXT)
 o_grab_defs_LDADD = $(LDADD)
@@ -993,6 +995,7 @@ unixport_libansi_gcl_gprof_a_SOURCES =
 GCLTK_SRC = gcl-tk/guis.c gcl-tk/tkAppInit.c gcl-tk/tkMain.c gcl-tk/guis.h
 gcl_tk_gcltkaux_SOURCES = $(GCLTK_SRC)
 gcl_tk_gcltkaux_CPPFLAGS = $(AM_CPPFLAGS) $(TK_INCLUDE) $(TCL_INCLUDE) $(TK_XINCLUDES)
+gcl_tk_gcltkaux_LDFLAGS = $(AM_LDFLAGS) -pie
 gcl_tk_gcltkaux_LDADD = $(TK_LIB_SPEC) $(TCL_LIB_SPEC)
 MY_DIRS = gcl0 gcl1 gcl2 gcl3 gcl mod_gcl0 mod_gcl pcl_gcl ansi_gcl
 L_STUBS = s sf c listlib predlib deftype typeof subtypep bit type typep typecase arraylib \
@@ -1552,7 +1555,7 @@ gcl-tk/gcltkaux-tkMain.$(OBJEXT): gcl-tk/$(am__dirstamp) \
 
 gcl-tk/gcltkaux$(EXEEXT): $(gcl_tk_gcltkaux_OBJECTS) $(gcl_tk_gcltkaux_DEPENDENCIES) $(EXTRA_gcl_tk_gcltkaux_DEPENDENCIES) gcl-tk/$(am__dirstamp)
 	@rm -f gcl-tk/gcltkaux$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(gcl_tk_gcltkaux_OBJECTS) $(gcl_tk_gcltkaux_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(gcl_tk_gcltkaux_LINK) $(gcl_tk_gcltkaux_OBJECTS) $(gcl_tk_gcltkaux_LDADD) $(LIBS)
 o/grab_defs.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 
 o/grab_defs$(EXEEXT): $(o_grab_defs_OBJECTS) $(o_grab_defs_DEPENDENCIES) $(EXTRA_o_grab_defs_DEPENDENCIES) o/$(am__dirstamp)
