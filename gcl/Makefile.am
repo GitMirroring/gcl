@@ -197,7 +197,6 @@ unixport/libansi_gcl_gprof.a:
 GCLTK_SRC=gcl-tk/guis.c gcl-tk/tkAppInit.c gcl-tk/tkMain.c gcl-tk/guis.h
 gcl_tk_gcltkaux_SOURCES=$(GCLTK_SRC)
 gcl_tk_gcltkaux_CPPFLAGS=$(AM_CPPFLAGS) $(TK_INCLUDE) $(TCL_INCLUDE) $(TK_XINCLUDES)
-gcl_tk_gcltkaux_LDFLAGS=$(AM_LDFLAGS) -pie
 gcl_tk_gcltkaux_LDADD=$(TK_LIB_SPEC) $(TCL_LIB_SPEC)
 
 MY_DIRS=gcl0 gcl1 gcl2 gcl3 gcl mod_gcl0 mod_gcl pcl_gcl ansi_gcl
