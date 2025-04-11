@@ -197,6 +197,7 @@ heap grows large.  On large systems, it may prove impossible without
 this to find unallocated memory below, for example, the 2Gb limit
 required for the default 'medium model' code produced by gcc on x86_64
 systems.
+@end defvar
 
 @defvar *FAST-LINK-WARNINGS*
 Package:SI
@@ -204,40 +205,47 @@ GCL specific: Set to non-NIL to trace function calls that cannot
 proceed through a simple pointer dereference, usually because the
 signature of the callee is substantially different than that assumed
 when compiling the caller.
+@end defvar
 
 @defvar *ANNOTATE*
 Package:COMPILER
 GCL specific: Set to non-NIL to add comments in the generated C code
 indicating lisp function inlining.
+@end defvar
 
 @defvar *DEFAULT-PROF-P*
 Package:COMPILER
 GCL specific: Set to non-NIL to add the :prof t option to compile file
 by default to indicate code which should be prepared for gprof
 profiling.
+@end defvar
 
 @defvar *DEFAULT-LARGE-MEMORY-MODEL-P*
 Package:COMPILER
 GCL specific: Set to non-NIL to add the :large-memory-model t option
 to compile file by default to instruct gcc to produce code that can be
 loaded at any address, typically at a 10% performance penalty.
+@end defvar
 
 @defvar *DEFAULT-C-FILE*
 Package:COMPILER
 GCL specific: Set to non-NIL to add the :c-file t option
 to compile file by default to keep the intermediate generated C file.
+@end defvar
 
 @defvar *DEFAULT-H-FILE*
 Package:COMPILER
 GCL specific: Set to non-NIL to add the :h-file t option
 to compile file by default to keep the intermediate generated header
 file.
+@end defvar
 
 @defvar *DEFAULT-DATA-FILE*
 Package:COMPILER
 GCL specific: Set to non-NIL to add the :data-file t option
 to compile file by default to keep the intermediate generated data
 file.
+@end defvar
 
 @defvar *DEFAULT-SYSTEM-P*
 Package:COMPILER
@@ -245,36 +253,43 @@ GCL specific: Set to non-NIL to add the :system-p t option
 to compile file by default to write a reference to the system
 cmpinclude.h file in the generated C code as opposed to inserting its
 contents in the file directly.
+@end defvar
 
 @defvar *FASD-DATA*
 Package:COMPILER
 GCL specific: Set to NIL to write the data file in human readable
 format.
+@end defvar
 
 @defvar *KEEP-GAZ*
 Package:COMPILER
 GCL specific: Set to non-NIL to preserve anonymous ``gazonk'' .o files.
+@end defvar
 
 @defvar *DISASSEMBLE-OBJDUMP*
 Package:COMPILER
 GCL specific: When set to non-NIL, 'disassemble will report assembly
 instructions output by objdump in addition to the C code output by GCL.
+@end defvar
 
 @defun FILE
 Package:SI
 GCL specific: Return the source file from which the designated
 function was loaded.
+@end defun
 
 @defun SIGNATURE
 Package:SI
 GCL specific: Return the call signature of the designated
 function.
+@end defun
 
 @defun INTERPRET
 Package:COMPILER
 GCL specific: Just as (compile 'foo) will replace an interpreted
 function designated by 'foo with a compiled one, (compiler::interpret
 'foo) will do the reverse.  Both functions are idempotent operations.
+@end defun
 
 @defun WATCH
 Package:COMPILER
@@ -283,20 +298,21 @@ GCL specific: (watch 'foo) will trace compiler logic pertaining to
 treatment of tail recursion optimization.  Other useful options
 include 'compiler::type-inference, 'compiler::branch-elimination,
 and 'compiler::inline.
+@end defun
 
 @defun UNWATCH
 Package:COMPILER
 GCL specific: (unwatch 'foo) will stop tracing 'foo.  (unwatch) will
 stop all compiler tracing.
+@end defun
 
 @defvar *INTERRUPT-ENABLE* 
 Package:SI
 GCL specific: If the value of SI:*INTERRUPT-ENABLE* is non-NIL, GCL signals
 an error on the terminal interrupt (this is the default case).  If it is NIL,
 GCL ignores the interrupt and assigns T to SI:*INTERRUPT-ENABLE*.
-
-
 @end defvar
+
 @defun CHDIR (pathname)
 Package:SI
 
