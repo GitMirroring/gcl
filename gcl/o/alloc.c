@@ -1013,7 +1013,8 @@ alloc_contblock_no_gc(size_t n,char *limit) {
   n=CEI(n,CPTR_SIZE);
 
   /*This is called from GBC so we do not want to expand the contblock index*/
-  if (cbv->v.v_fillp+1==cbv->v.v_dim)
+  if (cbv->v.v_fillp+1==cbv->v.v_dim ||
+      contblock_array->v.v_fillp==contblock_array->v.v_dim)
     return NULL;
   
   if ((p=alloc_from_freelist(tm,n)))
