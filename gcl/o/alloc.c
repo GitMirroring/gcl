@@ -707,6 +707,7 @@ empty_relblock(void) {
   for (;!rb_emptyp();) {
     tm_table[t_relocatable].tm_adjgbccnt--;
     expand_contblock_index_space();
+    expand_contblock_array();
     GBC(t_relocatable);
   }
   sSAleaf_collection_thresholdA->s.s_dbind=o;
