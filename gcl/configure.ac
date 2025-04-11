@@ -1,5 +1,5 @@
 # Copyright 2024 Camm Maguire
-AC_INIT(gcl,2.7.0)
+AC_INIT(gcl,2.7.1)
 AC_PREREQ([2.0])
 AC_CONFIG_HEADERS([h/gclincl.h])
 AM_INIT_AUTOMAKE([1.16 -Wno-portability tar-pax])
