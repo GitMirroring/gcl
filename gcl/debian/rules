@@ -150,7 +150,7 @@ debian-clean: debian/control debian/gcl.templates
 	rm -rf $(INS) debian/substvars debian.upstream
 	rm -rf *stamp build-indep
 	rm -f  debian/elpa-gcl$(EXT).elpa debian/gcl$(EXT)-pkg.el
-	rm -rf $(EXT_TARGS) info/gcl$(EXT)*.info*
+	rm -rf $(EXT_TARGS) info/gcl$(EXT)*.info* gcl_pool
 
 
 
