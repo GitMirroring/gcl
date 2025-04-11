@@ -1,8 +1,8 @@
-gcl@EXT@: binary-compiled-with-profiling-enabled usr/lib/gcl-@VERS@-prof/unixport/saved_ansi_gcl
-gcl@EXT@: binary-compiled-with-profiling-enabled usr/lib/gcl-@VERS@-prof/unixport/saved_gcl
-gcl@EXT@: binary-compiled-with-profiling-enabled usr/lib/gcl-@VERS@/unixport/saved_ansi_gcl
-gcl@EXT@: binary-compiled-with-profiling-enabled usr/lib/gcl-@VERS@/unixport/saved_gcl
-gcl@EXT@: hardening-no-pie usr/lib/gcl-@VERS@-prof/unixport/saved_ansi_gcl
-gcl@EXT@: hardening-no-pie usr/lib/gcl-@VERS@-prof/unixport/saved_gcl
-gcl@EXT@: hardening-no-pie usr/lib/gcl-@VERS@/unixport/saved_ansi_gcl
-gcl@EXT@: hardening-no-pie usr/lib/gcl-@VERS@/unixport/saved_gcl
+gcl@EXT@: binary-compiled-with-profiling-enabled [usr/lib/gcl-@VERS@/unixport/saved_ansi_gcl_gprof]
+gcl@EXT@: binary-compiled-with-profiling-enabled [usr/lib/gcl-@VERS@/unixport/saved_gcl_gprof]
+gcl@EXT@: binary-compiled-with-profiling-enabled [usr/lib/gcl-@VERS@/unixport/saved_ansi_gcl]
+gcl@EXT@: binary-compiled-with-profiling-enabled [usr/lib/gcl-@VERS@/unixport/saved_gcl]
+gcl@EXT@: hardening-no-pie [usr/lib/gcl-@VERS@/unixport/saved_ansi_gcl_gprof]
+gcl@EXT@: hardening-no-pie [usr/lib/gcl-@VERS@/unixport/saved_gcl_gprof]
+gcl@EXT@: hardening-no-pie [usr/lib/gcl-@VERS@/unixport/saved_ansi_gcl]
+gcl@EXT@: hardening-no-pie [usr/lib/gcl-@VERS@/unixport/saved_gcl]
