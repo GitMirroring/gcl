@@ -106,7 +106,8 @@
 
 (defbltin clzl)
 (defbltin ctzl)
-(defbltin popcountl)
+#-darwin(defbltin popcountl) ;Macports builtin calls external function outside symbol table
+#+darwin(defmacro popcountl (x) `(popcount ,x))
 (defbltin parityl)
 (defbltin ffsl)
 
