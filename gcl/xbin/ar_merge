@@ -4,13 +4,14 @@ FLAGS=$1
 shift
 ARCHIVE=$1
 shift
+XPWD=$(pwd)
 
 TMPDIR=$(mktemp -d)
 while [ $# -gt 0 ] ; do
     case $(basename $1) in
 	*.o) cp $1 $TMPDIR;;
 	*.go) cp $1 $TMPDIR/$(echo $(basename $1)|sed 's,\.go,.o,g');;
-	*.a) ar x $1 --output $TMPDIR;;
+	*.a) cd $TMPDIR && ar x $XPWD/$1 && cd $XPWD;;
 	recompile);;
 	*) echo Bad arg $1 ; exit 1 ;;
     esac
