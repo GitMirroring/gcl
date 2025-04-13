@@ -234,7 +234,7 @@ add_args_to_cflags  -fsigned-char -pipe -fcommon \
 	            -Wno-builtin-requires-header -Wno-empty-body -Wno-self-assign \
 	            -Wno-unused-but-set-variable -D_FILE_OFFSET_BITS=64 -D_TIME_BITS=64
 
-add_args_to_ldflags -no-pie # -Wl,-z,lazy
+add_args_to_ldflags -no-pie -Wl,-z,relro # -Wl,-z,lazy
 
 AC_MSG_CHECKING([for inline semantics])
 AC_COMPILE_IFELSE(
@@ -1039,10 +1039,11 @@ if test $cstack_direction -eq 1 ; then
    		#include <unistd.h>
    		int
    		main(int argc,char **argv,char **envp) {
-   		    FILE *fp = fopen("conftest1","w"),*f=fopen("/proc/self/maps","r");
+   		    FILE *fp = fopen("conftest1","w"),*f;
    		    unsigned long i,j;
 		    char b[4096];
    		    i=(unsigned long)alloca(sizeof(void *));
+		    f=fopen("/proc/self/maps","r");
 		    for (j=0;j<i && fgets(b,sizeof(b),f);)
 		    	sscanf(b,"%x-",&j);
 		    j-=1;
@@ -1066,11 +1067,12 @@ if test $cstack_direction -eq 1 ; then
    		#include <errno.h>
    		int
    		main(int argc,char **argv,char **envp) {
-   		    FILE *fp = fopen("conftest1","w"),*f=fopen("/proc/self/maps","r");
+   		    FILE *fp = fopen("conftest1","w"),*f;
    		    unsigned long i,j;
 		    char b[4096],*stack_map_base;
 		    #include "$srcdir/h/cstack.h"
    		    i=(unsigned long)alloca(sizeof(void *));
+		    f=fopen("/proc/self/maps","r");
 		    for (j=0;j<i && fgets(b,sizeof(b),f);)
 		    	sscanf(b,"%x-",&j);
 		    j-=1;

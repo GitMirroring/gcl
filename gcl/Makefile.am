@@ -1,4 +1,5 @@
-export C_INCLUDE_PATH=$(srcdir)/h:$(srcdir)/gcl-tk
+C_INCLUDE_PATH:=$(srcdir)/h:$(srcdir)/gcl-tk:$(C_INCLUDE_PATH)
+export C_INCLUDE_PATH
 
 AM_CPPFLAGS=$(BASE_CPPFLAGS)
 AM_CFLAGS=$(BASE_CFLAGS)
@@ -244,14 +245,14 @@ unixport/saved_%: | unixport/raw_% unixport/gcl_cmpnopt_%.lsp \
 		ln -snf gcl_cmpnopt_$*.lsp ../unixport/gcl_cmpnopt.lsp && \
 		mkdir h && \
 		ln -snf ../../h/cmpinclude.h h/ && \
-		GCL_LSPSYSDIR=../$(srcdir)/unixport/ \
-			../unixport/raw_$* $$(dirname $$(pwd))/unixport/ -libdir $$(dirname $$(pwd))/ \
-			    < <(cat ../unixport/init_raw.lsp <(echo "(system:save-system \"../$@\")")) && \
+		echo "(system:save-system \"../$@\")" | cat ../unixport/init_raw.lsp - | \
+			GCL_LSPSYSDIR=../$(srcdir)/unixport/ \
+				../unixport/raw_$* $$(dirname $$(pwd))/unixport/ -libdir $$(dirname $$(pwd))/  && \
 		rm -f ../unixport/gcl_cmpnopt.lsp
 	rm -rf sb_$*
 
 unixport/raw_%: unixport/lib%.a
-	$(CC) $(AM_LDFLAGS) -rdynamic -Wl,-z,relro $(LDFLAGS) -o $@ $< $(LIBS) #FIXME relro
+	$(CC) $(AM_LDFLAGS) -rdynamic $(LDFLAGS) -o $@ $< $(LIBS) #FIXME relro
 
 unixport/gcl_cmpnopt_gcl_gprof.lsp unixport/gcl_cmpnopt_ansi_gcl_gprof.lsp:\
 unixport/gcl_cmpnopt_%_gprof.lsp: unixport/gcl_cmpnopt_%.lsp
@@ -309,7 +310,7 @@ unixport/mod_gcl:  | unixport/saved_mod_gcl0
 unixport/pcl_gcl:  | unixport/saved_mod_gcl
 unixport/ansi_gcl:  | unixport/saved_pcl_gcl
 $(addprefix unixport/,gcl0 gcl1): unixport/% : unixport/cinit.lisp | %
-	$(word 2,$|) < <(cat $< <(echo "(system:save-system \"$@\")"))
+	echo "(system:save-system \"$@\")" | cat $< - | $(word 2,$|)
 $(addprefix unixport/,gcl2 gcl3 gcl mod_gcl): unixport/% : | %
 	ln -snf $$(basename $(word 2,$|)) $@
 
@@ -483,6 +484,16 @@ o/new_init.c: $(INI_FILES)
 	echo '}' >> $@
 	! cat $@ | awk -F, '/DEFUN/ {print $$1,$$2}' | grep -v object || (rm $@ && false)
 
+sbr_ansi-tests/random_test: ansi-tests | unixport/saved_ansi_gcl
+	[ -d $(@D) ] || (mkdir $(@D) && cp $</*.lsp $(@D)) # FIXME testsuite in separate directory, hard
+	cd $(@D) && \
+	echo "(load \"gclload1\")" \
+	     "(compile-and-load \"random-int-form.lsp\")" \
+	     "(in-package :cl-test)" \
+	     "(let ((*random-state* (make-random-state t))) \
+		      (test-random-integer-forms 100 4 10000))" | \
+		GCL_MEM_BOUND=29 ../$| | tee $(@F) #FIXME MEM_BOUND
+
 sb_ansi-tests/test_results: ansi-tests | unixport/saved_ansi_gcl
 	[ -d $(@D) ] || (mkdir $(@D) && cp $</*.lsp $(@D)) # FIXME testsuite in separate directory, hard
 	cd $(@D) && echo '(load "gclload")' | ../$| |tee $(@F)
@@ -577,7 +588,7 @@ clean_%:
 	rm -rf $* $(addprefix unixport/,$* lib$*.a saved_$* sys_$*.o gcl_cmpnopt_$*.lsp)
 
 clean-local: $(addprefix clean_,pre_gcl $(MY_DIRS) gcl_gprof ansi_gcl_gprof)
-	rm -rf sb_ansi-tests sb_cmpnew sb_bench
+	rm -rf sb_ansi-tests sbr_ansi-tests sb_cmpnew sb_bench
 
 distclean-local:
 	rm -rf gcl.script unixport/gcl.script #FIXME
