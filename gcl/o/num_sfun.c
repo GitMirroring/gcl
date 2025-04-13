@@ -802,6 +802,10 @@ DEFUN("ISINF",object,fSisinf,SI,1,1,NONE,OO,OO,OO,OO,(object x),"") {
 
 }
 
+DEFUN("POPCOUNTL",object,fSpopcountl,SI,1,1,NONE,II,OO,OO,OO,(fixnum x),"") {
+  RETURN1((object)(fixnum)__builtin_popcountl(x));
+}
+
 
 void
 gcl_init_num_sfun(void)

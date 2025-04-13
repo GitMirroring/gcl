@@ -64,9 +64,6 @@ DEFUN("<<",object,fSlshft,SI,2,2,NONE,II,IO,OO,OO,(fixnum x,fixnum y),"") {
 DEFUN(">>",object,fSrshft,SI,2,2,NONE,II,IO,OO,OO,(fixnum x,fixnum y),"") {
   RETURN1((object)(x>>y));
 }
-DEFUN("POPCOUNTL",object,fSpopcountl,SI,1,1,NONE,II,OO,OO,OO,(fixnum x),"") {
-  RETURN1((object)(fixnum)__builtin_popcountl(x));
-}
 
 static inline bool
 TESTA(object x_,object y_,object key,object test,object test_not) {
