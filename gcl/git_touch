@@ -1,0 +1,7 @@
+#!/bin/bash
+
+touch aclocal.m4 \
+      configure.ac gcl-tk/gcltksrv.in bin/gcl.in unixport/init_raw.lsp.in h/gclincl.h.in \
+      configure \
+      Makefile.am Makefile.in \
+      info/gcl.info info/gcl-si.info info/gcl-tk.info info/gcl-dwdoc.info
