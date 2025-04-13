@@ -208,7 +208,7 @@ load_memory(struct section *sec1,struct section *sece,void *v1,
       if (LOAD_SEC(sec))
 	memcpy((void *)sec->addr,v1+sec->offset,sec->size);
       else
-	bzero((void *)sec->sh_addr,sec->sh_size);
+	bzero((void *)sec->addr,sec->size);
     }
 
   if (**got) {
