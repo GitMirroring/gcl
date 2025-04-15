@@ -34,17 +34,22 @@
 {
   void *p,*p1,*b,*s;
   int a,f=MAP_FIXED|MAP_PRIVATE|MAP_ANON|MAP_STACK;
+  int ss=
+#ifdef CHECK_FOR_QEMU
+    qemu_p() ? FIXED_STACK :
+#endif
+    SS;
 
   p=alloca(1);
   p1=alloca(1);
-  b=CTOP-(p1<p ? SS : FIXED_STACK);
+  b=CTOP-(p1<p ? ss : FIXED_STACK);
   a=p1<p ? p-p1 : p1-p;
   a<<=2;
   s=p1<p ? CTOP-a : b+a;
   if (p1<p) f|=MAP_GROWSDOWN;
 
   if (p > CTOP || p < b) {
-    if (mmap(b,SS,PROT_READ|PROT_WRITE|PROT_EXEC,f,-1,0)!=(void *)-1) {
+    if (mmap(b,ss,PROT_READ|PROT_WRITE|PROT_EXEC,f,-1,0)!=(void *)-1) {
       stack_map_base=b;
       asm volatile (SET_STACK_POINTER::"r" (s):"memory");
       if (p1>p)
