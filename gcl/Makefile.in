@@ -4727,16 +4727,16 @@ ansi_gcl/%.o: clcs/%.lisp | unixport/ansi_gcl
 	cat $*.data >>$@
 
 h/mstdint.h:
-	echo "#include <stdint.h>" | $(CC) -E -I./h/ - | $(AWK) '/fsid/ {next} {print}' >$@
+	echo "#include <stdint.h>" | $(CPP) $(AM_CPPFLAGS) -P $(CPPFLAGS) - | $(AWK) '/fsid/ {next} {print}' >$@
 
 h/mcompdefs.h: h/compdefs.h h/new_decl.h
 	$(AWK) 'BEGIN {print "#include \"include.h\"";print "#include \"page.h\"";print "---"} {a=$$1;gsub("\\.\\.\\.","",a);print "\"#define " $$1 "\" " a}' $< |\
-	$(CC) $(AM_CPPFLAGS) $(AM_CFLAGS) -E -P -I./h/ - |\
+	$(CPP) $(AM_CPPFLAGS) -P $(CPPFLAGS) - |\
 	$(AWK) '/^\-\-\-$$/ {i=1;next} {if (!i) next} {gsub("\"","");print}' >$@
 
 h/cmpincludea.h: $(filter-out gclincl.h,$(CMPINCLUDE_FILES)) | h/gclincl.h # FIXME!
 	cat $< $| $(filter-out $<,$^) | \
-		$(CC) $(AM_CPPFLAGS) $(AM_CFLAGS) -E -I./h/ - | \
+		$(CPP) $(AM_CPPFLAGS) -P $(CPPFLAGS) - | \
 		$(AWK) '/^# |^$$|^#pragma/ {next}{print}' > $@
 
 h/cmpinclude.h: h/mcompdefs.h h/cmpincludea.h h/cmponly_last.h
@@ -4747,7 +4747,7 @@ h/cmpinclude.h: h/mcompdefs.h h/cmpincludea.h h/cmponly_last.h
 h/new_decl.h: $(INI_FILES)
 	echo '#include "make-decl.h"' > foo.c
 	cat $^ |sed 's,DEFBFUN,DEFUN,g' >> foo.c
-	$(CPP) $(AM_CPPFLAGS) $(CPPFLAGS) foo.c | sed -n -e '/#/d' -e '/DO_/d' -e '/[a-zA-Z;]/p' > $@
+	$(CPP) $(AM_CPPFLAGS) -P $(CPPFLAGS) foo.c | sed -n -e '/DO_/d' -e '/[a-zA-Z;]/p' > $@
 	rm -f foo.c
 
 o/boot.h: %.h: %.ini
@@ -4763,7 +4763,7 @@ o/boot.ini: CPPFLAGS += -DNO_BOOT_H
 # parallel builds can only have one target accessing an intermediate file
 # solved with BUILT_SOURCES
 o/%.ini:  o/%.c | o/grab_defs
-	@$(CPP) $(AM_CPPFLAGS) -DINICOMP -DNO_DEFUN $(CPPFLAGS) $< | $| > new_$(@F)
+	@$(CPP) $(AM_CPPFLAGS) -P -DINICOMP -DNO_DEFUN $(CPPFLAGS) $< | $| > new_$(@F)
 	@([ -e $@ ] && cmp new_$(@F) $@) || mv -v new_$(@F) $@
 	@rm -f new_$(@F)
 
