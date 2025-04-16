@@ -211,9 +211,6 @@ vm_range_t marked_regions [MAX_MARKED_REGIONS];
 
 unsigned num_marked_regions;
 
-/* Size of the heap.  */
-static unsigned long big_heap;
-
 /* Start of the heap.  */
 char *mach_mapstart = 0;
 
@@ -543,42 +540,6 @@ copy_data_segment (struct load_command *lc)
     unexec_error ("cannot write header of __DATA segment");
   curr_header_offset += lc->cmdsize;
 
-  /* Create new __DATA segment load commands for regions on the region
-     list that do not corresponding to any segment load commands in
-     the input file.
-  */
-  /* for (j = 0; j < num_unexec_regions; j++) */
-    {
-      struct segment_command sc;
-
-      sc.cmd = LC_SEGMENT;
-      sc.cmdsize = sizeof (struct segment_command);
-      /* strncpy (sc.segname, SEG_DATA, 16); */
-      strncpy (sc.segname, "__HEAP", 16);
-      sc.vmaddr = (long)mach_mapstart;
-      sc.vmsize = mach_maplimit-mach_mapstart;
-      sc.fileoff = curr_file_offset;
-      sc.filesize = core_end-mach_mapstart;
-      sc.maxprot = VM_PROT_READ | VM_PROT_WRITE | VM_PROT_EXECUTE;
-      sc.initprot = VM_PROT_READ | VM_PROT_WRITE /* | VM_PROT_EXECUTE */;
-      sc.nsects = 0;
-      sc.flags = 0;
-
-#if VERBOSE
-      printf ("Writing segment %-16.16s @ %#8lx (%#8lx/%#8lx @ %#10lx)\n",
-	      sc.segname, (long) (sc.fileoff), (long) (sc.filesize),
-	      (long) (sc.vmsize), (long) (sc.vmaddr));
-#endif
-
-      if (!unexec_write (sc.fileoff, (void *) sc.vmaddr, sc.filesize))
-	unexec_error ("cannot write new __DATA segment");
-      curr_file_offset += ROUNDUP_TO_PAGE_BOUNDARY (sc.filesize);
-
-      if (!unexec_write (curr_header_offset, &sc, sc.cmdsize))
-	unexec_error ("cannot write new __DATA segment's header");
-      curr_header_offset += sc.cmdsize;
-      mh.ncmds++;
-    }
 }
 
 /* Copy a LC_SYMTAB load command from the input file to the output
@@ -853,7 +814,7 @@ static void
 dump_it () {
 
   int i;
-  long linkedit_delta = 0;
+  long linkedit_delta=0,linkedit_vmdelta=0;
   
 #if VERBOSE
   printf ("--- Load Commands written to Output File ---\n");
@@ -878,17 +839,46 @@ dump_it () {
 	  
 	  copy_data_segment (lca[i]);
 
-	} else {
+	} else if (strncmp (scp->segname, "__HEAP", 16) == 0) {
 
-	  if (strncmp (scp->segname, SEG_LINKEDIT, 16) == 0) {
-	    if (linkedit_delta)
-	      unexec_error ("cannot handle multiple LINKEDIT segments in input file");
-	    linkedit_delta = curr_file_offset - scp->fileoff;
-	  }
+	  extern char *data_start;
+	  struct section *sectp = (struct section *) (scp + 1);
+	  unsigned long header_offset=curr_header_offset + sizeof (struct segment_command);
 	  
-	  if (strncmp (scp->segname, "__HEAP", 16) != 0) copy_segment (lca[i]); else mh.ncmds--;
+	  scp->vmaddr=(long)data_start;
+	  linkedit_vmdelta=(1UL<<37)-scp->vmsize;
+	  scp->vmsize=(1UL<<37);
+	  scp->fileoff=curr_file_offset;
+	  scp->filesize=core_end-data_start;
+	  scp->maxprot=VM_PROT_READ | VM_PROT_WRITE | VM_PROT_EXECUTE;
+	  scp->initprot=VM_PROT_READ | VM_PROT_WRITE;
+	  scp->nsects=1;
+	  scp->flags=S_REGULAR;
 	  
-	}
+	  sectp->addr=scp->vmaddr;
+	  sectp->size=scp->filesize;
+	  sectp->flags=S_REGULAR;
+
+	  if (!unexec_write (header_offset, sectp, sizeof (struct section)))
+	    unexec_error ("cannot write section _HEAP's header");
+
+	  if (!unexec_write (scp->fileoff, (void *) scp->vmaddr, scp->filesize))
+	    unexec_error ("cannot write __HEAP segment");
+	  curr_file_offset += ROUNDUP_TO_PAGE_BOUNDARY (scp->filesize);
+
+	  if (!unexec_write (curr_header_offset, scp, sizeof (struct segment_command)))
+	    unexec_error ("cannot write header of __HEAP segment");
+	  curr_header_offset += scp->cmdsize;
+
+	} else if (strncmp (scp->segname, SEG_LINKEDIT, 16) == 0) {
+
+	  if (linkedit_delta)
+	    unexec_error ("cannot handle multiple LINKEDIT segments in input file");
+	  linkedit_delta = curr_file_offset - scp->fileoff;
+	  scp->vmaddr+=linkedit_vmdelta;
+	  copy_segment (lca[i]);
+	} else
+	  copy_segment (lca[i]);
       }
       break;
     case LC_SYMTAB:
@@ -1033,52 +1023,6 @@ unexec (char *outfile, char *infile, void *start_data, void *start_bss,
 
   close (outfd);
 
-}
-
-/* Replacement for broken sbrk(2).  */
-
-#include <sys/mman.h>
-#include <errno.h>
-unsigned long
-probe_big_heap(unsigned long try,unsigned long inc,unsigned long max) {
-
-  void *r;
-
-  if ((r=mmap(NULL, try, PROT_READ|PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0))==(void *)-1)
-    return try>inc ? probe_big_heap(try-inc,inc>>1,max) : 0;
-  munmap(r,try);
-  return (!inc || try >=max) ? try : probe_big_heap(try+inc,inc,max);
-
-}
-
-void *my_sbrk (long incr)
-{
-  char               *temp, *ptr;
-
-  if (mach_brkpt == 0) {
-
-    big_heap=(1UL)<<35;
-    if (!(big_heap=probe_big_heap(PAGESIZE,big_heap>>1,big_heap))) {
-      unexec_error("my_sbrk(): probe_big_heap() failed\n");
-      return ((char *)-1);
-    }
-
-    mach_brkpt=mmap(NULL, big_heap, PROT_READ|PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
-        
-    mach_mapstart = mach_brkpt;
-    mach_maplimit = mach_brkpt + big_heap;
-
-  }
-  if (incr == 0) {
-    return (mach_brkpt);
-  } else {
-    ptr = mach_brkpt + incr;
-    if (ptr<mach_mapstart || ptr > mach_maplimit)
-      return (char *)-1;
-    temp = mach_brkpt;
-    mach_brkpt = ptr;
-    return (temp);
-  }
 }
 
 static size_t stub_size (malloc_zone_t *zone, const void *ptr)

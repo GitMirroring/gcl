@@ -17,12 +17,20 @@ msbrk_end(void) {
 
 }
 
-#if !defined(DARWIN) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)/*FIXME*/
+#if !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)/*FIXME*/
 
 static void *
 new_map(void *v,ufixnum s) {
   return mmap(v,s,PROT_READ|PROT_WRITE|PROT_EXEC,MAP_PRIVATE|MAP_ANON|MAP_FIXED,-1,0);
 }
+
+#if defined(DARWIN)
+/*This initial heap must be large enough to initialize the raw image,
+  but not so large that the Mac linker ignores the segment designation
+  and creates a __huge section under __DATA for this and other
+  variables.  We enlarge this on unexec.*/
+asm (".zerofill __HEAP,__heap,__end,0x70000000\n\t.globl __end");
+#endif
 
 int
 msbrk_init(void) {

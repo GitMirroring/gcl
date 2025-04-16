@@ -21,23 +21,11 @@
 #undef HAVE_ELF
 
 
-/** sbrk(2) emulation  */
-
 /* Alternatively, we could use the global variable vm_page_size.  */
 #define PAGEWIDTH 12
 
-/* The following value determines the running process heap size.  */
-/* #define BIG_HEAP_SIZE   0x50000000 */
-
-extern char *mach_mapstart;
-extern char *mach_maplimit;
-extern char *mach_brkpt;
-
-extern char *get_dbegin ();
 
 #include <unistd.h> /* to get sbrk defined */
-extern void *my_sbrk(long incr);
-#define sbrk my_sbrk
 
 
 /** (si::save-system "...") a.k.a. unexec implementation  */
@@ -101,36 +89,7 @@ do {                                                    \
   sigaction (SIGSEGV, &sact, 0);                        \
 } while (0);
 
-/* si_addr not containing the faulting address is a bug in Darwin.
-   Work around this by looking at the dar field of the exception state.  */
 #define GET_FAULT_ADDR(sig,code,sv,a) ((siginfo_t *)code)->si_addr
-/* #define GET_FAULT_ADDR(sig,code,scp,addr) ((char *) (((ucontext_t *) scp)->uc_mcontext->es.dar)) */
-
-/*
-#include <signal.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <sys/ucontext.h>
-
-void handler (int sig, siginfo_t *info, void *scp)
-{
-     ucontext_t *uc = (ucontext_t *)scp;
-     fprintf(stderr, "addr = 0x%08lx\n", uc->uc_mcontext->es.dar);
-     _exit(99);
-}
-
-int main(void)
-{
-     struct sigaction sact;
-     int ret;
-
-     sigfillset(&(sact.sa_mask));
-     sact.sa_flags = SA_SIGINFO;
-     sact.sa_sigaction = (void (*)())handler;
-     ret = sigaction (SIGBUS, &sact, 0);
-     return *(int *)0x43;
-}
-*/
 
 
 /** Misc stuff  */
@@ -199,3 +158,7 @@ if (realpath (buf, fub) == 0) {                             \
 #include <sys/param.h>/*PATH_MAX MAXPATHLEN*/
 #undef MIN
 #undef MAX
+
+#undef sbrk
+#define sbrk msbrk
+#define INITIALIZE_BRK msbrk_init();
