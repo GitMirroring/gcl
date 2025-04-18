@@ -5,3 +5,5 @@
 
 #define NEED_STACK_CHK_GUARD
 #define SGC
+
+#define OUTPUT_MACH bfd_mach_aarch64

@@ -9914,30 +9914,8 @@ printf "%s\n" "bfd_arch_${output_arch}" >&6; }
  	    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: not found" >&5
 printf "%s\n" "not found" >&6; }
 	fi
-	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking output_mach" >&5
-printf %s "checking output_mach... " >&6; }
-	output_mach=`cat gcl.script |grep OUTPUT_ARCH|head -n 1|sed 's,.*(\(.*\)).*,\1:,1'|cut -f2 -d:|tr '-' '_'|tr -d '.'`;
 
-    if test "$output_mach" = "common" ; then #FIXME
-	   output_mach=""
-	fi
-	defaulted=""
-    if test "$output_mach" = "" ; then
-		if test "$output_arch" = "i386" ; then
-		   output_mach="i386_i386";
-		   defaulted="(defaulted)"
-		fi
-	fi
-	if test "$output_mach" != "" ; then
 
-printf "%s\n" "#define OUTPUT_MACH bfd_mach_${output_mach}" >>confdefs.h
-
- 	    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $defaulted bfd_mach_${output_mach}" >&5
-printf "%s\n" "$defaulted bfd_mach_${output_mach}" >&6; }
-	else
- 	    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: not found" >&5
-printf "%s\n" "not found" >&6; }
-	fi
 
 	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: trying to adjust text start" >&5
 printf "%s\n" "$as_me: trying to adjust text start" >&6;}

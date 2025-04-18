@@ -11,6 +11,7 @@
 
 #if SIZEOF_LONG == 4
 #define RELOC_H "elf32_ppc_reloc.h"
+#define OUTPUT_MACH bfd_mach_ppc
 #else
 #ifdef WORDS_BIGENDIAN
 #define RELOC_H "elf64_ppc_reloc.h"
@@ -20,5 +21,6 @@
 #define RELOC_H "elf64_ppcle_reloc.h"
 #define SPECIAL_RELOC_H "elf64_ppcle_reloc_special.h"
 #endif
+#define OUTPUT_MACH bfd_mach_ppc64
 #define C_GC_OFFSET 4
 #endif

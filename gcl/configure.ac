@@ -1215,25 +1215,28 @@ if test "`cat gcl.script | wc -l`" != "0" ; then
 	else
  	    AC_MSG_RESULT([not found])
 	fi
-	AC_MSG_CHECKING([output_mach])
-	output_mach=`cat gcl.script |grep OUTPUT_ARCH|head -n 1|sed 's,.*(\(.*\)).*,\1:,1'|cut -f2 -d:|tr '-' '_'|tr -d '.'`;
 
-    if test "$output_mach" = "common" ; then #FIXME
-	   output_mach=""
-	fi
-	defaulted=""
-    if test "$output_mach" = "" ; then
-		if test "$output_arch" = "i386" ; then
-		   output_mach="i386_i386";
-		   defaulted="(defaulted)"
-		fi
-	fi
-	if test "$output_mach" != "" ; then
-	    AC_DEFINE_UNQUOTED(OUTPUT_MACH,bfd_mach_${output_mach},[bfd output mach])
- 	    AC_MSG_RESULT([$defaulted bfd_mach_${output_mach}])
-	else
- 	    AC_MSG_RESULT([not found])
-	fi
+	dnl FIXME this does not work reliably.  Defines added by hand to .h files, but this is fragile.
+	dnl
+	dnl AC_MSG_CHECKING([output_mach])
+	dnl output_mach=`cat gcl.script |grep OUTPUT_ARCH|head -n 1|sed 's,.*(\(.*\)).*,\1:,1'|cut -f2 -d:|tr '-' '_'|tr -d '.'`;
+
+	dnl if test "$output_mach" = "common" ; then #FIXME
+	dnl    output_mach=""
+	dnl fi
+	dnl defaulted=""
+    	dnl if test "$output_mach" = "" ; then
+	dnl 	if test "$output_arch" = "i386" ; then
+	dnl 	   output_mach="i386_i386";
+	dnl 	   defaulted="(defaulted)"
+	dnl 	fi
+	dnl fi
+	dnl if test "$output_mach" != "" ; then
+	dnl     AC_DEFINE_UNQUOTED(OUTPUT_MACH,bfd_mach_${output_mach},[bfd output mach])
+ 	dnl     AC_MSG_RESULT([$defaulted bfd_mach_${output_mach}])
+	dnl else
+ 	dnl     AC_MSG_RESULT([not found])
+	dnl fi
 
 	AC_MSG_NOTICE([trying to adjust text start])
 	cp gcl.script gcl.script.def

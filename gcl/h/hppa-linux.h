@@ -17,3 +17,5 @@
 
 #define RELOC_H "elf32_hppa_reloc.h"
 #define SPECIAL_RELOC_H "elf32_hppa_reloc_special.h"
+
+#define OUTPUT_MACH bfd_mach_hppa11

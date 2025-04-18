@@ -21,3 +21,5 @@
 #define NEED_STACK_CHK_GUARD
 
 /* #define DEFINED_REAL_MAXPAGE (1UL<<18) /\*FIXME brk probe broken*\/ */
+
+#define OUTPUT_MACH bfd_mach_sh4

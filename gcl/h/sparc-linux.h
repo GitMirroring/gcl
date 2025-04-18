@@ -18,3 +18,5 @@ void unwind() __attribute__((optimize("O0")));/*FIXME*/
 /* #if SIZEOF_LONG == 8 */
 /* #define C_GC_OFFSET 4 */
 /* #endif */
+
+#define OUTPUT_MACH bfd_mach_sparc_v9

@@ -14,3 +14,5 @@
 #define MAX_CODE_ADDRESS (1L<<31)/*large memory model broken gcc 4.8*/
 #define MAX_DEFAULT_MEMORY_MODEL_CODE_ADDRESS (1UL<<31)
 #define LARGE_MEMORY_MODEL /*working -mcmodel=large giving unrestricted code load addresses*/
+
+#define OUTPUT_MACH bfd_mach_x86_64

@@ -261,9 +261,6 @@
 /* bfd output arch */
 #undef OUTPUT_ARCH
 
-/* bfd output mach */
-#undef OUTPUT_MACH
-
 /* Name of package */
 #undef PACKAGE
 

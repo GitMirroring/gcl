@@ -9,3 +9,5 @@
 #define SGC
 
 #define RELOC_H "elf32_i386_reloc.h"
+
+#define OUTPUT_MACH bfd_mach_i386_i386
