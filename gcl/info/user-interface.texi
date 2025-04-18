@@ -61,7 +61,7 @@ Evaluates FORM in the single-step mode and returns the value.
 @end deffn
 
 @defvar *BREAK-ENABLE* 
-Package:LISP
+Package:SI
 GCL specific:  When an error occurrs, control enters to the break loop only
 if the value of this variable is non-NIL.
 
@@ -99,7 +99,7 @@ Holds the I/O stream used by the GCL debugger.
 @end defvar
 
 @defvar *BREAK-ON-WARNINGS* 
-Package:LISP
+Package:SI
 When the function WARN is called, control enters to the break loop only
 if the value of this varialbe is non-NIL.
 

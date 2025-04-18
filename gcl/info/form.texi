@@ -9,7 +9,7 @@ List of all the lambda-list keywords used in GCL.
 @end defvr
 
 @defun GET-SETF-METHOD (form)
-Package:LISP
+Package:SI
 
 Returns the five values (or five 'gangs') constituting the SETF method for
 FORM.  See the doc of DEFINE-SETF-METHOD for the meanings of the gangs.  It
@@ -345,7 +345,7 @@ Also, see the function doc of PPRINT for the output-formatting.
 @end deffn
 
 @defvar *EVALHOOK* 
-Package:LISP
+Package:SI
 If *EVALHOOK* is not NIL, its value must be a function that can receive
 two arguments: a form to evaluate and an environment.  This function does
 the evaluation instead of EVAL.
@@ -521,7 +521,7 @@ a function.  Actually, however, there is no such upper bound in GCL.
 @end defvr
 
 @defun APPLYHOOK (function args evalhookfn applyhookfn &optional (env nil))
-Package:LISP
+Package:SI
 
 Applies FUNCTION to ARGS, with *EVALHOOK* bound to EVALHOOKFN and with
 *APPLYHOOK* bound to APPLYHOOKFN.  Ignores the hook function once, for the
@@ -682,7 +682,7 @@ TEST.  Returns NIL, if all TESTs evaluate to NIL.
 @end deffn
 
 @defun GET-SETF-METHOD-MULTIPLE-VALUE  (form)
-Package:LISP
+Package:SI
  Returns the five values (or five 'gangs')
 constituting the SETF method for FORM.  See the doc of
 DEFINE-SETF-METHOD for the meanings of the gangs.  The third value
@@ -769,7 +769,7 @@ returns the value(s) of the last FORM.  If not, simply returns NIL.
 @end deffn
 
 @deffn {Macro} DEFINE-SETF-METHOD 
-Package:LISP
+Package:SI
 
 Syntax:
 @example
@@ -799,7 +799,7 @@ by (documentation 'NAME 'setf).
 @end deffn
 
 @deffn {Special Form} COMPILER-LET 
-Package:LISP
+Package:SI
 
 Syntax:
 @example
@@ -891,7 +891,7 @@ Creates a NIL block, binds VARs in parallel, and then executes STATEMENTs.
 @end deffn
 
 @defvar *APPLYHOOK* 
-Package:LISP
+Package:SI
 Used to substitute another function for the implicit APPLY normally done
 within EVAL.  If *APPLYHOOK* is not NIL, its value must be a function 
 which takes three arguments: a function to be applied, a list of arguments,
@@ -1032,7 +1032,7 @@ form.
 @end deffn
 
 @defun EVALHOOK (form evalhookfn applyhookfn &optional (env nil))
-Package:LISP
+Package:SI
 
 Evaluates FORM with *EVALHOOK* bound to EVALHOOKFN and *APPLYHOOK* bound
 to APPLYHOOKFN.  Ignores these hooks once, for the top-level evaluation

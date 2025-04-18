@@ -102,7 +102,7 @@ or
 @end example
 
 @end defun
-@defun COMPILER-DEFAULT-TYPE  (pathname)
+@defun *COMPILER-DEFAULT-TYPE*  (pathname)
 Package:COMPILER
 
 Allows you to set the default file extension for compiler source files.
@@ -148,13 +148,6 @@ NIL
 
 @end example
 
-
-@end defun
-@defun  COMPILER-RESET-TYPE ()
-Package:COMPILER
-
-Resets the default compiler input file extension to the GCL historical
-value of #''.lsp''.
 
 @end defun
 @defvar *CC* 

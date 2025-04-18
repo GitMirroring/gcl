@@ -599,3 +599,18 @@ AM_ETAGSFLAGS=--regex='/[ \n\t\#\.`]*(defun[ \n\t]+\([^ \n\t]+\)/' \
 	      --regex='/[ \n\t\#\.`]*(defmfun[ \n\t]+"[^ \n\t"]+"[ \n\t]+\([^ \n\t]+\)/\1/'
 
 TAGS_FILES=lsp/*.lsp cmpnew/*.lsp mod/*.lsp pcl/*sp clcs/*sp xgcl-2/*p
+
+info/gcl.texi: $(addprefix info/,$(addsuffix .texi,\
+			chap-1 chap-2 chap-3 chap-4 chap-5 chap-6 chap-7 chap-8	chap-9 chap-10 chap-11 \
+			chap-12 chap-13 chap-14 chap-15 chap-16 chap-17 chap-18 chap-19 chap-20 chap-21 \
+			chap-22 chap-23 chap-24 chap-25 chap-26 chap-a))
+	touch $@
+
+info/gcl-si.texi: $(addprefix info/,$(addsuffix .texi,\
+			number sequence character list io form compile \
+			symbol system structure iteration user-interface doc type internal c-interface \
+			si-defs debug misc compiler-defs japi))
+	touch $@
+
+info/gcl-tk.texi: $(addprefix info/,$(addsuffix .texi,general widgets control))
+	touch $@

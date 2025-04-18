@@ -34,7 +34,7 @@ a lisp structure correspond to a C structure.
 @end deffn
 
 @defun HELP (&optional symbol)
-Package:LISP
+Package:USER
 
 GCL specific: Prints the documentation associated with SYMBOL.  With no
 argument, this function prints the greeting message to GCL beginners.

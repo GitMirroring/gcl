@@ -34,7 +34,7 @@ Returns T if X is of the type TYPE; NIL otherwise.
 @end defun
 
 @defun COMMONP (x)
-Package:LISP
+Package:SI
 
 Returns T if X is a Common Lisp object; NIL otherwise.
 

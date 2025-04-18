@@ -2,7 +2,7 @@
 @chapter GCL Specific
 
 @defun SYSTEM (string)
-Package:LISP
+Package:SI
 
 GCL specific: Executes a Shell command as if STRING is an input to the
 Shell.  Not all versions of GCL support this function.  At least on
@@ -49,16 +49,8 @@ on which GCL is currently running.
 
 @end defun
 
-@defun BY ()
-Package:LISP
-
-GCL specific: Exits from GCL.
-
-
-@end defun
-
 @deffn {Macro} DEFCFUN 
-Package:LISP
+Package:SI
 
 Syntax:
 @example
@@ -126,7 +118,7 @@ C-type:
 @end deffn
 
 @deffn {Macro} CLINES 
-Package:LISP
+Package:SI
 
 Syntax:
 @example
@@ -148,7 +140,7 @@ specified in the environment.
 @end defun
 
 @defun ALLOCATE (type number &optional (really-allocate nil))
-Package:LISP
+Package:SI
 
 GCL specific: Sets the maximum number of pages for the type class of the
 GCL implementation type TYPE to NUMBER.  If REALLY-ALLOCATE is given a
@@ -159,7 +151,7 @@ immediately.
 @end defun
 
 @defun GBC (x)
-Package:LISP
+Package:SI
 
 GCL specific: Invokes the garbage collector (GC) with the collection level
 specified by X.  NIL as the argument causes GC to collect cells only.  T as
@@ -169,7 +161,7 @@ the argument causes GC to collect everything.
 @end defun
 
 @defun SAVE (pathname)
-Package:LISP
+Package:SI
 
 GCL specific: Saves the current GCL core image into a program file specified
 by PATHNAME.  This function depends on the version of GCL.  The function
@@ -180,7 +172,7 @@ currently loaded .o files.
 @end defun
 
 @defun HELP* (string &optional (package 'lisp))
-Package:LISP
+Package:USER
 
 GCL specific: Prints the documentation associated with those symbols in the
 specified package whose print names contain STRING as substring.  STRING may
@@ -191,7 +183,7 @@ is NIL, then all packages are searched.
 @end defun
 
 @deffn {Macro} DEFLA 
-Package:LISP
+Package:SI
 
 Syntax:
 @example
@@ -214,7 +206,7 @@ NIL otherwise.  See the doc of DECLARE for possible DECL-SPECs.
 @end defun
 
 @deffn {Macro} DEFENTRY 
-Package:LISP
+Package:SI
 
 Syntax:
 @example
@@ -282,7 +274,7 @@ implementation dependent results.
 @end defun
 
 @defun BYE ( &optional (exit-status 0))
-Package:LISP
+Package:SI
 
 GCL specific: Exits from GCL with exit-status.
 
@@ -290,7 +282,7 @@ GCL specific: Exits from GCL with exit-status.
 @end defun
 
 @defun USE-FAST-LINKS (turn-on)
-Package:LISP
+Package:SI
 
 GCL specific: If TURN-ON is not nil, the fast link mechanism is enabled,
 so that ordinary function calls will not appear in the invocation stack,

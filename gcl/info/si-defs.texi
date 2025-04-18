@@ -41,14 +41,6 @@ calling this the defstruct should not be altered.
 
 
 @end defun
-@defun MAXIMUM-ALLOCATABLE-PAGES (type)
-Package:SI
-
-GCL specific: Returns the current maximum number of pages for the type class
-of the GCL implementation type TYPE.
-
-
-@end defun
 @defun ALLOCATED-RELOCATABLE-PAGES ()
 Package:SI
 
@@ -61,14 +53,6 @@ blocks.
 Package:SI
 
 Give SYMBOL the VALUE on INDICATOR property.
-
-
-@end defun
-@defun ALLOCATED-PAGES (type)
-Package:SI
-
-GCL specific: Returns the number of pages currently allocated for the type
-class of the GCL implementation type TYPE.
 
 
 @end defun
@@ -420,18 +404,6 @@ type.
 
 
 @end defun
-@defun CATCH-BAD-SIGNALS ()
-Package:SI
-
-GCL/BSD specific: Installs a signal catcher for bad signals:
-	SIGILL, SIGIOT, SIGEMT, SIGBUS, SIGSEGV, SIGSYS.
-The signal catcher, upon catching the signal, signals an error (and enter
-the break-level).  Since the internal memory of GCL may be broken, the user
-should check the signal and exit from GCL if necessary.  When the signal
-is caught during garbage collection, GCL terminates immediately.
-
-
-@end defun
 @defun RESET-STACK-LIMITS ()
 Package:SI
 
@@ -450,7 +422,7 @@ should be set NIL.
 
 
 @end defvar
-@defvar *GBC-NOTIFY* 
+@defvar *NOTIFY-GBC*
 Package:SI
 GCL specific: If the value is non-NIL, the garbage
 collector prints a very brief one line message about the area causing the collection,
@@ -465,7 +437,7 @@ a lisp variable indicating the TYPE which caused the current collection.
 
 
 @end defvar
-@deffn {Funcition} ALLOCATED (type)
+@deffn {Function} ALLOCATED (type)
 Package:SI
 
 Returns 6 values:
@@ -572,13 +544,6 @@ resetting io streams.   It would not be possible to continue normally.
 
 
 @end defun
-@defun UNCATCH-BAD-SIGNALS ()
-Package:SI
-
-GCL/BSD specific: Undoes the effect of SI:CATCH-BAD-SIGNALS.
-
-
-@end defun
 @defun VS (i)
 Package:SI
 
@@ -601,13 +566,6 @@ the GCL process.
 
 
 @end defun
-@defvar *DEFAULT-TIME-ZONE* 
-Package:SI
-GCL specific: Holds the default time zone.  The initial value of SI:*DEFAULT-
-TIME-ZONE* is 6 (the time zone of Austin, Texas).
-
-
-@end defvar
 @defun GETENV (string)
 Package:SI
 
@@ -660,47 +618,36 @@ stack.
 
 
 @end defun
-@defun WRITE-DEBUG-SYMBOLS (start file &key (main-file "/usr/local/schelter/xgcl/unixport/raw_gcl") (output-file "debug-symbols.o" ))
-Package:SI
+@c @defun PROF (x y)
+@c Package:SI
 
-Write out a file of debug-symbols using address START as the place
-where FILE will be loaded into the running executable MAIN-FILE.  The
-last is a keyword argument.
+@c These functions in the SI package are GCL specific, and allow monitoring
+@c the run time of functions loaded into GCL, as well as the basic functions.
+@c  Sample Usage:
+@c     (si::set-up-profile 1000000) (si::prof 0 90)
+@c      run program
+@c     (si::prof 0 0)   ;; turn off profile
+@c     (si::display-prof)
+@c     (si::clear-profile)
+@c     (si::prof 0 90)  ;; start profile again
+@c     run program
+@c    ..
+@c   Profile can be stopped with (si::prof 0 0) and restarted with (si::prof 0 90)
+@c The START-ADDRESS will correspond to the beginning of the profile array, and
+@c the SCALE will mean that 256 bytes of code correspond to SCALE bytes in the
+@c profile array.
 
+@c Thus if the profile array is 1,000,000  bytes long and the code segment is 
+@c 5 megabytes long you can profile the whole thing using a scale of 50
+@c Note that long runs may result in overflow, and so an understating of the
+@c time in a function.
 
-
-
-@end defun
-@defun PROF (x y)
-Package:SI
-
-These functions in the SI package are GCL specific, and allow monitoring
-the run time of functions loaded into GCL, as well as the basic functions.
- Sample Usage:
-    (si::set-up-profile 1000000) (si::prof 0 90)
-     run program
-    (si::prof 0 0)   ;; turn off profile
-    (si::display-prof)
-    (si::clear-profile)
-    (si::prof 0 90)  ;; start profile again
-    run program
-   ..
-  Profile can be stopped with (si::prof 0 0) and restarted with (si::prof 0 90)
-The START-ADDRESS will correspond to the beginning of the profile array, and
-the SCALE will mean that 256 bytes of code correspond to SCALE bytes in the
-profile array.
-
-Thus if the profile array is 1,000,000  bytes long and the code segment is 
-5 megabytes long you can profile the whole thing using a scale of 50
-Note that long runs may result in overflow, and so an understating of the
-time in a function.
-
-You must run intensively however since, with a scale of 128 it takes
-6,000,000 times through a loop to overflow the sampling in one part of
-the code.
+@c You must run intensively however since, with a scale of 128 it takes
+@c 6,000,000 times through a loop to overflow the sampling in one part of
+@c the code.
 
 
-@end defun
+@c @end defun
 @defun CATCH-FATAL (i)
 Package:SI
 

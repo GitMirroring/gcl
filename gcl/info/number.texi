@@ -86,7 +86,7 @@ BIT-ARRAY1 if RESULT-BIT-ARRAY is T, or into RESULT-BIT-ARRAY otherwise.
 @end defun
 
 @defun INT-CHAR (integer)
-Package:LISP
+Package:SI
 
 Performs the inverse of CHAR-INT.  Equivalent to CODE-CHAR in GCL.
 

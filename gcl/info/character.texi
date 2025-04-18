@@ -40,14 +40,14 @@ This is faster than CHAR.
 @end defun
 
 @defvr {Constant} CHAR-SUPER-BIT 
-Package:LISP
+Package:SI
 The bit that indicates a super character.
 
 
 @end defvr
 
 @defvr {Constant} CHAR-FONT-LIMIT 
-Package:LISP
+Package:SI
 The upper exclusive bound on values produced by CHAR-FONT.
 
 
@@ -63,7 +63,7 @@ If not, simply returns CHAR.
 @end defun
 
 @defun STRING-CHAR-P (char)
-Package:LISP
+Package:SI
 
 Returns T if CHAR can be stored in a string.  In GCL, this function always
 returns T since any character in GCL can be stored in a string.
@@ -113,7 +113,7 @@ otherwise.
 @end defun
 
 @defvr {Constant} CHAR-HYPER-BIT 
-Package:LISP
+Package:SI
 The bit that indicates a hyper character.
 
 
@@ -137,7 +137,7 @@ Returns the code attribute of CHAR.
 @end defun
 
 @defvr {Constant} CHAR-CONTROL-BIT 
-Package:LISP
+Package:SI
 The bit that indicates a control character.
 
 
@@ -154,7 +154,7 @@ is used.
 @end defun
 
 @defun CHAR-FONT (char)
-Package:LISP
+Package:SI
 
 Returns the font attribute of CHAR.
 
@@ -179,7 +179,7 @@ otherwise.
 @end defun
 
 @defvr {Constant} CHAR-META-BIT 
-Package:LISP
+Package:SI
 The bit that indicates a meta character.
 
 
@@ -204,7 +204,7 @@ Upper case character and its lower case equivalent are regarded the same.
 @end defun
 
 @defvr {Constant} CHAR-BITS-LIMIT 
-Package:LISP
+Package:SI
 The upper exclusive bound on values produced by CHAR-BITS.
 
 
@@ -243,7 +243,7 @@ Returns T if CHAR is an upper-case character; NIL otherwise.
 @end defun
 
 @defun CHAR-BIT (char name)
-Package:LISP
+Package:SI
 
 Returns T if the named bit is on in the character CHAR; NIL otherwise.
 In GCL, this function always returns NIL.
@@ -252,7 +252,7 @@ In GCL, this function always returns NIL.
 @end defun
 
 @defun MAKE-CHAR (char &optional (bits 0) (font 0))
-Package:LISP
+Package:SI
 
 Returns a character object with the same code attribute as CHAR and with
 the specified BITS and FONT attributes.
@@ -350,7 +350,7 @@ Returns T if CHAR is either numeric or alphabetic; NIL otherwise.
 @end defun
 
 @defun CHAR-BITS (char)
-Package:LISP
+Package:SI
 
 Returns the bits attribute (which is always 0 in GCL) of CHAR.
 
@@ -367,7 +367,7 @@ Returns NIL if no such character exists.
 @end defun
 
 @defun SET-CHAR-BIT (char name newvalue)
-Package:LISP
+Package:SI
 
 Returns a character just like CHAR except that the named bit is set or
 cleared, according to whether NEWVALUE is non-NIL or NIL.  This function
