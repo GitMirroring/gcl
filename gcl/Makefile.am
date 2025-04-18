@@ -246,9 +246,9 @@ unixport/saved_%: | unixport/raw_% unixport/gcl_cmpnopt_%.lsp \
 		mkdir h && \
 		ln -snf ../../h/cmpinclude.h h/ && \
 		echo "(system:save-system \"../$@\")" | cat ../unixport/init_raw.lsp - | \
-			GCL_LSPSYSDIR=../$(srcdir)/unixport/ \
+			GCL_LSPSYSDIR=../$(srcdir)/unixport/ GCL_MEM_BOUND=29 \
 				../unixport/raw_$* $$(dirname $$(pwd))/unixport/ -libdir $$(dirname $$(pwd))/  && \
-		rm -f ../unixport/gcl_cmpnopt.lsp
+		rm -f ../unixport/gcl_cmpnopt.lsp #FIXME GCL_MEM_BOUND darwin limited raw heap xcode linker __huge issue
 	rm -rf sb_$*
 
 unixport/raw_%: unixport/lib%.a
