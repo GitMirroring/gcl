@@ -411,6 +411,7 @@
 ;    (print `(deftype ,name nil `(si::std-instance ,(si::coerce-to-standard-class ',name))))
 ;    (print (si::coerce-to-standard-class name))
     (eval `(deftype ,name nil t))
+    (unintern (get name 'si::simple-typep-fn))
     (remprop name 'si::simple-typep-fn)))
 
   ;; #+cmu17 (declare (ignore name predicate))
