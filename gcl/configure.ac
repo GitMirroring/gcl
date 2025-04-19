@@ -1746,6 +1746,7 @@ AC_CHECK_FUNCS(feenableexcept)
 
 AC_CHECK_HEADERS(dis-asm.h,
 		 MLIBS=$LIBS
+		 AC_CHECK_TYPES([fprintf_styled_ftype],[],[],[#include <dis-asm.h>])
 		 AC_CHECK_LIB(opcodes,init_disassemble_info)
 		 AC_CHECK_LIB(dl,dlopen,#opcodes changes too quickly to link directly
 			      AC_CHECK_FUNCS(print_insn_i386,LIBS="$MLIBS -ldl")))

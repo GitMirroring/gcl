@@ -1459,6 +1459,7 @@ my_fprintf(void *v,const char *f,...) {
   return r;
 }
 
+#ifdef HAVE_FPRINTF_STYLED_FTYPE
 static int
 my_fprintf_styled(void *v,enum disassembler_style,const char *f,...) {
   va_list va;
@@ -1468,6 +1469,7 @@ my_fprintf_styled(void *v,enum disassembler_style,const char *f,...) {
   va_end(va);
   return r;
 }
+#endif
 
 static int
 my_read(bfd_vma memaddr, bfd_byte *myaddr, unsigned int length, struct disassemble_info *dinfo) {
@@ -1495,7 +1497,11 @@ DEFUN("DISASSEMBLE-INSTRUCTION",object,fSdisassemble_instruction,SI,1,1,NONE,OI,
 
   if ((v=dlopen("libopcodes.so",RTLD_NOW))) {
     if ((s=dlsym(v,"init_disassemble_info"))) {
-      s(&i, stdout,(fprintf_ftype) my_fprintf,my_fprintf_styled);
+      s(&i, stdout,(fprintf_ftype)my_fprintf
+#ifdef HAVE_FPRINTF_STYLED_FTYPE
+	,my_fprintf_styled
+#endif
+	);
       i.read_memory_func=my_read;
       i.print_address_func=my_pa;
 #if defined(OUTPUT_MACH)
