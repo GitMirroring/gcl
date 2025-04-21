@@ -371,7 +371,8 @@
 
 (defseq union (nil (l1 l2) :list t)
   (let (rp)
-    (prog1 (or (mapcan (lambda (x)
+    (prog1 (or (unless l2 l1)
+	       (mapcan (lambda (x)
 			 (unless (member (key x) l2 :test #'test)
 			   (setq rp (cons x nil))))
 		       l1)
@@ -380,21 +381,26 @@
 
 
 (defseq set-difference (nil (l1 l2) :list t)
-  (mapcan (lambda (x)
+  (if l2
+      (mapcan (lambda (x)
 	    (unless (member (key x) l2 :test #'test)
 	      (cons x nil)))
-	  l1))
+	      l1)
+      l1))
 
 
 (defseq set-exclusive-or (nil (l1 l2) :list t)
-  (let (rp (rr (copy-list l2)))
-    (prog1 (or (mapcan (lambda (x &aux (k (key x)))
+  (let (rp tmp n2)
+    (declare (dynamic-extent tmp))
+    (or (unless l2 l1)
+	(prog1 (mapcan (lambda (x &aux (k (key x)))
 			 (if (member k l2 :test #'test)
-			     (unless (setq rr (delete k rr :test #'test)))
+			     (unless (push k tmp))
 			     (setq rp (cons x nil))))
 		       l1)
-	       rr)
-      (when rp (rplacd rp rr)))))
+	  (setq n2 (set-difference l2 tmp :test (lambda (x y) (funcall #'test y x))))
+	  (when rp (rplacd rp n2)))
+	n2)))
 
 (defseq nintersection (nil (l1 l2) :list t)
   (let (r rp)
