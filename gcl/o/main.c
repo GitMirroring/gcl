@@ -1508,7 +1508,7 @@ DEFUN("DISASSEMBLE-INSTRUCTION",object,fSdisassemble_instruction,SI,1,1,NONE,OI,
       i.mach=OUTPUT_MACH;
 #endif
       if ((s=dlsym(v,"disassembler"))) {
-	disassembler_ftype disasm=(disassembler_ftype)(ufixnum)s(OUTPUT_ARCH,false,0,NULL);/*bfd_mach_x86_64*/
+	disassembler_ftype disasm=(disassembler_ftype)(ufixnum)s(OUTPUT_ARCH,0,0,NULL);
 	bp=b;
 	disasm(addr,&i);
 	my_fprintf(NULL," ;");
