@@ -1848,8 +1848,6 @@ AC_CONFIG_FILES([bin/gcl])
 
 AC_CHECK_HEADERS(sys/mman.h,AC_CHECK_FUNCS(mprotect))
 AC_CHECK_HEADERS(alloca.h)
-AC_FUNC_ALLOCA
-
 
 #LDFLAGS="`echo $GPL_FLAG $LDFLAGS | sed 's,gcl.script,../unixport/gcl.script,g'`"
 LDFLAGS="`echo $GPL_FLAG $LDFLAGS`"

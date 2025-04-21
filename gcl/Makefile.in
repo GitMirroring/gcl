@@ -683,7 +683,6 @@ distcleancheck_listfiles = \
   find . \( -type f -a \! \
             \( -name .nfs* -o -name .smb* -o -name .__afs* \) \) -print
 ACLOCAL = @ACLOCAL@
-ALLOCA = @ALLOCA@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AUTOCONF = @AUTOCONF@
