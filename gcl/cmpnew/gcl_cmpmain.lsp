@@ -707,31 +707,6 @@ Cannot compile ~a.~%" (namestring (merge-pathnames input-pathname *compiler-defa
 	   do (setq m (si::fread tem 0 n st-b))
 	   while (and m (> m 0))
 	   do (si::fwrite tem 0 m st-a))))))
-
-#+dos
-(progn
-(defun directory (x &aux ans)
-  (let* ((pa (pathname x))
-	 (temp "XXDIR")
-	 tem
-	 (name (pathname-name pa)))
-    (setq pa (make-pathname :directory (pathname-directory pa)
-			    :name (or (pathname-name pa) :wild)
-			    :type (pathname-type pa)))
-    (setq name (namestring pa))
-    (safe-system (format nil "ls -d ~a > ~a" name temp))
-    (with-open-file (st temp)
-	    (loop (setq tem (read-line st nil nil))
-		  (if (and tem (setq tem (probe-file tem)))
-		      (push tem ans) (return))))
-    ans))
-
-
-(defun user-homedir-pathname ()
-  (or (si::getenv "HOME") "/"))
-
-)
-
 ;
 ;  These functions are added to build custom images requiring
 ;  the loading of binary objects on systems relocating with dlopen.
