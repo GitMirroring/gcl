@@ -112,10 +112,12 @@
 (defun canonicalize-pathname-directory (l)
   (cond ((eq l :wild) (canonicalize-pathname-directory '(:absolute :wild-inferiors)))
 	((stringp l) (canonicalize-pathname-directory (list :absolute l)))
-	((mapl (lambda (x &aux (c (car x)))
-		 (when (and (or (stringp c) (eq c :wild)) (eq (cadr x) :back))
+	((mapl (lambda (x &aux (c (car x))
+			    (skip (cond ((equal c ".") (cdr x))
+					((when (or (stringp c) (eq c :wild)) (eq (cadr x) :back)) (cddr x)))))
+		 (when skip
 		   (return-from canonicalize-pathname-directory
-		     (canonicalize-pathname-directory (nconc (ldiff-nf l x) (cddr x))))))
+		     (canonicalize-pathname-directory (nconc (ldiff-nf l x) skip)))))
 	       l))))
 
 (defvar *default-pathname-defaults* (init-pathname nil nil nil nil nil nil ""))
