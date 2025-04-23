@@ -160,11 +160,11 @@ object sSAindent_formatted_outputA;
 			VOL int old_fmt_index; \
 			VOL int old_fmt_end; \
 			VOL object old_fmt_iteration_list; \
-			jmp_bufp   VOL old_fmt_jmp_bufp; \
+			jmp_bufp VOL old_fmt_jmp_bufp; \
 			VOL int old_fmt_indents; \
 			VOL object old_fmt_string ; \
-			VOL object(*old_fmt_advance)(void) ;	\
-			VOL void (*old_fmt_lt)(volatile bool,bool) ;	\
+			object(*VOL old_fmt_advance)(void) ;	\
+			void (*VOL old_fmt_lt)(volatile bool,bool) ;	\
                         VOL format_parameter *old_fmt_paramp
 #define	fmt_save	old_fmt_stream = fmt_stream; \
 			old_ctl_origin = ctl_origin; \
