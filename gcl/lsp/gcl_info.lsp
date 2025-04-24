@@ -96,18 +96,12 @@
 
 (defun get-index-node ()
  (or (third *current-info-data*) 
-     (let* (
-	    s
-	    (node-string (car (nth 1 *current-info-data*)))
-	    (node
-	     (and node-string (car (get-nodes "Index" node-string)))))
-       (when node
-	   (setq s (show-info
-		    node
-		    nil
-		    nil
-		    ))
-	(setf (third *current-info-data*) s)))))
+     (let* ((node-string (car (nth 1 *current-info-data*)))
+	    (nodes (when node-string (get-nodes "Index" node-string))))
+       (when nodes
+	 (setf (third *current-info-data*)
+	       (reduce 'string-concatenate
+		       (mapcar (lambda (x) (show-info x nil nil)) nodes)))))))
 
 (defun nodes-from-index (pat  &aux (i 0) ans
 			      (*case-fold-search* t) *match-data*)
