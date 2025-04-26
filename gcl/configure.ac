@@ -793,6 +793,7 @@ esac
 # mechanism, in the PAGE macro.  This offset is subtracted from
 # addresses, in calculating a page for an address in the heap.
 
+AC_CHECK_SIZEOF(size_t,0)
 AC_CHECK_SIZEOF(long,0)
 AC_CHECK_SIZEOF(short,0)
 AC_CHECK_SIZEOF(int,0)

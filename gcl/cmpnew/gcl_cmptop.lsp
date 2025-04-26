@@ -823,7 +823,7 @@
     ((cons (eql vv) t) (fm-to-string (cadr form)))
     ((cons (member char-value fixnum-value character-value) t) (fm-to-string (caddr form)))
     ((eql most-negative-fixnum)  #.(string-concatenate "(" (write-to-string (1+ most-negative-fixnum)) "- 1)"))
-    (integer (format nil "~a" form)); string character
+    (fixnum (format nil "~a" form)); string character
     (float (format nil "~10,,,,,,'eG" form))
     ((complex float)
      (string-concatenate "(" (fm-to-string (realpart form)) " + I * " (fm-to-string (imagpart form)) ")"))))
@@ -832,7 +832,7 @@
   (string-concatenate
    (cond ((member key '(:cnum :creal)) "")
 	 ((eq ft tt) "")
-	  ((equal ft t)
+	 ((equal ft t)
 	   (if *compiler-new-safety*
 	       (let ((v (member key '(:char :int :fixnum))))
 		 (if v (si::string-concatenate (setq p "object_to_") (strcat key))
@@ -1127,11 +1127,11 @@
     (let ((x (position x +c-global-arg-types+ :test 'type<=)))
       (if x (1+ x) 0))))
 
-(defun new-proclaimed-argd (args return)
+(defun new-proclaimed-argd (args return);FIXME room for more, but F_NARG_WIDTH = 6
   (do* ((type (f-type return) (f-type (pop args)))
 	(i 0 (+ 2 i))
 	(ans type (logior ans (ash type i))))
-       ((or (>= i 32) (null args)) (the (unsigned-byte 32) ans))))
+       ((or (>= i 14) (null args)) (the (unsigned-byte 15) ans))))
 
 (defun type-f (x)
   (declare (fixnum x))
@@ -1811,6 +1811,12 @@
 ;; 			  ,@(mapcar (lambda (x y) 
 ;; 				      `(unbox ,(intern (symbol-name x) 'keyword) ,y)) args syms)))))))
 
+(defun c-key-rep (key)
+  (ecase key
+    ((:object :char :int :long :float :double :fixnum :void) (string-downcase key))
+    (:string "char *")
+    (:ustring "unsigned char *")))
+
 (defmacro defentry (n args c &optional (lt t)
 		      &aux (tsyms (load-time-value
 				   (mapl (lambda (x) (setf (car x) (gensym "DEFENTRY")))
@@ -1824,9 +1830,9 @@
 	 (tps (mapcar (lambda (x) (intern (string (if (consp x) (car x) x)) 'keyword)) args))
 	 (decl (reduce (lambda (y x)
 			 (strcat y (if (> (length y) 0) "," "")
-				 (cdr (assoc (get x 'cmp-lisp-type) +defentry-c-rep-alist+))))
+				 (c-key-rep x)))
 		       tps :initial-value ""))
-	 (decl (concatenate 'string (string-downcase rt) " " m "(" decl ");"))
+	 (decl (concatenate 'string (c-key-rep rt) " " m "(" decl ");"))
 	 (decl (if st "" decl))
 	 (syms (mapcar (lambda (x) (declare (ignore x)) (pop tsyms)) args)))
   `(defun ,n ,syms 

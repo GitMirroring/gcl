@@ -85,7 +85,11 @@ char object_to_char(object);
 void not_a_symbol(object);
 object number_expt(object,object);
 object fLrow_major_aref(object,fixnum);
+#if SIZEOF_SIZE_T == SIZEOF_INT
+void *alloca(unsigned);
+#else
 void *alloca(unsigned long);
+#endif
 object cmod(object);
 object ctimes(object,object);
 object cdifference(object,object);

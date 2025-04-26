@@ -220,11 +220,6 @@
 	   (list* nil +c-local-var-types-syms+))
    `((object . "object "))))
 
-(defconstant +defentry-c-rep-alist+
-  (mapcar (lambda (x &aux (z (assoc x *c-types*)))
-	    (cons (cadr z) (eighth z)))
-	  '(char #+64bit signed-int fixnum short-float long-float string t)))
-
 (defconstant +cmp-type-alist+
   (mapcar (lambda (x) (cons (cmp-norm-tp (car x)) (cdr x))) +type-alist+))
 
