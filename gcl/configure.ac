@@ -271,19 +271,11 @@ case $use in
 	assert_arg_to_cflags -mms-bitfields
 	for i in makedefc windows/gcl.iss windows/sysdir.bat windows/install.lsp h/gclincl.h;  do
 	    cat $i.in | sed 's,[^\r]\n$,\r\n,g' >tmp && mv tmp $i.in;
-	done
-	OLD_LDFLAGS=$LDFLAGS
-	assert_arg_to_ldflags -pg
-	GPL_FLAG="-pg"
-	LDFLAGS=$OLD_LDFLAGS;;
+	done;;
     *gnuwin*)
 	assert_arg_to_cflags -fno-zero-initialized-in-bss
 	assert_arg_to_cflags -mms-bitfields
-        assert_arg_to_ldflags -Wl,--stack,8000000
-	OLD_LDFLAGS=$LDFLAGS
-	assert_arg_to_ldflags -pg
-	GPL_FLAG="-pg"
-	LDFLAGS=$OLD_LDFLAGS;;
+        assert_arg_to_ldflags -Wl,--stack,8000000;;
     386-linux)
 	if ! add_arg_to_cflags -msse2 || ! add_arg_to_cflags -mfpmath=sse ; then
 	   add_arg_to_cflags -ffloat-store;
@@ -1851,9 +1843,6 @@ AC_CONFIG_FILES([bin/gcl])
 AC_CHECK_HEADERS(sys/mman.h,AC_CHECK_FUNCS(mprotect))
 AC_CHECK_HEADERS(alloca.h)
 
-#LDFLAGS="`echo $GPL_FLAG $LDFLAGS | sed 's,gcl.script,../unixport/gcl.script,g'`"
-LDFLAGS="`echo $GPL_FLAG $LDFLAGS`"
-#AM_LDFLAGS = $LDFLAGS
 BASE_LDFLAGS="$LDFLAGS"
 LDFLAGS=""
 AC_SUBST(BASE_LDFLAGS)
