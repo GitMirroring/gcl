@@ -95,7 +95,8 @@
       *ld-libs* (concatenate 'string "-l" #+ansi-cl "ansi_" "gcl" #+gprof "_gprof" " " *ld-libs*)
       *opt-three* @LI_OPT_THREE@
       *opt-two* @LI_OPT_TWO@
-      *init-lsp* @LI_INIT_LSP@)
+      *init-lsp* @LI_INIT_LSP@
+      si::*info-paths* (cons "@prefix@/share/info/" si::*info-paths*))
 
 (import 'si::(clines defentry defcfun object void int double quit bye gbc system
 		     commonp *break-on-warnings* make-char char-bits char-font
