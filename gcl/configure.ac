@@ -854,7 +854,8 @@ esac
 AC_MSG_CHECKING([for hugepagewidth])
 j=""
 if test -e /proc/meminfo ; then
-   j=`awk '/^Hugepagesize:/ {if ($3!="kB") next;j=1;for (i=0;i<20 && j!=$2;i++) j=j*2;if (j==$2) printf("%d\n",i+10)}'  /proc/meminfo`
+   j=`awk '/^Hugepagesize:/ {if ($3!="kB") next;j=1;for (i=0;i<20 && j!=$2;i++) j=j*2;
+   if (j==$2) {if (i>11) i=11;printf("%d\n",i+10)}}'  /proc/meminfo`
 fi
 if test "$j" != "" ; then
    AC_MSG_RESULT([$j])
