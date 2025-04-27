@@ -218,7 +218,7 @@ GCL specific: The compiler defines a Lisp function whose body consists of a
 calling sequence to the C language function specified by C-FUNCTION.  The
 interpreter ignores this form.  The ARG-TYPES specifies the C types of the
 arguments which C-FUNCTION requires.  The list of allowed types is (object
-char int float double string).  Code will be produced to coerce from a lisp
+char int long float double string).  Code will be produced to coerce from a lisp
 object to the appropriate type before passing the argument to the C-FUNCTION.
 The c-function should be of the form (c-result-type c-fname) where
 c-result-type is a member of (void object char int float double string).
