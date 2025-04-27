@@ -315,6 +315,9 @@
 /* The size of 'short', as computed by sizeof. */
 #undef SIZEOF_SHORT
 
+/* The size of 'size_t', as computed by sizeof. */
+#undef SIZEOF_SIZE_T
+
 /* staticly linked images */
 #undef STATIC_LINKING
 
