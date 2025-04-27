@@ -53,9 +53,6 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <errno.h> 
 
-static void write_timeout_error();
-static void connection_failure();
-
 #ifdef __MINGW32__
 /* Keep track of socket initialisations */
 int w32_socket_initialisations = 0;
@@ -554,15 +551,13 @@ DEFUN("CLEAR-CONNECTION-STATE",object,fSclear_connection_state,
 #endif
 
 static void
-write_timeout_error(s)
-     char *s;
-{FEerror("Write timeout: ~s",1,make_simple_string(s));
+write_timeout_error(char *s) {
+  FEerror("Write timeout: ~s",1,make_simple_string(s));
 }
 
 static void
-connection_failure(s)
-     char *s;
-{FEerror("Connect failure: ~s",1,make_simple_string(s));
+connection_failure(char *s) {
+  FEerror("Connect failure: ~s",1,make_simple_string(s));
 }
 
 

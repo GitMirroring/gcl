@@ -108,9 +108,8 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 	If r > 36 or i is not a digit, -1 is returned.
 */
 int
-digitp(i, r)
-int i, r;
-{
+digitp(int i,int r) {
+
 	if ('0' <= i && i <= '9' && 1 < r && i < '0' + r)
 		return(i - '0');
 	if ('A' <= i && 10 < r && r <= 36 && i < 'A' + (r - 10))
@@ -149,9 +148,8 @@ int i, r;
 @)
 
 bool
-char_eq(x, y)
-object x, y;
-{
+char_eq(object x,object y) {
+
 	return(char_code(x) == char_code(y)
 	    && char_bits(x) == char_bits(y)
 	    && char_font(x) == char_font(y));
@@ -186,9 +184,8 @@ object x, y;
 
 
 static int
-char_cmp(x, y)
-object x, y;
-{
+char_cmp(object x,object y) {
+
 	if (char_font(x) < char_font(y))
 		return(-1);
 	if (char_font(x) > char_font(y))
@@ -205,9 +202,8 @@ object x, y;
 }
 
 static void
-Lchar_cmp(s, t)
-int s, t;
-{
+Lchar_cmp(int s,int t) {
+
 	int narg, i;
 
 	narg = vs_top - vs_base;
@@ -232,9 +228,8 @@ LFD(Lchar_ge)() { Lchar_cmp(-1, 0); }
 
 
 bool
-char_equal(x, y)
-object x, y;
-{
+char_equal(object x,object y) {
+
 	int i, j;
 
 	i = char_code(x);
@@ -273,9 +268,8 @@ object x, y;
 
 
 static int
-char_compare(x, y)
-object x, y;
-{
+char_compare(object x,object y) {
+
 	int i, j;
 
 	i = char_code(x);
@@ -293,9 +287,8 @@ object x, y;
 }
 
 static void
-Lchar_compare(s, t)
-int s, t;
-{
+Lchar_compare(int s,int t) {
+
 	int narg, i;
 
 	narg = vs_top - vs_base;
@@ -320,9 +313,8 @@ LFD(Lchar_not_lessp)()    { Lchar_compare(-1, 0); }
 
 
 object
-coerce_to_character(x)
-object x;
-{
+coerce_to_character(object x) {
+
 BEGIN:
 	switch (type_of(x)) {
 	case t_fixnum:
@@ -408,9 +400,8 @@ BEGIN:
 @)
 
 int
-digit_weight(w, r)
-int w, r;
-{
+digit_weight(int w,int r) {
+
 	if (r < 2 || r > 36 || w < 0 || w >= r)
 		return(-1);
 	if (w < 10)

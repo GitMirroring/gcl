@@ -106,9 +106,7 @@ object LSP_string;
 object sSAignore_eof_on_terminal_ioA;
 
 static bool
-feof1(fp)
-FILE *fp;
-{
+feof1(FILE *fp) {
 
 #ifdef USE_READLINE
   if (readline_on && fp==rl_instream && rl_line_buffer && *rl_line_buffer==EOF)
@@ -199,9 +197,8 @@ DEFUN("TERMINAL-INPUT-STREAM-P",object,fSterminal_input_stream_p,SI,1,1,NONE,OO,
 	but only checks the mode of the stream (sm_mode).
 */
 static bool
-input_stream_p(strm)
-object strm;
-{
+input_stream_p(object strm) {
+
 BEGIN:
 	switch (strm->sm.sm_mode) {
 	case smm_input:
@@ -256,9 +253,8 @@ BEGIN:
 	but only checks the mode of the stream (sm_mode).
 */
 static bool
-output_stream_p(strm)
-object strm;
-{
+output_stream_p(object strm) {
+
 BEGIN:
 	switch (strm->sm.sm_mode) {
 	case smm_input:
@@ -306,9 +302,8 @@ BEGIN:
 }
 
 static object
-stream_element_type(strm)
-object strm;
-{
+stream_element_type(object strm) {
+
 	object x;
 
 BEGIN:
@@ -656,9 +651,8 @@ fLinteractive_stream_p(object x) {
 #endif
 
 object
-make_two_way_stream(istrm, ostrm)
-object istrm, ostrm;
-{
+make_two_way_stream(object istrm,object ostrm) {
+
 	object strm;
 
 	strm = alloc_object(t_stream);
@@ -673,9 +667,8 @@ object istrm, ostrm;
 }
 
 static object
-make_echo_stream(istrm, ostrm)
-object istrm, ostrm;
-{
+make_echo_stream(object istrm,object ostrm) {
+
 	object strm;
 
 	strm = make_two_way_stream(istrm, ostrm);
@@ -764,9 +757,8 @@ DEFUN("STRING-OUTPUT-STREAM-P",object,fSstring_output_stream_p,SI,1,1,NONE,OO,OO
 }
 
 object
-make_string_output_stream(line_length)
-int line_length;
-{
+make_string_output_stream(int line_length) {
+
 	object strng, strm;
 	vs_mark;
 
@@ -786,9 +778,8 @@ int line_length;
 }
 
 static object
-get_output_stream_string(strm)
-object strm;
-{
+get_output_stream_string(object strm) {
+
 	object strng;
 
 	strng = copy_simple_string(STRING_STREAM_STRING(strm));
@@ -803,9 +794,8 @@ cannot_read(object);
 static void
 closed_stream(object);
 int
-readc_stream(strm)
-object strm;
-{
+readc_stream(object strm) {
+
 	int c;
 
 BEGIN:
@@ -1515,9 +1505,8 @@ BEGIN:
 }
 
 int
-file_position(strm)
-object strm;
-{
+file_position(object strm) {
+
 BEGIN:
 	switch (strm->sm.sm_mode) {
 	case smm_input:
@@ -1564,10 +1553,8 @@ BEGIN:
 }
 
 int
-file_position_set(strm, disp)
-object strm;
-int disp;
-{
+file_position_set(object strm,int disp) {
+
 BEGIN:
 	switch (strm->sm.sm_mode) {
 	case smm_socket:
@@ -1615,9 +1602,8 @@ BEGIN:
 }
 
 static int
-file_length(strm)
-object strm;
-{
+file_length(object strm) {
+
  BEGIN:
 	switch (strm->sm.sm_mode) {
 	case smm_input:
@@ -2243,30 +2229,22 @@ LFD(siLcopy_stream)()
 }
 
 static void
-cannot_open(fn)
-object fn;
-{
+cannot_open(object fn) {
 	FILE_ERROR(fn,"Cannot open");
 }
 
 static void
-cannot_create(fn)
-object fn;
-{
+cannot_create(object fn) {
 	FILE_ERROR(fn,"Cannot create");
 }
 
 static void
-cannot_read(strm)
-object strm;
-{
+cannot_read(object strm) {
 	FEerror("Cannot read the stream ~S.", 1, strm);
 }
 
 static void
-cannot_write(strm)
-object strm;
-{
+cannot_write(object strm) {
 	FEerror("Cannot write to the stream ~S.", 1, strm);
 }
 
@@ -2285,9 +2263,8 @@ FFN(siLuser_stream_state)()
 #endif
 
 static void
-closed_stream(strm)
-object strm;
-{
+closed_stream(object strm) {
+
   if (!GET_STREAM_FLAG(strm,gcl_sm_had_error))
     {
         SET_STREAM_FLAG(strm,gcl_sm_had_error,1);
@@ -2308,10 +2285,8 @@ object strm;
    */
 
 object
-coerce_stream(strm,out)
-object strm;
-int out;
-{
+coerce_stream(object strm,int out) {
+
  BEGIN:
  if (type_of(strm) != t_stream)
    FEwrong_type_argument(sLstream, strm);
@@ -2416,10 +2391,8 @@ DEFUN("FREAD",object,fSfread,SI,4,4,NONE,OO,OO,OO,OO,
   of the buffer may be changed.
  */
 static void
-putCharGclSocket(strm,ch)
-  object strm;
-  int ch;
-{
+putCharGclSocket(object strm,int ch) {
+
   object bufp = SOCKET_STREAM_BUFFER(strm);
 
  AGAIN:
@@ -2435,10 +2408,8 @@ putCharGclSocket(strm,ch)
 }
 
 static void
-gclFlushSocket(strm)
-     object strm;
+gclFlushSocket(object strm) {
 
-{
     int fd = SOCKET_STREAM_FD(strm);
     object bufp = SOCKET_STREAM_BUFFER(strm);
     int i=0;
@@ -2470,14 +2441,8 @@ gclFlushSocket(strm)
 
 static
 object
-make_socket_stream(fd,mode,server,host,port,async)
-int fd;
-enum gcl_sm_flags mode;
-object server;
-object host;
-object port;
-object async;
-{
+make_socket_stream(int fd,enum gcl_sm_flags mode,object server,object host,object port,object async) {
+
   object x;
   if (fd < 0 )
    {

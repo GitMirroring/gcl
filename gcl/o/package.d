@@ -39,9 +39,8 @@ void check_type_or_symbol_string_package(object *);
 
 
 static bool
-member_string_eq(x, l)
-object x, l;
-{
+member_string_eq(object x,object l) {
+
 	for (;  consp(l);  l = l->c.c_cdr)
 		if (string_eq(x, l->c.c_car))
 			return(TRUE);
@@ -126,10 +125,7 @@ suitable_package_size(ufixnum n)
 	or package names i.e. strings or symbols.
 */
 static object
-make_package(n, ns, ul,isize,esize)
-object n, ns, ul;
-int isize,esize;
-{
+make_package(object n,object ns,object ul,int isize,int esize) {
 
 	object x, y;
 	int i;
@@ -199,10 +195,7 @@ static void
 use_package(object,object);
 
 static object
-in_package(n, ns, ul,isize,esize)
-object n, ns, ul;
-int isize,esize;
-{
+in_package(object n,object ns,object ul,int isize,int esize) {
 
 	object x, y;
 	vs_mark;
@@ -237,9 +230,7 @@ L:
 }
 
 static object
-rename_package(x, n, ns)
-object x, n, ns;
-{
+rename_package(object x,object n,object ns) {
 
 	object y;
 	vs_mark;
@@ -278,9 +269,8 @@ object x, n, ns;
 	If not so, an error is signaled.
 */
 object
-find_package(n)
-object n;
-{
+find_package(object n) {
+
 	struct package *p;
 
 	check_package_designator(n);
@@ -291,9 +281,8 @@ object n;
 }
 
 static object
-coerce_to_package(p)
-object p;
-{
+coerce_to_package(object p) {
+
 	object pp;
 
 	if (type_of(p) == t_package)
@@ -327,9 +316,9 @@ current_package()
 */
 
 int
-pack_hash(x)
-object x;
-{unsigned int h=0;
+pack_hash(object x) {
+
+  unsigned int h=0;
   x=coerce_to_string(x);
   {int len=VLEN(x);
   char *s;
@@ -393,9 +382,8 @@ DEFUN("PACKAGE-EXTERNAL_SIZE",object,fSpackage_external_size,SI,1,1,NONE,IO,OO,O
 	Intern(st, p) interns string st in package p.
 */
 object
-intern(st, p)
-object st, p;
-{
+intern(object st,object p) {
+
 	int j;
 	object x, *ip, *ep, l, ul;
 	vs_mark;
@@ -450,9 +438,8 @@ object st, p;
 	Find_symbol(st, p) searches for string st in package p.
 */
 object
-find_symbol(st, p)
-object st, p;
-{
+find_symbol(object st,object p) {
+
 	int j;
 	object *ip, *ep, l, ul;
 	{BEGIN_NO_INTERRUPT;
@@ -483,9 +470,8 @@ object st, p;
 }}
 
 static bool
-unintern(s, p)
-object s, p;
-{
+unintern(object s,object p) {
+
 	object x, y, l, *lp;
 	int j;
 	{BEGIN_NO_INTERRUPT;
@@ -533,9 +519,8 @@ UNINTERN:
 }}
 
 void
-export(s, p)
-object s, p;
-{
+export(object s,object p) {
+
 	object x;
 	int j;
 	object *ep, *ip, l;
@@ -578,9 +563,8 @@ BEGIN:
 }
 
 static void
-unexport(s, p)
-object s, p;
-{
+unexport(object s,object p) {
+
 	object x, *ep, *ip;
 	int j;
 
@@ -609,9 +593,8 @@ object s, p;
 }
 
 void
-import(s, p)
-object s, p;
-{
+import(object s,object p) {
+
 	object x;
 	int j;
 	object *ip;
@@ -635,9 +618,8 @@ object s, p;
 }
 
 static void
-shadowing_import(s, p)
-object s, p;
-{
+shadowing_import(object s,object p) {
+
 	object x, *ip;
 
 	x=find_symbol(s, p);
@@ -668,9 +650,8 @@ object s, p;
 }
 
 static void
-shadow(s, p)
-object s, p;
-{
+shadow(object s,object p) {
+
 	int j;
 	object *ip,x;
 
@@ -692,9 +673,8 @@ object s, p;
 }
 
 static void
-use_package(x0, p)
-object x0, p;
-{
+use_package(object x0,object p) {
+
 	object x = x0;
 	int i;
 	object y, l;
@@ -735,9 +715,8 @@ object x0, p;
 }
 
 static void
-unuse_package(x0, p)
-object x0, p;
-{
+unuse_package(object x0,object p) {
+
 	object x = x0;
 
  BEGIN:

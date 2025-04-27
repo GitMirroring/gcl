@@ -55,9 +55,9 @@ dblrem(int a, int b, int mod)
 #else
 
 static int
-dblrem(a,b,mod)
-int a,b,mod;
-{int h,sign;
+dblrem(int a,int b,int mod) {
+
+ int h,sign;
  if (a<0) 
    {a= -a; sign= (b<0)? (b= -b,1) :-1;}
  else { sign= (b<0) ? (b= -b,-1) : 1;}

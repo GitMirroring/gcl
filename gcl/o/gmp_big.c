@@ -526,16 +526,16 @@ integer_quotient_remainder_1(object x, object y, object *qp, object *rp,fixnum d
 
     if (qp) {
       if (rp) {
-	void (*f)()=d<0 ? mpz_fdiv_qr : (d>0 ? mpz_cdiv_qr : mpz_tdiv_qr);
+	void (*f)(__mpz_struct *,__mpz_struct *,__mpz_struct *,__mpz_struct *)=d<0 ? mpz_fdiv_qr : (d>0 ? mpz_cdiv_qr : mpz_tdiv_qr);
 	f(MP(big_fixnum3),MP(big_fixnum4),b1,b2);
 	*rp=maybe_replace_big(big_fixnum4);
       } else {
-	void (*f)()=d<0 ? mpz_fdiv_q : (d>0 ? mpz_cdiv_q : mpz_tdiv_q);
+	void (*f)(__mpz_struct *,__mpz_struct *,__mpz_struct *)=d<0 ? mpz_fdiv_q : (d>0 ? mpz_cdiv_q : mpz_tdiv_q);
 	f(MP(big_fixnum3),b1,b2);
       }
       *qp=maybe_replace_big(big_fixnum3);
     } else if (rp) {
-      void (*f)()=d<0 ? mpz_fdiv_r : (d>0 ? mpz_cdiv_r : mpz_tdiv_r);
+      void (*f)(__mpz_struct *,__mpz_struct *,__mpz_struct *)=d<0 ? mpz_fdiv_r : (d>0 ? mpz_cdiv_r : mpz_tdiv_r);
       f(MP(big_fixnum4),b1,b2);
       *rp=maybe_replace_big(big_fixnum4);
     }

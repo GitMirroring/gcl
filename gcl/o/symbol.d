@@ -40,9 +40,8 @@ odd_plist(object);
 object siSpname;
 
 object
-make_symbol(st)
-object st;
-{
+make_symbol(object st) {
+
 	object x;
 
 	{BEGIN_NO_INTERRUPT;	
@@ -70,9 +69,8 @@ object st;
 
 
 object
-make_ordinary(s)
-char *s;
-{
+make_ordinary(char *s) {
+
 	int j;
 	object x, l, *ep;
 	vs_mark;
@@ -96,10 +94,8 @@ char *s;
 	with initial value v in lisp package.
 */
 object
-make_special(s, v)
-char *s;
-object v;
-{
+make_special(char *s,object v) {
+
 	object x;
 
 	x = make_ordinary(s);
@@ -113,10 +109,8 @@ object v;
 	with constant value v in lisp package.
 */
 object
-make_constant(s, v)
-char *s;
-object v;
-{
+make_constant(char *s,object v) {
+
 	object x;
 
 	x = make_ordinary(s);
@@ -134,9 +128,8 @@ object v;
 
 
 object
-make_si_ordinary(s)
-char *s;
-{
+make_si_ordinary(char *s) {
+
 	int j;
 	object x, l, *ep;
 	vs_mark;
@@ -161,9 +154,8 @@ char *s;
 }
 
 object
-make_gmp_ordinary(s)
-char *s;
-{
+make_gmp_ordinary(char *s) {
+
         int i,j;
 	object x, l, *ep;
 	vs_mark;
@@ -196,10 +188,8 @@ char *s;
 	with initial value v in system package.
 */
 object
-make_si_special(s, v)
-char *s;
-object v;
-{
+make_si_special(char *s,object v) {
+
 	object x;
 
 	x = make_si_ordinary(s);
@@ -213,25 +203,23 @@ object v;
 	with constant value v in system package.
 */
 object
-make_si_constant(s, v)
-char *s;
-object v;
-{
+make_si_constant(char *s,object v) {
+
 	object x;
 
 	x = make_si_ordinary(s);
 	x->s.s_stype = (short)stp_constant;
 	x->s.s_dbind = v;
 	return(x);
+
 }
 
 /*
 	Make_keyword(s) makes a keyword from C string s.
 */
 object
-make_keyword(s)
-char *s;
-{
+make_keyword(char *s) {
+
 	int j;
 	object x, l, *ep;
 	vs_mark;
@@ -254,9 +242,8 @@ char *s;
 }
 
 object
-symbol_value(s)
-object s;
-{
+symbol_value(object s) {
+
 /*
 	if (type_of(s) != t_symbol)
 		FEinvalid_variable("~S is not a symbol.", s);
@@ -267,9 +254,7 @@ object s;
 }
 
 object
-getf(place, indicator, deflt)
-object place, indicator, deflt;
-{
+getf(object place,object indicator,object deflt) {
 
 	object l;
 #define cendp(obj) ((!consp(obj)))
@@ -285,9 +270,8 @@ object place, indicator, deflt;
 }
 
 object
-get(s, p, d)
-object s, p, d;
-{
+get(object s,object p,object d) {
+
 	if (type_of(s) != t_symbol)
 		not_a_symbol(s);
 	return(getf(s->s.s_plist, p, d));
@@ -298,9 +282,8 @@ object s, p, d;
 	and returns the resulting property list.
 */
 object
-putf(p, v, i)
-object p, v, i;
-{
+putf(object p,object v,object i) {
+
 	object l;
 
 	for (l = p;  !cendp(l);  l = l->c.c_cdr->c.c_cdr) {
@@ -316,9 +299,8 @@ object p, v, i;
 }
 
 object
-putprop(s, v, p)
-object s, v, p;
-{
+putprop(object s,object v,object p) {
+
 	if (type_of(s) != t_symbol)
 		not_a_symbol(s);
 	s->s.s_plist = putf(s->s.s_plist, v, p);
@@ -350,9 +332,8 @@ fSsputprop(object x,object y,object z) {
 		FALSE	otherwise.
 */
 bool
-remf(p, i)
-object *p, i;
-{
+remf(object *p,object i) {
+
 	object l0 = *p;
 
 	for(;  !endp(*p);  p = &(*p)->c.c_cdr->c.c_cdr) {
@@ -367,9 +348,8 @@ object *p, i;
 }
 
 object
-remprop(s, p)
-object s, p;
-{
+remprop(object s,object p) {
+
 	if (type_of(s) != t_symbol)
 		not_a_symbol(s);
 	if (remf(&s->s.s_plist, p))
@@ -379,9 +359,8 @@ object s, p;
 }
 
 bool
-keywordp(s)
-object s;
-{
+keywordp(object s) {
+
 	return(type_of(s) == t_symbol && s->s.s_hpack == keyword_package);
 /*
 	if (type_of(s) != t_symbol) {
@@ -445,11 +424,11 @@ DEFUN("SYMBOL-STRING",object,fSsymbol_string,SI,1,1,NONE,OO,OO,OO,OO,(object sym
 
 
 object
-symbol_name(x)
-object x;
-{
+symbol_name(object x) {
+
  if (type_of(x)!=t_symbol) FEwrong_type_argument(sLsymbol,x);
  return(x->s.s_name);
+
 }
 
 DEFUN("SYMBOL-NAME",object,fLsymbol_name,LISP,1,1,NONE,OO,OO,OO,OO,(object sym),"") {
@@ -674,9 +653,7 @@ LFD(siLputprop)()
 
 
 static void
-odd_plist(place)
-object place;
-{
+odd_plist(object place) {
 	FEerror("The length of the property-list ~S is odd.", 1, place);
 }
 

@@ -32,9 +32,8 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 
 object
-car(x)
-object x;
-{
+car(object x) {
+
 	if (x == Cnil)
 		return(x);
 	if (consp(x))
@@ -44,9 +43,8 @@ object x;
 }
 
 object
-cdr(x)
-object x;
-{
+cdr(object x) {
+
 	if (x == Cnil)
 		return(x);
 	if (consp(x))
@@ -192,9 +190,8 @@ append(object x, object y) {
 }
 
 object
-copy_list(x)
-object x;
-{
+copy_list(object x) {
+
 	object y;
 
 	if (!consp(x))
@@ -277,10 +274,10 @@ stack_list(void) {
 
 }
  
-object on_stack_make_list(n)
-int n;
-{ object res=(object) alloca_val;
- struct cons *p = (struct cons *)res;
+object on_stack_make_list(int n) {
+
+  object res=(object) alloca_val;
+  struct cons *p = (struct cons *)res;
  if (n<=0) return Cnil;
   TOP:
 #ifdef WIDE_CONS
@@ -315,9 +312,8 @@ DEFUN("RPLACD",object,fLrplacd,LISP,2,2,NONE,OO,OO,OO,OO,(object o,object d),"")
 
  
 void
-check_proper_list(alist)
-object alist;
-{
+check_proper_list(object alist) {
+
     object v;
     /*
     if (alist == Cnil)
@@ -336,9 +332,7 @@ DEFUN("PROPER-LISTP",object,fSproper_listp,SI,1,1,NONE,OO,OO,OO,OO,(object x),""
 
 
 bool
-member_eq(x, l)
-object x, l;
-{
+member_eq(object x,object l) {
 
 	for (;  consp(l);  l = l->c.c_cdr)
 		if (x == l->c.c_car)
@@ -347,9 +341,8 @@ object x, l;
 }
 
 void
-delete_eq(x, lp)
-object x, *lp;
-{
+delete_eq(object x,object *lp) {
+
 	for (;  consp(*lp);  lp = &(*lp)->c.c_cdr)
 		if ((*lp)->c.c_car == x) {
 			*lp = (*lp)->c.c_cdr;

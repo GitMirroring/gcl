@@ -261,9 +261,8 @@ setup_READ()
 }
 
 object
-read_char(in)
-object in;
-{
+read_char(object in) {
+
 	return(code_char(readc_stream(in)));
 }
 
@@ -286,9 +285,8 @@ read_char_no_echo(object in) {
 #define	read_char(in)	code_char(readc_stream(in))
 
 static void
-unread_char(c, in)
-object c, in;
-{
+unread_char(object c,object in) {
+
 	if (type_of(c) != t_character)
 		FEwrong_type_argument(sLcharacter, c);
 	unreadc_stream(char_code(c), in);
@@ -299,10 +297,8 @@ object c, in;
 	When pt is TRUE, preceeding whitespaces are ignored.
 */
 object
-peek_char(pt, in)
-bool pt;
-object in;
-{
+peek_char(bool pt,object in) {
+
 	object c;
 
 	if (pt) {
@@ -320,9 +316,8 @@ object in;
 		
 
 static object
-read_object_recursive(in)
-object in;
-{
+read_object_recursive(object in) {
+
 	VOL object x;
 	bool e;
 
@@ -388,9 +383,8 @@ L:
 
 
 object
-read_object_non_recursive(in)
-object in;
-{
+read_object_non_recursive(object in) {
+
 	VOL object x;
 	bool e;
 	object old_READtable;
@@ -509,9 +503,8 @@ L:
 */
 
 object
-read_object(in)
-object in;
-{
+read_object(object in) {
+
 	object x;
 	object c=Cnil;
 	enum chattrib a;
@@ -801,10 +794,8 @@ ENDUP:
 	Delim is not included in the string but discarded.
 */
 static void
-read_string(delim, in)
-int delim;
-object in;
-{
+read_string(int delim,object in) {
+
 	int i;
 	object c;
 
@@ -828,9 +819,8 @@ object in;
 	and places it in token_buffer.
 */
 static void
-read_constituent(in)
-object in;
-{
+read_constituent(object in) {
+
 	int i, j;
 	object c;
 
@@ -2159,9 +2149,8 @@ DEFUNM("PARSE-INTEGER-INT",object,fSparse_integer_int,SI,5,5,NONE,OO,OO,IO,OO,
 /* } */
 
 object
-read_char1(strm,eof)
-object strm,eof;
-{
+read_char1(object strm,object eof) {
+
   if (strm == Cnil)
     strm = symbol_value(sLAstandard_inputA);
   else if (strm == Ct)
@@ -2340,9 +2329,8 @@ DEFUN("SET-READTABLE-CASE",object,fSset_readtable_case,SI,2,2,NONE,OO,OO,OO,OO,(
 @)
 
 static object
-string_to_object(x)
-object x;
-{
+string_to_object(object x) {
+
 	object in;
 	vs_mark;
 

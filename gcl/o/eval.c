@@ -704,7 +704,7 @@ APPLICATION:
 		ihs_check;
 		ihs_push(form);
 		ihs_top->ihs_base = lex_env;
-		((void (*)())fun->s.s_sfdef)(MMcdr(form));
+		((void (*)(object))fun->s.s_sfdef)(MMcdr(form));
 		CHECK_AVMA;
 		ihs_pop();
 		return;

@@ -128,9 +128,8 @@ char *result[MAXRES];
 int nres;
 
 void
-error(s)
-char *s;
-{
+error(char *s) {
+
 	printf("Error in line %d: %s.\n", line, s);
 	exit(0);
 }
@@ -165,9 +164,8 @@ nextc()
 }
 
 void
-unreadc(c)
-int c;
-{
+unreadc(int c) {
+
 	if (c == '\n')
 		--line;
 	else if (c == '\t')
@@ -176,9 +174,8 @@ int c;
 }
 
 void
-put_tabs(n)
-int n;
-{
+put_tabs(int n) {
+
 	int i;
 
 	for (i = 0;  i < n;  i++)
@@ -186,9 +183,8 @@ int n;
 }
 
 void
-pushc(c)
-int c;
-{
+pushc(int c) {
+
 	if (poolp >= &pool[POOLSIZE])
 		error("buffer bool overflow");
 	*poolp++ = c;

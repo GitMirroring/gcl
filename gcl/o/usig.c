@@ -178,7 +178,7 @@ DEFUN("FEENABLEEXCEPT",object,fSfeenableexcept,SI,1,1,NONE,II,OO,OO,OO,(fixnum x
 
 DEFUN("FEDISABLEEXCEPT",object,fSfedisableexcept,SI,0,0,NONE,IO,OO,OO,OO,(void),"") {
 
-  fixnum x;
+  fixnum x=0;
 
 #ifdef HAVE_FEENABLEEXCEPT
 

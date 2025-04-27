@@ -341,7 +341,7 @@ call_proc_new(object sym,ufixnum clp,ufixnum vld,void **link,ufixnum argd,object
   }
 
   if (sSAprofilingA->s.s_dbind!=Cnil)
-    sSin_call->s.s_gfdef->fun.fun_self(sym);
+    ((object (*)(object))sSin_call->s.s_gfdef->fun.fun_self)(sym);
 
   if (fas) {
 
