@@ -719,6 +719,10 @@ LDFLAGS
 CFLAGS
 CC
 PRELINK_CHECK
+AMM_LIBBOOT_FALSE
+AMM_LIBBOOT_TRUE
+LF
+FF
 host_os
 host_vendor
 host_cpu
@@ -807,6 +811,7 @@ ac_user_opts='
 enable_option_checking
 enable_silent_rules
 with_lispdir
+enable_libboot
 enable_machine
 enable_widecons
 enable_safecdr
@@ -1478,6 +1483,7 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-silent-rules   less verbose build output (undo: "make V=1")
   --disable-silent-rules  verbose build output (undo: "make V=0")
+put bootstrap code in shared library to be discarded
   --enable-machine=XXXX will force the use of one of the definitions in h/XXXX.defs
   --enable-widecons will use a three word cons with simplified typing
   --enable-safecdr will protect cdr from immfix and speed up type processing
@@ -4148,6 +4154,38 @@ case $canonical in
     sparc-sun-solaris*) use=solaris;;
     i?86-pc-solaris*) use=solaris-i386;;
 esac
+
+# Check whether --enable-libboot was given.
+if test ${enable_libboot+y}
+then :
+  enableval=$enable_libboot; libboot=$enableval
+else case e in #(
+  e) libboot="yes" ;;
+esac
+fi
+
+
+if test "$use" = "gnuwin95" ; then
+   FF=o/firstfile.o
+
+   LF=o/lastfile.o
+
+   libboot="no"
+fi
+
+ if test "$libboot" = "yes"; then
+  AMM_LIBBOOT_TRUE=
+  AMM_LIBBOOT_FALSE='#'
+else
+  AMM_LIBBOOT_TRUE='#'
+  AMM_LIBBOOT_FALSE=
+fi
+
+if test "$libboot" = "yes" ; then
+
+printf "%s\n" "#define USE_LIBBOOT 1" >>confdefs.h
+
+fi
 
 # Check whether --enable-machine was given.
 if test ${enable_machine+y}
@@ -11884,6 +11922,10 @@ else
   am__EXEEXT_FALSE=
 fi
 
+if test -z "${AMM_LIBBOOT_TRUE}" && test -z "${AMM_LIBBOOT_FALSE}"; then
+  as_fn_error $? "conditional \"AMM_LIBBOOT\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
 if test -z "${AMDEP_TRUE}" && test -z "${AMDEP_FALSE}"; then
   as_fn_error $? "conditional \"AMDEP\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5

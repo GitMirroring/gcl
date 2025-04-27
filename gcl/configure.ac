@@ -71,6 +71,22 @@ case $canonical in
     i?86-pc-solaris*) use=solaris-i386;;
 esac
 
+AC_ARG_ENABLE([libboot],[put bootstrap code in shared library to be discarded],
+	      [libboot=$enableval],[libboot="yes"])
+
+if test "$use" = "gnuwin95" ; then
+   FF=o/firstfile.o
+   AC_SUBST(FF)
+   LF=o/lastfile.o
+   AC_SUBST(LF)
+   libboot="no"
+fi
+
+AM_CONDITIONAL([AMM_LIBBOOT],[test "$libboot" = "yes"])
+if test "$libboot" = "yes" ; then
+   AC_DEFINE([USE_LIBBOOT],[1],[boot code in shared library])
+fi
+
 AC_ARG_ENABLE([machine],[  --enable-machine=XXXX will force the use of one of the definitions in h/XXXX.defs],
 	      [echo enable_machine=$enableval ; use=$enableval])
 

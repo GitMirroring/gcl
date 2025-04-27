@@ -582,7 +582,7 @@ void
 init_boot(void) {
 
   char *sysd=getenv("GCL_SYSDIR"),*d=sysd ? sysd : kcl_self;
-#ifndef __CYGWIN__
+#ifdef USE_LIBBOOT
   void *v,*q;
 #endif
   char *z,*s="libboot.so";
@@ -592,14 +592,14 @@ init_boot(void) {
   sSAoptimize_maximum_pagesA->s.s_dbind=Cnil;
   z=alloca(n);
   snprintf(z,n,"%-*.*s%s",(int)m,(int)m,d,s);
-#ifndef __CYGWIN__
+#ifdef USE_LIBBOOT
   if (!(v=dlopen(z,RTLD_LAZY|RTLD_GLOBAL)))
     printf("%s\n",dlerror());
   if (!(q=dlsym(v,"gcl_init_boot")))
     printf("%s\n",dlerror());
 #endif
   initializing_boot=1;
-#ifdef __CYGWIN__
+#ifndef USE_LIBBOOT
   {
     extern void gcl_init_boot(void);
     gcl_init_boot();

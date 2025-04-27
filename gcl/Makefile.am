@@ -23,7 +23,7 @@ gcltkdocdir=$(docdir)/gcl-tk
 
 # primaries
 
-noinst_PROGRAMS=bin/dpp o/grab_defs
+noinst_PROGRAMS=bin/dpp$(EXEEXT) o/grab_defs$(EXEEXT)
 noinst_LIBRARIES=lib/libbase_gcl.a
 
 my_unixport_PROGRAMS=unixport/saved_gcl unixport/saved_ansi_gcl
@@ -31,7 +31,7 @@ my_unixport_LIBRARIES=unixport/libgcl.a unixport/libansi_gcl.a
 bin_SCRIPTS=bin/gcl
 check_SCRIPTS=sb_ansi-tests/test_results sb_bench/timing_results
 info_TEXINFOS=info/gcl.texi info/gcl-si.texi
-my_unixport_DATA=$(addprefix unixport/,init_raw.lsp gcl.script libboot.so \
+my_unixport_DATA=$(LIBBOOTSO) $(addprefix unixport/,init_raw.lsp gcl.script \
 				       gcl_cmpnopt_gcl.lsp gcl_cmpnopt_ansi_gcl.lsp)
 my_h_DATA=h/cmpinclude.h
 my_cmpnew_DATA=sb_cmpnew/gcl_collectfn.o cmpnew/gcl_lfun_list.lsp cmpnew/gcl_cmpopt.lsp
@@ -47,6 +47,12 @@ lisp_DATA=elisp/add-default.el elisp/ansi-doc.el elisp/dbl.el elisp/doc-to-texi.
 dist_noinst_DATA=
 
 # conditionals
+
+if AMM_LIBBOOT
+LIBBOOTSO=unixport/libboot.so
+else
+BOOT_C=o/boot.c
+endif
 
 if AMM_GPROF
 
@@ -165,7 +171,7 @@ endif
 BUILT_SOURCES=$(BUILT_H) $(BUILT_C)
 CLEANFILES=$(BUILT_SOURCES) $(INI_FILES) o/boot.ini
 
-lib_libbase_gcl_a_SOURCES=$(C_SRC) $(BASE_H) $(CMPI_H) $(ARCHT_H)
+lib_libbase_gcl_a_SOURCES=$(C_SRC) $(BASE_H) $(CMPI_H) $(ARCHT_H) $(BOOT_C)
 nodist_lib_libbase_gcl_a_SOURCES=$(BUILT_C)
 lib_libgprof_a_SOURCES=o/gprof.c
 lib_libgprof_a_CFLAGS=$(AM_CFLAGS) -fno-omit-frame-pointer -pg
@@ -237,7 +243,7 @@ $(addprefix unixport/saved_,gcl ansi_gcl gcl_gprof ansi_gcl_gprof):\
 unixport/saved_%: unixport/raw_% # rebuild these only when out of date
 
 unixport/saved_%: | unixport/raw_% unixport/gcl_cmpnopt_%.lsp \
-		    unixport/libboot.so unixport/init_raw.lsp
+		    $(LIBBOOTSO) unixport/init_raw.lsp
 	rm -rf sb_$* # FIXME sandbox ugliness for parallel builds
 	mkdir sb_$*
 	cd sb_$* && \
@@ -245,14 +251,17 @@ unixport/saved_%: | unixport/raw_% unixport/gcl_cmpnopt_%.lsp \
 		ln -snf gcl_cmpnopt_$*.lsp ../unixport/gcl_cmpnopt.lsp && \
 		mkdir h && \
 		ln -snf ../../h/cmpinclude.h h/ && \
-		echo "(system:save-system \"../$@\")" | cat ../unixport/init_raw.lsp - | \
+		touch prof_init.lsp && \
+		( ! echo $@ | grep -q _gprof$$ || echo "(setq compiler::*default-prof-p* t)" >prof_init.lsp ) && \
+		echo "(system:save-system \"../$@\")" | \
+		cat ../unixport/init_raw.lsp prof_init.lsp - | \
 			GCL_LSPSYSDIR=../$(srcdir)/unixport/ GCL_MEM_BOUND=29 \
 				../unixport/raw_$* $$(dirname $$(pwd))/unixport/ -libdir $$(dirname $$(pwd))/  && \
 		rm -f ../unixport/gcl_cmpnopt.lsp #FIXME GCL_MEM_BOUND darwin limited raw heap xcode linker __huge issue
 	rm -rf sb_$*
 
-unixport/raw_%: unixport/lib%.a
-	$(CC) $(AM_LDFLAGS) -rdynamic $(LDFLAGS) -o $@ $< $(LIBS) #FIXME relro
+unixport/raw_%: unixport/lib%.a $(FF) $(LF)
+	$(CC) $(AM_LDFLAGS) -rdynamic $(LDFLAGS) -o $@ $(FF) $< $(LF) $(LIBS) #FIXME relro
 
 unixport/gcl_cmpnopt_gcl_gprof.lsp unixport/gcl_cmpnopt_ansi_gcl_gprof.lsp:\
 unixport/gcl_cmpnopt_%_gprof.lsp: unixport/gcl_cmpnopt_%.lsp
@@ -464,15 +473,15 @@ o/boot.h: %.h: %.ini
 	cat $< >> $@
 	echo '}' >> $@
 
-CLEANFILES+=unixport/libboot.so
-unixport/libboot.so: o/boot.c o/boot.h
+CLEANFILES+=$(LIBBOOTSO)
+$(LIBBOOTSO): o/boot.c o/boot.h
 	$(CC) $(AM_CPPFLAGS) -Io $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) \
 		-fPIC -shared -Wl,-undefined -Wl,dynamic_lookup $< -o $@
 
 o/boot.ini: CPPFLAGS += -DNO_BOOT_H
 # parallel builds can only have one target accessing an intermediate file
 # solved with BUILT_SOURCES
-o/%.ini:  o/%.c | o/grab_defs
+o/%.ini:  o/%.c | o/grab_defs$(EXEEXT)
 	@$(CPP) $(AM_CPPFLAGS) -P -DINICOMP -DNO_DEFUN $(CPPFLAGS) $< | $| > new_$(@F)
 	@([ -e $@ ] && cmp new_$(@F) $@) || mv -v new_$(@F) $@
 	@rm -f new_$(@F)
@@ -540,8 +549,8 @@ sb_cmpnew/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl
 	[ -d $(@D) ] || mkdir -p $(@D)
 	$(word 1,$|) -compile $< -o $@
 
-%.c: %.d | bin/dpp
-	bin/dpp $< $@
+%.c: %.d | bin/dpp$(EXEEXT)
+	$| $< $@
 
 gcl-tk/demos gcl-tk $(MY_DIRS): % :
 	[ -d $@ ] || mkdir -p $@

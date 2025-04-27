@@ -90,7 +90,6 @@
 
 (in-package :compiler)
 (setq *cc* @LI_CC@
-      *default-prof-p* (> (length @LI_DFP@) 0)
       *ld* @LI_LD@
       *ld-libs* @LI_LD_LIBS@
       *ld-libs* (concatenate 'string "-l" #+ansi-cl "ansi_" "gcl" #+gprof "_gprof" " " *ld-libs*)

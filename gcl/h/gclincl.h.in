@@ -335,6 +335,9 @@
 /* use gprof */
 #undef USE_GPROF
 
+/* boot code in shared library */
+#undef USE_LIBBOOT
+
 /* use readline library */
 #undef USE_READLINE
 
