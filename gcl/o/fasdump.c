@@ -29,7 +29,7 @@ static void
 clrhash(object);
 
 
-object coerce_stream();
+object coerce_stream(object,int);
 static object fasd_patch_sharp(object x, int depth);
 object make_pathname ();
 

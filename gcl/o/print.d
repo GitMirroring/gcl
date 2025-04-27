@@ -156,9 +156,8 @@ static void
 write_decimal1(int);
 
 static void
-write_decimal(i)
-int i;
-{
+write_decimal(int i) {
+
 	if (i == 0) {
 		write_ch('0');
 		return;
@@ -623,17 +622,15 @@ writec_queue(int c,void *v) {
 
 
 void
-write_str(s)
-char *s;
-{
+write_str(char *s) {
+
 	while (*s != '\0')
 		write_ch(*s++);
 }
 
 static void
-write_decimal1(i)
-int i;
-{
+write_decimal1(int i) {
+
 	if (i == 0)
 		return;
 	write_decimal1(i/10);
@@ -641,9 +638,8 @@ int i;
 }
 
 static void
-write_addr(x)
-object x;
-{
+write_addr(object x) {
+
 	long i;
 	int j, k;
 
@@ -799,11 +795,8 @@ write_unreadable_str(object x,char *str) {
 }
 
 static void
-write_double(d, e, shortp)
-double d;
-int e;
-bool shortp;
-{
+write_double(double d,int e,bool shortp) {
+
 	int sign;
 	char buff[FPRC+5];
 	int exp;
@@ -1847,10 +1840,8 @@ travel_find_sharing(object x,object table) {
 }
 
 static bool
-potential_number_p(strng, base)
-object strng;
-int base;
-{
+potential_number_p(object strng,int base) {
+
 	int i, l, c, dc;
 	char *s;
 

@@ -82,9 +82,8 @@ alloc_simple_string(fixnum l) {
 	Make_simple_string(s) makes a simple string from C string s.
 */
 object
-make_simple_string(s)
-const char *s;
-{
+make_simple_string(const char *s) {
+
 	int l, i;
 	char *p;
 	object x;
@@ -103,9 +102,8 @@ const char *s;
 }
 
 object
-make_string(s)
-char *s;
-{
+make_string(char *s) {
+
 	int l, i;
 	char *p;
 	object x;
@@ -128,9 +126,8 @@ char *s;
 	This correponds to string= (just the string equality).
 */
 bool
-string_eq(x, y)
-object x, y;
-{
+string_eq(object x,object y) {
+
 	int i, j;
 
 
@@ -151,9 +148,8 @@ object x, y;
 	(string equality ignoring the case).
 */
 bool
-string_equal(x, y)
-object x, y;
-{
+string_equal(object x,object y) {
+
 	int i, j;
 	char *p, *q;
 
@@ -178,9 +174,8 @@ object x, y;
 	Copy_simple_string(x) copies string x to a simple string.
 */
 object
-copy_simple_string(x)
-object x;
-{
+copy_simple_string(object x) {
+
 	object y;
 	int i;
 	vs_mark;
@@ -205,9 +200,8 @@ object x;
 }
 
 object
-copy_string(x)
-object x;
-{
+copy_string(object x) {
+
 	object y;
 	int i;
 	vs_mark;
@@ -238,9 +232,8 @@ object x;
 }
 
 object
-coerce_to_string(x)
-object x;
-{
+coerce_to_string(object x) {
+
 	object y;
 	vs_mark;
 
@@ -276,10 +269,8 @@ object x;
 
 
 void
-get_string_start_end(str, start, end, ps, pe)
-object str, start, end;
-int *ps, *pe;
-{
+get_string_start_end(object str,object start,object end,int *ps,int *pe) {
+
 	if (start == Cnil)
 		*ps = 0;
 	else if (type_of(start) != t_fixnum)
@@ -458,10 +449,7 @@ LFD(Lstring_not_equal)()   { string_sign =  0; string_boundary = 1;  FFN(Lstring
 @)
 
 static bool
-member_char(c, char_bag)
-int c;
-object char_bag;
-{
+member_char(int c,object char_bag) {
 
 	int i, f;
 
@@ -533,27 +521,24 @@ LFD(Lstring_trim)() { left_trim = right_trim = TRUE; FFN(Lstring_trim0)(); }
 LFD(Lstring_left_trim)() { left_trim = TRUE; right_trim = FALSE; FFN(Lstring_trim0)(); }
 LFD(Lstring_right_trim)() { left_trim = FALSE; right_trim = TRUE; FFN(Lstring_trim0)();}
 
-static int char_upcase(c, bp)
-int c, *bp;
-{
+static int char_upcase(int c,int *bp) {
+
 	if (isLower(c))
 		return(c - ('a' - 'A'));
 	else
 		return(c);
 }
 
-static int char_downcase(c, bp)
-int c, *bp;
-{
+static int char_downcase(int c,int *bp) {
+
 	if (isUpper(c))
 		return(c + ('a' - 'A'));
 	else
 		return(c);
 }
 
-static int char_capitalize(c, bp)
-int c, *bp;
-{
+static int char_capitalize(int c,int *bp) {
+
 	if (isLower(c)) {
 		if (*bp)
 			c -= 'a' - 'A';

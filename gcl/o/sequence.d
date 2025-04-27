@@ -269,9 +269,8 @@ LFD(Lcopy_seq)()
 }
 
 int
-length(x)
-object x;
-{
+length(object x) {
+
 	int i;
 
 	switch (type_of(x)) {
@@ -317,9 +316,8 @@ LFD(Lreverse)()
 }
 
 object
-reverse(seq)
-object seq;
-{
+reverse(object seq) {
+
 	object x, y, *v;
 	int i, j, k;
 
@@ -430,9 +428,8 @@ LFD(Lnreverse)()
 }
 
 object /*FIXME boot*/
-nreverse(seq)
-object seq;
-{
+nreverse(object seq) {
+
 	object x, y, z;
 	int i, j, k;
 

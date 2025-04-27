@@ -374,10 +374,8 @@ static char *lisp_to_string(object string) {
  * for a service on the same host as the clinet.
  *
  */
-static int open_connection(host,server)
-char	*host;
-int	server;
-{
+static int open_connection(char *host,int server) {
+
 	int res;
 	int pid;
 	int	sock;
@@ -430,11 +428,8 @@ int	server;
 	return(sock);
 }
 
-object make_stream(host_l,socket,smm)
-object	host_l;
-int socket;
-enum smmode smm;
-{
+object make_stream(object host_l,int socket,enum smmode smm) {
+
 	char	*mode=NULL;
 	object	stream;
 	FILE	*fp;
@@ -470,10 +465,8 @@ enum smmode smm;
 }
 
 object
-make_socket_stream(host_l,port)
-object	host_l;
-object	port;
-{
+make_socket_stream(object host_l,object port) {
+
 	char	*host = lisp_to_string(host_l);
 	object	stream_in;
 	object	stream_out;

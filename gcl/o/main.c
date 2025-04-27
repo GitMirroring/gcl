@@ -1461,7 +1461,7 @@ my_fprintf(void *v,const char *f,...) {
 
 #ifdef HAVE_FPRINTF_STYLED_FTYPE
 static int
-my_fprintf_styled(void *v,enum disassembler_style,const char *f,...) {
+my_fprintf_styled(void *v,enum disassembler_style s,const char *f,...) {
   va_list va;
   int r;
   va_start(va,f);
@@ -1490,25 +1490,24 @@ DEFUN("DISASSEMBLE-INSTRUCTION",object,fSdisassemble_instruction,SI,1,1,NONE,OI,
 #if defined(HAVE_DIS_ASM_H) && defined(OUTPUT_ARCH)
 
   static disassemble_info i;
-  void *v;
-  void * (*s)();
+  void *v,*s;
   fixnum j,j1,k;
   object x;
 
   if ((v=dlopen("libopcodes.so",RTLD_NOW))) {
     if ((s=dlsym(v,"init_disassemble_info"))) {
-      s(&i, stdout,(fprintf_ftype)my_fprintf
 #ifdef HAVE_FPRINTF_STYLED_FTYPE
-	,my_fprintf_styled
+	((void * (*)(disassemble_info *,FILE *,fprintf_ftype,fprintf_styled_ftype))s)(&i,stdout,my_fprintf,my_fprintf_styled);
+#else
+	((void * (*)(disassemble_info *,FILE *,fprintf_ftype))s)(&i,stdout,my_fprintf);
 #endif
-	);
       i.read_memory_func=my_read;
       i.print_address_func=my_pa;
 #if defined(OUTPUT_MACH)
       i.mach=OUTPUT_MACH;
 #endif
       if ((s=dlsym(v,"disassembler"))) {
-	disassembler_ftype disasm=(disassembler_ftype)(ufixnum)s(OUTPUT_ARCH,0,0,NULL);
+	disassembler_ftype disasm=((disassembler_ftype (*)(int,int,int,void *))s)(OUTPUT_ARCH,0,0,NULL);
 	bp=b;
 	disasm(addr,&i);
 	my_fprintf(NULL," ;");

@@ -583,9 +583,8 @@ typedef unsigned char byte;
 /* Round X up to a multiple of Y.  */
 
 static ElfW(Addr)
-round_up (x, y)
-     ElfW(Addr) x, y;
-{
+round_up (ElfW(Addr) x,ElfW(Addr) y) {
+
   int rem = x % y;
   if (rem == 0)
     return x;

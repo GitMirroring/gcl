@@ -418,4 +418,4 @@ EXTER object sSPmemory;
 EXTER object sSPinit;
 
 /* string.d */
-int  (*casefun)();
+int  (*casefun)(int,int *);
