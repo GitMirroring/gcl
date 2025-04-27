@@ -5,13 +5,19 @@ VERS=@VERSION@
 
 if [ -e /etc/default/gcl$EXT ] ; then
     . /etc/default/gcl$EXT ;
-    if ! set | grep -q -w GCL_ANSI ; then GCL_ANSI=$DEFAULT_GCL_ANSI ; fi
+    if ! set | grep -q -w GCL_ANSI ; then
+	if [ "$DEFAULT_GCL_ANSI" != "" ] ; then
+	    GCL_ANSI="t" ;
+	else
+	    GCL_ANSI="no" ;
+	fi
+    fi
     if ! set | grep -q -w GCL_PROF ; then GCL_PROF=$DEFAULT_GCL_PROF ; fi
 fi
 
 DIR=@prefix@/lib/gcl-$VERS;
 
-if [ "$GCL_ANSI" = "" ] ; then
+if [ "$GCL_ANSI" = "no" ] ; then
     if [ "$GCL_PROF" = "" ] ; then
 	EXE=saved_gcl;
     else

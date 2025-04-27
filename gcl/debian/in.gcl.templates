@@ -6,8 +6,8 @@ _Description: Use the work-in-progress ANSI build by default?
  README.Debian file for a brief description of these terms.  Setting this
  variable will determine which image you will use by default on executing
  'gcl@EXT@'.  You can locally override this choice by setting the GCL_ANSI
- environment variable to any non-empty string for the ANSI build, and to
- the empty string for the CLtL1 build, e.g. GCL_ANSI=t gcl@EXT@.  The
+ environment variable to any string but "no" for the ANSI build, and to
+ "no" for the CLtL1 build, e.g. GCL_ANSI=t gcl@EXT@.  The
  flavor of the build in force will be reported in the initial startup
  banner.
 
