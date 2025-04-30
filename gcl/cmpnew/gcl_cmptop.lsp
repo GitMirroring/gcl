@@ -1127,11 +1127,19 @@
     (let ((x (position x +c-global-arg-types+ :test 'type<=)))
       (if x (1+ x) 0))))
 
-(defun new-proclaimed-argd (args return);FIXME room for more, but F_NARG_WIDTH = 6
+(defconstant +max-typed-args+
+  (let ((x (cdr (tp-bnds (cadr (si::sig 'c-function-argd))))))
+    (if (typep x 'fixnum) (1- (truncate (integer-length x) 2)) 0)))
+
+(defun adj-call-tps-max (tps &aux (i -1))
+  (mapcar (lambda (x) (type-or1 (>= (incf i) +max-typed-args+) x)) tps))
+
+(defun new-proclaimed-argd (args return)
   (do* ((type (f-type return) (f-type (pop args)))
 	(i 0 (+ 2 i))
 	(ans type (logior ans (ash type i))))
-       ((or (>= i 14) (null args)) (the (unsigned-byte 15) ans))))
+       ((or (>= i #.(ash +max-typed-args+ 1)) (null args))
+	(the (unsigned-byte #.(1+ (ash +max-typed-args+ 1))) ans))))
 
 (defun type-f (x)
   (declare (fixnum x))
@@ -1300,14 +1308,16 @@
 (defun t3defun-local-entry (fname cfun lambda-expr sp inline-info
 				  &aux specials *reg-clv* (requireds (caaddr lambda-expr)) nargs)
   (do ((vl requireds (cdr vl))
-       (types (cadr inline-info) (cdr types)))
+       (types (cadr inline-info) (cdr types))
+       (i 0 (1+ i)))
       ((endp vl))
       (cond ((eq (var-kind (car vl)) 'special)
 	     (push (cons (car vl) (var-loc (car vl))) specials))
 	    ((var-cb (car vl)) (push (list (eq 'clb (var-loc (car vl))) (car vl)) *reg-clv*))
-;	    ((var-cb (car vl)) (push (car vl) *reg-clv*))
 	    ((setf (var-kind (car vl))
-		   (or (car (member (promoted-c-type (var-type (car vl))) +c-local-arg-types+)) 'object))))
+		   (or (when (< i +max-typed-args+)
+			 (car (member (promoted-c-type (var-type (car vl))) +c-local-arg-types+)))
+		       'object))))
       (setf (var-loc (car vl)) (cs-push (var-type (car vl)) t)))
   (when (is-narg-le lambda-expr)
     (setq nargs (car (last requireds)))
@@ -1382,13 +1392,12 @@
     (wt-h "#define VMRV" cm "(a_,b_)" vstu bdsu frsu " return((" (declaration-type (rep-type return-type)) ")a_);")
     (wt-h "#define VMR" cm "(a_) VMRV" cm "(a_,0);")))
 
-
-(defun wt-requireds (requireds arg-types &optional first narg)
+(defun wt-requireds (requireds arg-types &optional first narg &aux (i -1))
   (declare (ignore arg-types))
   (flet ((wt (x) (wt x) (let ((*compiler-output1* *compiler-output2*)) (wt x))))
 	(dolist (v requireds (wt (if narg ",...)" ")")))
 	  (setq narg (or narg (is-narg-var v)))
-	  (let* ((gt (global-type-bump (var-type v)))
+	  (let* ((gt (global-type-bump (if (< (incf i) +max-typed-args+) (var-type v) t)))
 		 (cvar (cs-push gt t)))
 	    (when first (wt ","))
 	    (setq first t)
@@ -1887,14 +1896,16 @@
 
   (setq h (fun-call fun) at (caar h) rt (cadar h)
 	at (mapcar 'global-type-bump at) rt (global-type-bump rt));FIXME
-  (dolist (vl requireds)
-    (cond ((eq (var-kind vl) 'special)
-	   (push (cons vl (var-loc vl)) specials))
-	  ((var-cb vl) (push (list (eq 'clb (var-loc vl)) vl) *reg-clv*))
-;	  ((var-cb vl) (push vl *reg-clv*))
-	  ((setf (var-kind vl)
-		 (or (car (member (promoted-c-type (var-type vl)) +c-global-arg-types+)) 'object))))
-    (setf (var-loc vl) (cs-push (var-type vl) t)))
+  (do ((vlp requireds (cdr vlp))(i 0 (1+ i)))((endp vlp))
+    (let ((vl (car vlp)))
+      (cond ((eq (var-kind vl) 'special)
+	     (push (cons vl (var-loc vl)) specials))
+	    ((var-cb vl) (push (list (eq 'clb (var-loc vl)) vl) *reg-clv*))
+	    ((setf (var-kind vl)
+		   (or (when (< i +max-typed-args+)
+			 (car (member (promoted-c-type (var-type vl)) +c-global-arg-types+)))
+		       'object))))
+      (setf (var-loc vl) (cs-push (var-type vl) t))))
 
   (wt-comment "local function " (if (fun-name fun) (fun-name fun) nil))
   (wt-h   "static " (declaration-type (rep-type rt))

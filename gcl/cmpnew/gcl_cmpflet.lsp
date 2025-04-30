@@ -495,7 +495,7 @@
 	 (clp (when clp (ccb-vs-str (fun-ref-ccb fun))))
 	 (nm (if clp (ms clp "->fun.fun_self") nm))
 	 (inl (g1 clp nm sig ap clp (if clp -1 (fun-level fun)))))
-    `(,(car sig) ,(cadr sig) 
+    `(,(adj-call-tps-max (car sig)) ,(cadr sig)
       ,(if mv (flags rfa svt) (flags rfa))
       ,inl)))
 

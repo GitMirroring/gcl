@@ -334,8 +334,10 @@
 	  ((append at '(*))))));let call_proc_new foil fast linking and catch errors
 
 (defun add-fast-link (fname la &optional apnarg
-			    &aux n
-			    (at (call-arg-types (mapcar (lambda (x) (link-rt x t)) (get-arg-types fname)) la apnarg))
+		      &aux n
+			(at (call-arg-types
+			     (adj-call-tps-max (mapcar (lambda (x) (link-rt x t)) (get-arg-types fname)))
+			     la apnarg))
 			    (rt (link-rt (get-return-type fname) t))
 			    (clp (cclosure-p fname))
 			    (tail (list rt at clp apnarg)))
