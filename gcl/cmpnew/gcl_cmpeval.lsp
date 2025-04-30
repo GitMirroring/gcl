@@ -2353,6 +2353,12 @@
    (otherwise                          (when (or always (ltvp val))
 					 `(vv ,val)))))
 
+(defun encap-src-val (val)
+  (typecase val
+    (function  (afe (cons 'df nil) (mf (fle val))))
+    (cons (cons (encap-src-val (car val)) (encap-src-val (cdr val))))
+    (t val)))
+
 (defun c1constant-value (val always &aux (val (if (exit-to-fmla-p) (not (not val)) val)))
   (case 
    val
@@ -2363,11 +2369,7 @@
       (when l 
 	`(location 
 	  ,(make-info :type (or (ltvp val)
-				(object-type
-				 (typecase val
-				   (function  (afe (cons 'df nil) (mf (fle val))))
-				   (list (copy-tree val))
-				   (t val)))))
+				(object-type (encap-src-val val))))
 	  ,l))))))
 
 (defvar *compiler-temps*
