@@ -132,7 +132,7 @@ if (realpath (buf, fub) == 0) {                             \
 #define UC(a_) ((ucontext_t *)a_)
 #define SF(a_) ((siginfo_t *)a_)
 
-#define FPE_CODE(i_,v_) make_fixnum(FFN(fSfpe_code)(*(fixnum *)&UC(v_)->uc_mcontext->__fs.__fpu_fsw,UC(v_)->uc_mcontext->__fs.__fpu_mxcsr))
+#define FPE_CODE(i_,v_) make_fixnum((fixnum)FFN(fSfpe_code)(*(fixnum *)&UC(v_)->uc_mcontext->__fs.__fpu_fsw,UC(v_)->uc_mcontext->__fs.__fpu_mxcsr))
 #define FPE_ADDR(i_,v_) make_fixnum(UC(v_)->uc_mcontext->__fs.__fpu_fop ? UC(v_)->uc_mcontext->__fs.__fpu_ip : (fixnum)SF(i_)->si_addr)
 #define FPE_CTXT(v_) list(3,make_fixnum((fixnum)&UC(v_)->uc_mcontext->__ss), \
 			  make_fixnum((fixnum)&UC(v_)->uc_mcontext->__fs.__fpu_stmm0), \
