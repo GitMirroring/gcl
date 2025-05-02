@@ -117,6 +117,9 @@ INS:=$(shell for i in `find debian -name "in.*"` ; do \
 gcl$(EXT)% : in.gcl%
 	cat $< | sed -e 's,@EXT@,$(EXT),g' -e 's,@VERS@,$(VERS),g' >$@
 
+debian/po/POTFILES.in: debian/po/in.POTFILES.in
+	cat $< | sed -e 's,@EXT@,$(EXT),g' -e 's,@VERS@,$(VERS),g' >$@
+
 debian/control: debian/control_$(EXT)
 	cp $< $@
 
