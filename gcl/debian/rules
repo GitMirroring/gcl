@@ -138,7 +138,8 @@ clean: debian/control debian/gcl$(EXT).templates debian/po/POTFILES.in
 	dh_autoreconf_clean
 	dh_clean
 
-	rm -rf $(INS) debian/substvars debian.upstream
+	for i in $(INS); do echo $^ | grep -q $$i || rm -rf $$i ; done
+	rm -rf debian/substvars debian.upstream
 	rm -rf *stamp build-indep
 	rm -f  debian/elpa-gcl$(EXT).elpa debian/gcl$(EXT)-pkg.el
 	rm -rf $(EXT_TARGS) info/gcl$(EXT)*.info* gcl_pool
@@ -150,7 +151,8 @@ debian-clean: debian/control debian/gcl$(EXT).templates debian/po/POTFILES.in
 
 	dh_clean
 
-	rm -rf $(INS) debian/substvars debian.upstream
+	for i in $(INS); do echo $^ | grep -q $$i || rm -rf $$i ; done
+	rm -rf debian/substvars debian.upstream
 	rm -rf *stamp build-indep
 	rm -f  debian/elpa-gcl$(EXT).elpa debian/gcl$(EXT)-pkg.el
 	rm -rf $(EXT_TARGS) info/gcl$(EXT)*.info* gcl_pool
