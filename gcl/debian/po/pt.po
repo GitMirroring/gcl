@@ -1,100 +1,130 @@
-# translation of gcl debconf to Portuguese
-# Copyright (C) 2007 Américo Monteiro
+# translation of gcl debconf to European Portuguese
 # Copyright (C) 2024 Camm Maguire
 # This file is distributed under the same license as the gcl package.
 #
-# Américo Monteiro <a_monteiro@netcabo.pt>, 2007.
+# Américo Monteiro <a_monteiro@gmx.com>, 2007 - 2025.
 msgid ""
 msgstr ""
-"Project-Id-Version: gcl 2.6.7-36\n"
-"Report-Msgid-Bugs-To: gcl@packages.debian.org\n"
-"POT-Creation-Date: 2012-12-30 11:53-0400\n"
-"PO-Revision-Date: 2007-12-23 16:44+0000\n"
-"Last-Translator: Américo Monteiro <a_monteiro@netcabo.pt>\n"
-"Language-Team: Portuguese <traduz@debianpt.org>\n"
+"Project-Id-Version: gcl 2.7.1-4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-05-05 15:14+0000\n"
+"PO-Revision-Date: 2025-05-07 21:40+0100\n"
+"Last-Translator: Américo Monteiro <a_monteiro@gmx.com>\n"
+"Language-Team: Portuguese <>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 22.12.3\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Type: boolean
 #. Description
-#: ../gcl.templates:2001
+#: ../gcl27.templates:1001
 msgid "Use the work-in-progress ANSI build by default?"
-msgstr "Usar a compilação 'ainda em desenvolvimento' ANSI por prédefinição? "
+msgstr "Usar a compilação ainda-em-desenvolvimento ANSI por predefinição?"
 
 #. Type: boolean
 #. Description
-#: ../gcl.templates:2001
+#: ../gcl27.templates:1001
 msgid ""
 "GCL is in the process of providing an ANSI compliant image in addition to "
-"its traditional CLtL1 image still in production use."
+"its traditional CLtL1 image still in production use.  Please see the README."
+"Debian file for a brief description of these terms.  Setting this variable "
+"will determine which image you will use by default on executing 'gcl27'.  "
+"You can locally override this choice by setting the GCL_ANSI environment "
+"variable to any string but \"no\" for the ANSI build, and to \"no\" for the "
+"CLtL1 build, e.g. GCL_ANSI=t gcl27.  The flavor of the build in force will "
+"be reported in the initial startup banner."
 msgstr ""
-"GCL está no processo de disponibilizar uma imagem compatível com ANSI como "
-"adição à sua imagem tradicional CLtL1 ainda em utilização de produção."
+"GCL está no processo de disponibilizar uma imagem compatível com ANSI "
+"adicionalmente à sua imagem tradicional CLtL1 ainda em utilização de "
+"produção. Por favor veja o ficheiro README.Debian para uma breve descrição "
+"destes termos. Definir esta variável irá determinar qual imagem você irá "
+"usar por predefinição ao executar o 'gcl27'. Você pode sobrepor localmente "
+"esta opção ao regular a variável de ambiente GCL_ANSI para qualquer string "
+"diferente de \"no\" para a compilação ANSI, e para \"no\" para a compilação "
+"CLtL1, ex. GCL_ANSI=t gcl27. O tipo de compilação imposto será reportado "
+"no banner inicial de arranque."
 
 #. Type: boolean
 #. Description
-#: ../gcl.templates:2001
-msgid ""
-"Please see the README.Debian file for a brief description of these terms. "
-"Choosing this option will determine which image will be used by default when "
-"executing 'gcl@EXT@'."
-msgstr ""
-"Por favor veja o ficheiro README.Debian para uma breve descrição destes "
-"termos. Escolher esta opção irá determinar qual imagem será usada por "
-"prédefinição ao executar 'gcl@EXT@'."
-
-#. Type: boolean
-#. Description
-#: ../gcl.templates:2001
-msgid ""
-"This setting may be overridden by setting the GCL_ANSI environment variable "
-"to any non-empty string for the ANSI build, and to the empty string for the "
-"CLtL1 build, e.g. GCL_ANSI=t gcl@EXT@. The currently enforced build flavor "
-"will be reported in the initial startup banner."
-msgstr ""
-"Esta opção pode ser sobreposta ao regular a variável de ambiente GCL_ANSI "
-"para qualquer string não-vazia para a compilação ANSI, e para uma string "
-"vazia para a compilação CLtL1, como por exemplo GCL_ANSI=t gcl@EXT@. O tipo "
-"de compilação actualmente imposto será reportado no banner inicial de "
-"arranque."
-
-#. Type: boolean
-#. Description
-#: ../gcl.templates:3001
+#: ../gcl27.templates:2001
 msgid "Use the profiling build by default?"
-msgstr "Usar, como pré-definição, a compilação com 'profiling'?"
+msgstr "Usar a compilação com perfis (profiling) como predefinição?"
 
 #. Type: boolean
 #. Description
-#: ../gcl.templates:3001
-msgid "GCL has optional support for profiling via gprof."
-msgstr "O GCL tem suporte opcional para 'profiling' via gprof."
-
-#. Type: boolean
-#. Description
-#: ../gcl.templates:3001
+#: ../gcl27.templates:2001
 msgid ""
-"Please see the documentation for si::gprof-start and si::gprof-quit for "
-"details. As this build is slower than builds without gprof support, it is "
-"not recommended for final production use."
+"GCL now has optional support for profiling via gprof.  Please see the "
+"documentation for si::gprof-start and si::gprof-quit for details. As this "
+"build is slower than builds without gprof support, it is not recommended for "
+"final production use. You can locally override the default choice made here "
+"by setting the GCL_PROF environment variable to any non-empty string for "
+"profiling support, and to the empty string for the more optimized builds, e."
+"g. GCL_PROF=t gcl27.  If profiling is enabled, this will be reported in the "
+"initial startup banner."
 msgstr ""
-"Por favor veja a documentação de si::gprof-start e si::gprof-quit para mais "
-"detalhes. Como esta compilação é mais lenta do que as compilações sem o "
-"suporte para gprof, não é recomendada para utilização de produção final."
+"O GCL agora tem suporte opcional para perfis via gprof.  Por favor veja a "
+"documentação para si::gprof-start e si::gprof-quit para detalhes. Como esta "
+"compilação é mais lenta que as compilações sem suporte a gprof, não é "
+"recomendada para utilização de produção final. Você pode sobrepor "
+"localmente a escolha predefinida feita aqui ao definir a variável de "
+"ambiente GCL_PROF para qualquer string não vazia para suporte a perfis, e "
+"para uma string vazia para as compilações mais otimizadas, ex. "
+"GCL_PROF=t gcl27.  Se os perfis estiverem activos, isso será reportado "
+"no banner inicial de arranque."
 
-#. Type: boolean
-#. Description
-#: ../gcl.templates:3001
-msgid ""
-"Set the GCL_PROF environment variable to the empty string for more optimized "
-"builds, or any non-empty string for profiling support; e.g. GCL_PROF=t "
-"gcl@EXT@. If profiling is enabled, this will be reported in the initial "
-"startup banner."
-msgstr ""
-"Regule a variável de ambiente GCL_PROF para uma string vazia para mais "
-"compilações optimizadas, ou para qualquer string não-vazia para suporte de "
-"'profiling'; como por exemplo GCL_PROF=t gcl@EXT@. Se o 'profiling' estiver "
-"activo, isto será reportado no banner inicial de arranque."
+#~ msgid ""
+#~ "GCL is in the process of providing an ANSI compliant image in addition to "
+#~ "its traditional CLtL1 image still in production use."
+#~ msgstr ""
+#~ "GCL está no processo de disponibilizar uma imagem compatível com ANSI "
+#~ "como adição à sua imagem tradicional CLtL1 ainda em utilização de "
+#~ "produção."
+
+#~ msgid ""
+#~ "Please see the README.Debian file for a brief description of these terms. "
+#~ "Choosing this option will determine which image will be used by default "
+#~ "when executing 'gcl@EXT@'."
+#~ msgstr ""
+#~ "Por favor veja o ficheiro README.Debian para uma breve descrição destes "
+#~ "termos. Escolher esta opção irá determinar qual imagem será usada por "
+#~ "prédefinição ao executar 'gcl@EXT@'."
+
+#~ msgid ""
+#~ "This setting may be overridden by setting the GCL_ANSI environment "
+#~ "variable to any non-empty string for the ANSI build, and to the empty "
+#~ "string for the CLtL1 build, e.g. GCL_ANSI=t gcl@EXT@. The currently "
+#~ "enforced build flavor will be reported in the initial startup banner."
+#~ msgstr ""
+#~ "Esta opção pode ser sobreposta ao regular a variável de ambiente GCL_ANSI "
+#~ "para qualquer string não-vazia para a compilação ANSI, e para uma string "
+#~ "vazia para a compilação CLtL1, como por exemplo GCL_ANSI=t gcl@EXT@. O "
+#~ "tipo de compilação actualmente imposto será reportado no banner inicial "
+#~ "de arranque."
+
+#~ msgid "GCL has optional support for profiling via gprof."
+#~ msgstr "O GCL tem suporte opcional para 'profiling' via gprof."
+
+#~ msgid ""
+#~ "Please see the documentation for si::gprof-start and si::gprof-quit for "
+#~ "details. As this build is slower than builds without gprof support, it is "
+#~ "not recommended for final production use."
+#~ msgstr ""
+#~ "Por favor veja a documentação de si::gprof-start e si::gprof-quit para "
+#~ "mais detalhes. Como esta compilação é mais lenta do que as compilações "
+#~ "sem o suporte para gprof, não é recomendada para utilização de produção "
+#~ "final."
+
+#~ msgid ""
+#~ "Set the GCL_PROF environment variable to the empty string for more "
+#~ "optimized builds, or any non-empty string for profiling support; e.g. "
+#~ "GCL_PROF=t gcl@EXT@. If profiling is enabled, this will be reported in "
+#~ "the initial startup banner."
+#~ msgstr ""
+#~ "Regule a variável de ambiente GCL_PROF para uma string vazia para mais "
+#~ "compilações optimizadas, ou para qualquer string não-vazia para suporte "
+#~ "de 'profiling'; como por exemplo GCL_PROF=t gcl@EXT@. Se o 'profiling' "
+#~ "estiver activo, isto será reportado no banner inicial de arranque."
