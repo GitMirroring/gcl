@@ -16,40 +16,31 @@
 #define SET_STACK_POINTER "mov %0,r15\n\t"
 #endif
 
-#define FIXED_STACK (1UL<<23)/*FIXME configure?*/
-#if defined(__SH4__)/*FIXME is this just due to qemu?*/
-#define CTOP (void *)0x80000000
-#define SS FIXED_STACK
+#define CTOP (void *)0xc0000000/*FIXME configure?*/
+#define MIN_STACK (1UL<<23)/*QEMU will not grow the stack*/
+
+#if defined(__SH4__)
+#undef CTOP
+#define CTOP (void *)0x80000000/*FIXME is this just due to qemu?*/
 #elif defined(__gnu_hurd__)
-#define CTOP (void *)0xc0000000
-#define SS FIXED_STACK
 #define MAP_GROWSDOWN 0
 #define MAP_STACK 0
-#else
-#define CTOP (void *)0xc0000000/*FIXME configure?*/
-#define SS getpagesize()
 #endif
 
 #ifdef SET_STACK_POINTER
 {
-  void *p,*p1,*b,*s;
+  void *p,*p1,*b=CTOP-MIN_STACK,*s;
   int a,f=MAP_FIXED|MAP_PRIVATE|MAP_ANON|MAP_STACK;
-  int ss=
-#ifdef CHECK_FOR_QEMU
-    qemu_p() ? FIXED_STACK :
-#endif
-    SS;
 
   p=alloca(1);
   p1=alloca(1);
-  b=CTOP-(p1<p ? ss : FIXED_STACK);
   a=p1<p ? p-p1 : p1-p;
-  a<<=2;
+  a<<=3;
   s=p1<p ? CTOP-a : b+a;
   if (p1<p) f|=MAP_GROWSDOWN;
 
   if (p > CTOP || p < b) {
-    if (mmap(b,ss,PROT_READ|PROT_WRITE|PROT_EXEC,f,-1,0)!=(void *)-1) {
+    if (mmap(b,MIN_STACK,PROT_READ|PROT_WRITE|PROT_EXEC,f,-1,0)!=(void *)-1) {
       stack_map_base=b;
       asm volatile (SET_STACK_POINTER::"r" (s):"memory");
       if (p1>p)

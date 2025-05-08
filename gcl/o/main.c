@@ -407,32 +407,6 @@ setup_maxpages(double scale) {
 
 }
 
-int
-qemu_p(void)  {
-
-#if !defined(DARWIN) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)/*FIXME*/
-
-  char *c;
-  ufixnum e,r=0;
-  int l;
-
-  massert((l=open("/proc/cpuinfo",O_RDONLY))!=-1);
-
-  for (e=0;!e && (c=next_line(l,&r));)
-    e=!memcmp("model",c,5) && strstr(c,"QEMU");
-
-  massert(!close(l));
-
-  return e;
-
-#else
-
-  return 0;
-
-#endif
-}
-
-
 static void *
 next_shared_lib_map_no_malloc(void)  {
 
@@ -753,7 +727,6 @@ main(int argc, char **argv, char **envp) {
   bds_top = bds_org-1;
   frs_top = frs_org-1;
 
-#define CHECK_FOR_QEMU
 #include "cstack.h"
 
   gcl_init_alloc(alloca(1));
