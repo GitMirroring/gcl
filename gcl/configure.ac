@@ -386,7 +386,6 @@ case $use in
 	case $use in
 	    alpha*)
 		assert_arg_to_cflags -mieee
-		assert_arg_to_cflags -fno-jump-tables #FIXME gcc bug 20250504
 #		if test "$enable_debug" != "yes" ; then TO3FLAGS="-O0" ; fi #FIXME needed asof gcc 4.8.1
 		;;
 	    aarch64*)

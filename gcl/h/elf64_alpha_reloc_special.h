@@ -94,7 +94,7 @@ find_special_params(void *v,Shdr *sec1,Shdr *sece,const char *sn,
 static int
 label_got_symbols(void *v1,Shdr *sec1,Shdr *sece,Sym *sym1,Sym *syme,const char *st1,const char *sn,ul *gs) {
 
-  Sym *sym,*fsym=sym1;
+  Sym *sym;
   Rela *r;
   Shdr *sec;
   void *v,*ve;
@@ -142,12 +142,9 @@ label_got_symbols(void *v1,Shdr *sec1,Shdr *sece,Sym *sym1,Sym *syme,const char 
 
 	case R_ALPHA_GPDISP:
 
-	  for (sym=fsym;sym<syme && (sym->st_shndx!=1 || LOW(sym->st_value)!=r->r_offset);sym++);/*ordered search*/
-
-	  if (sym<syme) {
-	    fsym=sym;
-	    SET_HIGH(fsym->st_value,gotp=*gs+1);
-	  }
+	  for (sym=sym1;sym<syme && (sym->st_shndx!=1 || !LOW(sym->st_size) || LOW(sym->st_value)!=r->r_offset);sym++);
+	  if (sym<syme)
+	    SET_HIGH(sym->st_value,gotp=*gs+1);
 
 	  SET_HIGH(r->r_addend,gotp);
 
@@ -157,9 +154,8 @@ label_got_symbols(void *v1,Shdr *sec1,Shdr *sece,Sym *sym1,Sym *syme,const char 
 
 	  q=LOW(sym1[ELF_R_SYM(r->r_info)].st_value)+r->r_addend;
 
-	  /*unordered search*/
-	  for (sym=sym1;sym<syme && (sym->st_shndx!=1 || LOW(sym->st_value)>q || LOW(sym->st_value)+LOW(sym->st_size)<q);sym++);
-	  massert(sym<syme);
+	  for (sym=sym1;sym<syme && (sym->st_shndx!=1 || LOW(sym->st_value)>q || LOW(sym->st_value)+LOW(sym->st_size)<=q);sym++);
+	  massert(sym<syme && HIGH(sym->st_value));
 
 	  SET_HIGH(r->r_addend,HIGH(sym->st_value));
 
