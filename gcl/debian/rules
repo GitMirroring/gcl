@@ -79,7 +79,7 @@ build-stamp: configure-stamp
 
 build: build-arch build-indep
 build-arch: build-stamp
-build-indep: build-stamp
+build-indep: #build-stamp
 	touch $@
 
 DOC_STUBS=gcl$(EXT) gcl$(EXT)-si gcl$(EXT)-tk gcl$(EXT)-dwdoc

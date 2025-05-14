@@ -53,6 +53,7 @@ Architecture: all
 Conflicts: gclinfo
 Replaces: gclinfo
 Depends: dpkg (>= 1.15.4), ${misc:Depends}
+Multi-Arch: foreign
 Description: Documentation for GNU Common Lisp
  GNU Common Lisp (GCL) is a Common Lisp compiler and interpreter
  implemented in C, and complying mostly with the standard set 
@@ -69,6 +70,7 @@ Architecture: all
 Conflicts: gclinfo
 Replaces: gclinfo
 Depends: dpkg (>= 1.15.4), ${misc:Depends}
+Multi-Arch: foreign
 Description: Documentation for GNU Common Lisp
  GNU Common Lisp (GCL) is a Common Lisp compiler and interpreter
  implemented in C, and complying mostly with the standard set 
