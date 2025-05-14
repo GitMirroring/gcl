@@ -1,3 +1,13 @@
+gcl27 (2.7.1-5) unstable; urgency=medium
+
+  * Version_2_7_2pre4
+  * Bug fix: "[INTL:pt] Portuguese translation - debconf messages", thanks
+    to Américo Monteiro (Closes: #1104887).
+  * Bug fix: "[INTL:de] updated German debconf translation", thanks to
+    Helge Kreutzmann (Closes: #1104918).
+
+ -- Camm Maguire <camm@debian.org>  Sat, 10 May 2025 19:27:15 -0400
+
 gcl27 (2.7.1-4) unstable; urgency=medium
 
   * Version_2_7_2ore3
