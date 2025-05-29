@@ -131,7 +131,7 @@
     (draw-line-xy w (offsetx + 12) (offsety + 35)
 		    (offsetx + 12)
 		    (offsety + 48 + hdel * ((val - nmin) / ndel)) 7)
-    (editors-update-in-box val w offsetx offsety 40 20))))
+    (editors-update-in-box val w offsetx offsety 40 20)))
 
 
 ; 20 Nov 91; 03 Dec 91; 15 Oct 93; 02 Dec 93; 08 Jan 04
