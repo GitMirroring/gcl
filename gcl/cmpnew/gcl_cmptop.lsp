@@ -865,14 +865,14 @@
 				   (incf i lff)(copy-list ff));FIXME?
 				((incf i)(list x))))
 			nargs))
-	 (form (list 'lit info key inl nargs nil lev oargs (make-vs info))))
+	 (form (list 'lit info key inl nargs nil lev oargs nil (make-vs info))))
     (when (find #\= inl)
       (c1side-effects nil)
       (setf (info-flags info) (logior (iflags side-effects) (info-flags info))))
     (setf (sixth form) (new-bind form))
     form))
 
-(defun c2lit (key inl args bind safety &rest r &aux (oargs (pop r)) (stores (car r)) (tp (get key 'cmp-lisp-type :opaque)))
+(defun c2lit (key inl args bind safety &rest r &aux (oargs (pop r)) (syms (pop r)) (stores (car r)) (tp (get key 'cmp-lisp-type :opaque)))
   (declare (dynamic-extent r))
   (let* ((*inline-blocks* 0)
 	 (*restore-avma*  *restore-avma*)
@@ -881,7 +881,7 @@
 	 (*compiler-new-safety* *compiler-new-safety*)
 	 (*compiler-push-events* *compiler-push-events*))
     (local-compile-decls `((safety ,safety)))
-    (unwind-exit (lit-loc key inl args bind safety oargs stores) nil
+    (unwind-exit (lit-loc key inl args bind safety oargs syms stores) nil
 		 (cons 'values (if (equal tp #t(returns-exactly)) 0 1)))
     (close-inline-blocks)))
 

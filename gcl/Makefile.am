@@ -270,7 +270,7 @@ unixport/gcl_cmpnopt_pre_gcl.lsp: # FIXME necessary?
 	touch $@
 unixport/gcl_cmpnopt_%.lsp: unixport/lib%.a | unixport/%
 	echo "(mapc (quote load) (directory \"$*/*.hsh\"))" \
-	     "(compiler::dump-inl-hash \"$@\")" | $|
+	     "(compiler::dump-inl-hash \"$@\" t)" | $|
 
 $(addprefix unixport/lib,$(addsuffix .a,pre_gcl $(MY_DIRS))): \
 unixport/lib%.a: lib/libbase_gcl.a $(LIBGPROF) unixport/sys_%.o
@@ -302,7 +302,7 @@ unixport/lib%.a: | xbin/ar_merge
 %/recompile: | unixport/%
 	$| -batch \
 	   -eval "(let ((si::*do-recomp-output-dir* \"$(@D)\")) (si::do-recomp t))" \
-	   -eval "(compiler::dump-inl-hash \"$(@D)/all.hsh\")"
+	   -eval "(compiler::dump-inl-hash \"$(@D)/all.hsh\" t)"
 	touch $@
 
 unixport/sys_%.o: unixport/sys_init.c
@@ -418,7 +418,7 @@ mod_gcl/%.o: mod_gcl0/%.o | unixport/mod_gcl
 	rm -rf $*/*.o
 	echo "(mapc (quote load) (list $(patsubst %,\"%\",$^)))" \
 	     "(pcl::compile-pcl)" \
-	     "(compiler::dump-inl-hash \"$@\")" | $|
+	     "(compiler::dump-inl-hash \"$@\" t)" | $|
 
 %/all.hsh: %/p1.lisp %/all.hs1 | unixport/pcl_gcl
 	echo "pcl conflicts:"

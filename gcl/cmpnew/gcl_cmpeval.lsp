@@ -648,6 +648,7 @@
   (list (this-safety-level)
 	(mapcar (lambda (x) (assert (eq (car x) 'ub)) (third x)) (when lf (fifth form)))
 	(cons (when lf (third form)) (info-type (cadr form)))
+	(ninth form)
 	(if lf (remove-comment (fourth form)) "")))
 
 (defun cl-to-fn (cl)
@@ -672,33 +673,77 @@
 			   (when (eql (length x) (length cy))
 			     (every 'type<= x cy))))))))
 
+(defun skip-inl (fm tps tr)
+  (or (member-if 'atomic-tp tps)
+      (atomic-tp (info-type (cadr fm)))
+      (exit-to-fmla-p)
+      (member nil tr)
+      (set-difference
+       (let ((i -1)) (mapcan (lambda (x &aux (y (incf i))) (unless (atomic-tp x) (list y))) tps))
+       tr)))
+
+(defun ?update-fm-propagator (fm cl tr tps)
+  (when (symbolp (car cl))
+    (when (get (car cl) 'type-propagator);?more
+      (when (eq (car fm) 'lit)
+	(when (member-if 'integerp tr) ;otherwise no point
+	  (push (list (car cl) tr tps) (ninth fm)))))))
+
+(defun merge-inl (cl inl pl &aux (tps (pop inl))(tr (pop inl)))
+  (let ((z (member-if (lambda (x) (can-coalesce x tr inl tps)) (car pl))))
+    (cond (z (coalesce-inl cl (car z) tps (cdr (third inl)))
+	     (setf (cdr z) (remove-if (lambda (x) (can-coalesce x tr inl tps)) (cdr z))))
+	  (pl (let ((x (list* tps tr inl)))
+		(keyed-cmpnote (list (car cl) 'inl-hash 'inl-hash-add)
+			       "Adding inl-hash ~s: ~s" (car cl) x)
+		(push x (car pl)))))))
+
+(defun merge-inls (s inls &aux (cl (list s))(pl (get-inl-list cl t)))
+  (mapc (lambda (x) (merge-inl cl x pl)) inls))
+
 (defun ?add-inl (cl fms fm)
-  (unless (or (member-if 'atomic-tp fms :key (lambda (x) (info-type (caddr x))))
-	      (atomic-tp (info-type (cadr fm))) (exit-to-fmla-p)); (inls-match cl fms)
-    (let* ((tps (mapcar (lambda (x) (info-type (caddr x))) fms))
-	   (tr (mapcar (lambda (x &aux (v (car (last x))))
-			 (when (and (consp v) (eq (car v) 'var))
-			   (position (cddr v) fms :key 'cdddr :test 'equalp)));FIXME
-		       (if (eq (car fm) 'var) (list (list fm)) (fifth fm))))
-	   (nat (let ((i -1)) (mapcan (lambda (x &aux (y (incf i))) (unless (atomic-tp x) (list y))) tps))))
-      (unless (or (member nil tr) (set-difference nat tr))
-	(let* ((pl (get-inl-list cl t))
-	       (inl (lit-inl2 fm))
-	       (z (member-if (lambda (x) (can-coalesce x tr inl tps)) (car pl))))
-	  (cond (z (coalesce-inl cl (car z) tps (cdr (third inl)))
-		   (setf (cdr z) (remove-if (lambda (x) (can-coalesce x tr inl tps)) (cdr z))))
-		(pl
-		 (let ((x (list* tps tr inl)))
-		   (keyed-cmpnote (list (car cl) 'inl-hash 'inl-hash-add)
-				  "Adding inl-hash ~s: ~s" (car cl) x)
-		   (push x (car pl))))))))))
+  (let* ((tps (mapcar (lambda (x) (info-type (caddr x))) fms))
+	 (tr (mapcar (lambda (x &aux (v (car (last x))))
+		       (when (and (consp v) (eq (car v) 'var))
+			 (position (cddr v) fms :key 'cdddr :test 'equalp)));FIXME
+		     (if (eq (car fm) 'var) (list (list fm)) (fifth fm)))))
+    (?update-fm-propagator fm cl tr tps)
+    (unless (skip-inl fm tps tr)
+      (merge-inl cl (list* tps tr (lit-inl2 fm)) (get-inl-list cl t)))))
 
 (defun prepend-comment (form s)
   (if *annotate*
-      (si::string-concatenate "/* " (prin1-to-string form) " */" (remove-comment s))
+      (si::string-concatenate "/* " (prin1-to-string (subst #\a #\^@ form)) " */" (remove-comment s))
       s))
 
-(defun apply-inl (cl fms &aux (inl (inls-match cl fms)))
+(defvar *apply-inl-hash* t)
+
+(defun update-info-type-from-inl (i inl fms &aux (tps (mapcar (lambda (x) (info-type (caddr x))) fms)))
+  (setf (info-type i)
+	(reduce 'type-and
+		(cons (cdr (fifth inl))
+		      (mapcar (lambda (x)
+				(or
+				 (result-type-from-args
+				  (pop x)
+				  (let ((i -1))
+				    (mapcar (lambda (tp &aux (p (position (incf i) (car x))))
+					      (if p (nth (nth p (second inl)) tps) tp))
+					    (cadr x))))
+				 t))
+			      (sixth inl)))
+		:initial-value (info-type i))))
+
+(defun merge-fm-propagator (x fms inl)
+  (let* ((tr (mapcar (lambda (x &aux (v (car (last x))))
+ 		       (when (and (consp v) (eq (car v) 'var))
+ 			 (position (cddr v) fms :key 'cdddr :test 'equalp)));FIXME
+ 		     (fifth x))))
+    (mapc (lambda (y) (?update-fm-propagator x y tr (caddr y)))
+	  (sixth inl))))
+
+
+(defun apply-inl (cl fms &aux (inl (when *apply-inl-hash* (inls-match cl fms))))
   (when inl
     (let* ((c1fms (mapcar (lambda (x) (cdr (nth x fms))) (second inl))))
       (unless (member-if-not (lambda (x)
@@ -706,35 +751,56 @@
 				 (var (eq (var-kind (caaddr x)) 'lexical))
 				 ((lit location) t)))
 			     c1fms)
-	(cond ((zerop (length (car (last inl))))
-	       (let* ((x (car c1fms))(h (pop x))
-		      (i (copy-info (pop x))))
-		 (setf (info-type i) (type-and (cdr (fifth inl)) (info-type i)))
-		 (keyed-cmpnote (list (car cl) 'inl-hash 'inl-hash-apply)
-				"Applying var inl-hash ~s" (car cl))
-		 (list* h i x)))
-	      ((let ((x (c1lit (list (car (fifth inl)) (prepend-comment (cons 'applied cl) (car (last inl)))) (mapcar 'list  (fourth inl) c1fms))))
-		 (setf (info-type (cadr x)) (type-and (cdr (fifth inl)) (info-type (cadr x))))
-		 (keyed-cmpnote (list (car cl) 'inl-hash 'inl-hash-apply)
-				"Applying inl-hash ~s: ~s: ~s" (car cl) (fourth x))
-		 x)))))))
+	(let* ((z (zerop (length (car (last inl)))))
+	       (x (if z
+		      (list* (caar c1fms) (copy-info (cadar c1fms)) (cddar c1fms))
+		      (c1lit (list (car (fifth inl)) (prepend-comment (cons 'applied cl) (car (last inl))))
+			     (mapcar 'list  (fourth inl) c1fms)))))
+	  (unless z (merge-fm-propagator x fms inl))
+	  (update-info-type-from-inl (cadr x) inl fms)
+	  (keyed-cmpnote (list (car cl) 'inl-hash 'inl-hash-apply)
+			 "Applying inl-hash ~s: ~s" (car cl) (unless z (fourth x)))
+	  x)))))
 
-(defun dump-inl-hash (f)
+
+(defun compress-inl (s &aux (i (car (gethash s *inl-hash*))))
+  (when (> (length i) 1)
+    (let ((l (length i))
+	  (x (reduce (lambda (y x)
+		       (list
+			(mapl (lambda (z w) (setf (car z) (type-or1 (car z) (car w))))
+			      (car y) (car x))
+			(max (cadr y) (third x))))
+		     (cdr i) :initial-value (list (copy-list (caar i)) (third (car i)))))
+	  (syms (mapcar (lambda (x) (declare (ignore x)) (gensym)) (make-list (length (caar i))))))
+      (compile nil `(lambda ,syms
+		      (declare (optimize (safety ,(cadr x)))
+			       ,@(mapcar (lambda (x y) (list (cmp-unnorm-tp x) y)) (car x) syms))
+		      (,s ,@syms)))
+      (when (< (length (car (gethash s *inl-hash*))) l)
+	(format t "compress-inl ~s: ~s -> ~s~%" s l (length (car (gethash s *inl-hash*))))))))
+
+(defun dump-inl-hash (f &optional compress &aux (si::*print-package* t))
+  (when compress (maphash (lambda (x y) (declare (ignore y)) (compress-inl x)) *inl-hash*))
   (with-open-file (s f :direction :output)
     (prin1 '(in-package :compiler) s)
     (terpri s)
     (maphash (lambda (x y)
 	       (prin1
-		`(setf (gethash ',x *inl-hash*)
-		       (list
-			(list
-			 ,@(mapcar (lambda (z)
-				     `(list (mapcar 'uniq-tp ',(mapcar 'export-type (pop z)))
-					    ',(pop z) ',(pop z) ',(pop z)
-					    (cons ',(caar z) (uniq-tp ',(cdar z)))
-					    ,(cadr z)))
-				   (car y)))))
-		      s)
+		`(merge-inls
+		  ',x
+		  (list
+		   ,@(mapcar (lambda (z)
+			       `(list (mapcar 'uniq-tp ',(mapcar 'export-type (pop z)))
+				      ',(pop z) ',(pop z) ',(pop z)
+				      (cons ',(caar z) (uniq-tp ',(cdar z)))
+				      (list ,@(mapcan
+					       (lambda (x)
+						 `((list ',(pop x) ',(pop x) ',(mapcar 'export-type (car x)))))
+					       (cadr z)))
+				      ,(caddr z)))
+			     (car y))))
+		s)
 	       (terpri s))
 	     *inl-hash*))
   nil)
