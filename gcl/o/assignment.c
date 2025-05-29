@@ -184,7 +184,7 @@ DEFUN("FSET",object,fSfset,SI,2,2,NONE,OO,OO,OO,OO,(object sym,object function),
     sym->s.s_gfdef = function;
     sym->s.s_mflag = TRUE;
   } else {
-    sym->s.s_gfdef = function;
+    sym->s.s_gfdef = function; /*FIXME*/
     sym->s.s_mflag = FALSE;
   }
   
