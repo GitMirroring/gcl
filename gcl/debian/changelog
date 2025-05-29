@@ -1,3 +1,10 @@
+gcl27 (2.7.1-7) unstable; urgency=medium
+
+  * Version_2_7_2pre6
+  * Bug fix: "[INTL:nl] Dutch debconf templates translation", thanks to Frans Spiesschaert (Closes: #1106482).
+
+ -- Camm Maguire <camm@debian.org>  Thu, 29 May 2025 19:11:18 -0400
+
 gcl27 (2.7.1-6) unstable; urgency=medium
 
   * Version_2_7_2pre5
