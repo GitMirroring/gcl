@@ -1001,25 +1001,25 @@ number_divide(object x, object y)
 
 	case t_complex:
 	COMPLEX:
-	{
-		object z1, z2, z3;
 
-		x = number_to_complex(x);
-		y = number_to_complex(y);
-		z1 = number_times(y->cmp.cmp_real, y->cmp.cmp_real);
-		z2 = number_times(y->cmp.cmp_imag, y->cmp.cmp_imag);
-		z3 = number_plus(z1, z2);
-		/* if (number_zerop(z3 = number_plus(z1, z2))) DIVISION_BY_ZERO(sLD,list(2,x,y)); */
-		z1 = number_times(x->cmp.cmp_real, y->cmp.cmp_real);
-		z2 = number_times(x->cmp.cmp_imag, y->cmp.cmp_imag);
-		z1 = number_plus(z1, z2);
-		z = number_times(x->cmp.cmp_imag, y->cmp.cmp_real);
-		z2 = number_times(x->cmp.cmp_real, y->cmp.cmp_imag);
-		z2 = number_minus(z, z2);
-		z1 = number_divide(z1, z3);
-		z2 = number_divide(z2, z3);
-		z = make_complex(z1, z2);
-		return(z);
+	  x = number_to_complex(x);
+	  y = number_to_complex(y);
+
+	{
+
+	  object yl=y->cmp.cmp_real,ys=y->cmp.cmp_imag,xl=x->cmp.cmp_real,xs=x->cmp.cmp_imag,r,dn,w;
+	  int s;
+
+	  if ((s=(number_compare(number_abs(y->cmp.cmp_real),number_abs(y->cmp.cmp_imag))<0))) {
+	    w=ys;ys=yl;yl=w;w=xs;xs=xl;xl=w;
+	  }
+
+	  r=number_divide(ys,yl);
+	  dn=number_plus(yl,number_times(r,ys));
+	  w=number_times(xl,r);
+
+	  return make_complex(number_divide(number_plus(xl,number_times(xs,r)),dn),
+			      number_divide(s ? number_minus(w,xs) : number_minus(xs,w),dn));
 	}
 
 	default:
