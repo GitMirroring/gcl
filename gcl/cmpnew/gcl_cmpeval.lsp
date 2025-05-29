@@ -713,7 +713,7 @@
 
 (defun prepend-comment (form s)
   (if *annotate*
-      (si::string-concatenate "/* " (prin1-to-string (subst #\a #\^@ form)) " */" (remove-comment s))
+      (si::string-concatenate "/* " (prin1-to-string form) " */" (remove-comment s))
       s))
 
 (defvar *apply-inl-hash* t)
