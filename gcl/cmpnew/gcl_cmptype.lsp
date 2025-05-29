@@ -731,7 +731,7 @@
 	  (keyed-cmpnote (list (var-name v) 'type-propagation 'type 'bump-cons-tp-if)
 			 "Bumping var ~s cons type ~s -> ~s, tp ~s"
 			 (var-name v) (cmp-unnorm-tp (var-type v)) (cmp-unnorm-tp (tp-or (var-type v) tp)) (cmp-unnorm-tp tp))
-	  (do-setq-tp v 'bump-cons-tp-if (tp-or (var-type v) tp))))
+	  (do-setq-tp v '(bump-cons-tp-if) (tp-or (var-type v) tp))))
       (let ((s (var-store v)))
 	(when (listp s);FIXME
 	  (dolist (b s)
