@@ -50,7 +50,7 @@ Unsigned versions available are:
 
 Complex float and complex double types can be access via:
 
-    :fcomplex :dcomples
+    :fcomplex :dcomplex
 
 Pointers to types available are
 
