@@ -183,10 +183,8 @@ DEFUN("FSET",object,fSfset,SI,2,2,NONE,OO,OO,OO,OO,(object sym,object function),
     function=function->c.c_cdr;
     sym->s.s_gfdef = function;
     sym->s.s_mflag = TRUE;
-  } else {
-    sym->s.s_gfdef = function; /*FIXME*/
-    sym->s.s_mflag = FALSE;
-  }
+  } else
+    FEerror("~s is not a function nor macro function designator.", 1,function);
   
   sym->s.s_sfdef=NOT_SPECIAL;/*FIXME?*/
   if (function->fun.fun_plist!=Cnil) {
