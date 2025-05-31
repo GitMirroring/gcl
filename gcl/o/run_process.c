@@ -574,8 +574,6 @@ spawn_process_with_streams(object istream,object ostream,char *pname,char **argv
     close(fileno(istream->sm.sm_fp));
     close(fileno(ostream->sm.sm_fp));
 
-    emsg("\n***** Spawning process %s ", pname);
-
     errno=0;
     execvp(pname,argv);
     _exit(128|(errno&0x7f));
