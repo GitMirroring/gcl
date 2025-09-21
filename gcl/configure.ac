@@ -170,6 +170,34 @@ fi
 AC_SUBST(GCL_CC)
 AC_SUBST(CPP)
 
+add_arg_to_cppflags() {
+
+    AC_MSG_CHECKING([for CPPFLAG $1])
+    CPPFLAGS_ORI=$CPPFLAGS
+    CPPFLAGS="$CPPFLAGS -Werror $1 `echo $1|sed 's,-Wno-,-W,1'`"
+    AC_RUN_IFELSE(
+	[AC_LANG_PROGRAM([[]],[[]])],
+	[CPPFLAGS="$CPPFLAGS_ORI $1";AC_MSG_RESULT([yes]);return 0],
+	[AC_MSG_RESULT([no])],
+	[AC_MSG_RESULT([no])])
+    CPPFLAGS=$CPPFLAGS_ORI
+    return 1
+
+}
+
+assert_arg_to_cppflags() {
+    if ! add_arg_to_cppflags $1 ; then AC_MSG_RESULT([cannot add $1 to CPPFLAGS]); exit 1 ; fi
+    return 0
+}
+
+add_args_to_cppflags() {
+
+    while test "$#" -ge 1 ; do
+  	add_arg_to_cppflags $1
+	shift
+    done
+}
+
 add_arg_to_cflags() {
 
     AC_MSG_CHECKING([for CFLAG $1])
@@ -241,6 +269,8 @@ remove_arg_from_ldflags() {
     return 0
 
 }
+
+add_args_to_cppflags -std=gnu17
 
 add_args_to_cflags  -fsigned-char -pipe -fcommon \
                     -fno-builtin-malloc -fno-builtin-free \
