@@ -174,6 +174,9 @@
      i x y z))
   (7 3 2 1) 3 1 2 3)
 
+(deftest stable-sort.order.3
+    (stable-sort "A1A2A3A4A5A6a1a2a3a4a5a6" 'char-lessp)
+  "112233445566AAAAAAaaaaaa")
 
 ;;; Error cases
 

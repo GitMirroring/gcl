@@ -384,17 +384,17 @@
 		  (push ns ii) (push ns1 ii))
 		(setq ls nls fi nfi))))))))
 
-
 (defun stable-sort (sequence predicate &key key)
   (declare (optimize (safety 1)))
   (check-type sequence proper-sequence)
-  (typecase 
-   sequence
-   (list (list-merge-sort sequence predicate key))
-   (string (sort sequence predicate :key key))
-   (bit-vector (sort sequence predicate :key key))
-   (otherwise 
-    (replace sequence (list-merge-sort (coerce sequence 'list) predicate key)))))
+  (if (listp sequence)
+      (list-merge-sort sequence predicate key)
+      (let (r rp)
+	(dotimes (i (length sequence))
+	  (let ((tmp (cons (aref sequence i) nil)))
+	    (declare (dynamic-extent tmp))
+	    (setq rp (if rp (cdr (rplacd rp tmp)) (setq r tmp)))))
+	(replace sequence (list-merge-sort r predicate key)))))
 
 (eval-when (compile eval)
   (defmacro f+ (x y) `(the fixnum (+ (the fixnum ,x) (the fixnum ,y))))
