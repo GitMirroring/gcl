@@ -6,7 +6,7 @@
 	  non-negative-short-float negative-long-float positive-long-float
 	  non-positive-long-float non-negative-long-float negative-float
 	  positive-float non-positive-float non-negative-float negative-real
-	  positive-real non-positive-real non-negative-real complex*
+	  positive-real non-positive-real non-negative-real complex* pathname-designator
 	  complex-integer complex-integer-ratio complex-ratio-integer seqind seqbnd
 	  complex-ratio complex-short-float complex-long-float make-complex unordered));FIXME
 

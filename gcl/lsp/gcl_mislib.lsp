@@ -104,9 +104,6 @@
   (decode-universal-time (get-universal-time)))
 
 ;Courtesy Paul Dietz
-(defun compile-file-pathname (pathname)
-  (declare (optimize (safety 2)))
-  (make-pathname :defaults pathname :type "o"))
 
 (defun constantly (x)
   (declare (optimize (safety 2)))

@@ -180,12 +180,23 @@
 		(when tem (truename tem))))))
 	 ((setf (car *split-files*) (+ (third *split-files*) section-length))))))
 
+(defun pathname-type-prefix (tp)
+  (if (stringp tp) (subseq tp 0 (1+ (string-match #v"\\.[^\\.]*$" tp))) ""))
+
+(defun compile-file-pathname (pathname &key output-file &allow-other-keys)
+  (declare (optimize (safety 1)))
+  (check-type pathname pathname-designator)
+  (check-type output-file (or null pathname-designator))
+  (or output-file
+      (make-pathname :defaults pathname
+		     :type (strcat (pathname-type-prefix (pathname-type pathname)) "o"))))
+
 (defvar *init-name* nil)
 (defvar *function-filename* nil)
 (defvar *c-debug* nil)
 (defvar *dump-inl-hash* nil)
 (defun compile-file1 (input-pathname
-                      &key (output-file (merge-pathnames ".o" (truename input-pathname)))
+                      &key (output-file (compile-file-pathname (truename input-pathname)))
                            (o-file t)
                            (c-file *default-c-file*)
                            (h-file *default-h-file*)
@@ -242,12 +253,9 @@ Cannot compile ~a.~%" (namestring (merge-pathnames input-pathname *compiler-defa
    (when (consp *split-files*)
      (file-position *compiler-input* (third *split-files*))
      (setq output-file
-	   (make-pathname :device (pathname-device output-file)
-			  :directory (pathname-directory output-file)
-			  :name (format nil "~a~a"
-					(pathname-name output-file)
-					(length (second *split-files*)))
-			  :type "o")))
+	   (merge-pathnames
+	    (format nil "~a~a" (pathname-name output-file) (length (second *split-files*)))
+	    output-file)))
    
    (with-open-file (s output-file :if-does-not-exist :create))
    (setq *init-name* (init-name output-file t))
@@ -256,16 +264,15 @@ Cannot compile ~a.~%" (namestring (merge-pathnames input-pathname *compiler-defa
 			       (namestring (truename (pathname *compiler-input*)))))
 
    (let* ((eof (cons nil nil))
-	  (dir    (or (unless (null output-file) (pathname-directory output-file)) (pathname-directory input-pathname)))
-	  (name   (or (unless (null output-file) (pathname-name output-file)) (pathname-name input-pathname)))
-	  (tp     (or (unless (null output-file) (pathname-type output-file)) "o"))
-	  (device (or (unless (null output-file) (pathname-device output-file)) (pathname-device input-pathname)))
-	  (o-pathname (get-output-pathname o-file tp name dir device))
-	  (c-pathname (get-output-pathname c-file "c" name dir device))
-	  (h-pathname (get-output-pathname h-file "h" name dir device))
-	  (data-pathname (get-output-pathname data-file "data" name dir device)))
-
-    (declare (special dir name));FIXME
+	  (device (pathname-device output-file))
+	  (dir (pathname-directory output-file))
+	  (name (pathname-name output-file))
+	  (typ (pathname-type output-file))
+	  (tp (pathname-type-prefix typ))
+	  (o-pathname (get-output-pathname o-file typ name dir device))
+	  (c-pathname (get-output-pathname c-file (strcat tp "c") name dir device))
+	  (h-pathname (get-output-pathname h-file (strcat tp "h") name dir device))
+	  (data-pathname (get-output-pathname data-file (strcat tp "data") name dir device)))
 
     (init-env)
 
