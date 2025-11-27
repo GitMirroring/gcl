@@ -1,7 +1,15 @@
 #!/bin/bash
 
-touch aclocal.m4 \
+SLEEP=$1
+
+for i in aclocal.m4 \
       configure.ac gcl-tk/gcltksrv.in bin/gcl.in unixport/init_raw.lsp.in h/gclincl.h.in \
       configure \
       Makefile.am Makefile.in \
-      info/gcl.info info/gcl-si.info info/gcl-tk.info info/gcl-dwdoc.info
+      info/gcl.info info/gcl-si.info info/gcl-tk.info info/gcl-dwdoc.info ; do
+    touch $i
+    if [ "$SLEEP" != "" ] ; then
+	echo $i
+	sleep $SLEEP
+    fi
+done
