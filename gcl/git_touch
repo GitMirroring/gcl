@@ -2,8 +2,8 @@
 
 SLEEP=$1
 
-for i in aclocal.m4 \
-      configure.ac gcl-tk/gcltksrv.in bin/gcl.in unixport/init_raw.lsp.in h/gclincl.h.in \
+for i in  \
+      configure.ac aclocal.m4 gcl-tk/gcltksrv.in bin/gcl.in unixport/init_raw.lsp.in h/gclincl.h.in \
       configure \
       Makefile.am Makefile.in \
       info/gcl.info info/gcl-si.info info/gcl-tk.info info/gcl-dwdoc.info ; do
