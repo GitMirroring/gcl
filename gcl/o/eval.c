@@ -68,7 +68,7 @@ object sSAbreak_stepA;
 
 #include "apply_n.h"
 
-static object
+object
 quick_call_function_vec(object fun,ufixnum n,object *b) {
 
   return c_apply_n_fun(fun,n,b);

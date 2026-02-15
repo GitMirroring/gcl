@@ -225,8 +225,6 @@ clean_link_array(object *ar, object *ar_end) {
   return(i*sizeof(object *));
 }
 
-#include "apply_n.h"    
-
 DEFVAR("*FAST-LINK-WARNINGS*",sSAfast_link_warningsA,SI,Cnil,"");
 
 #include "pbits.h"
@@ -354,7 +352,7 @@ call_proc_new(object sym,ufixnum clp,ufixnum vld,void **link,ufixnum argd,object
     if (sSAprofilingA->s.s_dbind!=Cnil)
       sSout_call->s.s_gfdef->fun.fun_self(fSgettimeofday());
     
-    return(c_apply_n_fun(fun,x-tmp,tmp));
+    return(quick_call_function_vec(fun,x-tmp,tmp));
 
   } else {
     
