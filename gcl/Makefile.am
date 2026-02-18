@@ -129,7 +129,7 @@ BASE_H= h/compbas2.h h/compbas.h h/compprotos.h h/cstack.h h/enum.h h/error.h h/
 	h/funlink.h h/globals.h h/gmp_wrappers.h h/immnum.h h/include.h h/lex.h h/linux.h h/lu.h h/make-init.h \
 	h/mp.h h/notcomp.h h/num_include.h h/object.h h/options.h h/page.h h/pageinfo.h h/pbits.h h/pool.h \
 	h/prelink.h h/protoize.h h/ptable.h h/rgbc.h h/sfun_argd.h h/stacks.h h/type.h h/usig.h h/vs.h \
-        h/writable.h o/regexp.h h/arth.h h/bsd.h h/bds.h h/att_ext.h h/bfdef.h h/compat.h h/apply_n.h \
+        h/writable.h o/regexp.h h/arth.h h/bsd.h h/bds.h h/att_ext.h h/bfdef.h h/compat.h \
 	gcl-tk/sheader.h h/make-decl.h h/defun.h o/ntheap.h
 CMPI_H=	h/compdefs.h h/cmpincl1.h h/mgmp.h h/compprotos.h h/compbas2.h h/cmponly_last.h
 ARCHT_H=h/elf32_armhf_reloc.h h/elf32_armhf_reloc_special.h h/elf32_arm_reloc.h h/elf32_arm_reloc_special.h \
