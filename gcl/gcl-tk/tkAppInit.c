@@ -61,8 +61,7 @@ int *tclDummyMainPtr = (int *) main;
  */
 
 int
-Tcl_AppInit(interp)
-    Tcl_Interp *interp;		/* Interpreter for application. */
+Tcl_AppInit(Tcl_Interp *interp)/* Interpreter for application. */
 {
     Tk_Window mmain;
 /*
