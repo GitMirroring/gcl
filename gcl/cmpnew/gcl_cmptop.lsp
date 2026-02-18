@@ -338,19 +338,8 @@
 
       (when (eq type 'proclaimed-closure)
 	(wt-h "static object *Lclptr"num";"))
-      
-      (if (and (not (null type))
-	       (not (eq type 'proclaimed-closure))
-	       (or args (not (eq t type))))
-	  (progn
-	    (wt-h "static " d " LnkT" num "(object,...);")
-	    #-sgi3d (wt-h "static "  d " (*Lnk" num ")() = ("
-			  d "(*)()) LnkT" num ";")
-	    #+sgi3d (wt-h "static "  d " (*Lnk" num ")();"))
-	(progn 
-	  (wt-h "static " d " LnkT" num "();")
-	  #-sgi3d (wt-h "static "  d " (*Lnk" num ")() = LnkT" num ";")
-	  #+sgi3d (wt-h "static "  d " (*Lnk" num ")();"))))))
+      (wt-h (stub-decl (concatenate 'string "LnkT" num) args d) ";")
+      (wt-h (stub-decl (concatenate 'string "(*Lnk" num ")") args d) "=LnkT" num ";"))))
 
 
 ;; this default will be as close to the the decision of the x3j13 committee
@@ -1127,19 +1116,34 @@
     (let ((x (position x +c-global-arg-types+ :test 'type<=)))
       (if x (1+ x) 0))))
 
-(defconstant +max-typed-args+
-  (let ((x (cdr (tp-bnds (cadr (si::sig 'c-function-argd))))))
-    (if (typep x 'fixnum) (1- (truncate (integer-length x) 2)) 0)))
+(defun argd-sz nil
+  (labels ((ff (x) (when (consp x) (if (eq (car x) 'the) (cdr (tp-bnds (cmp-norm-tp (cadr x)))) (or (ff (car x)) (ff (cdr x)))))))
+    (ff (fle 'c-function-argd))))
+
+(defconstant +real-max-typed-args+
+  (labels ((ret-max (x)
+	     (when (consp x)
+	       (if (eq (car x) 'the)
+		   (1- (truncate (integer-length (cdr (tp-bnds (cmp-norm-tp (cadr x))))) 2))
+		   (or (ret-max (car x)) (ret-max (cdr x)))))))
+    (ret-max (fle 'c-function-argd))))
+    
+(defconstant +max-typed-args+ #+pre-gcl 0 #-pre-gcl +real-max-typed-args+)
 
 (defun adj-call-tps-max (tps &aux (i -1))
   (mapcar (lambda (x) (type-or1 (>= (incf i) +max-typed-args+) x)) tps))
 
-(defun new-proclaimed-argd (args return)
-  (do* ((type (f-type return) (f-type (pop args)))
-	(i 0 (+ 2 i))
-	(ans type (logior ans (ash type i))))
-       ((or (>= i #.(ash +max-typed-args+ 1)) (null args))
-	(the (unsigned-byte #.(1+ (ash +max-typed-args+ 1))) ans))))
+(defun new-proclaimed-argd (args return &aux (i 0))
+  (reduce (lambda (y x &aux (j (incf i)))
+	    (if (> j +max-typed-args+) y (logior y (ash (f-type x) (ash j 1)))));FIXME fragile wrt pre-gcl
+	  args :initial-value (f-type return)))
+
+;; (defun new-proclaimed-argd (args return)
+;;   (do* ((type (f-type return) (f-type (pop args)))
+;; 	(i 0 (+ 2 i))
+;; 	(ans type (logior ans (ash type i))))
+;;        ((or (>= i #.(ash +max-typed-args+ 1)) (null args))
+;; 	(the (unsigned-byte #.(ash (1+ +real-max-typed-args+) 1)) ans))))
 
 (defun type-f (x)
   (declare (fixnum x))

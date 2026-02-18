@@ -240,15 +240,14 @@ typedef union {
   fw f;
 } fu;
 
+
 object
-call_proc_new(object sym,ufixnum clp,ufixnum vld,void **link,ufixnum argd,object first,va_list ll) {
+call_proc_new23(object sym,ufixnum clp,ufixnum vld,void **link,ufixnum argd,object *x) {
 
   object fun;
   enum type tp;
   ufixnum margs,nargs,fas,do_link,varg,pushed=0,nfargs;
   fixnum vald;
-  object *tmp,*x/* ,*p */;
-  int i;
   fu u;
 
   if (type_of(sym)==t_symbol) {
@@ -260,7 +259,7 @@ call_proc_new(object sym,ufixnum clp,ufixnum vld,void **link,ufixnum argd,object
   tp=type_of(fun);
 
   u.i=vld;
-  
+
   /* p=0; */
   if (u.f.pu) {
     u.f.ma=vs_top-vs_base;
@@ -268,22 +267,12 @@ call_proc_new(object sym,ufixnum clp,ufixnum vld,void **link,ufixnum argd,object
     /* p=vs_base; */
     pushed=1;
   }
-  
+
   margs=u.f.ma;
   varg=u.f.va;
   nargs=u.f.va ? abs(VFUN_NARGS) : margs;
   nfargs=u.f.va && VFUN_NARGS<0 ? nargs-1 : nargs;
   vald=!u.f.vv ? -(fixnum)u.f.nv : u.f.nv;
-  
-  x=tmp=(u.f.pu && !fun->fun.fun_argd && VFUN_NARGS>=fun->fun.fun_minarg) ? 
-    vs_base : ZALLOCA(nargs*sizeof(object));
-  
-  if (tmp!=vs_base) {
-    if (u.f.pu) 
-      memcpy(tmp,vs_base,nargs*sizeof(*tmp));
-    else for (i=0;i<nargs;i++)
-	   *x++=(i || u.f.nf) ? va_arg(ll,object) : first;
-  }
 
   /*FIXME: Problem here relying on VFUN_NARGS or fcall.fun or FUN_VALP might foil sharing these links in different contexts*/
   /*links currently shared by rt at clp apnarg, so VFUN_NARGS<0 is safe*/
@@ -350,12 +339,12 @@ call_proc_new(object sym,ufixnum clp,ufixnum vld,void **link,ufixnum argd,object
     }
 
     if (sSAprofilingA->s.s_dbind!=Cnil)
-      sSout_call->s.s_gfdef->fun.fun_self(fSgettimeofday());
-    
-    return(quick_call_function_vec(fun,x-tmp,tmp));
+      ((object (*)(object))sSout_call->s.s_gfdef->fun.fun_self)(fSgettimeofday());
+
+    return(quick_call_function_vec(fun,nargs,x));
 
   } else {
-    
+
     object res;
     register object *base,*old_top;
     enum ftype result_type;
@@ -368,17 +357,17 @@ call_proc_new(object sym,ufixnum clp,ufixnum vld,void **link,ufixnum argd,object
     if (vald || u.f.vv) larg=(fixnum)fcall.valp;
 
     if (!pushed) {
-      
+
       object y;
-      
+
       vs_base=vs_top; /*???*/
 
       for (i=0;i<nargs;i++) {
-	
+
 	enum ftype typ;
 
-	y=tmp[i];
-	
+	y=x[i];
+
 	switch((typ=POP_BITS(argd,2))) {
 	case f_fixnum:
 	  y=make_fixnum((fixnum)y);
@@ -386,15 +375,15 @@ call_proc_new(object sym,ufixnum clp,ufixnum vld,void **link,ufixnum argd,object
 	default:
 	  break;
 	}
-	
+
 	vs_push(y);
-	
+
       }
 
       if (u.f.va && VFUN_NARGS<0)
 	for (y=*--vs_top;y!=Cnil;y=y->c.c_cdr)
 	  vs_push(y->c.c_car);
-      
+
       vs_check;
 
     }
@@ -402,7 +391,7 @@ call_proc_new(object sym,ufixnum clp,ufixnum vld,void **link,ufixnum argd,object
     base=vs_base;
     old_top=vs_top;
     funcall(fun);
-    
+
     res=vs_base[0];
     if (larg) {
       object *tmp=vs_base+1,*tl=(void *)larg,*tle=tl+labs(vald);/*FIXME avoid if pushed*/
@@ -416,7 +405,7 @@ call_proc_new(object sym,ufixnum clp,ufixnum vld,void **link,ufixnum argd,object
       vs_top=base;
 
     for (;--old_top>=vs_top && vs_top>=vs_org;) *old_top=Cnil;
-    
+
     switch(result_type) {
     case f_fixnum:
       res=(object)fix(res);
@@ -424,48 +413,26 @@ call_proc_new(object sym,ufixnum clp,ufixnum vld,void **link,ufixnum argd,object
     default:
       break;
     }
-    
+
     if (sSAprofilingA->s.s_dbind!=Cnil)
-      sSout_call->s.s_gfdef->fun.fun_self(fSgettimeofday());
+      ((object (*)(object))sSout_call->s.s_gfdef->fun.fun_self)(fSgettimeofday());
 
     return res;
-    
+
   }
 
 }
-object
-call_proc_new_nval(object sym,ufixnum clp,ufixnum vld,void **link,ufixnum argd,object first,...) {
-  object x;
-  va_list b;
-  va_start(b,first);
-  x=call_proc_new(sym,clp,vld,link,argd,first,b);
-  va_end(b);
-  return x;
-}
-
-object
-call_proc_cs1(object fun,...) {
-  register object res;
-  ufixnum vald;
-  va_list ap;
-  va_start(ap,fun);
-  vald=((31<<12)|(1<<17)|(1<<18)|(1<<20));
-  res=call_proc_new(fun,1,vald,0,0,0,ap);
-  va_end(ap);
-  return res;
-}
-
 
 object
 call_proc_cs2(object first,...) {
-  register object res;
-  ufixnum vald;
+  int i,nargs=abs(VFUN_NARGS);
+  register object res,*x=alloca(nargs);
   va_list ap;
   object fun=fcall.fun;
   va_start(ap,first);
-  vald=((31<<12)|(1<<17)|(1<<18));
-  res=call_proc_new(fun,1,vald,0,0,first,ap);
+  for (i=0;i<nargs;i++) x[i]=i ? va_arg(ap,object) : first;
   va_end(ap);
+  res=call_proc_new23(fun,1,((31<<12)|(1<<17)|(1<<18)),0,0,x);
   return res;
 }
 

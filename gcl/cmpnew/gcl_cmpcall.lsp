@@ -52,6 +52,75 @@
 (defvar  *use-sfuncall* t)
 (defvar *super-funcall* nil)
 
+;; (defun c2funcall (funob args &optional loc)
+
+;;   (unless (listp args)
+;;     (if *compiler-push-events*
+;; 	(wt-nl "super_funcall(" loc ");")
+;;       (if *super-funcall*
+;; 	  (funcall *super-funcall* loc)
+;; 	(wt-nl "super_funcall_no_event(" loc ");")))
+;;     (unwind-exit 'fun-val)
+;;     (return-from c2funcall nil))
+
+;;   (unless (eq 'ordinary (car funob)) (baboon))
+
+;;   (let* ((fn (caddr funob))
+;; 	 (all (cons fn args))
+;; 	 (*inline-blocks* 0))
+;;     (setq *sup-used* t)
+;;     (unwind-exit 
+;;      (get-inline-loc
+;;       (list (make-list (length all) :initial-element t)
+;; 	    '* #.(flags ans set svt) 
+;; 	    (concatenate 'string
+;; 	    "({object _z,_f=#0;fixnum _v=(fixnum)#v;
+;;         fcall.fun=_f;fcall.valp=_v;fcall.argd=#n-1;
+;;         _z=Rset && !(_f)->fun.fun_argd &&
+;;         fcall.argd>=(_f)->fun.fun_minarg && fcall.argd<=((_f)->fun.fun_maxarg) ?
+;;         "
+;; 	    (if args
+;; 		"(_f)->fun.fun_self(#*)"
+;; 	      "((_f)->fun.fun_maxarg ? (_f)->fun.fun_self(#?) : (_f)->fun.fun_self(#*))")
+;; 	    " : call_proc_cs2(#?);
+;;            if (!(_f)->fun.fun_neval && !(_f)->fun.fun_vv) vs_top=_v ? (object *)_v : sup;
+;;            _z;})")) all))
+;;     (close-inline-blocks)))
+
+;; (defun c2funcall (funob args &optional loc)
+
+;;   (unless (listp args)
+;;     (if *compiler-push-events*
+;; 	(wt-nl "super_funcall(" loc ");")
+;;       (if *super-funcall*
+;; 	  (funcall *super-funcall* loc)
+;; 	(wt-nl "super_funcall_no_event(" loc ");")))
+;;     (unwind-exit 'fun-val)
+;;     (return-from c2funcall nil))
+
+;;   (unless (eq 'ordinary (car funob)) (baboon))
+
+;;   (let* ((fn (caddr funob))
+;; 	 (all (cons fn args))
+;; 	 (*inline-blocks* 0))
+;;     (setq *sup-used* t)
+;;     (unwind-exit 
+;;      (get-inline-loc
+;;       (list (make-list (length all) :initial-element t)
+;; 	    '* #.(flags ans set svt) 
+;; 	    (concatenate 'string
+;; 	    "({object _z,_f=#0;fixnum _v=(fixnum)#v;
+;;         fcall.fun=_f;fcall.valp=_v;fcall.argd=#n-1;
+;;         _z=Rset && !(_f)->fun.fun_argd &&
+;;         fcall.argd>=(_f)->fun.fun_minarg && fcall.argd<=((_f)->fun.fun_maxarg) ?
+;;         ({object _b[]={#*};
+;;           quick_call_function_vec(_f,sizeof(_b)/sizeof(*_b),_b);}) :
+;;         call_proc_cs2(#?);
+;;         if (!(_f)->fun.fun_neval && !(_f)->fun.fun_vv) vs_top=_v ? (object *)_v : sup;
+;;         _z;})")) all))
+;;     (close-inline-blocks)))
+
+
 (defun c2funcall (funob args &optional loc)
 
   (unless (listp args)
@@ -67,24 +136,31 @@
 
   (let* ((fn (caddr funob))
 	 (all (cons fn args))
+	 (la1 (1- (length all)))
 	 (*inline-blocks* 0))
     (setq *sup-used* t)
     (unwind-exit 
      (get-inline-loc
       (list (make-list (length all) :initial-element t)
 	    '* #.(flags ans set svt) 
-	    (concatenate 'string
-	    "({object _z,_f=#0;fixnum _v=(fixnum)#v;
-        fcall.fun=_f;fcall.valp=_v;fcall.argd=#n-1;
-        _z=Rset && !(_f)->fun.fun_argd &&
-        fcall.argd>=(_f)->fun.fun_minarg && fcall.argd<=((_f)->fun.fun_maxarg) ?
-        "
-	    (if args
-		"(_f)->fun.fun_self(#*)"
-	      "((_f)->fun.fun_maxarg ? (_f)->fun.fun_self(#?) : (_f)->fun.fun_self(#*))")
-	    " : call_proc_cs2(#?);
-           if (!(_f)->fun.fun_neval && !(_f)->fun.fun_vv) vs_top=_v ? (object *)_v : sup;
-           _z;})")) all))
+	    (ms
+	    "({object _z,_f=fcall.fun=#0;fixnum _v=fcall.valp=(fixnum)#v;char _n=fcall.argd=#n-1;
+        _n=Rset && !(_f)->fun.fun_argd && _n>=(_f)->fun.fun_minarg && _n<=((_f)->fun.fun_maxarg) ? _n : -64;
+        switch ((_f)->fun.fun_minarg-_n) {
+            case 0: _z=(_f)->fun.fun_minarg==(_f)->fun.fun_maxarg ?
+                       (" (gcst la1) "_f->fun.fun_self)(#*) :
+                       (" (gcst (max 1 la1) t) "_f->fun.fun_self)(#?);break;
+            "
+	    (let ((i 0))
+	      (mapcan (lambda (x &aux (j (decf i)))
+			(declare (ignore x))
+			(list "case " (write-to-string j) ": _z=(" (gcst (max 1 (+ j la1)) t) "_f->fun.fun_self)(#?);break;
+            "))
+		      (make-list (max 0 la1))))
+	    "default: _z=call_proc_cs2(#?);break;
+        }
+        if (!(_f)->fun.fun_neval && !(_f)->fun.fun_vv) vs_top=_v ? (object *)_v : sup;
+        _z;})")) all))
     (close-inline-blocks)))
 
 
@@ -391,6 +467,63 @@
 
 ;;make a function which will be called hopefully only once,
 ;;and will establish the link.
+
+(defun stub-decl (name args d &optional vp
+		  &aux (i 0))
+  (concatenate
+   'string
+   "static " d " " name ;" LnkT" num
+   "("
+   (apply 'concatenate 'string
+	  (mapcan (lambda (x)
+		    (if (eq x '*)
+			(list ",...")
+			(list (if (plusp i) ","  "")
+			      (rep-type x)
+			      (progn (incf i) (if vp (concatenate 'string "x" (write-to-string i)) "")))))
+		  (if (eq (car args) '*) (cons t args) args)))
+   ")"))
+
+
+(defun stub (num name args type clp
+	     &aux (va (eq '* (car (last args)))) (n (if va 1 0))(i (max n (- (length args) n)));FIXME
+	       (d (declaration-type (rep-type (if (link-arg-p type) type t)))))
+  (concatenate
+   'string
+   (stub-decl (concatenate 'string "LnkT" num) args d t)
+   "{
+      int nargs=" (if va "fcall.argd<0 ? -fcall.argd : fcall.argd" (write-to-string i)) ";
+      object *FOO=alloca(nargs*sizeof(*FOO));
+      "
+
+   (let ((j 0))
+     (apply 'concatenate 'string
+	    (mapcan (lambda (x &aux (sj (write-to-string (incf j))))
+		      (declare (ignore x))
+		      (list "FOO[" sj "-1]=(object)x" sj ";"))
+		    (make-list i))))
+   (when va
+     (concatenate
+      'string
+      "
+      {
+          va_list ap;
+          va_start(ap,x" (write-to-string i) ");
+          int i;
+          for (i=" (write-to-string i) ";i<nargs;i++) FOO[i]=va_arg(ap,object);
+          va_end(ap);
+      }"))
+
+   "
+      return (" d ")call_proc_new23("
+   (vv-str name) ","
+   (if clp "1" "0") ","
+   (write-to-string (argsizes args type 0)) ","
+   "(void **)(void *)&Lnk" num ","
+   (write-to-string (new-proclaimed-argd args type)) ","
+   "FOO);
+}"))
+
 (defun wt-function-link (x)
   (let* ((name (pop x))
 	 (num (pop x))
@@ -400,27 +533,11 @@
 	 (args (pop x))
 	 (clp (pop x)))
     (declare (ignore n))
-    (cond
-      (t
-       ;;change later to include above.
-       ;;(setq type (cdr (assoc type '((t . "object")(:btpr . "bptr")))))
-       (wt-nl1 "static " (declaration-type (rep-type type)) " LnkT" num)
-       (let ((d (declaration-type (rep-type (if (link-arg-p type) type t)))));FIXME
-	 (if (or args (not (eq t type)))
-	     (wt "(object first,...){" d "V1;va_list ap;va_start(ap,first);V1=(" d ")"
-		 "call_proc_new(" (vv-str name) "," (if clp "1" "0") ","
-		 (write-to-string (argsizes args type 0));FIXME
-		 ",(void **)(void *)&Lnk" num "," (new-proclaimed-argd args type)
-		 ",first,ap);va_end(ap);return V1;}")
-	   (wt "(){" d "V1=(" d ")call_proc_new_nval(" (vv-str name) "," (if clp "1" "0") ","
-	       (write-to-string (argsizes args type 0));FIXME
-	       ",(void **)(void *)&Lnk" num "," (new-proclaimed-argd args type)
-	       ",0);return V1;}")))))
+    (wt-nl1)
+    (wt (stub num name args type clp))
     (setq name (function-string name))
     (if (find #\/ name) (setq name (remove #\/ name)))
     (wt " /* " name " */")))
-      
-
 
 ;;For funcalling when the argument is guaranteed to be a compiled-function.
 ;;For (funcall-c he 3 4), he being a compiled function. (not a symbol)!

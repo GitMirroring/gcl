@@ -111,23 +111,26 @@
 ;;             stream)
 ;;       (list 'call-global info 'terpri (list stream))))
 
+(defun gcst (n &optional e)
+  (ms "(object(*)(" (cdr (mapcan (lambda (x) (declare (ignore x)) (list "," "object")) (make-list n))) (when e ",...") "))"))
 
 (defun c2apply (funob args)
   (unless (eq 'ordinary (car funob)) (baboon))
   (let* ((fn (caddr funob))
 	 (all (cons fn args))
+	 (la2 (- (length all) 2))
 	 (*inline-blocks* 0))
     (setq *sup-used* t)
     (unwind-exit
      (get-inline-loc
       (list (make-list (length all) :initial-element t)
 	    '* #.(flags ans set svt)
-	    (concatenate
-	     'string
+	    (ms
 	     "({fixnum _v=(fixnum)#v;object _z,_f=(#0),_l=(#1),_ll=_l;
         object _x4=Cnil,_x3=Cnil,_x2=Cnil,_x1=Cnil,_x0=Cnil;
-        char _m=(#n-2),_q=_f->fun.fun_minarg>_m ? _f->fun.fun_minarg-_m : 0;
-        char _n=Rset && !_f->fun.fun_argd ? _q : -1;
+        char _m=(#n-2),_q=_f->fun.fun_minarg-_m;
+        char _n=Rset && !_f->fun.fun_argd ? _q : -64;
+        char _reg=_f->fun.fun_minarg==_f->fun.fun_maxarg;
         fcall.fun=_f;fcall.valp=_v;fcall.argd=-(#n-1);
         switch (_n) {
           case 5: if (_l==Cnil) {_n=-1;break;} _x4=_l->c.c_car;_l=_l->c.c_cdr;
@@ -135,21 +138,30 @@
           case 3: if (_l==Cnil) {_n=-1;break;} _x2=_l->c.c_car;_l=_l->c.c_cdr;
           case 2: if (_l==Cnil) {_n=-1;break;} _x1=_l->c.c_car;_l=_l->c.c_cdr;
           case 1: if (_l==Cnil) {_n=-1;break;} _x0=_l->c.c_car;_l=_l->c.c_cdr;
-          case 0: if (_n+_m+(_l==Cnil ? 0 : 1)>_f->fun.fun_maxarg) _n=-1; else fcall.argd-=_n;
-          default: break;
+          case 0: if (_n+_m+(_l==Cnil ? 0 : 1)>_f->fun.fun_maxarg) _n=-64; else fcall.argd-=_n;
+          default: if (_m+(_l==Cnil ? 0 : 1)>_f->fun.fun_maxarg) _n=-64;break;
         }
         switch (_n) {
-          case 5:  _z=_f->fun.fun_self(#*_x4,_x3,_x2,_x1,_x0,_l);break;
-          case 4:  _z=_f->fun.fun_self(#*_x3,_x2,_x1,_x0,_l);break;
-          case 3:  _z=_f->fun.fun_self(#*_x2,_x1,_x0,_l);break;
-          case 2:  _z=_f->fun.fun_self(#*_x1,_x0,_l);break;
-          case 1:  _z=_f->fun.fun_self(#*_x0,_l);break;
-          case 0:  _z="
-	     (if (cdr args)
-		 "_f->fun.fun_self(#*_l)"
-	       "(_f->fun.fun_maxarg ? _f->fun.fun_self(#*_l) : _f->fun.fun_self())")
-	     ";break;
-          default: _z=call_proc_cs2(#*_ll);break;
+          case 5:  _z=_reg ? (" (gcst (+ 5 la2)) "_f->fun.fun_self)(#*_x4,_x3,_x2,_x1,_x0) :
+                             (" (gcst (+ 5 la2) t) "_f->fun.fun_self)(#*_x4,_x3,_x2,_x1,_x0,_l);break;
+          case 4:  _z=_reg ? (" (gcst (+ 4 la2)) "_f->fun.fun_self)(#*_x3,_x2,_x1,_x0) :
+                             (" (gcst (+ 4 la2) t) "_f->fun.fun_self)(#*_x3,_x2,_x1,_x0,_l);break;
+          case 3:  _z=_reg ? (" (gcst (+ 3 la2)) "_f->fun.fun_self)(#*_x2,_x1,_x0) :
+                             (" (gcst (+ 3 la2) t) "_f->fun.fun_self)(#*_x2,_x1,_x0,_l);break;
+          case 2:  _z=_reg ? (" (gcst (+ 2 la2)) "_f->fun.fun_self)(#*_x1,_x0) :
+                             (" (gcst (+ 2 la2) t) "_f->fun.fun_self)(#*_x1,_x0,_l);break;
+          case 1:  _z=_reg ? (" (gcst (+ 1 la2)) "_f->fun.fun_self)(#*_x0) :
+                             (" (gcst (+ 1 la2) t) "_f->fun.fun_self)(#*_x0,_l);break;
+          case 0:  _z=_reg ? (" (gcst (+ 0 la2)) "_f->fun.fun_self)(#*) :
+                             (" (gcst (max 1 (+ 0 la2)) t) "_f->fun.fun_self)(#*_l);break;
+          "
+				 (let ((i 0))
+				   (mapcan (lambda (x)
+					     (declare (ignore x))
+					     (list "case " (write-to-string (decf i)) ": _z=(" (gcst (max 1 (+ i la2)) t) "_f->fun.fun_self)(#*_l);break;
+          "))
+					   (make-list (max 0 la2))))
+          "default: _z=call_proc_cs2(#*_ll);break;
         }
         if (!(_f)->fun.fun_neval && !(_f)->fun.fun_vv) vs_top=_v ? (object *)_v : sup;
         _z;})"))
