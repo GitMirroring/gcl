@@ -29,7 +29,7 @@
 #define GCNT(P,n,m) P(n,m) Mjoin(GCNT_,IS_ONE_CHECK(n))(P,DEC(n),m)
 #define PPP1(n,m) object
 #define PPP2(n,m) x[MINUS(m,n)]
-#define CSTCL(m,n) case n*64+m: return ((object (*)(GCNT(PPP1,m,m),...))f)(GCNT(PPP2,n,n));
+#define CSTCL(m,n) case n*(MAX_ARGS+1)+m: return ((object (*)(GCNT(PPP1,m,m),...))f)(GCNT(PPP2,n,n));
 
 #define OGCNT_0(P,n,m) DEFER(OGCNT_ID)()(P,n,m)
 #define OGCNT_1(P,n,m) 
@@ -51,9 +51,9 @@ vc_apply_n(void *f, int n, object *x) {
 
   switch (n) {
 
-    EVAL(IPGCNT(OWLK,MAX_ARGS))/*FIXME +1?*/
-  case 0*64+1: return ((object (*)(object ,...))f)(OBJNULL);
-  default: FEerror("vc bar ~s",1,make_fixnum(n));
+    EVAL(IPGCNT(OWLK,MAX_ARGS))
+    case 0*(MAX_ARGS+1)+1: return ((object (*)(object ,...))f)(OBJNULL);
+    default: FEerror("vc bar ~s",1,make_fixnum(n));
 
   }
 
@@ -67,9 +67,9 @@ rc_apply_n(void *f, int n, object *x) {
 
   switch (n) {
 
-    EVAL(IPGCNT(PWLK,MAX_ARGS))/*FIXME +1?*/
-  case 0*64+0: return ((object (*)())f)();
-  default: FEerror("rc bar ~s",1,make_fixnum(n));
+    EVAL(IPGCNT(PWLK,MAX_ARGS))
+    case 0*(MAX_ARGS+1)+0: return ((object (*)())f)();
+    default: FEerror("rc bar ~s",1,make_fixnum(n));
 
   }
 
@@ -79,7 +79,7 @@ static inline object
 c_apply_n_fun(object fun,int n,object *b) {
 
   return fun->fun.fun_minarg<fun->fun.fun_maxarg ?
-    vc_apply_n(fun->fun.fun_self,n*64+(fun->fun.fun_minarg ? fun->fun.fun_minarg : 1),b) :
+    vc_apply_n(fun->fun.fun_self,n*(MAX_ARGS+1)+(fun->fun.fun_minarg ? fun->fun.fun_minarg : 1),b) :
     rc_apply_n(fun->fun.fun_self,n,b);
 
 }
