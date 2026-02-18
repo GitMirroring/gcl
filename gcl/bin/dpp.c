@@ -81,8 +81,6 @@
 #define	TRUE		1
 #define	FALSE		0
 
-typedef int bool;
-
 FILE *in, *out;
 
 char filename[BUFSIZ];

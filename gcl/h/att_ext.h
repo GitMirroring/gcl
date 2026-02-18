@@ -144,7 +144,6 @@ EXTER object FASL_string;
 /*  frame.c  */
 
 /*  gbc.c  */
-EXTER bool GBC_enable;
 
 #ifdef CAN_UNRANDOMIZE_SBRK
 EXTER bool gcl_unrandomized;

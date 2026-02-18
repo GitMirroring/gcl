@@ -10,7 +10,7 @@
 
 
 EXTER int *cs_org;     
-EXTER int GBC_enable;
+EXTER bool GBC_enable;
 
 #define CHAR_SIZE 8
 EXTER object sSAnotify_gbcA;
@@ -20,7 +20,7 @@ EXTER int interrupt_flag,interrupt_enable;
 /* void sigint(),sigalrm(); */
 
 
-EXTER int gc_enabled, saving_system;
+EXTER bool gc_enabled, saving_system;
 
 EXTER object lisp_package,user_package;
 EXTER char *core_end;

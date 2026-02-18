@@ -76,7 +76,7 @@ char stderr_buf[BUFSIZ + EXTRA_BUFSIZE];
 #include "stacks.h"
 
 int debug;			/* debug switch */
-int raw_image = TRUE;		/* raw or saved image -- CYGWIN will only place this in .data and not in .bss if initialized to non-zero */
+bool raw_image = TRUE;		/* raw or saved image -- CYGWIN will only place this in .data and not in .bss if initialized to non-zero */
 bool GBC_enable=FALSE;
 
 long real_maxpage;
