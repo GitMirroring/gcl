@@ -5,3 +5,6 @@
 /* #undef _setjmp */
 /* #define _setjmp ((int(*)(void *))dlsetjmp) */
 /* #endif */
+
+int setjmp(void *);
+int _setjmp(void *);

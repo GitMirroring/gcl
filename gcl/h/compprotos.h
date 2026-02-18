@@ -102,6 +102,4 @@ object file_stream(object);
 fixnum fixnum_expt(fixnum, fixnum);
 char *gcl_gets(char *,int);
 int gcl_puts(const char *);
-int setjmp();
-int _setjmp();
 char *object_to_string(object);
