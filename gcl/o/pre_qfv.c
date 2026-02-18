@@ -45,14 +45,19 @@
 #define PGCNT(P,n,m) P(n,m) Mjoin(PGCNT_,IS_ONE_CHECK(n))(P,DEC(n),m)
 #define IPGCNT(P,n) PGCNT(P,n,n)
 
+ufixnum maxargs_for_awk=MAX_ARGS;
 
 static inline object
 vc_apply_n(void *f, int n, object *x) {
 
+
   switch (n) {
 
-    EVAL(IPGCNT(OWLK,MAX_ARGS))
     case 0*(MAX_ARGS+1)+1: return ((object (*)(object ,...))f)(OBJNULL);
+
+    /*    EVAL(IPGCNT(OWLK,MAX_ARGS)) Too much memory on 32bit systems*/
+    awk_generated_vc_apply_n_lines;
+
     default: FEerror("vc bar ~s",1,make_fixnum(n));
 
   }
@@ -67,8 +72,9 @@ rc_apply_n(void *f, int n, object *x) {
 
   switch (n) {
 
-    EVAL(IPGCNT(PWLK,MAX_ARGS))
-    case 0*(MAX_ARGS+1)+0: return ((object (*)())f)();
+    /* EVAL(IPGCNT(PWLK,MAX_ARGS)) Too much memory on 32bit systems*/
+    awk_generated_rc_apply_n_lines;
+
     default: FEerror("rc bar ~s",1,make_fixnum(n));
 
   }

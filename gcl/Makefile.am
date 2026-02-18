@@ -456,9 +456,8 @@ h/cmpincludea.h: $(filter-out gclincl.h,$(CMPINCLUDE_FILES)) | h/gclincl.h # FIX
 		$(CPP) $(AM_CPPFLAGS) -P $(CPPFLAGS) - | \
 		$(AWK) '/^# |^$$|^#pragma/ {next}{print}' > $@
 
-o/qfv.c: o/pre_qfv.c h/new_decl.h
-	@echo Building C23 call table, make take a bit ...
-	$(CPP) $(AM_CPPFLAGS) -P $(CPPFLAGS) $< | sed 's,[ \t]case,\n\tcase,g' >$@
+o/qfv.c: o/pre_qfv.c h/new_decl.h bin/c23.awk
+	$(CPP) $(AM_CPPFLAGS) -P $(CPPFLAGS) $< | bin/c23.awk >$@
 
 h/cmpinclude.h: h/mcompdefs.h h/cmpincludea.h h/cmponly_last.h
 	@cat $^ >new_$(@F)
