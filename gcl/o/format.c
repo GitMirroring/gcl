@@ -52,7 +52,7 @@ static void
 fmt_semicolon(bool,bool);
 
 static void
-fmt_up_and_out(bool,bool);
+fmt_up_and_out(int,bool);
 
 static void
 fmt_justification(volatile bool,bool);
@@ -347,7 +347,8 @@ format(object fmt_stream0, int ctl_origin0, int ctl_end0)
 {
 	int c, n;
 	fixnum i,j,sn;
-	bool colon, atsign;
+	int colon;
+	bool atsign;
 	object x;
 	fmt_paramp = fmt_param;
 
@@ -2640,7 +2641,7 @@ fmt_justification(volatile bool colon, bool atsign)
 
 
 static void
-fmt_up_and_out(bool colon, bool atsign)
+fmt_up_and_out(int colon, bool atsign)
 {
   fixnum j,n;
   object x[3];
@@ -2720,7 +2721,8 @@ DEFUN("FORMAT",object,fLformat,LISP,2,F_ARG_LIMIT,NONE,OO,OO,OO,OO,(object strm,
   va_list ap; 
   VOL object x = OBJNULL;
   jmp_buf fmt_jmp_buf0;
-  bool colon, e;
+  int colon;
+  bool e;
   VOL fixnum nargs=INIT_NARGS(2);
   
   fmt_old;

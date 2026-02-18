@@ -556,7 +556,7 @@ static int char_capitalize(int c,int *bp) {
 
 @(static defun string_case (strng &key start end &aux conv)
 	int s=0, e=0, i;
-	bool b;
+	int b;
 @
 	strng = coerce_to_string(strng);
 	get_string_start_end(strng, start, end, &s, &e);
@@ -575,7 +575,7 @@ LFD(Lstring_capitalize)() { casefun = char_capitalize;  FFN(Lstring_case)(); }
 
 @(static defun nstring_case (strng &key start end)
 	int s=0, e=0, i;
-	bool b;
+	int b;
 @
 	check_type_string(&strng);
 	get_string_start_end(strng, start, end, &s, &e);
