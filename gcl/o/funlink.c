@@ -425,15 +425,17 @@ call_proc_new23(object sym,ufixnum clp,ufixnum vld,void **link,ufixnum argd,obje
 
 object
 call_proc_cs2(object first,...) {
+
   int i,nargs=abs(VFUN_NARGS);
-  register object res,*x=alloca(nargs);
+  object *x=alloca(nargs*sizeof(*x));
   va_list ap;
-  object fun=fcall.fun;
+
   va_start(ap,first);
   for (i=0;i<nargs;i++) x[i]=i ? va_arg(ap,object) : first;
   va_end(ap);
-  res=call_proc_new23(fun,1,((31<<12)|(1<<17)|(1<<18)),0,0,x);
-  return res;
+
+  return call_proc_new23(fcall.fun,1,((31<<12)|(1<<17)|(1<<18)),0,0,x);
+
 }
 
 
