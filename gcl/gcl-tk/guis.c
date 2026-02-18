@@ -93,7 +93,7 @@ int fDebugSockets;
 
 int hdl = -1;
 
-void TkX_Wish ();
+void TkX_Wish (int,char *[]);
 
 pid_t parent;
  
@@ -335,11 +335,7 @@ char *envp[];
 }
 
 struct connection_state *
-sock_connect_to_name(host_id,  name, async)
-     char *host_id;
-     int name;
-     int async;
-     
+sock_connect_to_name(char *host_id,int  name,int async)
 {
   struct sockaddr_in addr;
   int fd, n, rc;
@@ -360,8 +356,7 @@ sock_connect_to_name(host_id,  name, async)
 }
 
 void
-sock_close_connection(sfd)
-struct connection_state *sfd;     
+sock_close_connection(struct connection_state *sfd)
 {
   close( sfd->fd );
   free(sfd->read_buffer);
@@ -387,16 +382,8 @@ struct connection_state *sfd;
 static int message_id;
 
 int
-sock_write_str2( sfd, type, hdr,
-		hdrsize,text, length )
-
-struct connection_state *sfd;
-enum mtype type;
- char *hdr;
-int hdrsize;
-const char *text;
-int length;
-     
+sock_write_str2(struct connection_state *sfd,enum mtype type,char *hdr,
+		int hdrsize,const char *text,int length )
 {
   char buf[0x1000];
   char *p = buf;
@@ -447,10 +434,7 @@ int length;
 
 
 struct message_header *
-guiParseMsg1(sfd,buf,bufleng)
-  char *buf;
-int bufleng;
-struct connection_state *sfd;
+guiParseMsg1(struct connection_state *sfd,char *buf,int bufleng)
 { int m;
   int body_length;
   int tot;
@@ -489,12 +473,10 @@ error(s)
 }
 
 void
-write_timeout_error(s)
-     char *s;
+write_timeout_error(char *s)
 { fprintf(stderr,"write timeout: %s",s); abort();
 }
 void
-connection_failure(s)
-     char *s;
+connection_failure(char *s)
 { fprintf(stderr,"connection_failure:%s",s); abort();
 }

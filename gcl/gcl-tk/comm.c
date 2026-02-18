@@ -79,8 +79,7 @@ setup_connection_state(int fd)
 
 /* P is supposed to start with a hdr  and run N bytes. */
 static void
-scan_headers(sfd)
-     struct connection_state *sfd;
+scan_headers(struct connection_state *sfd)
 { struct our_header *hdr;
   char *p = sfd->valid_data + sfd->next_packet_offset;
   int n = sfd->valid_data_size - sfd->next_packet_offset;
@@ -118,11 +117,7 @@ send_confirmation(struct connection_state *sfd)
 */   
 
 static int
-read1(sfd,p,m,timeout)
-struct connection_state* sfd;     
-char *p;
-int timeout;
-int m;
+read1(struct connection_state* sfd,char *p,int m,int timeout)
 { int nread=0;
   int wanted = m;
   int length;
@@ -217,10 +212,7 @@ static void
 connection_failure(char *);
 
 int
-write1(sfd,p,bytes)
-     struct connection_state *sfd;
-     const char *p;
-     int bytes;
+write1(struct connection_state *sfd,const char *p,int bytes)
 { 
   int bs;
   int to_send = bytes;

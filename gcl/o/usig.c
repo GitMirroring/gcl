@@ -47,11 +47,10 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern char signals_handled[];
 
-void
-main_signal_handler(int,siginfo_t,void *);
+extern handler_function_type main_signal_handler;
 
 void
-gcl_signal(int signo, void (*handler) (/* ??? */))
+gcl_signal(int signo, void (*handler)(int,long,void *,char *))
 {
   char *p = signals_handled;
   while (*p)
@@ -66,7 +65,7 @@ gcl_signal(int signo, void (*handler) (/* ??? */))
   
 #ifdef HAVE_SIGACTION
     struct sigaction action;
-    action.sa_sigaction = handler;
+    action.sa_sigaction = (void *)handler;
 /*    action.sa_flags =  SA_RESTART | ((signo == SIGSEGV || signo == SIGBUS) ? SV_ONSTACK : 0) */
    action.sa_flags = SA_RESTART | ((signo == SIGSEGV || signo == SIGBUS) ? SA_ONSTACK : 0)  
 #ifdef SA_SIGINFO
@@ -228,8 +227,9 @@ DEFUN("STMXCSR",object,fSstmxcsr,SI,0,0,NONE,II,OO,OO,OO,(void),"") {
 
 
 static void
-sigfpe3(int sig,siginfo_t *i,void *v) {
+sigfpe3(int sig,long li,void *v,char *c) {
 
+  siginfo_t *i=(void *)li;
   unblock_signals(SIGFPE,SIGFPE);
 #ifdef __MINGW32__
   gcl_signal(SIGFPE,sigfpe3);
@@ -255,7 +255,7 @@ DEFCONST("+FE-LIST+",sSPfe_listP,SI,list(5,
 DEF_ORDINARY("FLOATING-POINT-ERROR",sSfloating_point_error,SI,"");
 
 static void
-sigpipe(int s,siginfo_t *a,void *b)
+sigpipe(int s,long la,void *b,char *c)
 {
   unblock_signals(SIGPIPE,SIGPIPE);
   perror("");
@@ -263,14 +263,14 @@ sigpipe(int s,siginfo_t *a,void *b)
 }
 
 void
-sigint(int s,siginfo_t *a,void *b)
+sigint(int s,long la,void *b,char *c)
 {
   unblock_signals(SIGINT,SIGINT);
   terminal_interrupt(1);
 }
 
 static void
-sigalrm(int s,siginfo_t *a,void *b)
+sigalrm(int s,long a,void *b,char *c)
 {
   unblock_signals(SIGALRM,SIGALRM);
   raise_pending_signals(sig_try_to_delay);
@@ -282,7 +282,7 @@ DEF_ORDINARY("SIGUSR1-INTERRUPT",sSsigusr1_interrupt,SI,"");
 DEF_ORDINARY("SIGIO-INTERRUPT",sSsigio_interrupt,SI,"");
 
 static void
-sigusr1(int s,siginfo_t *a,void *b) {
+sigusr1(int s,long a,void *b,char *c) {
 
   unblock_signals(SIGUSR1,SIGUSR1);
   ifuncall1(sSsigusr1_interrupt,Cnil);
@@ -290,12 +290,12 @@ sigusr1(int s,siginfo_t *a,void *b) {
 }
 
 static void
-sigio(int s,siginfo_t *a,void *b)
+sigio(int s,long a,void *b,char *c)
 {ifuncall1(sSsigio_interrupt,Cnil);}
 
 
 static void
-sigterm(int s,siginfo_t *a,void *b)
+sigterm(int s,long la,void *b,char *c)
 {do_gcl_abort();}
 
 

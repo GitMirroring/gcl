@@ -366,7 +366,7 @@ object funcall_vec(object,fixnum,object *);
 /* unixtime.c:173:OF */ extern void gcl_init_unixtime (void); /* () */
 /* user_init.c:2:OF */ extern object user_init (void); /* () */
 /* user_init.c:2:OF */ extern int user_match (const char *,int n); /* () */
-/* usig.c:49:OF */ extern void gcl_signal (int signo, void (*handler) (/* ??? */)); /* (signo, handler) int signo; void (*handler)(); */
+/* usig.c:49:OF */ extern void gcl_signal (int signo, void (*handler)(int,long,void *,char *)); /* (signo, handler) int signo; void (*handler)(); */
 /* usig.c:92:OF */ extern int unblock_signals (int n, int m); /* (n, m) int n; int m; */
 /* usig.c:119:OF */ extern void unblock_sigusr_sigio (void); /* () */
 /* usig.c:182:OF */ extern void install_default_signals (void); /* () */

@@ -70,14 +70,14 @@ typedef struct _guiMsg {
 */
 
 #include "sheader.h"
-struct message_header * guiParseMsg1();
+struct message_header *guiParseMsg1(struct connection_state *,char *,int);
 
 
 extern pid_t parent;
 
-struct connection_state *
-sock_connect_to_name();
-void sock_close_connection( );
+struct connection_state *sock_connect_to_name(char *,int,int);
+void sock_close_connection(struct connection_state *);
+
 int sock_read_str();
 
 guiMsg *guiParseMsg();

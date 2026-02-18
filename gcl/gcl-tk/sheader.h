@@ -109,4 +109,4 @@ extern struct connection_state *dsfd;
 #define OBJ_TO_CONNECTION_STATE(x) \
   ((struct connection_state *)(void *)((x)->ust.ust_self))
 
-struct connection_state * setup_connection_state();
+struct connection_state * setup_connection_state(int);

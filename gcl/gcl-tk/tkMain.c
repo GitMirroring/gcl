@@ -58,7 +58,7 @@
 #include <signal.h>
 #include <errno.h>
 
-int writable_malloc=0; /*FIXME, don't wrap fopen here, exclude notcomp.h or equivalent */
+bool writable_malloc=0; /*FIXME, don't wrap fopen here, exclude notcomp.h or equivalent */
 
 #include "guis.h"
 struct connection_state *dsfd;
@@ -128,8 +128,7 @@ dfprintf(FILE *fp,char *s,...) {
 #define SIGNAL_ERROR TCL_signal_error
 
 static void
-TCL_signal_error(x)
-     char *x;
+TCL_signal_error(char *x)
 {char buf[300] ;
   snprintf(buf,sizeof(buf),"error %s",x);
  Tcl_Eval(interp,buf);
@@ -196,9 +195,7 @@ EXTERN Tk_Window	TkCreateMainWindow _ANSI_ARGS_((Tcl_Interp * interp,
 				char * screenName, char * baseName));
 
 void
-TkX_Wish (argc, argv)
-    int argc;				/* Number of arguments. */
-    char **argv;			/* Array of argument strings. */
+TkX_Wish (int argc,char **argv)
 {
     char *args, *p;
     const char *msg;
@@ -402,18 +399,11 @@ static char *being_set_by_lisp;
 
 static char *
 tell_lisp_var_changed(
-                clientData,
-               interp,
-               name1,
-               name2,
-                flags)
-
-          ClientData clientData;
-               Tcl_Interp *interp;
-               char *name1;
-               char *name2;
-               int flags;     
-     
+                ClientData clientData,
+               Tcl_Interp *interp,
+               const char *name1,
+               const char *name2,
+                int flags)
 {
 
   if (being_set_by_lisp == 0)
@@ -459,9 +449,7 @@ tell_lisp_var_changed(
 
     /* ARGSUSED */
 static void
-StdinProc(clientData, mask)
-     ClientData clientData;		/* Not used. */
-     int mask;				/* Not used. */
+StdinProc(ClientData clientData,int mask)
 {
   int fNotDone;
   char *cmd;
@@ -606,13 +594,9 @@ typedef struct _ClientDataLispObject {
 } ClientDataLispObject;
 
 static int
-TclGenericCommandProcedure( clientData,
-			   pinterp,
-			    argc, argv)
-     ClientData clientData;
-     Tcl_Interp *pinterp;
-     int argc;
-     char *argv[];
+TclGenericCommandProcedure(ClientData clientData,
+			   Tcl_Interp *pinterp,
+			    int argc,const char **argv)
 {
   char szCmd[CMD_SIZE];
   ClientDataLispObject *pcdlo = (ClientDataLispObject *)clientData;
@@ -623,7 +607,7 @@ TclGenericCommandProcedure( clientData,
   STORE_3BYTES(q,(pcdlo->iSlot));
   q += 3;
   if (p == 0)
-    { char *arg = (argc > 1 ? argv[1] : "");
+    { const char *arg = (argc > 1 ? argv[1] : "");
       int m = strlen(arg);
       if (m > CMD_SIZE -50)
 	SIGNAL_ERROR("too big command");
@@ -663,8 +647,7 @@ TclGenericCommandProcedure( clientData,
 
 
 static void
-guiCreateCommand( idLispObject,  iSlot , arglist)
-     int idLispObject; int iSlot ; char *arglist;
+guiCreateCommand(int idLispObject,int iSlot,char *arglist)
 {
   char szNameCmdProc[2000],*c;
   ClientDataLispObject *pcdlo;

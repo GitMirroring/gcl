@@ -188,8 +188,7 @@ FFN(Fload_time_value)(object arg)
 
 }
 
-static void
-FFN(Fdeclare)(object arg)
+LFD(Fdeclare)(void)
 {
 	FEerror("DECLARE appeared in an invalid position.", 0);
 }
