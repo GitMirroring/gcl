@@ -99,7 +99,7 @@ object ihs_top_function_name(ihs_ptr h);
                                                  sKformat_control,make_simple_string(a_),sKformat_arguments,list(1,(b_)))
 #define FEtoo_few_arguments(a_,b_) \
   Icall_error_handler(sLprogram_error,null_string,4,\
-                      sKformat_control,make_simple_string("~S [or a callee] requires more than ~R argument~:p."),\
+                      sKformat_control,make_simple_string("~S [or a callee] requires less than ~R argument~:p."),\
                       sKformat_arguments,list(2,ihs_top_function_name(ihs_top),make_fixnum((b_)-(a_))))
 #define FEwrong_no_args(a_,b_) \
   Icall_error_handler(sLprogram_error,null_string,4,\
@@ -112,7 +112,7 @@ object ihs_top_function_name(ihs_ptr h);
 
 #define FEtoo_many_arguments(a_,b_) \
   Icall_error_handler(sLprogram_error,null_string,4,\
-                      sKformat_control,make_simple_string("~S [or a callee] requires less than ~R argument~:p."),\
+                      sKformat_control,make_simple_string("~S [or a callee] requires more than ~R argument~:p."),\
                       sKformat_arguments,list(2,ihs_top_function_name(ihs_top),make_fixnum((b_)-(a_))))
 #define FEtoo_many_argumentsF(a_) \
   Icall_error_handler(sLprogram_error,null_string,4,\
