@@ -66,15 +66,6 @@ object sSAbreak_stepA;
   ({enum ftype _t=type;\
      _t==f_object ? a : (_t==f_fixnum ? make_fixnum((fixnum)a) : make_integer((GEN)a));})
 
-#include "apply_n.h"
-
-object
-quick_call_function_vec(object fun,ufixnum n,object *b) {
-
-  return c_apply_n_fun(fun,n,b);
-
-}
-
 static object
 quick_call_function_vec_coerce(object fun,ufixnum n,object *b) {
 

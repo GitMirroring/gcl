@@ -161,7 +161,7 @@ C_SRC=o/typespec.c o/alloc.c o/gbc.c o/bitop.c o/main.c o/eval.c o/macros.c o/le
 D_SRC=o/character.d o/file.d o/gcl_readline.d o/hash.d o/list.d o/package.d o/pathname.d o/print.d\
       o/read.d o/sequence.d o/string.d o/symbol.d
 BUILT_C=o/character.c o/file.c o/gcl_readline.c o/hash.c o/list.c o/package.c o/pathname.c o/print.c\
-        o/read.c o/sequence.c o/string.c o/symbol.c o/new_init.c
+        o/read.c o/sequence.c o/string.c o/symbol.c o/new_init.c o/qfv.c
 
 INI_FILES=$(patsubst %.c,%.ini,$(C_SRC)) $(patsubst %.d,%.ini,$(D_SRC))
 if AMM_GPROF
@@ -455,6 +455,10 @@ h/cmpincludea.h: $(filter-out gclincl.h,$(CMPINCLUDE_FILES)) | h/gclincl.h # FIX
 	cat $< $| $(filter-out $<,$^) | \
 		$(CPP) $(AM_CPPFLAGS) -P $(CPPFLAGS) - | \
 		$(AWK) '/^# |^$$|^#pragma/ {next}{print}' > $@
+
+o/qfv.c: o/pre_qfv.c h/new_decl.h
+	@echo Building C23 call table, make take a bit ...
+	$(CPP) $(AM_CPPFLAGS) -P $(CPPFLAGS) $< | sed 's,[ \t]case,\n\tcase,g' >$@
 
 h/cmpinclude.h: h/mcompdefs.h h/cmpincludea.h h/cmponly_last.h
 	@cat $^ >new_$(@F)
