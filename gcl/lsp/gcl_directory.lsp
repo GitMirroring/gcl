@@ -49,11 +49,16 @@
 			       (expand-wild-directory d (cons :relative (cdr x)) f q e)) :directory));FIXME
 	    ((funcall f z y))))))
 
-(defun directory (p &key &aux (p (translate-logical-pathname p))(d (pathname-directory p))
-		    (c (unless (eq (car d) :absolute) (make-frame (namestring *current-directory*))))
-		    (lc (when c (length c)))
-		    (filesp (or (pathname-name p) (pathname-type p)))
-		    (v (compile-regexp (to-regexp p)))(*up-key* :back) r)
+(defun directory (p &key &aux (p (merge-pathnames (translate-logical-pathname p)
+						  #.`(load-time-value
+						      (make-pathname
+						       ,@(mapcan (lambda (x) (list x (if (eq x :directory) `'(:relative) :unspecific)))
+								 +pathname-keys+)))))
+			   (d (pathname-directory p))
+			   (c (unless (eq (car d) :absolute) (make-frame (namestring *current-directory*))))
+			   (lc (when c (length c)))
+			   (filesp (or (pathname-name p) (pathname-type p)))
+			   (v (compile-regexp (to-regexp p)))(*up-key* :back) r)
   (expand-wild-directory (pathname-device p) d
    (lambda (dir exp &aux (pexp (pathname (if c (vector-push-string c exp 0 lc) exp))))
      (if filesp
