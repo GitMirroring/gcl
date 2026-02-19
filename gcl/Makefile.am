@@ -459,6 +459,7 @@ h/cmpincludea.h: $(filter-out gclincl.h,$(CMPINCLUDE_FILES)) | h/gclincl.h # FIX
 		$(AWK) '/^# |^$$|^#pragma/ {next}{print}' > $@
 
 o/qfv.c: o/pre_qfv.c h/new_decl.h bin/c23.awk
+	chmod +x bin/c23.awk
 	$(CPP) $(AM_CPPFLAGS) -P $(CPPFLAGS) $< | bin/c23.awk >$@
 
 h/cmpinclude.h: h/mcompdefs.h h/cmpincludea.h h/cmponly_last.h
