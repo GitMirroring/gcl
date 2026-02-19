@@ -4808,6 +4808,7 @@ unixport/ansi_gcl: clcs/package.lisp clcs/gcl_clcs_precom.lisp \
 $(addprefix gcl0/,$(LL_OBJS)): gcl0/%.o : lsp/%.lsp
 $(addprefix gcl0/,$(LC_OBJS)): gcl0/%.o : cmpnew/%.lsp
 gcl0/%.o: | unixport/gcl0
+	rm -f $(@D)/$*.done
 	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" -compile $< -o $@
 	[ "$*" = "gcl_c" ] || [ "$*" = "gcl_listlib" ] || \
 		ln -f $@ $$(echo $@ |sed 's,\.o,\.done,g') #FIXME directory link
@@ -4815,6 +4816,7 @@ gcl0/%.o: | unixport/gcl0
 $(addprefix gcl1/,$(LL_OBJS)): gcl1/%.o : lsp/%.lsp
 $(addprefix gcl1/,$(LC_OBJS)): gcl1/%.o : cmpnew/%.lsp
 gcl1/%.o: | unixport/gcl1
+	rm -f $(@D)/$*.done
 	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" \
 	   -eval "(setq compiler::*dump-inl-hash* t)" \
 	   -compile $< -o $@
