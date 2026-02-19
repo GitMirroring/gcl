@@ -145,9 +145,13 @@
 	    '* #.(flags ans set svt) 
 	    (ms
 	    "({object _z,_f=fcall.fun=#0;fixnum _v=fcall.valp=(fixnum)#v;char _n=fcall.argd=#n-1;
-        _n=Rset && !(_f)->fun.fun_argd && _n>=(_f)->fun.fun_minarg && _n<=((_f)->fun.fun_maxarg) ? _n : -64;
-        switch ((_f)->fun.fun_minarg-_n) {
-            case 0: _z=(_f)->fun.fun_minarg==(_f)->fun.fun_maxarg ?
+        _n=Rset &&
+            !_f->fun.fun_argd &&
+            _n>=_f->fun.fun_minarg &&
+            _n<=(_f->fun.fun_maxarg) ?
+            _f->fun.fun_minarg-_n : -(MAX_ARGS+1);
+        switch (_n) {
+            case 0: _z=_f->fun.fun_minarg==_f->fun.fun_maxarg ?
                        (" (gcst la1) "_f->fun.fun_self)(#*) :
                        (" (gcst (max 1 la1) t) "_f->fun.fun_self)(#?);break;
             "
@@ -159,7 +163,7 @@
 		      (make-list (max 0 la1))))
 	    "default: _z=call_proc_cs2(#?);break;
         }
-        if (!(_f)->fun.fun_neval && !(_f)->fun.fun_vv) vs_top=_v ? (object *)_v : sup;
+        if (!_f->fun.fun_neval && !_f->fun.fun_vv) vs_top=_v ? (object *)_v : sup;
         _z;})")) all))
     (close-inline-blocks)))
 
