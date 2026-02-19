@@ -47,6 +47,7 @@ typedef void   (*vfunc)();
 typedef object integer;
 typedef object keyword;
 typedef object direl;
+typedef object dirdir;
 typedef object plist;
 typedef object pack;
 typedef object real;
@@ -461,7 +462,7 @@ struct pathname {
 
   direl  pn_host;      /*  host  */
   direl  pn_device;    /*  device  */
-  plist  pn_directory; /*  directory  */
+  dirdir pn_directory; /*  directory  */
   direl  pn_name;      /*  name  */
   direl  pn_type;      /*  type  */
   direl  pn_version;   /*  version  */

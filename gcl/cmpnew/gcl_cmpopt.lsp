@@ -1162,7 +1162,8 @@
     (setf (get s 'lisp-type) l)))
 
 (dolist (l '((object t)(plist proper-list)(float short-float)(double long-float)
-	     (pack (or null package)) (direl (or keyword null string))))
+	     (pack (or null package)) (direl (or keyword null string))
+	     (dirdir (or (eql :unspecific) proper-list))))
   (let ((s (intern (symbol-name (car l)) 'keyword)))
     (setf (get s 'lisp-type) (cadr l))))
 
