@@ -57,6 +57,7 @@ typedef float  shortfloat;
 typedef double longfloat;
 typedef float  complex fcomplex;
 typedef double complex dcomplex;
+#include <stdbool.h>
 typedef unsigned short int ushort;
 typedef unsigned int uint;
 
