@@ -57,6 +57,7 @@
 #include <sys/types.h>
 #include <signal.h>
 #include <errno.h>
+#include <stdbool.h>
 
 bool writable_malloc=0; /*FIXME, don't wrap fopen here, exclude notcomp.h or equivalent */
 
