@@ -270,14 +270,9 @@ remove_arg_from_ldflags() {
 
 }
 
-CSTD=gnu23
-
-add_args_to_cppflags -std=$CSTD
-
 add_args_to_cflags  -fsigned-char -pipe -fcommon \
                     -fno-builtin-malloc -fno-builtin-free \
                     -fno-PIE -fno-pie -fno-PIC -fno-pic \
-	            -std=$CSTD \
 	            -Wall \
 	            -Wno-builtin-requires-header -Wno-empty-body -Wno-self-assign \
 	            -Wno-unused-but-set-variable -D_FILE_OFFSET_BITS=64 -D_TIME_BITS=64 \
