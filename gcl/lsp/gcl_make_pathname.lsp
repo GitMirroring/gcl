@@ -89,7 +89,8 @@
       ((eql :wild) (if rp (list dflt) (elsub "*" x rp lp)))
       ((eql :newest) (elsub (if rp "(newest|NEWEST)" "NEWEST") x rp lp))
       ((member :up :back) (elsub ".." x rp lp))
-      ((member nil :unspecific) (when rp (list dflt)))
+      (null (when rp (list dflt)))
+      ((eql :unspecific) nil)
       (cons (cons
 	     (if (eq (car el) :absolute) (if lp "" "/") (if lp ";" ""))
 	     (mapcan (lambda (z) (elsub z y rp lp)) (cdr el)))))
@@ -104,15 +105,17 @@
 		 x (if lp +logical-pathname-defaults+ +physical-pathname-defaults+))))
 
 (defun directory-list-check (l)
-  (when (listp l)
-    (when (member (car l) '(:absolute :relative))
-      (mapl (lambda (x &aux (c (car x))(d (cadr x)))
-	      (when (and (member d '(:up :back)) (member c '(:absolute :wild-inferiors)))
-		(return-from directory-list-check nil))) l))))
+  (if (atom l) l
+      (when (member (car l) '(:absolute :relative))
+	(mapl (lambda (x &aux (c (car x))(d (cadr x)))
+		(when (and (member d '(:up :back)) (member c '(:absolute :wild-inferiors)))
+		  (return-from directory-list-check nil)))
+	      l))))
     
 (defun canonicalize-pathname-directory (l)
   (cond ((eq l :wild) (canonicalize-pathname-directory '(:absolute :wild-inferiors)))
 	((stringp l) (canonicalize-pathname-directory (list :absolute l)))
+	((eq l :unspecific) l)
 	((mapl (lambda (x &aux (c (car x))
 			    (skip (cond ((equal c ".") (cdr x))
 					((when (or (stringp c) (eq c :wild)) (eq (cadr x) :back)) (cddr x)))))

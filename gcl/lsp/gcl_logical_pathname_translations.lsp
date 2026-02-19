@@ -24,5 +24,5 @@
     (error "No translations found for ~s" k)))
 
 (defun logical-pathname-host-p (host)
-  (when host
+  (when (stringp host)
     (logical-pathname-translations host)))
