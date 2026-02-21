@@ -493,14 +493,16 @@
 
 
 (defun stub (num name args type clp
-	     &aux (va (eq '* (car (last args)))) (n (if va 1 0))(i (max n (- (length args) n)));FIXME
+	     &aux (va (eq '* (car (last args)))) (n (if va 1 0))
+	       (i (max n (- (length args) n)));FIXME
+	       (si (write-to-string i))
 	       (d (declaration-type (rep-type (if (link-arg-p type) type t)))))
   (concatenate
    'string
    (stub-decl (concatenate 'string "LnkT" num) args d t)
    "{
-      int nargs=" (if va "fcall.argd<0 ? -fcall.argd : fcall.argd" (write-to-string i)) ";
-      object *FOO=alloca(nargs*sizeof(*FOO));
+      int nargs=" (if va "fcall.argd<0 ? -fcall.argd : fcall.argd" si) ";
+      object *FOO=alloca((nargs>" si "? nargs : " si ")*sizeof(*FOO));
       "
 
    (let ((j 0))
@@ -515,9 +517,9 @@
       "
       {
           va_list ap;
-          va_start(ap,x" (write-to-string i) ");
+          va_start(ap,x" si ");
           int i;
-          for (i=" (write-to-string i) ";i<nargs;i++) FOO[i]=va_arg(ap,object);
+          for (i=" si ";i<nargs;i++) FOO[i]=va_arg(ap,object);
           va_end(ap);
       }"))
 
