@@ -110,7 +110,7 @@ endif
 
 EXTRA_DIST=$(D_SRC) $(INCL_C) $(INIT_L) $(INCL_TEXI)\
 	   lsp cmpnew mod pcl clcs ansi-tests elisp xbin bench \
-	   majvers minvers git.tag release
+	   majvers minvers git.tag release bin/c23.awk
 
 # end of primaries
 
@@ -123,7 +123,7 @@ INCL_TEXI=$(addprefix info/,$(addsuffix .texi,\
 
 INCL_C=o/sgbc.c o/gmp_big.c o/gmp.c o/gmp_num_log.c o/cmac.c o/regexp.c o/unexelf.c o/unexmacosx.c o/unexnt.c \
        o/save.c o/xdrfuns.c o/fasdump.c o/usig2_aux.c o/sfaslelf.c o/sfaslmacho.c o/sfaslcoff.c gcl-tk/comm.c \
-       o/sfasli.c o/firstfile.c o/lastfile.c
+       o/sfasli.c o/firstfile.c o/lastfile.c o/pre_qfv.c
 INIT_L=unixport/sys_init.c unixport/sys.c o/boot.c unixport/cinit.lisp
 BASE_H= h/compbas2.h h/compbas.h h/compprotos.h h/cstack.h h/enum.h h/error.h h/eval.h h/fixnum.h h/frame.h \
 	h/funlink.h h/globals.h h/gmp_wrappers.h h/immnum.h h/include.h h/lex.h h/linux.h h/lu.h h/make-init.h \
@@ -459,8 +459,8 @@ h/cmpincludea.h: $(filter-out gclincl.h,$(CMPINCLUDE_FILES)) | h/gclincl.h # FIX
 		$(AWK) '/^# |^$$|^#pragma/ {next}{print}' > $@
 
 o/qfv.c: o/pre_qfv.c h/new_decl.h bin/c23.awk
-	chmod +x bin/c23.awk
-	$(CPP) $(AM_CPPFLAGS) -P $(CPPFLAGS) $< | bin/c23.awk >$@
+	chmod +x $(word 3,$^)
+	$(CPP) $(AM_CPPFLAGS) -P $(CPPFLAGS) $< | $(word 3,$^) >$@
 
 h/cmpinclude.h: h/mcompdefs.h h/cmpincludea.h h/cmponly_last.h
 	@cat $^ >new_$(@F)
