@@ -375,7 +375,7 @@ object funcall_vec(object,fixnum,object *);
 #ifdef __MINGW32__
 /* usig2.c:167:OF */ extern void main_signal_handler (int signo); /* (signo) int signo */
 #else
-/* /\* usig2.c:167:OF *\/ extern void main_signal_handler (int signo, siginfo_t *a, void *b); /\* (signo, a, b) int signo; int a; int b; *\/ */
+/* usig2.c:167:OF */ void main_signal_handler(int,long,void *,char *) __attribute__((aligned (16)));
 #endif
 /* usig2.c:375:OF */ extern void raise_pending_signals (int cond); /* (cond) int cond; */
 /* utils.c:12:OF */ extern object IisSymbol (object f); /* (f) object f; */
