@@ -301,8 +301,11 @@
       (unless (= nreq nsup) (list "_n==" (- (1+ nreq)) (unless st "&&")))
       (unless st "_l==Cnil") ")"))
 
-(defun mod-argstr (n call st nsup)
-  (let* ((x (commasep (append (nobs nsup "#") (nobs (- n nsup)) (when st (list "_l")))))
+(defun nobs-wrap (nobs sig &aux (at (car sig)))
+  (mapcar (lambda (x y) (ms  (cdr (assoc y +to-c-var-alist+)) "(" x ")")) nobs at))
+
+(defun mod-argstr (n call st nsup sig)
+  (let* ((x (commasep (append (nobs nsup "#") (nobs-wrap (nobs (- n nsup)) sig) (when st (list "_l")))))
 	 (s (or (position #\# call) (length call))))
     (ms (subseq call 0 s) x)))
 
@@ -349,7 +352,7 @@
       (let ((nl (list (string #\Newline) "        ")))
 	(ms (list "@" (nords (1+ nsup)) ";") 
 	    "({" (bind-str nreq nsup nl) nl (cond-str nreq nsup st)  " ? " nl
-	    (nvfun-wrap cname (mod-argstr nreq argstr st nsup) sig clp ap) " : " nl
+	    (nvfun-wrap cname (mod-argstr nreq argstr st nsup sig) sig clp ap) " : " nl
 	    (insufficient-arg-str fnstr nreq nsup sig st) ";})")))))
 
 
