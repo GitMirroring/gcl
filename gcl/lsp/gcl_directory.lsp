@@ -57,7 +57,7 @@
 			   (d (pathname-directory p))
 			   (c (unless (eq (car d) :absolute) (make-frame (namestring *current-directory*))))
 			   (lc (when c (length c)))
-			   (filesp (or (pathname-name p) (pathname-type p)))
+			   (filesp (not (and (eq (pathname-name p) :unspecific) (eq (pathname-type p) :unspecific))))
 			   (v (compile-regexp (to-regexp p)))(*up-key* :back) r)
   (expand-wild-directory (pathname-device p) d
    (lambda (dir exp &aux (pexp (pathname (if c (vector-push-string c exp 0 lc) exp))))
