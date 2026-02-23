@@ -43,7 +43,7 @@
 						  (string-concatenate "(" (substitute #\^ #\! (subseq x 0 2)) (subseq x 2) ")")))
 					  (cons #v"\\*" (lambda (x y) (declare (ignore x)) (if (plusp (length y)) (string-concatenate "([^" y "]*)") "(.*)")))
 					  (cons #v"\\?" (lambda (x y) (declare (ignore x)) (if (plusp (length y)) (string-concatenate "([^" y "])") "(.)")))
-					  (cons #v"\\." (lambda (x y) (declare (ignore x y))"\\."))))
+					  (cons #v"[+|.^$()]" (lambda (x y) (declare (ignore x y))(string-concatenate "\\" x)))))
 
 (defconstant +physical-pathname-defaults+ '(("" "" "" "")
 					    ("" "" "" "")
