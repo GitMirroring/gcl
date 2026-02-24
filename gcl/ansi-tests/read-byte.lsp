@@ -96,7 +96,9 @@
      (let ((s (open "foo.txt"
 		   :direction :input
 		   :element-type '(unsigned-byte 8))))
-       (read-byte s))
+       (unwind-protect
+	   (read-byte s)
+	 (close s)))
      end-of-file))
   t)
 
