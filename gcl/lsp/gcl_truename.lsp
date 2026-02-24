@@ -8,7 +8,13 @@
 	   (fr (set-fr fr (if (eql i -1) n i)))
 	   (l (when (eq (stat1 fr) :link) (readlinkat 0 fr))))
       (cond (l (let ((b (if (eql #\/ (aref l 0)) 0 b)))
-		 (link-expand (concatenate 'string (set-fr fr b) l (frame (if (eql i -1) n i) n)) b)))
+		 (link-expand (concatenate
+			       'string
+			       (set-fr fr b)
+			       (let ((ll (1- (length l))))
+				 (if (eql #\/ (aref l ll)) (subseq l 0 ll) l))
+			       (frame (if (eql i -1) n i) n))
+			      b)))
 	    ((eql i -1) str)
 	    ((link-expand str (1+ i) n fr))))))
 
