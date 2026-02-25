@@ -73,7 +73,6 @@ struct key {short n,allow_other_keys;
 /* bind.c:975:OF */ extern void set_key_struct (struct key *ks, object data); /* (ks, data) struct key *ks; object data; */
 /* bind.c:995:OF */ extern void gcl_init_bind (void); /* () */
 /* block.c:121:OF */ extern void gcl_init_block (void); /* () */
-/* bsearch.c:5:OF */ extern void *bsearch (const void *key, const void *base, size_t nel, size_t keysize, int (*compar) (const void *,const void *)); /* (key, base, nel, keysize, compar) char *key; char *base; unsigned int nel; unsigned int keysize; int (*compar)(); */
 #if defined (__MINGW32__)
 /* bzero.c:3:OF */ /*  extern void bzero (char *b, size_t length); */ /* (b, length) char *b; int length; */
 #endif
