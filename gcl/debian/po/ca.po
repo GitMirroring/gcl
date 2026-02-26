@@ -1,0 +1,77 @@
+# Catalan translation of gcl27's debconf messages
+# Copyright © 2025 poc senderi <pocsenderi@protonmail.com>
+# This file is distributed under the same license as the gcl27 package.
+# poc senderi <pocsenderi@protonmail.com>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gcl27\n"
+"Report-Msgid-Bugs-To: gcl27@packages.debian.org\n"
+"POT-Creation-Date: 2025-05-03 13:26+0000\n"
+"PO-Revision-Date: 2025-10-19 12:10+0200\n"
+"Last-Translator: poc senderi <pocsenderi@protonmail.com>\n"
+"Language-Team: Catalan <debian-l10n-catalan@lists.debian.org>\n"
+"Language: ca\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.2\n"
+
+#. Type: boolean
+#. Description
+#: ../gcl27.templates:1001
+msgid "Use the work-in-progress ANSI build by default?"
+msgstr ""
+"Voleu usar de manera predeterminada la versió, que encara s'hi està "
+"treballant, ANSI?"
+
+#. Type: boolean
+#. Description
+#: ../gcl27.templates:1001
+msgid ""
+"GCL is in the process of providing an ANSI compliant image in addition to "
+"its traditional CLtL1 image still in production use.  Please see the README."
+"Debian file for a brief description of these terms.  Setting this variable "
+"will determine which image you will use by default on executing 'gcl27'.  "
+"You can locally override this choice by setting the GCL_ANSI environment "
+"variable to any string but \"no\" for the ANSI build, and to \"no\" for the "
+"CLtL1 build, e.g. GCL_ANSI=t gcl27.  The flavor of the build in force will "
+"be reported in the initial startup banner."
+msgstr ""
+"El GCL es troba en procés d'oferir una imatge conforme a ANSI a més a més de "
+"la imatge tradicional CLtL1 que encara es troba en producció. Mireu el "
+"fitxer README.Debian per una breu descripció sobre aquests termes. Establir "
+"aquesta variable determinarà quina imatge s'usarà per defecte quan s'executi "
+"«gcl27». Podeu canviar localment aquesta decisió establint la variable "
+"d'entorn GCL_ANSI a qualsevol cosa tret de «no» per a la versió ANSI, i a "
+"«no» per a la versió CLtL1, per exemple «GCL_ANSI=t gcl27». La versió activa "
+"es mostrarà al bàner inicial durant l'engegada."
+
+#. Type: boolean
+#. Description
+#: ../gcl27.templates:2001
+msgid "Use the profiling build by default?"
+msgstr "Voleu usar per defecte la versió de perfilació?"
+
+#. Type: boolean
+#. Description
+#: ../gcl27.templates:2001
+msgid ""
+"GCL now has optional support for profiling via gprof.  Please see the "
+"documentation for si::gprof-start and si::gprof-quit for details. As this "
+"build is slower than builds without gprof support, it is not recommended for "
+"final production use. You can locally override the default choice made here "
+"by setting the GCL_PROF environment variable to any non-empty string for "
+"profiling support, and to the empty string for the more optimized builds, e."
+"g. GCL_PROF=t gcl27.  If profiling is enabled, this will be reported in the "
+"initial startup banner."
+msgstr ""
+"El GCL ara disposa de compatibilitat opcional per a la perfilació usant el "
+"«gprof». Per als detalls, vegeu la documentació de «si::gprof-start» i «si::"
+"gprof-quit». Atès que aquesta versió és més lenta que d'altres sense "
+"compatibilitat amb el «gprof», no es recomana per a l'ús en producció. Podeu "
+"canviar localment la decisió predeterminada feta aquí establint la variable "
+"d'entorn GCL_PROF a qualsevol cosa tret d'una cadena buida per a la "
+"compatibilitat amb perfilació, i a una cadena buida per a les versions més "
+"optimitzades, per exemple «GCL_PROF=t gcl27». Si la perfilació està "
+"activada, això es mostrarà al bàner inicial durant l'engegada."

@@ -1,35 +1,29 @@
-# translation of gcl_2.6.7-36.1_sv.po to Swedish
-# Translators, if you are not familiar with the PO format, gettext
-# documentation is worth reading, especially sections dedicated to
-# this format, e.g. by running:
-# info -n '(gettext)PO Files'
-# info -n '(gettext)Header Entry'
-# Some information specific to po-debconf are available at
-# /usr/share/doc/po-debconf/README-trans
-# or http://www.debian.org/intl/l10n/po-debconf/README-trans
-# Developers do not need to manually edit POT or PO files.
+# Translation of gcl27 debconf template to Swedish
+# Copyright (C) 2025 Martin Bagge <brother@persilja.net>
+# This file is distributed under the same license as the XX package.
 #
-# Martin gren <martin.agren@gmail.com>, 2008.
+# Martin Ågren <martin.agren@gmail.com>, 2008.
+# Martin Bagge <brother@persilja.net>, 2025.
 msgid ""
 msgstr ""
 "Project-Id-Version: gcl_2.6.7-36.1_sv\n"
-"Report-Msgid-Bugs-To: gcl27@packages.debian.org\n"
-"POT-Creation-Date: 2025-06-01 09:56-0400\n"
-"PO-Revision-Date: 2008-07-24 18:21+0200\n"
-"Last-Translator: Martin gren <martin.agren@gmail.com>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-05 05:06+0000\n"
+"PO-Revision-Date: 2025-12-12 13:47+0100\n"
+"Last-Translator: Martin Bagge <brother@persilja.net>\n"
 "Language-Team: Swedish <debian-l10n-swedish@lists.debian.org>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: emacs\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #. Type: boolean
 #. Description
 #: ../gcl27.templates:1001
 msgid "Use the work-in-progress ANSI build by default?"
-msgstr "Anvnd det nnu inte frdiga ANSI-bygget som standard?"
+msgstr "Använd det ännu inte färdiga ANSI-bygget som standard?"
 
 #. Type: boolean
 #. Description
@@ -43,13 +37,13 @@ msgid ""
 "variable to any string but \"no\" for the ANSI build, and to \"no\" for the "
 "CLtL1 build, e.g. GCL_ANSI=t gcl27.  The flavor of the build in force will "
 "be reported in the initial startup banner."
-msgstr ""
+msgstr "GCL arbetar på att tillhandahålla en ANSI-kompatibel avbildning utöver den traditionella CLtL1-avbildningen som alltjämt används i produktionsmiljö. Läs filen README.Debian för en kort beskrivning av dessa termer. Genom detta val bestäms vilken avbildning som används som standard när 'gcl27' exekveras. Du kan fortfarande göra lokala undantag från detta val genom att sätta miljövariabeln GCL_ANSI till en annan sträng än \"no\" för att få ANSI-avbildningen eller ange \"no\" för att få CLtL1-avbildningen. Alltså GCL_ANSI=t gcl27. Vilken avbildning som används uppges i utskriften vid uppstarten."
 
 #. Type: boolean
 #. Description
 #: ../gcl27.templates:2001
 msgid "Use the profiling build by default?"
-msgstr "Anvnd profileringsbygget som standard?"
+msgstr "Ska profilering användas som standard?"
 
 #. Type: boolean
 #. Description
@@ -63,54 +57,4 @@ msgid ""
 "profiling support, and to the empty string for the more optimized builds, e."
 "g. GCL_PROF=t gcl27.  If profiling is enabled, this will be reported in the "
 "initial startup banner."
-msgstr ""
-
-#~ msgid ""
-#~ "GCL is in the process of providing an ANSI compliant image in addition to "
-#~ "its traditional CLtL1 image still in production use."
-#~ msgstr ""
-#~ "GCL arbetar p att tillhandahlla en ANSI-godknd bild frutom dess "
-#~ "traditionella CLtL1-bild som fortfarande anvnds i produktionsmiljn."
-
-#~ msgid ""
-#~ "Please see the README.Debian file for a brief description of these terms. "
-#~ "Choosing this option will determine which image will be used by default "
-#~ "when executing 'gcl@EXT@'."
-#~ msgstr ""
-#~ "Se README.Debian-filen fr en versiktlig beskrivning av dessa termer. Nr "
-#~ "du vljer det hr alternativet avgrs vilken bild som kommer anvndas som "
-#~ "standard nr 'gcl@EXT@' krs."
-
-#~ msgid ""
-#~ "This setting may be overridden by setting the GCL_ANSI environment "
-#~ "variable to any non-empty string for the ANSI build, and to the empty "
-#~ "string for the CLtL1 build, e.g. GCL_ANSI=t gcl@EXT@. The currently "
-#~ "enforced build flavor will be reported in the initial startup banner."
-#~ msgstr ""
-#~ "Denna instllning kan verskridas genom att stta miljvariabeln GCL_ANSI "
-#~ "till en icke-tom strng fr ANSI-bygget, och till den tomma strngen fr "
-#~ "CLtL1-bygget, t. ex. GCL_ANSI=t gcl@EXT@. Det bygge som fr tillfllet "
-#~ "anvnds kommer anges i uppstartsutskriften."
-
-#~ msgid "GCL has optional support for profiling via gprof."
-#~ msgstr "GCL har valfritt std fr profilering via gprof."
-
-#~ msgid ""
-#~ "Please see the documentation for si::gprof-start and si::gprof-quit for "
-#~ "details. As this build is slower than builds without gprof support, it is "
-#~ "not recommended for final production use."
-#~ msgstr ""
-#~ "Se dokumentationen fr si::gprof-start och si::gprof-quit fr detaljer. "
-#~ "Eftersom detta bygge r lngsammare n byggen utan std fr gprof, "
-#~ "rekommenderas det inte fr slutlig anvndning i produktionsmilj."
-
-#~ msgid ""
-#~ "Set the GCL_PROF environment variable to the empty string for more "
-#~ "optimized builds, or any non-empty string for profiling support; e.g. "
-#~ "GCL_PROF=t gcl@EXT@. If profiling is enabled, this will be reported in "
-#~ "the initial startup banner."
-#~ msgstr ""
-#~ "Stt miljvariabeln GCL_PROF till den tomma strngen fr mer optimiserade "
-#~ "byggen, eller en icke-tom strng fr profileringsstd; t. ex. GCL_PROF=t "
-#~ "gcl@EXT@. Om profilering r aktiverad, kommer denna rapporteras i den "
-#~ "ursprungliga uppstartsutskriften."
+msgstr "GCL har numera möjlighet att utföra profilering med hjälp av gprof. Läs mer i dokumentationen om si::gprof-start och si::gprof-quit för närmare information. Eftersom denna typ av bygge är långsammare än utan stöd för gprof är rekommendationen att inte använda det för i produktionsmiljön. Du kan göra lokala undantag från standardvalet här genom att sätta miljövariablen GCL_PROF till en sträng som inte är tom för att få profilering aktiverat. Eller till tom sträng för ett mer optimerat bygge. Exempelvis GCL_PROF=t gcl27. Om profilering är aktiverat kommer detta att framgå i meddelandet vid start."
