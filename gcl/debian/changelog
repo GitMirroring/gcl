@@ -1,8 +1,25 @@
+gcl27 (2.7.1-12) unstable; urgency=medium
+
+  * Version_2_7_2pre11
+  * Bug fix: "FTBFS with glibc 2.43 due to ISO C23 const return types",
+    thanks to Aurelien Jarno (Closes: #1128546).
+  * Bug fix: "Update/add debconf template translation [INTL:ca]", thanks
+    to Carles Pina i Estany (Closes: #1118704).
+  * Bug fix: "[INTL:sv] Swedish strings for gcl27 debconf", thanks to
+    Martin Bagge / brother (Closes: #1122744).
+  * Bug fix: "[INTL:es] Spanish translation of gcl27 debconf template",
+    thanks to Camaleón (Closes: #1108096).
+  * Bug fix: "FTBFS: SIMPLE-ERROR: SAVE-EXEC is unable to save to file
+    &quot;saved_acl2.c&quot;, because its directory does not exist.",
+    thanks to Santiago Vila (Closes: #1128663).
+
+ -- Camm Maguire <camm@debian.org>  Wed, 25 Feb 2026 08:23:26 -0500
+
 gcl27 (2.7.1-11) unstable; urgency=medium
 
   * Version_2_7_2pre10
 
- -- Camm Maguire <camm@debian.org>  Sun, 22 Feb 2026 11:52:14 -0500
+ -- Camm Maguire <camm@debian.org>  Sun, 22 Feb 2026 11:52:14 -0500c
 
 gcl27 (2.7.1-10) unstable; urgency=medium
 
