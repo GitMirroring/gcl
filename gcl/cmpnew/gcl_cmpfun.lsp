@@ -112,7 +112,11 @@
 ;;       (list 'call-global info 'terpri (list stream))))
 
 (defun gcst (n &optional e)
-  (ms "(object(*)(" (cdr (mapcan (lambda (x) (declare (ignore x)) (list "," "object")) (make-list n))) (when e ",...") "))"))
+  (let* ((m (min n (- call-arguments-limit 2)))
+	 (l1 (make-list m :initial-element ",object"))
+	 (l1 (when l1 (cons "object" (cdr l1))))
+	 (l2 (when (> n m) (make-list (- n m) :initial-element ",object"))))
+    (ms "(object(*)(" l1 l2 (when e ",...") "))")))
 
 (defun c2apply (funob args)
   (unless (eq 'ordinary (car funob)) (baboon))
