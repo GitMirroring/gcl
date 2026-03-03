@@ -25,7 +25,7 @@
 						  (string-concatenate "(" (substitute #\^ #\! (subseq x 0 2)) (subseq x 2) ")")))
 					  (cons #v"\\*" (lambda (x) #.(ads "([^/.]*)")))
 					  (cons #v"\\?" (lambda (x) #.(ads "([^/.])")))
-					  (cons #v"\\." (lambda (x) "\\."))))
+					  (cons #v"[+|.^$()]" (lambda (x) (string-concatenate "\\" x)))))
 
 (defconstant +physical-pathname-defaults+ '(("" "" "")
 					    #+winnt("" "([A-Za-z]:)?" ":") #-winnt("" "()" "")
