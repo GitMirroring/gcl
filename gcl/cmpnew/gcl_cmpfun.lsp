@@ -944,7 +944,7 @@
 
 (defun c2gethash (args)
   (cond ((member *value-to-go* '(top return))
-	 (let* ((nargs (inline-args args '(t t)))
+	 (let* ((nargs (inline-args args '(t t t)))
 		(base *vs*)(*vs* *vs*)
 		(r (cdr (vs-push)))(f (cdr (vs-push))))
 	   (wt-nl "{ struct htent *_z=gethash" (if *safe-compile* "_with_check" "") "(" (car nargs) "," (cadr nargs) ");")
@@ -956,10 +956,11 @@
 	   (wt-nl "base[" f "]=Ct;")
 	   (wt-nl "}}")
 	   (wt-nl "vs_top=(vs_base=base+" base ")+" (- *vs* base) ";")
-	   (unwind-exit 'fun-val nil (cons 'values 2))))
+	   (unwind-exit 'fun-val nil (cons 'values 2))
+	   (close-inline-blocks)))
 	((let ((*inline-blocks* 0)
 	       (*restore-avma*  *restore-avma*)
-	       (fd `((t t) t #.(flags rfa) 
+	       (fd `((t t t) t #.(flags rfa)
 		     ,(concatenate 'string
 				   "({struct htent *_z=gethash"
 				   (if *safe-compile* "_with_check" "")
