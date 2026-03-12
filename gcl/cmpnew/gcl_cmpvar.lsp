@@ -509,8 +509,9 @@
       (setq t1 (ensure-known-type (coerce-to-one-value t1)))
       (let* ((tp (type-and (var-dt v) t1)))
 	(unless (or tp (not (and (var-dt v) t1)))
-	  (cmpwarn "Type mismatches setting declared ~s variable ~s to type ~s from form ~s."
-	       (cmp-unnorm-tp (var-dt v)) (var-name v) (cmp-unnorm-tp t1) (car form)))
+	  (keyed-cmpnote (list (var-name v) 'type-propagation 'type)
+			 "Type mismatches setting declared ~s variable ~s to type ~s from form ~s."
+			 (cmp-unnorm-tp (var-dt v)) (var-name v) (cmp-unnorm-tp t1) (car form)))
 	(keyed-cmpnote (list (var-name v) 'type-propagation 'type)
 		       "Setting var-type on ~s from ~s to ~s, form ~s, max ~s" 
 		       (var-name v) (cmp-unnorm-tp (var-type v)) (cmp-unnorm-tp tp) (car form) (cmp-unnorm-tp (var-mt v)))

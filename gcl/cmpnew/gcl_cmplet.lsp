@@ -39,8 +39,9 @@
 				   (unless (eq t (var-type v)) (var-type v)))
 			(var-loc v)))
     (unless (var-type v)
-      (cmpwarn "Type mismatches binding declared ~s variable ~s to type ~s."
-	       (cmp-unnorm-tp (var-dt v)) (var-name v) (cmp-unnorm-tp t1)))
+      (keyed-cmpnote (list (var-name v) 'type-propagation 'type 'init-type)
+		     "Type mismatches binding declared ~s variable ~s to type ~s."
+		     (cmp-unnorm-tp (var-dt v)) (var-name v) (cmp-unnorm-tp t1)))
     (keyed-cmpnote (list (var-name v) 'type-propagation 'type 'init-type)
 		   "Setting init type of ~s to ~s" (var-name v) (cmp-unnorm-tp (var-type v)))))
 
