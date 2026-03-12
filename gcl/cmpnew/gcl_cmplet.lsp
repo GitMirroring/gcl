@@ -150,6 +150,8 @@
       (setq body nil))
 
     (c1add-globals (set-difference ss vnames))
+    (let ((x (set-difference (remove-if-not 'si::specialp vnames) ss)))
+      (when x (push `(declare (special ,@x)) (cdr args))))
     (check-vdecl vnames ts is)
     (setq body (c1decl-body other-decls body))
 

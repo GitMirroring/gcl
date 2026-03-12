@@ -73,7 +73,7 @@
 	 (cons (list (car procls) (or (if (atom (car ll)) (car ll) (caar ll))))
 	       (decls-from-procls (cdr ll) (cdr procls) body)))))
 	 
-(defun c1lambda-expr (args &aux (regs (pop args)) requireds tv
+(defun c1lambda-expr (args osrc &aux (regs (pop args)) requireds tv
 			   doc body ss is ts other-decls (ovars *vars*)
 			   (*vars* *vars*) narg (info (make-info)) ctps)
 
@@ -91,6 +91,11 @@
   (check-vdecl (mapcar 'var-name tv) ts is)
   
   (setq body (c1decl-body other-decls body))
+  (let ((x (set-difference
+	    (remove-if-not 'si::specialp
+			   (append regs (mapcar 'var-name *undefined-vars*)))
+	    ss)))
+    (when x (push `(declare (special ,@x)) (cddr osrc))))
   (ref-vars body requireds)
   (dolist (var requireds) (check-vref var))
   

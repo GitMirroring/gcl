@@ -252,6 +252,8 @@
       (push v vars)))
 
   (c1add-globals (set-difference ss vnames))
+  (let ((x (set-difference (remove-if-not 'si::specialp vnames) ss)))
+    (when x (push `(declare (special ,@x)) (cddr args))))
 
   (setq init-form (c1arg (cadr args) info))
 

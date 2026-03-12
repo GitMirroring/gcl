@@ -437,9 +437,6 @@
 	       ((let let* lambda) 
 		`(,(car form) 
 		  ,(mapcar (lambda (x) (if (atom x) x `(,(car x) ,@(portable-source (cdr x) t)))) (cadr form))
-		  ,@(let* ((r (delete-if (lambda (x) (or (not (si::specialp x)) (is-declared-special x (cddr form))))
-					 (mapcar (lambda (x) (if (atom x) x (car x))) (cadr form)))));FIXME key name
-		      (when r `((declare (special ,@r)))))
 		  ,@(ndbctxt (portable-source (cddr form) t))))
 	       ((quote function side-effects) form)
 	       (infer-tp `(,(car form) ,(cadr form)
@@ -462,10 +459,6 @@
 		    ,@(let ((*mlts* (append fns *mlts*)))
 			(ndbctxt (portable-source (cddr form) t))))))
 	       (multiple-value-bind `(,(car form) ,(cadr form) ,(portable-source (caddr form))
-				      ,@(let ((r (remove-if (lambda (x) (or (not (si::specialp x)) 
-									    (is-declared-special x (cdddr form))))
-							    (cadr form))))
-					  (when r `((declare (special ,@r)))))
 				      ,@(ndbctxt (portable-source (cdddr form) t))))
 	       ((case ccase ecase) `(,(car form) ,(portable-source (cadr form))
 				     ,@(mapcar (lambda (x) `(,(car x) ,@(portable-source (cdr x) t))) (cddr form))))))
@@ -895,9 +888,9 @@
   (let ((a (member '&aux ll)))
     (ldiff ll a)))
 
-(defun do-l1-fun (name src e b &aux (wns *warning-note-stack*) (*recursion-detected* (cons (list name) *recursion-detected*)))
+(defun do-l1-fun (name src e b osrc &aux (wns *warning-note-stack*) (*recursion-detected* (cons (list name) *recursion-detected*)))
 
-  (let* ((l (c1lambda-expr src))
+  (let* ((l (c1lambda-expr src osrc))
 	 (osig (car e))
 	 (sig (lam-e-to-sig l))
 	 (rd (cdar *recursion-detected*))
@@ -907,7 +900,7 @@
     (cond (rep
 	   (keyed-cmpnote (list name 'recursion) "Reprocessing ~s: ~s ~s" name osig sig)
 	   (setq *warning-note-stack* wns);FIXME try to use with-restore-vars
-	   (do-l1-fun name src e b))
+	   (do-l1-fun name src e b osrc))
 	  (l))))
 
 
@@ -932,7 +925,7 @@
 	 (*src-inline-recursion* (when vis (list (make-tagged-sir (list (sir-name name)) tag (ttl-ll (cadr src))))))
 	 (*c1exit* (list (make-c1exit name)))
 	 (*current-form* `(defun ,name))
-	 (l (do-l1-fun name (cdr (new-defun-args src tag)) e b))
+	 (l (do-l1-fun name (cdr (new-defun-args src tag)) e b src))
 	 (clv (get-clv l)))
     (setf (second e) (mapcan (lambda (x) (when (symbolp x) (list (cons x (get-sig x)))))
 			     (info-ref (cadr l)))
