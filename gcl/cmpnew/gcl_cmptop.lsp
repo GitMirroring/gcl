@@ -811,7 +811,7 @@
 ;    (true "Ct")
     ((cons (eql vv) t) (fm-to-string (cadr form)))
     ((cons (member char-value fixnum-value character-value) t) (fm-to-string (caddr form)))
-    ((eql most-negative-fixnum)  #.(string-concatenate "(" (write-to-string (1+ most-negative-fixnum)) "- 1)"))
+    ((eql #.most-negative-fixnum)  #.(string-concatenate "(" (write-to-string (1+ most-negative-fixnum)) "- 1)"))
     (fixnum (format nil "~a" form)); string character
     (float (format nil "~10,,,,,,'eG" form))
     ((complex float)
@@ -941,7 +941,7 @@
 	  (fifth e) (logior (if (iflag-p (info-flags (cadr l)) side-effects) 0 2) (if (= (length clv) 0) 1 0))
 	  (sixth e) name)
     (when *sig-discovery*
-      (when (symbol-package name) (unless (eq name 'lambda) (push (cons name (apply 'si::make-function-plist e)) si::*sig-discovery-props*))))
+      (when (symbol-package name) (unless b (push (cons name (apply 'si::make-function-plist e)) si::*sig-discovery-props*))))
     l))
 
 ;; top-level lex-ref walker
