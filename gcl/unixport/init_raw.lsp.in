@@ -6,7 +6,7 @@
 (make-package :compiler :use '(:cl :si :cstruct))
 (make-package :sloop :use '(:cl))
 (make-package :ansi-loop :use'(:cl))
-(make-package :defpackage :use '(:cl))
+(make-package :defpackage :use '(:cl :sloop))
 (make-package :tk :use '(:cl :sloop))
 (make-package :fpe :use '(:cl))
 (make-package :cltl1-compat)

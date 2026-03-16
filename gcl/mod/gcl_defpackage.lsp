@@ -67,12 +67,10 @@
 ;;; -----------------------------------------------------------------
 
 (unless (find-package :defpackage)
-  (make-package :defpackage :use '(:cl)))
+  (make-package :defpackage :use '(:cl :sloop)))
 (in-package :defpackage)
 
 (export '(defpackage))
-
-(use-package :SLOOP)
 
 (defmacro DEFPACKAGE (name &rest options)
   (declare (optimize (safety 1)))
