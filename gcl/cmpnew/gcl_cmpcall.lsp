@@ -276,12 +276,18 @@
 (defun commasep (x)
   (mapcon (lambda (x) (if (cdr x) (list (car x) ",") (list (car x)))) x))
 
-(defun ms (&rest r) 
-  (apply 'concatenate 'string 
-	 (mapcar (lambda (x) 
-		   (cond ((listp x) (apply 'ms x))
-			 ((stringp x) x)
-			 ((write-to-string x)))) r)))
+(defun ms (&rest r)
+  (labels ((msh (x)
+	     (cond ((< (length x) (1- call-arguments-limit))
+		    (apply 'concatenate 'string
+			   (mapcar (lambda (x)
+				     (cond ((listp x) (msh x))
+					   ((stringp x) x)
+					   ((write-to-string x))))
+				   x)))
+		   ((let ((y (nthcdr (- call-arguments-limit 2) x)))
+		      (concatenate 'string (msh (ldiff x y)) (msh y)))))))
+    (msh r)))
 
 (defun nords (n &aux (i -1))
   (mapl (lambda (x) (setf (car x) (incf i))) (make-list n)))
