@@ -33,6 +33,10 @@ MCC?=gcc
 # endif
 
 CFLAGS_APPEND?=
+ifeq ($(ARCHT),m68k) #gcc bug 20260316
+CFLAGS_APPEND:=$(CFLAGS_APPEND) -O1
+endif
+
 #ifeq ($(ARCHT),ppc64)
 #CFLAGS_APPEND:=$(CFLAGS_APPEND) -O1
 #endif
