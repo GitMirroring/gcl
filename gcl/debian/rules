@@ -33,8 +33,8 @@ MCC?=gcc
 # endif
 
 CFLAGS_APPEND?=
-ifeq ($(ARCHT),m68k) #gcc bug 20260316
-CFLAGS_APPEND:=$(CFLAGS_APPEND) -O1
+ifeq ($(ARCHT),m68k) #gcc bug 20260316 https://gcc.gnu.org/bugzilla/show_bug.cgi?id=124569
+CFLAGS_APPEND:=$(CFLAGS_APPEND) -fno-auto-inc-dec
 endif
 
 #ifeq ($(ARCHT),ppc64)
