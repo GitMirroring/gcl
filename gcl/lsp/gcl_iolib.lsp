@@ -406,14 +406,12 @@
       (d pd (cdr pd)))
     (values ps created)))
 
-(defun get-byte-stream-nchars (s)
-  (let* ((tp (stream-element-type s))(ctp (cmp-norm-tp tp)))
-    (labels ((ts (i) (when (<= i 32)
-		       (if (tp<= ctp (cmp-norm-tp `(unsigned-byte ,(* i char-length))))
-			   i (ts (1+ i))))))
-      (cond ((tp<= ctp #tcharacter) 1)
-	    ((ts 0))
-	    (1)))))
+(defun get-byte-stream-nchars (s);restricted
+  (let* ((tp (stream-element-type s)))
+    (typecase tp
+	((cons (member signed-byte unsigned-byte) (cons (integer 0) null))
+	 (values (ceiling (cadr tp) 8)))
+	(t 1))))
 
 (defun parse-integer (s &key start end (radix 10) junk-allowed)
   (declare (optimize (safety 1)))
