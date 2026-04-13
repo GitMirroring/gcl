@@ -87,6 +87,10 @@
 		  (let ((val (symbol-value form)))
 		    (or 
 		     (c1constant-value val nil)
+		     (when (functionp val)
+		       (multiple-value-bind (s c n) (fle val)
+			 (declare (ignore c))
+			 (c1function (list (or n s)))))
 		     `(location ,(make-info :type (object-type val)) (VV ,(add-constant form))))))
 					;                 ((c1var form))))
                  ((c1expr-avct (c1var form))))) ;FIXME pcl
