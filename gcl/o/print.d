@@ -1068,7 +1068,7 @@ print_symbol_name_body(object x,int pp) {
     write_ch('|');
 
   for (lw=i=0;i<VLEN(x);i++) {
-    j = x->st.st_self[i];
+    j = (uchar)x->st.st_self[i];
     if (PRINTescape && (j == '|' || j == '\\'))
       write_ch('\\');
     fc=convertible_upper(j) ? 1 : 
