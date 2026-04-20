@@ -171,6 +171,12 @@
   (make-array 10 :initial-element nil :fill-pointer 5)
   (:end nil) "abcdefghijk" 5 #(#\a #\b #\c #\d #\e))
 
+;; Fast read-sequence
+
+(def-read-sequence-test read-sequence.fast-char.1
+  (make-array 5 :element-type 'character)
+  (:end nil) "abcdefghijk" 5 "abcde")
+
 ;;; Nil vectors
 
 (deftest read-sequence.nil-vector.1
@@ -230,6 +236,63 @@
 
 (def-read-sequence-bv-test read-sequence.bv.7 #*00000000000000 (:end 6)
   6 #*01100100000000)
+
+;; Fast read-sequence -> fread cases
+
+(defmacro def-read-sequence-fread-test (name seql tp data args &rest expected)
+  `(deftest ,name
+     ;; Create output file
+     (progn
+       (let (os)
+	 (unwind-protect
+	     (progn
+	       (setq os (open "temp.dat" :direction :output
+			      :element-type ',tp
+			      :if-exists :supersede))
+	       (loop for i in (coerce ,data 'list)
+		     do (if (eq ',tp 'character) (write-char i os) (write-byte i os))))
+	   (when os (close os))))
+       (let (is (seq (make-array ,seql :element-type ',tp)))
+	 (unwind-protect
+	     (progn
+	       (setq is (open "temp.dat" :direction :input
+			      :element-type ',tp))
+	       (values
+		(read-sequence seq is ,@args)
+		seq))
+	   (when is (close is)))))
+     ,@expected))
+
+(def-read-sequence-fread-test
+    read-sequence.fread.1 20
+  character "abcdefghijk" ()
+  11 "abcdefghijk         ")
+
+(def-read-sequence-fread-test
+    read-sequence.fread.2 20
+  character "abcdefghijk" (:start 1)
+  12 " abcdefghijk        ")
+
+(def-read-sequence-fread-test
+    read-sequence.fread.3 20
+  character "abcdefghijk" (:start 1 :end 3)
+  3 " ab                 ")
+
+(def-read-sequence-fread-test
+    read-sequence.fread.4 20
+  character "abcdefghijk" (:end 3)
+  3 "abc                 ")
+
+(def-read-sequence-fread-test
+    read-sequence.fread.5 20
+  fixnum #(1 2 3 4 5 6 7 8 9 10 11)  (:end 3)
+  3 #(1 2 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+
+(def-read-sequence-fread-test
+    read-sequence.fread.6 20
+  (unsigned-byte 16) #(1 2 3 4 5 6 7 8 9 10 11)  (:start 2 :end 6)
+  6 #(0 0 1 2 3 4 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+
 
 ;;; Error cases
 

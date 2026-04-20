@@ -115,19 +115,19 @@
 
 (defmacro def-write-sequence-bv-test (name input args expected)
   `(deftest ,name
-     (let ((s ,input)
-	   (expected ,expected))
-       (with-open-file
-	(os "tmp.dat" :direction :output
-	    :element-type '(unsigned-byte 8)
-	    :if-exists :supersede)
-	 (assert (eq (write-sequence s os ,@args) s)))
-       (with-open-file
-	(is "tmp.dat" :direction :input
-	    :element-type '(unsigned-byte 8))
-	 (loop for i from 0 below (length expected)
-	       for e = (elt expected i)
-	       always (eql (read-byte is) e))))
+       (let ((s ,input)
+	     (expected ,expected))
+	 (with-open-file
+	     (os "tmp.dat" :direction :output
+		 :element-type '(unsigned-byte 8)
+		 :if-exists :supersede)
+	   (assert (eq (write-sequence s os ,@args) s)))
+	 (with-open-file
+	     (is "tmp.dat" :direction :input
+		 :element-type '(unsigned-byte 8))
+	   (loop for i from 0 below (length expected)
+		 for e = (elt expected i)
+		 always (eql (read-byte is) e))))
      t))
 
 (def-write-sequence-bv-test write-sequence.bv.1 #*00111010
@@ -143,6 +143,43 @@
 (def-write-sequence-bv-test write-sequence.bv.6 #*00111010
   (:start 1 :end nil :end 4) #*0111010)
 
+(defmacro def-write-sequence-tp-test (name tp input args expected)
+  `(deftest ,name
+       (let ((s (coerce ',input `(vector ,',tp)))
+	     (expected ',expected))
+	 (with-open-file
+	     (os "tmp.dat" :direction :output
+		 :element-type ',tp
+		 :if-exists :supersede)
+	   (assert (eq (write-sequence s os ,@args) s)))
+	 (with-open-file
+	     (is "tmp.dat" :direction :input
+		 :element-type ',tp)
+		 (loop for i from 0 below (length expected)
+		       for e = (elt expected i)
+		       always (eql (if (eq ',tp 'character) (read-char is) (read-byte is)) e))))
+     t))
+
+(def-write-sequence-tp-test write-sequence.tp.1 (unsigned-byte 8)
+  (1 2 3 4 5 6 7 8 9 10) () (1 2 3 4 5 6 7 8 9 10))
+(def-write-sequence-tp-test write-sequence.tp.2 (unsigned-byte 16)
+  (1 2 3 4 5 6 7 8 9 10) () (1 2 3 4 5 6 7 8 9 10))
+(def-write-sequence-tp-test write-sequence.tp.3 (signed-byte 32)
+  (1 2 3 4 5 6 7 8 9 10) () (1 2 3 4 5 6 7 8 9 10))
+(def-write-sequence-tp-test write-sequence.tp.4 (signed-byte 64)
+  (1 2 3 4 5 6 7 8 9 10) () (1 2 3 4 5 6 7 8 9 10))
+(def-write-sequence-tp-test write-sequence.tp.5 (unsigned-byte 128)
+  (1 2 3 4 5 6 7 8 9 10) () (1 2 3 4 5 6 7 8 9 10))
+(def-write-sequence-tp-test write-sequence.tp.6 character
+  (#\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9 #\1) () (#\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9 #\1))
+(def-write-sequence-tp-test write-sequence.tp.7 (unsigned-byte 16)
+  (1 2 3 4 5 6 7 8 9 10) (:start 1) (2 3 4 5 6 7 8 9 10))
+(def-write-sequence-tp-test write-sequence.tp.8 (unsigned-byte 16)
+  (1 2 3 4 5 6 7 8 9 10) (:end 4) (1 2 3))
+(def-write-sequence-tp-test write-sequence.tp.9 (unsigned-byte 16)
+  (1 2 3 4 5 6 7 8 9 10) (:start 1 :end 4) (2 3))
+(def-write-sequence-tp-test write-sequence.tp.10 (unsigned-byte 16)
+  (1 2 3 4 5 6 7 8 9 10) (:start 1 :end nil :end 4) (2 3 4 5 6 7 8 9 10))
 
 ;;; Error tests
 

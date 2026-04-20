@@ -79,6 +79,22 @@
 	collect (list i b1 b2))
   nil)
 
+(deftest read-byte.5
+  (let ((s (open "foo.txt"
+		 :direction :output
+		 :if-exists :supersede
+		 :element-type '(unsigned-byte 8))))
+    (values
+     (write-byte 255 s)
+     (close s)
+     (progn
+       (setq s (open "foo.txt"
+		     :direction :input
+		     :element-type '(signed-byte 8)))
+       (read-byte s))
+     (close s)))
+  255 t -1 t)
+
 ;;; Error tests
 
 (deftest read-byte.error.1
