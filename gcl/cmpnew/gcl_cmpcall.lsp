@@ -483,18 +483,16 @@
 
 (defun stub-decl (name args d &optional vp
 		  &aux (i 0))
-  (concatenate
-   'string
+  (ms
    "static " d " " name ;" LnkT" num
    "("
-   (apply 'concatenate 'string
-	  (mapcan (lambda (x)
-		    (if (eq x '*)
-			(list ",...")
-			(list (if (plusp i) ","  "")
-			      (rep-type x)
-			      (progn (incf i) (if vp (concatenate 'string "x" (write-to-string i)) "")))))
-		  (if (eq (car args) '*) (cons t args) args)))
+   (mapcan (lambda (x)
+	     (if (eq x '*)
+		 (list ",...")
+		 (list (if (plusp i) ","  "")
+		       (rep-type x)
+		       (progn (incf i) (if vp (list "x" (write-to-string i)) "")))))
+	   (if (eq (car args) '*) (cons t args) args))
    ")"))
 
 
@@ -503,8 +501,7 @@
 	       (i (max n (- (length args) n)));FIXME
 	       (si (write-to-string i))
 	       (d (declaration-type (rep-type (if (link-arg-p type) type t)))))
-  (concatenate
-   'string
+  (ms
    (stub-decl (concatenate 'string "LnkT" num) args d t)
    "{
       int nargs=" (if va "fcall.argd<0 ? -fcall.argd : fcall.argd" si) ";
@@ -512,14 +509,12 @@
       "
 
    (let ((j 0))
-     (apply 'concatenate 'string
-	    (mapcan (lambda (x &aux (sj (write-to-string (incf j))))
-		      (declare (ignore x))
-		      (list "FOO[" sj "-1]=(object)x" sj ";"))
-		    (make-list i))))
+     (mapcan (lambda (x &aux (sj (write-to-string (incf j))))
+	       (declare (ignore x))
+	       (list "FOO[" sj "-1]=(object)x" sj ";"))
+	     (make-list i)))
    (when va
-     (concatenate
-      'string
+     (list
       "
       {
           va_list ap;
@@ -538,6 +533,7 @@
    (write-to-string (new-proclaimed-argd args type)) ","
    "FOO);
 }"))
+
 
 (defun wt-function-link (x)
   (let* ((name (pop x))
