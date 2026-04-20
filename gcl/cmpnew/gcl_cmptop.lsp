@@ -844,7 +844,7 @@
 			  (cond (f (setq inl (lit-string-merge inl (fourth f) i lna (1- lff)))
 				   (setq lev (min lev 1));FIXME?
 ;				   (when (> lev (seventh f)) (setq lev (seventh f))); (break)
-				   (incf i lff)(copy-list ff));FIXME?
+				   (incf i lff)(incf lna (1- lff))(copy-list ff));FIXME?
 				((incf i)(list x))))
 			nargs))
 	 (form (list 'lit info key inl nargs nil lev oargs nil (make-vs info))))
