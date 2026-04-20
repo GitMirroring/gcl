@@ -400,9 +400,9 @@ void
 check_arg_failed(int n)
 {
   if (n<vs_top-vs_base)
-    FEtoo_few_arguments(vs_base,vs_top);
-  else
     FEtoo_many_arguments(vs_base,vs_top);
+  else
+    FEtoo_few_arguments(vs_base,vs_top);
 }
 
 void
