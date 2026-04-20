@@ -427,7 +427,6 @@
 
 ;(si::putprop 'read-byte 'co1read-byte 'co1)
 #-cygwin(si::putprop 'read-char 'co1read-char 'co1)
-(si::putprop 'write-byte 'co1write-byte 'co1)
 (si::putprop 'write-char 'co1write-char 'co1)
 
 (defun fast-read (args read-fun)
@@ -482,15 +481,6 @@
 	  `(let ((,str ,stream))
 	     (declare (type ,(result-type stream) ,str))
 	     ,(cfast-write (list (car args) str) write-fun tp)))))))
-
-
-(defun co1write-byte (f args)
-  (declare (ignore f))
-  (let ((tem (cfast-write args 'write-byte 'fixnum)))
-    (when tem 
-      (let ((*space* 10))
-	(c1expr tem)))))
-
 
 (defun co1write-char (f args)
   (declare (ignore f))
