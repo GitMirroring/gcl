@@ -347,17 +347,40 @@
      ))
 
 
-(defun restrict-stream-element-type (tp)
-  (cond ((member tp '(unsigned-byte signed-byte)) tp)
-	((or (member tp '(character :default)) (subtypep tp 'character)) 'character)
+(defun encapsulate-stream-element-type (tp)
+  (cond ((subtypep tp 'character) 'character)
 	((subtypep tp 'integer)
 	 (let* ((ntp (tp-bnds (cmp-norm-tp tp)))
 		(min (car ntp))(max (cdr ntp))
 		(s (if (or (eq min '*) (< min 0)) 'signed-byte 'unsigned-byte))
 		(lim (unless (or (eq min '*) (eq max '*)) (max (integer-length min) (integer-length max))))
 		(lim (if (and lim (eq s 'signed-byte)) (1+ lim) lim)))
-	   (if lim `(,s ,lim) s)))
+	   (if lim `(,s ,lim) s)))))
+
+(defconstant +array-stream-types+ (coerce (mapcar 'encapsulate-stream-element-type +array-types+) '(vector t)))
+
+(defun restrict-stream-element-type (tp &aux etp);standardize....
+  (cond ((member tp '(:default character)) 'character)
+	((eq tp 'unsigned-byte) '(unsigned-byte 8))
+	((eq tp 'signed-byte) '(signed-byte 8))
+	((typep tp '(cons (member unsigned-byte signed-byte) (cons (integer 0) null)))
+	 (let ((tp (list (car tp) (* char-length (ceiling (cadr tp) char-length)))))
+	   (or (find tp +array-stream-types+ :test 'equal) tp)))
+	((subtypep tp 'character) 'character)
+	((setq etp (encapsulate-stream-element-type tp))
+	 (restrict-stream-element-type etp))
 	((check-type tp (member character integer)))))
+
+(defun stream-fp (strm outp)
+  (when (open-stream-p strm)
+    (typecase strm
+      (file-synonym-stream (stream-fp (symbol-value (synonym-stream-symbol strm)) outp))
+      (two-way-stream (stream-fp
+		       (if outp (two-way-stream-output-stream strm) (two-way-stream-input-stream strm))
+		       outp))
+      (file-io-stream (c-stream-fp strm))
+      (file-input-stream (unless outp (c-stream-fp strm)))
+      (file-output-stream (when outp (c-stream-fp strm))))))
 
 (defun load-pathname-exists (z)
   (or (probe-file z)
@@ -417,54 +440,111 @@
   (declare (optimize (safety 1)))
   (parse-integer-int s start end radix junk-allowed))
 
+(defun stream-element-type (s)
+  (declare (optimize (safety 1)))
+  (check-type s stream);etypecase
+  (typecase s
+    ((or broadcast-stream concatenated-stream)
+     (let ((o (c-stream-object0 s)))
+       (when o (stream-element-type (car o)))))
+    ((or two-way-stream echo-stream)
+     (stream-element-type (c-stream-object0 s)))
+    (synonym-stream
+     (stream-element-type (symbol-value (c-stream-object0 s))))
+    (file-stream;define socket
+     (c-stream-object0 s))
+    (t 'character)))
+
+(deftype binary-stream-element-type nil 'list)
+(defconstant +char-shft+ (1- (integer-length char-length)))
+
+(defun read-byte (s &optional (eof-error-p t) eof-value &aux (i 0)(tp (stream-element-type s)))
+  (declare (optimize (safety 1)))
+  (check-type s stream)
+  (check-type tp binary-stream-element-type)
+  (let* ((n (if tp (ash (cadr tp) (- +char-shft+)) 1)))
+    (dotimes (k n (let ((nb (ash n +char-shft+)))
+		  (if (when (eq (car tp) 'signed-byte) (logbitp (1- nb) i)) (- i (ash 1 nb)) i)))
+      (setq i (logior i (ash (let ((ch (read-char s eof-error-p eof-value)))
+			       (if (eq ch eof-value) (return ch) (char-code ch)))
+			     (ash k +char-shft+)))))))
+
 (defun write-byte (j s &aux (i j))
   (declare (optimize (safety 1)))
   (check-type j integer)
-  (check-type s stream)
-  (dotimes (k (get-byte-stream-nchars s) j)
-    (write-char (code-char (logand i #.(1- (ash 1 char-length)))) s)
-    (setq i (ash i #.(- char-length)))))
+  (check-type s binary-stream)
+  (let* ((tp (stream-element-type s))
+	 (n (ash (cadr tp) (- +char-shft+))))
+    (dotimes (k n j)
+      (write-char (code-char (logand i #.(1- (ash 1 char-length)))) s)
+      (setq i (ash i #.(- char-length))))))
+
+#-pre-gcl
+(defdlfun (:fixnum "fread") :fixnum :fixnum :fixnum :fixnum)
+
+(defun read-sequence-using-fread (seq strm tp start end &aux (fp (stream-fp strm nil)))
+  #+pre-gcl
+  (declare (ignore seq tp start end fp))
+  #-pre-gcl
+  (when fp
+    (when (eq tp (aref +array-stream-types+ (c-array-elttype seq)))
+      (let* ((n (ash 1 (1- (c-array-eltsize seq))))(ln (length seq))(end (or end ln)))
+	(when (<= start end ln)
+	  (c+ start
+	      (|libc|:|fread|
+		     (c+ (c-array-self seq) (c* n start)) n (c- end start) fp)))))))
 
 
-(defun read-byte (s &optional (eof-error-p t) eof-value &aux (i 0))
-  (declare (optimize (safety 1)))
-  (check-type s stream)
-  (dotimes (k (get-byte-stream-nchars s) i)
-    (setq i (logior i (ash (let ((ch (read-char s eof-error-p eof-value)))
-			     (if (eq ch eof-value) (return ch) (char-code ch)))
-			   (* k char-length))))))
 
 
 (defun read-sequence (seq strm &key (start 0) end
 		      &aux (l (listp seq))(seqp (when l (nthcdr start seq)))
-			(cp (eq (stream-element-type strm) 'character)))
+			(tp (stream-element-type strm)))
   (declare (optimize (safety 1)));FIXME
   (check-type seq sequence)
   (check-type strm stream)
-  (check-type start (integer 0))
-  (check-type end (or null (integer 0)))
-  (labels ((set-cons (x z) (check-type x cons) (setf (car x) z) (cdr x)))
-    (the seqbnd
-	 (reduce (lambda (y x &aux (z (if cp (read-char strm nil 'eof) (read-byte strm nil 'eof))))
-		   (declare (seqind y)(ignorable x))
-		   (when (eq z 'eof) (return-from read-sequence y))
-		   (if l (setq seqp (set-cons seqp z)) (setf (aref seq y) z))
-		   (1+ y))
-		 seq :initial-value start :start start :end end))))
+  (check-type start seqind)
+  (check-type end (or null seqind))
+  (the seqbnd
+       (or (unless l (read-sequence-using-fread seq strm tp start end))
+	   (labels ((set-cons (x z) (check-type x cons) (setf (car x) z) (cdr x))
+		    (mread nil (if (eq tp 'character) (read-char strm nil 'eof) (read-byte strm nil 'eof))))
+	     (reduce (lambda (y x &aux (z (mread)))
+		       (declare (seqind y)(ignorable x))
+		       (when (eq z 'eof) (return-from read-sequence y))
+		       (if l (setq seqp (set-cons seqp z)) (setf (aref seq y) z))
+		       (1+ y))
+		     seq :initial-value start :start start :end end)))))
+
+#-pre-gcl
+(defdlfun (:fixnum "fwrite") :fixnum :fixnum :fixnum :fixnum)
+
+(defun write-sequence-using-fwrite (seq strm tp start end &aux (fp (stream-fp strm t)))
+  #+pre-gcl
+  (declare (ignore seq tp start end fp))
+  #-pre-gcl
+  (when fp
+    (when (eq tp (aref +array-stream-types+ (c-array-elttype seq)))
+      (let* ((n (ash 1 (1- (c-array-eltsize seq))))(ln (length seq))(end (or end ln)))
+	(when (<= start end ln)
+	  (c+ start
+	      (|libc|:|fwrite|
+		     (c+ (c-array-self seq) (c* n start)) n (c- end start) fp)))))))
 
 
 (defun write-sequence (seq strm &key (start 0) end
-			   &aux (cp (eq (stream-element-type strm) 'character)))
+		       &aux (tp (stream-element-type strm)))
   (declare (optimize (safety 1)))
   (check-type seq sequence)
   (check-type strm stream)
   (check-type start (integer 0))
   (check-type end (or null (integer 0)))
-  (reduce (lambda (y x)
-		   (declare (seqind y))
-		   (if cp (write-char x strm) (write-byte x strm))
-		   (1+ y))
-	 seq :initial-value start :start start :end end)
+  (or (unless (listp seq) (write-sequence-using-fwrite seq strm tp start end))
+      (reduce (lambda (y x)
+		(declare (seqind y))
+		(if (eq tp 'character) (write-char x strm) (write-byte x strm))
+		(1+ y))
+	      seq :initial-value start :start start :end end))
   seq)
 
 (defun open (f &key (direction :input)
@@ -481,6 +561,11 @@
 		      if-exists iesp if-does-not-exist idnesp external-format)))
     (when (typep s 'stream) (c-set-stream-object1 s pf) s)))
 
+(defun open-stream-p (strm)
+  (declare (optimize (safety 1)))
+  (check-type strm stream)
+  (not (logbitp #.(let ((s (open "/dev/null")))(close s) (1- (integer-length (c-stream-flags s))))
+		(c-stream-flags strm))))
 
 (defun file-length (x)
   (declare (optimize (safety 1)))

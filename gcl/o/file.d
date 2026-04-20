@@ -301,59 +301,6 @@ BEGIN:
 	}
 }
 
-static object
-stream_element_type(object strm) {
-
-	object x;
-
-BEGIN:
-	switch (strm->sm.sm_mode) {
-	case smm_input:
-	case smm_output:
-	case smm_io: 
-	case smm_probe:
-		return(strm->sm.sm_object0);
-
-	case smm_socket:
-	    return (sLcharacter);
-	    
-	case smm_file_synonym:
-	case smm_synonym:
-		strm = symbol_value(strm->sm.sm_object0);
-		if (type_of(strm) != t_stream)
-			FEwrong_type_argument(sLstream, strm);
-		goto BEGIN;
-
-	case smm_broadcast:
-		x = strm->sm.sm_object0;
-		if (endp(x))
-			return(Ct);
-		return(stream_element_type(x->c.c_car));
-
-	case smm_concatenated:
-		x = strm->sm.sm_object0;
-		if (endp(x))
-			return(Ct);
-		return(stream_element_type(x->c.c_car));
-
-	case smm_two_way:
-		return(stream_element_type(STREAM_INPUT_STREAM(strm)));
-
-	case smm_echo:
-		return(stream_element_type(STREAM_INPUT_STREAM(strm)));
-
-	case smm_string_input:
-		return(sLcharacter);
-
-	case smm_string_output:
-		return(sLcharacter);
-
-	default:
-		FEerror("Illegal stream mode for ~S.",1,strm);
-		return(FALSE);
-	}
-}
-
 void
 setup_stream_buffer(object x) {
 #ifdef NO_SETBUF
@@ -1972,14 +1919,6 @@ LFD(Loutput_stream_p)()
 		vs_base[0] = Cnil;
 }
 
-LFD(Lstream_element_type)()
-{
-	check_arg(1);
-
-	check_type_stream(&vs_base[0]);
-	vs_base[0] = stream_element_type(vs_base[0]);
-}
-
 @(defun close (strm &key abort)
 @
 	check_type_stream(&strm);
@@ -2856,7 +2795,6 @@ gcl_init_file_function()
 	make_function("STREAMP", Lstreamp);
 	make_function("INPUT-STREAM-P", Linput_stream_p);
 	make_function("OUTPUT-STREAM-P", Loutput_stream_p);
-	make_function("STREAM-ELEMENT-TYPE", Lstream_element_type);
 	make_function("CLOSE", Lclose);
 
 /* 	make_si_function("OPEN1", Lopen1); */
