@@ -75,7 +75,7 @@
 	 
 (defun c1lambda-expr (args osrc &aux (regs (pop args)) requireds tv
 			   doc body ss is ts other-decls (ovars *vars*)
-			   (*vars* *vars*) narg (info (make-info)) ctps)
+			   (*vars* *vars*) narg (info (make-info)) ctps *undefined-vars*)
 
 
   (multiple-value-setq (body ss ts is other-decls doc ctps) (c1body args t));FIXME parse-body-header
