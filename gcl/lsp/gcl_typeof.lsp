@@ -16,10 +16,6 @@
 	 (i (real-rep (if s x (cadr x)))))
     (complex r i)))
 
-(defun make-string-output-stream (&key (element-type 'character))
-  (declare (optimize (safety 1))(ignore element-type))
-  (make-string-output-stream-int))
-
 (defconstant +r+ `(,@(when (plusp most-positive-immfix) `((immfix 1)))
 		   (bfix  most-positive-fixnum)
 		   (bignum (1+ most-positive-fixnum))
@@ -40,18 +36,18 @@
 		   (hash-table-equal (make-hash-table :test 'equal))
 		   (hash-table-equalp (make-hash-table :test 'equalp))
 		   (package *package*)
-		   (file-input-stream (let ((s (open-int "/dev/null" :input 'character nil nil nil nil :default))) (close s) s))
-		   (file-output-stream (let ((s (open-int "/dev/null" :output 'character nil nil nil nil :default))) (close s) s))
-		   (file-io-stream (let ((s (open-int "/dev/null" :io 'character nil nil nil nil :default))) (close s) s))
-		   (file-probe-stream (let ((s (open-int "/dev/null" :probe 'character nil nil nil nil :default))) (close s) s))
-		   (file-synonym-stream (let* ((*standard-output* (open-int "/dev/null" :output 'character nil nil nil nil :default))) (close *standard-output*)  (make-synonym-stream '*standard-output*)))
-		   (non-file-synonym-stream *debug-io*);FIXME
-		   (broadcast-stream (make-broadcast-stream))
-		   (concatenated-stream (make-concatenated-stream))
-		   (two-way-stream *terminal-io*)
-		   (echo-stream (make-echo-stream *standard-output* *standard-output*))
-		   (string-input-stream (make-string-input-stream-int (make-vector 'character 0 t 0 nil 0 nil nil) 0 0))
-		   (string-output-stream (make-string-output-stream));FIXME user defined, socket
+		   (file-input-stream (allocate-basic-stream 0))
+		   (file-output-stream (allocate-basic-stream 1))
+		   (file-io-stream (allocate-basic-stream 2))
+		   (file-probe-stream (allocate-basic-stream 3))
+		   (file-synonym-stream (allocate-basic-stream 4))
+		   (non-file-synonym-stream (allocate-basic-stream 5));FIXME
+		   (broadcast-stream (allocate-basic-stream 6));(make-broadcast-stream)
+		   (concatenated-stream (allocate-basic-stream 7))
+		   (two-way-stream (allocate-basic-stream 8))
+		   (echo-stream (allocate-basic-stream 9))
+		   (string-input-stream (allocate-basic-stream 10))
+		   (string-output-stream (allocate-basic-stream 11));FIXME user defined, socket
 		   (random-state (make-random-state)) 
 		   (readtable (standard-readtable)) 
 		   (non-standard-object-compiled-function (function eq))

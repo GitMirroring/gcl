@@ -26,6 +26,56 @@
 
 (in-package :si)
 
+(eval-when (:load-toplevel :compile-toplevel :execute)
+  (defun type-smm (tp)
+    (cadr (cadr (assoc tp +r+)))))
+
+(defun make-broadcast-stream (&rest streams)
+  (declare (optimize (safety 1)))
+  (dolist (stream streams)
+    (check-type stream (and stream (satisfies output-stream-p))))
+  (let ((x (allocate-basic-stream #.(type-smm 'broadcast-stream))))
+    (c-set-stream-object0 x streams)
+    x))
+
+(defun make-concatenated-stream (&rest streams)
+  (declare (optimize (safety 1)))
+  (dolist (stream streams)
+    (check-type stream (and stream (satisfies input-stream-p))))
+  (let ((x (allocate-basic-stream #.(type-smm 'concatenated-stream))))
+    (c-set-stream-object0 x streams)
+    x))
+
+(defun make-synonym-stream (sym)
+  (declare (optimize (safety 1)))
+  (check-type sym symbol)
+  (labels ((fsp (s)
+	     (typecase s
+	       (file-stream #.(type-smm 'file-synonym-stream))
+	       (file-synonym-stream (fsp (symbol-value (c-stream-object0 s))))
+	       (t #.(type-smm 'non-file-synonym-stream)))))
+    (let ((x (allocate-basic-stream (fsp (symbol-value sym)))))
+      (c-set-stream-object0 x sym)
+      x)))
+
+(defun make-two-way-stream (in out)
+  (declare (optimize (safety 1)))
+  (check-type in (and stream (satisfies input-stream-p)))
+  (check-type out (and stream (satisfies output-stream-p)))
+  (let ((x (allocate-basic-stream #.(type-smm 'two-way-stream))))
+    (c-set-stream-object0 x in)
+    (c-set-stream-object1 x out)
+    x))
+
+(defun make-echo-stream (in out)
+  (declare (optimize (safety 1)))
+  (check-type in (and stream (satisfies input-stream-p)))
+  (check-type out (and stream (satisfies output-stream-p)))
+  (let ((x (allocate-basic-stream #.(type-smm 'echo-stream))))
+    (c-set-stream-object0 x in)
+    (c-set-stream-object1 x out)
+    x))
+
 (defun concatenated-stream-streams (stream)
   (declare (optimize (safety 2)))
   (check-type stream concatenated-stream)
@@ -75,10 +125,28 @@
   (check-type string string)
   (check-type start seqind)
   (check-type end (or null seqind))
-  (let ((l (- (or end (length string)) start)))
-    (make-string-input-stream-int
-     (make-array l :element-type (array-element-type string) :displaced-to string :displaced-index-offset start :fill-pointer 0)
-     0 l)))
+  (let* ((l (- (or end (length string)) start))
+	 (x (allocate-basic-stream #.(type-smm 'string-input-stream))))
+    (c-set-stream-object0 x
+     (make-array l
+		 :element-type (array-element-type string)
+		 :displaced-to string :displaced-index-offset start
+		 :fill-pointer 0))
+    x))
+
+(defun make-string-output-stream (&key (element-type 'character))
+  (declare (optimize (safety 1))(ignore element-type))
+  (let ((x (allocate-basic-stream #.(type-smm 'string-output-stream))))
+    (c-set-stream-object0 x (make-vector 'character 64 t 0 nil 0 nil nil))
+    x))
+
+(defun get-output-stream-string (strm)
+  (declare (optimize (safety 1)))
+  (check-type strm string-output-stream)
+  (let ((x (copy-seq (c-stream-object0 strm))))
+    (c-set-stream-int strm 0)
+    (setf (fill-pointer (c-stream-object0 strm)) 0)
+    x))
 
 (defun get-string-input-stream-index (stream &aux (s (c-stream-object0 stream)))
   (+ (fill-pointer s) (multiple-value-bind (a b) (array-displacement s) (declare (ignore a)) b)))
@@ -103,6 +171,11 @@
   (when *sosm*
     (setf (fill-pointer (c-stream-object0 *sosm*)) 0)
     *sosm*))
+
+(defun make-string-output-stream-from-string (string)
+  (let ((x (allocate-basic-stream #.(type-smm 'string-output-stream))))
+    (c-set-stream-object0 x string)
+    x))
 
 (defmacro with-output-to-string ((var &optional string &key (element-type ''character)) . body)
   (declare (optimize (safety 2)))
@@ -472,6 +545,7 @@
 (defun write-byte (j s &aux (i j) (tp (stream-element-type s)))
   (declare (optimize (safety 1)))
   (check-type j integer)
+  (check-type s stream)
   (check-type tp binary-stream-element-type)
   (let ((n (ash (cadr tp) (- +char-shft+))))
     (dotimes (k n j)
@@ -559,6 +633,17 @@
 		      (restrict-stream-element-type element-type)
 		      if-exists iesp if-does-not-exist idnesp external-format)))
     (when (typep s 'stream) (c-set-stream-object1 s pf) s)))
+
+(defun close (stream &key abort)
+  (declare (optimize (safety 1))(ignore abort))
+  (check-type stream stream)
+  (close-stream stream))
+
+(defun socket (port &key host server async myaddr myport daemon)
+  (socket-int port host server async myaddr myport daemon))
+
+(defun string-to-object (string)
+  (string-to-object-int (make-string-input-stream string)))
 
 (defun open-stream-p (strm)
   (declare (optimize (safety 1)))

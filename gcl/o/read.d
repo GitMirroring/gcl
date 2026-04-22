@@ -2328,30 +2328,14 @@ DEFUN("SET-READTABLE-CASE",object,fSset_readtable_case,SI,2,2,NONE,OO,OO,OO,OO,(
 	      }
 @)
 
-static object
-string_to_object(object x) {
+DEFUN("STRING-TO-OBJECT-INT",object,fSstring_to_object_int,SI,1,1,NONE,OO,OO,OO,OO,(object in),"") {
 
-	object in;
-	vs_mark;
+  preserving_whitespace_flag = FALSE;
+  detect_eos_flag = FALSE;
+  return(read_object_non_recursive(in));
 
-	in = fSmake_string_input_stream_int(x, 0, VLEN(x));
-	vs_push(in);
-	preserving_whitespace_flag = FALSE;
-	detect_eos_flag = FALSE;
-	x = read_object_non_recursive(in);
-	vs_reset;
-	return(x);
 }
 	
-LFD(siLstring_to_object)()
-{
-	check_arg(1);
-
-	check_type_string(&vs_base[0]);
-	vs_base[0] = string_to_object(vs_base[0]);
-}
-
-
 static void
 FFN(siLstandard_readtable)()
 {
@@ -2529,21 +2513,7 @@ gcl_init_read()
 void
 gcl_init_read_function()
 {
-/* 	make_function("READ", Lread); */
-/* 	make_function("READ-PRESERVING-WHITESPACE",Lread_preserving_whitespace); */
-/* 	make_function("READ-DELIMITED-LIST", Lread_delimited_list); */
-/* 	make_function("READ-LINE", Lread_line); */
-/* 	make_function("READ-CHAR", Lread_char); */
-/* 	make_function("UNREAD-CHAR", Lunread_char); */
-/* 	make_function("PEEK-CHAR", Lpeek_char); */
-/* 	make_function("LISTEN", Llisten); */
-/* 	make_function("READ-CHAR-NO-HANG", Lread_char_no_hang); */
 	make_function("CLEAR-INPUT", Lclear_input);
-
-/* 	make_function("PARSE-INTEGER", Lparse_integer); */
-
-/* 	make_function("READ-BYTE", Lread_byte); */
-
 	make_function("COPY-READTABLE", Lcopy_readtable);
 	make_function("READTABLEP", Lreadtablep);
 	make_function("SET-SYNTAX-FROM-CHAR", Lset_syntax_from_char);
@@ -2555,9 +2525,8 @@ gcl_init_read_function()
 
 	make_si_function("SHARP-COMMA-READER-FOR-COMPILER",siLsharp_comma_reader_for_compiler);
 
-	make_si_function("STRING-TO-OBJECT",siLstring_to_object);
-
 	make_si_function("STANDARD-READTABLE",siLstandard_readtable);
+
 }
 
 object sSPinit;
