@@ -48,8 +48,8 @@
 (defun symbol-value (s)
   (declare (optimize (safety 1)))
   (check-type s symbol)
-  (if (boundp s) (c-symbol-dbind s)
-    (error 'unbound-variable :name s)))
+  (assert (boundp s) nil 'unbound-variable :name s)
+  (c-symbol-dbind s))
 
 (defun boundp (s)
   (declare (optimize (safety 1)))
