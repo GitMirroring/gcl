@@ -356,7 +356,7 @@
     
 
 (defun lit-loc (key inl args bind safety oargs syms stores &aux (tp (get key 'cmp-lisp-type)))
-  (declare (ignore bind safety oargs stores))
+  (declare (ignore bind safety oargs syms stores))
   (let ((sig (list (mapcar (lambda (x) (info-type (cadr x))) args) tp))) 
     (get-inline-loc (list (car sig) (cadr sig) (flags rfa) inl) args)))
 
