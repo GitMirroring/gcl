@@ -716,6 +716,20 @@ DEFUN("KCL-SELF",object,fSkcl_self,SI,0,0,NONE,OO,OO,OO,OO,(void),"") {
 
 }
 
+#if defined(DARWIN)
+#include <stdio.h>
+#include <stdlib.h>
+#include <spawn.h>
+#include <sys/wait.h>
+#include <mach-o/dyld.h>
+
+/* These constants might not be in older headers */
+#ifndef POSIX_SPAWN_DISABLE_ASLR
+#define POSIX_SPAWN_DISABLE_ASLR 0x0100
+#endif
+#endif
+
+
 int
 main(int argc, char **argv, char **envp) {
 
