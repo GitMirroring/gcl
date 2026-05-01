@@ -4148,6 +4148,7 @@ case $canonical in
     powerpc*linux*) use=powerpc-linux;;
     powerpc-*-darwin*) use=powerpc-macosx;;
     *86*darwin*) use=386-macosx;;
+    *aarch64*darwin*) use=aarch64-macosx;;
     i*mingw*|i*msys*) use=mingw;;
     *cygwin*)
         if $CC -v 2>&1 | fgrep ming > /dev/null ;
@@ -7272,7 +7273,7 @@ case $use in
     386-macosx)
 #	assert_arg_to_cflags -Wno-error=implicit-function-declaration
 	add_arg_to_cflags -Wno-incomplete-setjmp-declaration
-	assert_arg_to_ldflags -Wl,-no_pie
+	assert_arg_to_ldflags -Wl,-no_pie #FIXME remove
 	if test "$build_cpu" = "x86_64" ; then
 	    assert_arg_to_cflags -m64
 	    assert_arg_to_ldflags -m64
@@ -7282,6 +7283,9 @@ case $use in
 	    assert_arg_to_ldflags -m32
 	    assert_arg_to_ldflags -Wl,-headerpad,56
         fi;;
+    aarch64-macosx)
+	add_arg_to_ldflags -Wl,-no-fixup-chains
+	;;
     FreeBSD) assert_arg_to_ldflags -Z;;
 esac
 
