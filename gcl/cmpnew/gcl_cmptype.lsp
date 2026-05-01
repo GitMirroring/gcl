@@ -502,6 +502,17 @@
 (defun range-decomp (tp)
   (mapcan (lambda (x &aux (f (pop x))(z (type-and tp x))) (when z (list (cons f z)))) +cmp-range-types+))
 
+(defun allocate-basic-stream-propagator (f tp)
+  (reduce
+   (lambda (y x)
+     (if (type-and (car x) tp)
+	 (type-or1 (cadr x) y)
+       y))
+   '#.(mapcar (lambda (x) (list (object-tp x) (cmp-norm-tp (type-of (allocate-basic-stream x)))))
+	     (let ((i -1))
+	       (mapl (lambda (x) (setf (car x) (incf i))) (make-list (si::btp-count #tstream)))))
+   :initial-value nil))
+(si::putprop 'allocate-basic-stream 'allocate-basic-stream-propagator 'type-propagator)
 
 (dolist (l '(si::number-plus si::number-minus si::number-times + - * exp tanh sinh asinh))
   (si::putprop l 'super-range 'type-propagator))
