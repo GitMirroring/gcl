@@ -1290,7 +1290,11 @@ gcl_init_alloc(void *cs_start) {
   
 #ifdef HAVE_MPROTECT
   if (data_start)
-    massert(!gcl_mprotect(data_start,(void *)core_end-data_start,PROT_READ|PROT_WRITE|PROT_EXEC));
+    massert(!gcl_mprotect(data_start,(void *)core_end-data_start,PROT_READ|PROT_WRITE
+#if !defined(__APPLE__)	&& !defined(__aarch64__)
+			  |PROT_EXEC
+#endif
+			  ));
 #endif
 
 #ifdef SGC
