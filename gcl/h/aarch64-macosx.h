@@ -105,9 +105,10 @@ do {int c=0;                                                            \
         return(FALSE);                                                  \
 } while (0)
 
+/* extern int _NSGetExecutablePath (char *, unsigned long *);  \ */
+
 #define GET_FULL_PATH_SELF(a_)                              \
 do {                                                        \
-extern int _NSGetExecutablePath (char *, unsigned long *);  \
 unsigned long bufsize = 1024;                               \
 static char buf [1024];                                     \
 static char fub [1024];                                     \
