@@ -808,6 +808,54 @@ copy_other (struct load_command *lc)
   curr_header_offset += lc->cmdsize;
 }
 
+static void
+copy_linkedit (struct load_command *lc, long delta) {
+
+  struct linkedit_data_command *ldc=(struct linkedit_data_command *)lc;
+
+  ldc->dataoff+=delta;
+  copy_other ((void *)ldc);
+
+}
+
+static void
+copy_linkedit_zero (struct load_command *lc, long delta) {
+
+  struct linkedit_data_command *ldc=(struct linkedit_data_command *)lc;
+
+  ldc->dataoff+=delta;
+  ldc->datasize=0;
+  copy_other ((void *)ldc);
+
+}
+
+/* static void */
+/* copy_linkedit_zero_cmd (struct load_command *lc, long delta) { */
+
+/*   struct linkedit_data_command *ldc=(struct linkedit_data_command *)lc; */
+
+/*   ldc->dataoff+=delta; */
+/*   ldc->datasize=0; */
+/*   ldc->cmd=LC_NOTE; */
+/*   copy_other ((void *)ldc); */
+
+/* } */
+
+/* static void */
+/* copy_linkedit_dyld_info (struct load_command *lc, long delta) { */
+
+/*   struct dyld_info_command *ldc=(struct dyld_info_command *)lc; */
+
+/*   ldc->rebase_size=0; */
+/*   ldc->bind_size=0; */
+/*   ldc->weak_bind_size=0; */
+/*   ldc->lazy_bind_size=0; */
+/*   ldc->export_size=0; */
+/*   copy_other ((void *)ldc); */
+
+/* } */
+
+
 /* Loop through all load commands and dump them.  Then write the Mach
    header.  */
 static void
@@ -844,10 +892,14 @@ dump_it () {
 	  extern char *data_start;
 	  struct section *sectp = (struct section *) (scp + 1);
 	  unsigned long header_offset=curr_header_offset + sizeof (struct segment_command);
+	  unsigned long heap_vmsize=(1UL<<32)+(long)(((((unsigned long)data_start)>>32)<<32)- (unsigned long)data_start)-0x100000;
+
+	  if (core_end-data_start>heap_vmsize)
+	    unexec_error ("data exceeds __HEAP vmsize");
 	  
 	  scp->vmaddr=(long)data_start;
-	  linkedit_vmdelta=(1UL<<37)-scp->vmsize;
-	  scp->vmsize=(1UL<<37);
+	  linkedit_vmdelta=heap_vmsize-scp->vmsize;
+	  scp->vmsize=heap_vmsize;
 	  scp->fileoff=curr_file_offset;
 	  scp->filesize=core_end-data_start;
 	  scp->maxprot=VM_PROT_READ | VM_PROT_WRITE | VM_PROT_EXECUTE;
@@ -858,6 +910,7 @@ dump_it () {
 	  sectp->addr=scp->vmaddr;
 	  sectp->size=scp->filesize;
 	  sectp->flags=S_REGULAR;
+	  sectp->offset=scp->fileoff;
 
 	  if (!unexec_write (header_offset, sectp, sizeof (struct section)))
 	    unexec_error ("cannot write section _HEAP's header");
@@ -896,6 +949,21 @@ dump_it () {
       copy_dyld_info (lca[i], linkedit_delta);
       break;
 #endif
+    case LC_CODE_SIGNATURE:
+      copy_linkedit(lca[i],linkedit_delta);
+      break;
+    case LC_DATA_IN_CODE:
+    case LC_FUNCTION_STARTS:
+    case LC_DYLD_EXPORTS_TRIE:
+    /* case LC_DYLD_CHAINED_FIXUPS: */
+      copy_linkedit_zero(lca[i],linkedit_delta);
+      break;
+    /* case LC_DYLD_INFO_ONLY: */
+    /*   copy_linkedit_dyld_info(lca[i],linkedit_delta); */
+    /*   break; */
+    /* case LC_DYLD_CHAINED_FIXUPS: */
+    /*   copy_linkedit_zero_cmd(lca[i],linkedit_delta); */
+    /*   break; */
     default:
       copy_other (lca[i]);
       break;
