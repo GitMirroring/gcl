@@ -260,7 +260,7 @@ unixport/saved_%: | unixport/raw_% unixport/gcl_cmpnopt_%.lsp \
 		rm -f ../unixport/gcl_cmpnopt.lsp #FIXME GCL_MEM_BOUND darwin limited raw heap xcode linker __huge issue
 	! which otool >/dev/null || \
 		! otool -l $@ |grep -q LC_CODE_SIGNATURE || \
-		codesign -s - --entitlements ../entitlements.plist --force ../unixport/saved_$*
+		codesign -s - --entitlements entitlements.plist --force $@
 	rm -rf sb_$*
 
 unixport/raw_%: unixport/lib%.a $(FF) $(LF)
