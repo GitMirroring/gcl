@@ -716,19 +716,9 @@ DEFUN("KCL-SELF",object,fSkcl_self,SI,0,0,NONE,OO,OO,OO,OO,(void),"") {
 
 }
 
-#if defined(DARWIN)
-#include <stdio.h>
-#include <stdlib.h>
-#include <spawn.h>
-#include <sys/wait.h>
-#include <mach-o/dyld.h>
-
-/* These constants might not be in older headers */
-#ifndef POSIX_SPAWN_DISABLE_ASLR
-#define POSIX_SPAWN_DISABLE_ASLR 0x0100
+#if defined(__APPLE__) && defined(__aarch64__)
+#include "disable_mac_aslr.h"
 #endif
-#endif
-
 
 int
 main(int argc, char **argv, char **envp) {
@@ -741,7 +731,9 @@ main(int argc, char **argv, char **envp) {
   bds_top = bds_org-1;
   frs_top = frs_org-1;
 
-#include "disable_mac_aslr.h"
+#if defined(__APPLE__) && defined(__aarch64__)
+  disable_aslr(argc, argv, envp);
+#endif  
 
 #include "cstack.h"
 
