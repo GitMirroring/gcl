@@ -7283,9 +7283,9 @@ case $use in
 	    assert_arg_to_ldflags -m32
 	    assert_arg_to_ldflags -Wl,-headerpad,56
         fi;;
-    aarch64-macosx)
-	add_arg_to_ldflags -Wl,-no-fixup-chains
-	;;
+#    aarch64-macosx)
+#	add_arg_to_ldflags -Wl,-no_fixup_chains
+#	;;
     FreeBSD) assert_arg_to_ldflags -Z;;
 esac
 

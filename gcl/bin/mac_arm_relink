@@ -1,0 +1,37 @@
+#!/usr/bin/awk -f
+
+function from_hex (hh) {
+    jj=0;
+    if (substr(hh,1,2)=="0x")
+	hh=substr(hh,3,length(hh));
+    for (ii=1;ii<=length(hh);ii++)
+	jj=jj*16+A[substr(hh,ii,1)];
+    return jj;
+}
+function to_hex(jj) {
+    ss="";
+    for (;jj;jj=kk) {
+	kk=int(jj/16);
+	ss=substr(z,jj-kk*16+1,1) ss;
+    }
+    return ss;
+}
+
+
+BEGIN{z="0123456789abcdef";for (i=1;i<=length(z);i++) A[substr(z,i,1)]=i-1;}
+/^  *cmd / {c=$2;next}
+/^  *segname/ {n=$2;next}
+/^  *vmsize/ {if (c=="LC_SEGMENT_64") A[n]=$2;}
+END {
+    p=1;
+    for (i=0;i<ps;i++) p=p*2;
+    j="-Wl,-no_fixup_chains -Wl,-segaddr,__TEXT," base;
+    dc=from_hex(base);
+    dc=int((dc+from_hex(A["__TEXT"])+p+p-1)/p)*p;
+    j=j " -Wl,-segaddr,__DATA_CONST,0x" to_hex(dc);
+    dc=int((dc+from_hex(A["__DATA_CONST"])+p+p-1)/p)*p;
+    j=j " -Wl,-segaddr,__DATA,0x" to_hex(dc);
+    dc=int((dc+from_hex(A["__DATA"])+p+p-1)/p)*p;
+    j=j " -Wl,-segaddr,__HEAP,0x" to_hex(dc);
+    print j;
+}
