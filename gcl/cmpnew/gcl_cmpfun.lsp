@@ -132,7 +132,7 @@
 	    (ms
 	     "({fixnum _v=(fixnum)#v;object _z,_f=(#0),_l=(#1),_ll=_l;
         object _x4=Cnil,_x3=Cnil,_x2=Cnil,_x1=Cnil,_x0=Cnil;
-        char _m=(#n-2),_n=Rset && !_f->fun.fun_argd ? _f->fun.fun_minarg-_m : -(MAX_ARGS+1);
+        char _m=(#n-2);volatile char _n=Rset && !_f->fun.fun_argd ? _f->fun.fun_minarg-_m : -(MAX_ARGS+1);
         char _reg=_f->fun.fun_minarg==_f->fun.fun_maxarg;
         fcall.fun=_f;fcall.valp=_v;fcall.argd=-(#n-1);
         switch (_n) {

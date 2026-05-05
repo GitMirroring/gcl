@@ -144,7 +144,7 @@
       (list (make-list (length all) :initial-element t)
 	    '* #.(flags ans set svt) 
 	    (ms
-	    "({object _z,_f=fcall.fun=#0;fixnum _v=fcall.valp=(fixnum)#v;char _n=fcall.argd=#n-1;
+	    "({object _z,_f=fcall.fun=#0;fixnum _v=fcall.valp=(fixnum)#v;volatile char _n=fcall.argd=#n-1;
         _n=Rset &&
             !_f->fun.fun_argd &&
             _n>=_f->fun.fun_minarg &&
