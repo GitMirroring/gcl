@@ -1110,7 +1110,7 @@ static size_t stub_size (malloc_zone_t *zone, const void *ptr)
 
 #ifdef HAVE_MALLOC_ZONE_MEMALIGN
 static void *
-stub_memalign(size_t boundary, size_t size) {
+stub_memalign(malloc_zone_t *zone,size_t boundary, size_t size) {
 
   extern void *my_malloc (size_t);
   void *v=my_malloc(size+boundary-1);
