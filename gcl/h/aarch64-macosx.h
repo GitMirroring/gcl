@@ -121,13 +121,13 @@ if (realpath (buf, fub) == 0) {                             \
 (a_) = fub;                                                 \
 } while (0)
 
-#ifdef _LP64
+/* #ifdef _LP64 */
 #define C_GC_OFFSET 4
-#include <mach-o/x86_64/reloc.h>
-#define RELOC_H "mach64_i386_reloc.h"
-#else
-#define RELOC_H "mach32_i386_reloc.h"
-#endif
+#include <mach-o/arm64/reloc.h>
+#define RELOC_H "mach64_aarch64_reloc.h"
+/* #else */
+/* #define RELOC_H "mach32_i386_reloc.h" */
+/* #endif */
 
 #define FPE_TCODE(x_) \
   ({ufixnum _x=(x_),_y=0;			\
