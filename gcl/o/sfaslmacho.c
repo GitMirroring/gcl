@@ -45,7 +45,7 @@ STATIC_RELOC_VARS
 #endif
 
 static int
-ovchk(ul v,ul m) {
+ovchks(ul v,ul m) {
 
   m|=m>>1;
   v&=m;
@@ -64,22 +64,31 @@ ovchku(ul v,ul m) {
 static int
 store_val(ul *w,ul m,ul v) {
 
-  massert(ovchku(v,~m));
   *w=(v&m)|(*w&~m);
 
   return 0;
 
 }
 
-int
+static int
+store_valu(ul *w,ul m,ul v) {
+
+  massert(ovchku(v,~m));
+  return store_val(w,m,v);
+
+  return 0;
+
+}
+
+static int
 store_vals(ul *w,ul m,ul v) {
 
-  massert(ovchk(v,~m));
+  massert(ovchks(v,~m));
   return store_val(w,m,v);
 
 }
 
-int
+static int
 add_vals(ul *w,ul m,ul v) {
 
   return store_vals(w,m,v+(*w&m));
