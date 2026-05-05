@@ -339,7 +339,7 @@
       (when (eq type 'proclaimed-closure)
 	(wt-h "static object *Lclptr"num";"))
       (wt-h (stub-decl (concatenate 'string "LnkT" num) args d) ";")
-      (wt-h (stub-decl (concatenate 'string "(*Lnk" num ")") args d) "=LnkT" num ";"))))
+      (wt-h (stub-decl (concatenate 'string "(* const __attribute__((used)) Lnk" num ")") args d) "=LnkT" num ";"))))
 
 
 ;; this default will be as close to the the decision of the x3j13 committee
