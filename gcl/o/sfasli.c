@@ -155,6 +155,11 @@ use_symbols(double d,...) {
     d=c/d;
     d=d/(c+I*d);
   }
+
+#if defined(__APPLE__) && defined(__aarch64__)/*FIXME non-lazy pointer support in sfaslmacho.c*/
+  extern  void __chkstk_darwin(void);
+  __chkstk_darwin();
+#endif
   
   return (int)d;
 
