@@ -41,7 +41,7 @@ vsystem(char *command) {
   char *c;
   const char *x1[]={"/bin/sh","-c",NULL,NULL},*spc=" \n\t",**p1,**pp,**pe;
   int s;
-  pid_t pid;
+  pid_t pid,pid1;
   posix_spawnattr_t attr;
   posix_spawn_file_actions_t file_actions;
   extern char **environ;
@@ -68,7 +68,9 @@ vsystem(char *command) {
   massert(!posix_spawn_file_actions_destroy(&file_actions));
 
   massert(pid>0);
-  massert(pid==waitpid(pid,&s,0));
+
+  for (;(pid1=waitpid(pid,&s,0))!=pid && errno==EINTR;);
+  massert(pid==pid1);
 
   if ((s>>8)&128)
     emsg("execvp failure when executing '%s': %s\n",command,strerror((s>>8)&0x7f));
