@@ -207,7 +207,7 @@ load_memory(struct section *sec1,struct section *sece,void *v1,
   massert(sece>sec1);
   massert(ALLOC_SEC(sec1));
   massert(sec1->flags&(S_ATTR_SOME_INSTRUCTIONS|S_ATTR_PURE_INSTRUCTIONS));
-  for (sec=sec1+1,sa=-1;sec<sece;sa=sa>sec->addr ? sec->addr ? sa,sec++);
+  for (sec=sec1+1,sa=-1;sec<sece;sa=sa>sec->addr ? sec->addr : sa,sec++);
   ex_pad=sa-sec1->addr;
   ex_pad=(ex_pad+PAGESIZE-1)&(~(PAGESIZE-1))-ex_pad;
   for (sec=sec1+1;sec<sece;sec++)
