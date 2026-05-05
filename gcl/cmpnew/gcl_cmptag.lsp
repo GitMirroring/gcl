@@ -62,7 +62,8 @@
   (unless (tag-p form)
     (mapc (lambda (x)
 	    (when (var-p x)
-	      (incf (var-register x) (the fixnum *reg-amount*))))
+	      (unless (>= (var-register x) (ash (the fixnum *reg-amount*) 2))
+		(incf (var-register x) (the fixnum *reg-amount*)))))
 	  (info-ref (cadr form)))))
 
 (defun intersection-p (l1 l2)
