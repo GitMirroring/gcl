@@ -503,6 +503,7 @@
   (mapcan (lambda (x &aux (f (pop x))(z (type-and tp x))) (when z (list (cons f z)))) +cmp-range-types+))
 
 (defun allocate-basic-stream-propagator (f tp)
+  (declare (ignore f))
   (reduce
    (lambda (y x)
      (if (type-and (car x) tp)
