@@ -340,9 +340,9 @@ case $use in
 	    assert_arg_to_ldflags -m32
 	    assert_arg_to_ldflags -Wl,-headerpad,56
         fi;;
-#    aarch64-macosx)
-#	add_arg_to_ldflags -Wl,-no_fixup_chains
-#	;;
+    aarch64-macosx)
+	LISP_CFLAGS="$LISP_CFLAGS -mcmodel=large" #fixme 26bit trampolines
+	;;
     FreeBSD) assert_arg_to_ldflags -Z;;
 esac
 
@@ -1928,7 +1928,7 @@ LI_GITTAG="$GIT_TAG"
 AC_SUBST(LI_GITTAG)
 LI_RELEASE="$RELEASE"
 AC_SUBST(LI_RELEASE)
-LI_CC="\"$GCL_CC -c `echo " $FINAL_CFLAGS" | sed 's,-pg\b,,g'`\""
+LI_CC="\"$GCL_CC -c `echo " $FINAL_CFLAGS $LISP_CFLAGS" | sed 's,-pg\b,,g'`\""
 AC_SUBST(LI_CC)
 LI_DFP="\"$GPL_FLAG\""
 AC_SUBST(LI_DFP)
