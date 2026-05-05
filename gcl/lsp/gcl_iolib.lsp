@@ -555,17 +555,17 @@
 #-pre-gcl
 (defdlfun (:fixnum "fread") :fixnum :fixnum :fixnum :fixnum)
 
-(defun read-sequence-using-fread (seq strm tp start end &aux (fp (stream-fp strm nil)))
-  #+pre-gcl
-  (declare (ignore seq tp start end fp))
-  #-pre-gcl
-  (when fp
-    (when (eq tp (aref +array-stream-types+ (c-array-elttype seq)))
-      (let* ((n (ash 1 (1- (c-array-eltsize seq))))(ln (length seq))(end (or end ln)))
-	(when (<= start end ln)
-	  (c+ start
-	      (|libc|:|fread|
-		     (c+ (c-array-self seq) (c* n start)) n (c- end start) fp)))))))
+#.`(defun read-sequence-using-fread (seq strm tp start end &aux (fp (stream-fp strm nil)))
+     #+pre-gcl
+     (declare (ignore seq tp start end fp))
+     #-pre-gcl
+     (when fp
+       (when (eq tp (aref +array-stream-types+ (c-array-elttype seq)))
+	 (let* ((n (ash 1 (1- (c-array-eltsize seq))))(ln (length seq))(end (or end ln)))
+	   (when (<= start end ln)
+	     (c+ start
+		 (,(mdlsym "fread")
+		   (c+ (c-array-self seq) (c* n start)) n (c- end start) fp)))))))
 
 
 
@@ -592,17 +592,17 @@
 #-pre-gcl
 (defdlfun (:fixnum "fwrite") :fixnum :fixnum :fixnum :fixnum)
 
-(defun write-sequence-using-fwrite (seq strm tp start end &aux (fp (stream-fp strm t)))
-  #+pre-gcl
-  (declare (ignore seq tp start end fp))
-  #-pre-gcl
-  (when fp
-    (when (eq tp (aref +array-stream-types+ (c-array-elttype seq)))
-      (let* ((n (ash 1 (1- (c-array-eltsize seq))))(ln (length seq))(end (or end ln)))
-	(when (<= start end ln)
-	  (c+ start
-	      (|libc|:|fwrite|
-		     (c+ (c-array-self seq) (c* n start)) n (c- end start) fp)))))))
+#.`(defun write-sequence-using-fwrite (seq strm tp start end &aux (fp (stream-fp strm t)))
+     #+pre-gcl
+     (declare (ignore seq tp start end fp))
+     #-pre-gcl
+     (when fp
+       (when (eq tp (aref +array-stream-types+ (c-array-elttype seq)))
+	 (let* ((n (ash 1 (1- (c-array-eltsize seq))))(ln (length seq))(end (or end ln)))
+	   (when (<= start end ln)
+	     (c+ start
+		 (,(mdlsym "fwrite")
+		   (c+ (c-array-self seq) (c* n start)) n (c- end start) fp)))))))
 
 
 (defun write-sequence (seq strm &key (start 0) end
