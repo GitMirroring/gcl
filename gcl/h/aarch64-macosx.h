@@ -182,3 +182,8 @@ if (realpath (buf, fub) == 0) {                             \
 #undef sbrk
 #define sbrk msbrk
 #define INITIALIZE_BRK msbrk_init();
+
+#include <libkern/OSCacheControl.h>
+#define CLEAR_CACHE sys_icache_invalidate(memory->cfd.cfd_start,memory->cfd.cfd_size)
+
+#define W_X
