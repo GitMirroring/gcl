@@ -1291,10 +1291,30 @@ gcl_init_alloc(void *cs_start) {
 #ifdef HAVE_MPROTECT
   if (data_start)
     massert(!gcl_mprotect(data_start,(void *)core_end-data_start,PROT_READ|PROT_WRITE
-#if !defined(__APPLE__)	&& !defined(__aarch64__)
+#ifndef W_X
 			  |PROT_EXEC
 #endif
 			  ));
+
+#ifdef W_X
+  {
+    struct pageinfo *v;
+    struct typemanager *tm=tm_of(t_cfdata);
+
+
+    for (v=cell_list_head;v;v=v->next)
+    if (tm->tm_type==v->type) {
+      void *p;
+      ufixnum k;
+      for (p=pagetochar(page(v)),k=0;k<tm->tm_nppage;k++,p+=tm->tm_size) {
+ 	object o=p;
+ 	if (!is_free(o) && type_of(o)==t_cfdata && (void *)o->cfd.cfd_start>=data_start)
+	  gcl_mprotect((void *)o->cfd.cfd_start,o->cfd.cfd_nexp<<PAGEWIDTH,PROT_READ|PROT_EXEC);
+      }
+    }
+  }
+#endif
+
 #endif
 
 #ifdef SGC

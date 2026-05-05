@@ -22,7 +22,7 @@ msbrk_end(void) {
 static void *
 new_map(void *v,ufixnum s) {
   return mmap(v,s,PROT_READ|PROT_WRITE
-#if !defined(__APPLE__)	&& !defined(__aarch64__)
+#ifndef W_X
 	      |PROT_EXEC
 #endif
 	      ,MAP_PRIVATE|MAP_ANON|MAP_FIXED,-1,0);

@@ -31,6 +31,7 @@
 #define NEED_MP_H
 #include <string.h>
 #include <stdlib.h>
+#include <sys/mman.h>
 #include "include.h"
 #include "page.h"
 
@@ -956,6 +957,11 @@ sweep_phase(void) {
 	l++;
 	continue;
       }
+
+#ifdef W_X
+      if (type_of(x)==t_cfdata && !is_free(x))
+	gcl_mprotect((void *)x->cfd.cfd_start,x->cfd.cfd_nexp<<PAGEWIDTH,PROT_READ|PROT_WRITE);
+#endif
 
       k++;
 

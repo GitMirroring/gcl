@@ -504,7 +504,7 @@ struct function {
 struct cfdata {
 
   FRSTWRD(tt,
-	  cfw:LM(18),
+	  cfd_nexp:LM(18),
 	  cfd_prof:1       /* profiling */
 	  );
 

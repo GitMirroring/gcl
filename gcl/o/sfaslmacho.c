@@ -26,10 +26,10 @@
 #endif
 
 #define ALLOC_SEC(sec) ({ul _fl=sec->flags&SECTION_TYPE;\
-      _fl<=S_SYMBOL_STUBS || _fl==S_16BYTE_LITERALS;})
+      (_fl<=S_SYMBOL_STUBS || _fl==S_16BYTE_LITERALS) && !(sec->flags&S_ATTR_DEBUG);})
 
 #define LOAD_SEC(sec) ({ul _fl=sec->flags&SECTION_TYPE;\
-      (_fl<=S_SYMBOL_STUBS || _fl==S_16BYTE_LITERALS) && _fl!=S_ZEROFILL;})
+      (_fl<=S_SYMBOL_STUBS || _fl==S_16BYTE_LITERALS) && _fl!=S_ZEROFILL && !(sec->flags&S_ATTR_DEBUG);})
 
 
 #define MASK(n) (~(~0ULL << (n)))
@@ -44,8 +44,6 @@ typedef unsigned long ul;
 STATIC_RELOC_VARS
 #endif
 
-
-
 static int
 ovchk(ul v,ul m) {
 
@@ -57,14 +55,37 @@ ovchk(ul v,ul m) {
 }
 
 static int
+ovchku(ul v,ul m) {
+
+  return !(v&=m);
+
+}
+
+static int
 store_val(ul *w,ul m,ul v) {
 
-  massert(ovchk(v,~m));
+  massert(ovchku(v,~m));
   *w=(v&m)|(*w&~m);
 
   return 0;
 
 }
+
+int
+store_vals(ul *w,ul m,ul v) {
+
+  massert(ovchk(v,~m));
+  return store_val(w,m,v);
+
+}
+
+int
+add_vals(ul *w,ul m,ul v) {
+
+  return store_vals(w,m,v+(*w&m));
+
+}
+
 
 #ifndef _LP64
 /*redirect trampolines gcc-4.0 gives no reloc for stub sections on x86 only*/
@@ -125,7 +146,7 @@ relocate(struct relocation_info *ri,struct section *sec,
 }  
 
 static int
-relocate_symbols(struct nlist *n1,struct nlist *ne,char *st1,ul start) {
+relocate_symbols(struct nlist *n1,struct nlist *ne,char *st1,ul start,struct section *sec1) {
 
   struct nlist *n;
   struct node *nd;
@@ -133,7 +154,7 @@ relocate_symbols(struct nlist *n1,struct nlist *ne,char *st1,ul start) {
   for (n=n1;n<ne;n++)
     
     if (n->n_sect) 
-      n->n_value+=start; 
+      n->n_value+=start+sec1[n->n_sect-1].reserved3;
     else if ((nd=find_sym_ptable(st1+n->n_un.n_strx)))
       n->n_value=nd->address; 
     else if (n->n_type&(N_PEXT|N_EXT))
@@ -163,11 +184,27 @@ static object
 load_memory(struct section *sec1,struct section *sece,void *v1,
 	    ul *p,ul **got,ul **gote,ul *start) { 
 
-  ul sz,gsz,sa,ma,a,fl;
+  ul sz,gsz,sa,ma,a,fl,ex_pad=0;
   struct section *sec;
   object memory;
   
   BEGIN_NO_INTERRUPT;
+
+  for (sec=sec1;sec<sece;sec++)
+    sec->reserved3=0;/*FIXME unneeded?*/
+
+#ifdef W_X
+
+  massert(sece>sec1);
+  massert(ALLOC_SEC(sec1));
+  massert(sec1->flags&(S_ATTR_SOME_INSTRUCTIONS|S_ATTR_PURE_INSTRUCTIONS));
+  for (sec=sec1+1,sa=-1;sec<sece;sa=sa>sec->addr ? sec->addr ? sa,sec++);
+  ex_pad=sa-sec1->addr;
+  ex_pad=(ex_pad+PAGESIZE-1)&(~(PAGESIZE-1))-ex_pad;
+  for (sec=sec1+1;sec<sece;sec++)
+    sec->addr+=(sec->reserved3=ex_pad);
+
+#endif
 
   for (*p=sz=ma=0,sa=-1,sec=sec1;sec<sece;sec++)
     
@@ -195,16 +232,22 @@ load_memory(struct section *sec1,struct section *sece,void *v1,
     gsz=(**got+1)*sizeof(**got)-1;
     sz+=gsz;
   }
-  
+
   memory=new_cfdata();
-  memory->cfd.cfd_size=sz; 
+  memory->cfd.cfd_size=sz;
+#ifdef W_X
+  memory->cfd.cfd_start=alloc_code_space(sz+PAGESIZE-sizeof(struct contblock),-1UL);
+  memory->cfd.cfd_start=(void *)(((ul)memory->cfd.cfd_start+(PAGESIZE-1))&~(PAGESIZE-1));
+  memory->cfd.cfd_nexp=ex_pad>>PAGEWIDTH;
+#else
   memory->cfd.cfd_start=alloc_code_space(sz,-1UL);
+#endif
 
   a=(ul)memory->cfd.cfd_start;
   a=(a+ma)&~ma;
   for (sec=sec1;sec<sece;sec++)
     if (ALLOC_SEC(sec)) {
-      sec->addr+=a;  
+      sec->addr+=a;
       if (LOAD_SEC(sec))
 	memcpy((void *)sec->addr,v1+sec->offset,sec->size);
       else
@@ -516,12 +559,19 @@ label_got_symbols(void *v1,struct section *sec,struct nlist *n1,struct nlist *ne
 static int
 clear_protect_memory(object memory) {
 
+#ifndef W_X
+
   void *p,*pe;
 
   p=(void *)((unsigned long)memory->cfd.cfd_start & ~(PAGESIZE-1));
   pe=(void *)((unsigned long)(memory->cfd.cfd_start+memory->cfd.cfd_size + PAGESIZE-1) & ~(PAGESIZE-1));
-
   return gcl_mprotect(p,pe-p,PROT_READ|PROT_WRITE|PROT_EXEC);
+
+#else
+
+  return gcl_mprotect((void *)memory->cfd.cfd_start,memory->cfd.cfd_nexp<<PAGEWIDTH,PROT_READ|PROT_EXEC);
+
+#endif
 
 }
 
@@ -551,7 +601,7 @@ fasload(object faslfile) {
   
   massert(p=alloca(rls));
   
-  relocate_symbols(n1,ne,st1,start);
+  relocate_symbols(n1,ne,st1,start,sec1);
 
   find_init_address(n1,ne,st1,&init_address);
 
@@ -561,7 +611,9 @@ fasload(object faslfile) {
   
   massert(!clear_protect_memory(memory));
 
-#ifdef CLEAR_CACHE
+#if defined(HAVE_BUILTIN_CLEAR_CACHE)
+  __builtin___clear_cache((void *)memory->cfd.cfd_start,(void *)memory->cfd.cfd_start+memory->cfd.cfd_size);
+#elif defined(CLEAR_CACHE)
   CLEAR_CACHE;
 #endif
   
