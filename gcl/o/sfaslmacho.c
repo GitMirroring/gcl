@@ -200,25 +200,29 @@ static object
 load_memory(struct section *sec1,struct section *sece,void *v1,
 	    ul *p,ul **got,ul **gote,ul *start) { 
 
-  ul sz,gsz,sa,ma,a,fl,ex_pad=0;
+  ul sz,gsz,ma,a,fl,text_pbits;
+  volatile ul sa;
   struct section *sec;
   object memory;
   
   BEGIN_NO_INTERRUPT;
 
   for (sec=sec1;sec<sece;sec++)
-    sec->reserved3=0;/*FIXME unneeded?*/
+      sec->reserved3=0;/*FIXME unneeded?*/
 
 #ifdef W_X
 
   massert(sece>sec1);
   massert(ALLOC_SEC(sec1));
   massert(sec1->flags&(S_ATTR_SOME_INSTRUCTIONS|S_ATTR_PURE_INSTRUCTIONS));
-  for (sec=sec1+1,sa=-1;sec<sece;sa=sa>sec->addr ? sec->addr : sa,sec++);
-  ex_pad=sa-sec1->addr;
-  ex_pad=(ex_pad+PAGESIZE-1)&(~(PAGESIZE-1))-ex_pad;
+  massert(!sec1->addr);
+  for (sec=sec1+1,sa=-1;sec<sece;sec++)
+    if (ALLOC_SEC(sec) && sa>sec->addr)
+      sa=sec->addr;
+  text_pbits=(sa+PAGESIZE-1)>>PAGEWIDTH;
+  sa=(text_pbits<<PAGEWIDTH)-sa;
   for (sec=sec1+1;sec<sece;sec++)
-    sec->addr+=(sec->reserved3=ex_pad);
+    sec->addr+=(sec->reserved3=sa);
 
 #endif
 
@@ -254,7 +258,7 @@ load_memory(struct section *sec1,struct section *sece,void *v1,
 #ifdef W_X
   memory->cfd.cfd_start=alloc_code_space(sz+PAGESIZE-sizeof(struct contblock),-1UL);
   memory->cfd.cfd_start=(void *)(((ul)memory->cfd.cfd_start+(PAGESIZE-1))&~(PAGESIZE-1));
-  memory->cfd.cfd_nexp=ex_pad>>PAGEWIDTH;
+  memory->cfd.cfd_nexp=text_pbits;
 #else
   memory->cfd.cfd_start=alloc_code_space(sz,-1UL);
 #endif
