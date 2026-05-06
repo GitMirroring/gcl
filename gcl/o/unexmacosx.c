@@ -862,11 +862,20 @@ static void
 dump_it () {
 
   int i;
-  long linkedit_delta=0,linkedit_vmdelta=0;
+  long linkedit_delta=0,linkedit_vmdelta=0,linkedit_vmsize=0;
   
 #if VERBOSE
   printf ("--- Load Commands written to Output File ---\n");
 #endif
+
+  for (i=0;i<nlc;i++)
+    switch(lca[i]->cmd) {
+    case LC_SEGMENT:
+      if (strncmp (scp->segname, SEG_LINKEDIT, 16) == 0)
+	linkedit_vmsize=((struct segment_command *) lca[i])->vmsize;
+    }
+  if (!linkedit_vmsize)
+    unexec_error ("cannot find LINKEDIT vmsize");
   
   for (i = 0; i < nlc; i++)
     switch (lca[i]->cmd) {
@@ -892,7 +901,9 @@ dump_it () {
 	  extern char *data_start;
 	  struct section *sectp = (struct section *) (scp + 1);
 	  unsigned long header_offset=curr_header_offset + sizeof (struct segment_command);
-	  unsigned long heap_vmsize=(1UL<<32)+(long)(((((unsigned long)data_start)>>32)<<32)- (unsigned long)data_start)-0x100000;
+	  unsigned long heap_vmsize=(1UL<<32)+
+	    (long)(((((unsigned long)data_start)>>32)<<32)-(unsigned long)data_start)
+	    -linkedit_vmsize;
 
 	  if (core_end-data_start>heap_vmsize)
 	    unexec_error ("data exceeds __HEAP vmsize");
