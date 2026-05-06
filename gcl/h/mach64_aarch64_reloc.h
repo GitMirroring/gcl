@@ -31,7 +31,6 @@
     break;
   case ARM64_RELOC_UNSIGNED:
     if (ri->r_extern || !ri->r_pcrel) {
-      massert(!*q);
-      store_val(q,~0UL,ri->r_pcrel ? a-rel : a);
+      add_valu(q,~0UL,ri->r_pcrel ? a-rel : a);
     }
     break;
