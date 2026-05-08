@@ -72,7 +72,7 @@ case $canonical in
     i?86-pc-solaris*) use=solaris-i386;;
 esac
 
-AC_ARG_ENABLE([libboot],[put bootstrap code in shared library to be discarded],
+AC_ARG_ENABLE([libboot],[  --enable-libtool will put bootstrap code in shared library to be discarded],
 	      [libboot=$enableval],[libboot="yes"])
 
 if test "$use" = "gnuwin95" ; then
@@ -133,7 +133,7 @@ AC_ARG_ENABLE([ihssize],[  --enable-ihssize=XXXX will compile in a invocation hi
 AC_ARG_ENABLE([frssize],[  --enable-frssize=XXXX will compile in a frame stack of size XXX],
 	      [AC_DEFINE_UNQUOTED(FRSSIZE,$enableval,[frame stack size])])
 
-AC_ARG_ENABLE([infodir],[--enable-infodir=XXXX will force the use of a INFO_DIR=XXXXX as place to look for info],
+AC_ARG_ENABLE([infodir],[  --enable-infodir=XXXX will force the use of a INFO_DIR=XXXXX as place to look for info],
 	      [INFO_DIR=$enableval],[INFO_DIR=$prefix/share/info])
 INFO_DIR=`eval echo $INFO_DIR/`
 
@@ -309,13 +309,6 @@ AC_COMPILE_IFELSE(
      fi],
      [AC_MSG_ERROR([need to probe inline semantics])])
 
-AC_ARG_ENABLE([text_base],[base address for __TEXT],
-      [text_base=$enableval],[text_base="0x1000000000"])
-AC_ARG_ENABLE([segment_alignment_bits],[bit alignment for mach-o image segments],
-      [segment_alignment_bits=$enableval],[segment_alignment_bits="14"])
-AC_ARG_ENABLE([saved_image_span],[address span for saved images],
-      [saved_image_span=$enableval],[saved_image_span="0x2000000000"])
-
 case $use in
     *mingw*)
 	assert_arg_to_cflags -fno-zero-initialized-in-bss
@@ -349,7 +342,11 @@ case $use in
         fi;;
     aarch64-macosx)
 	LISP_CFLAGS="$LISP_CFLAGS -mcmodel=large" #fixme 26bit trampolines
+	AC_ARG_ENABLE([text_base],[  --enable-text_base=0x.... set base address for __TEXT],
+	      [text_base=$enableval],[text_base="0x1000000000"])
 	AC_DEFINE(TEXT_BASE,$text_base,[base address for __TEXT])
+	AC_ARG_ENABLE([segment_alignment_bits],[  --enable-segment_alignment_bits=... set bit alignment for mach-o image segments],
+	      [segment_alignment_bits=$enableval],[segment_alignment_bits="14"])
 	AC_DEFINE(SEGMENT_ALIGNMENT_BITS,$segment_alignment_bits,[bit alignment for mach-o image segments])
 	;;
     FreeBSD) assert_arg_to_ldflags -Z;;
@@ -357,6 +354,8 @@ esac
 
 case $use in
     *macosx*)
+    AC_ARG_ENABLE([saved_image_span],[  --enable-saved_image_span=0x.... set address span for saved images],
+          [saved_image_span=$enableval],[saved_image_span="0x2000000000"])
 	AC_DEFINE(SAVED_IMAGE_SPAN,$saved_image_span,[address span for saved images])
     ;;
 esac
@@ -941,7 +940,7 @@ else
    AC_MSG_RESULT([not found])
 fi
 
-AC_ARG_ENABLE(min_pagewidth,[ --enable-min_pagewidth=xxx sets 1<<xxx byte pages],
+AC_ARG_ENABLE(min_pagewidth,[  --enable-min_pagewidth=xxx sets 1<<xxx byte pages],
              [min_pagewidth=$enableval],[])
 
 AC_MSG_CHECKING(for pagewidth)

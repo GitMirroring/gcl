@@ -1486,7 +1486,7 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-silent-rules   less verbose build output (undo: "make V=1")
   --disable-silent-rules  verbose build output (undo: "make V=0")
-put bootstrap code in shared library to be discarded
+  --enable-libtool will put bootstrap code in shared library to be discarded
   --enable-machine=XXXX will force the use of one of the definitions in h/XXXX.defs
   --enable-widecons will use a three word cons with simplified typing
   --enable-safecdr will protect cdr from immfix and speed up type processing
@@ -1496,7 +1496,7 @@ put bootstrap code in shared library to be discarded
   --enable-bdssize=XXXX will compile in a binding stack of size XXX
   --enable-ihssize=XXXX will compile in a invocation history stack of size XXX
   --enable-frssize=XXXX will compile in a frame stack of size XXX
---enable-infodir=XXXX will force the use of a INFO_DIR=XXXXX as place to look for info
+  --enable-infodir=XXXX will force the use of a INFO_DIR=XXXXX as place to look for info
   --enable-xgcl=yes will compile in support for XGCL
   --enable-debug builds gcl with -g in CFLAGS to enable running under gdb
   --enable-static will link your GCL against static as opposed to shared system libraries
@@ -1505,14 +1505,14 @@ put bootstrap code in shared library to be discarded
                           do not reject slow dependency extractors
   --disable-dependency-tracking
                           speeds up one-time build
-base address for __TEXT
-bit alignment for mach-o image segments
-address span for saved images
+  --enable-text_base=0x.... set base address for __TEXT
+  --enable-segment_alignment_bits=... set bit alignment for mach-o image segments
+  --enable-saved_image_span=0x.... set address span for saved images
   --enable-gprof builds gcl with -pg in CFLAGS to enable profiling with gprof
   --enable-xdr=yes will compile in support for XDR
   --enable-immfix will enable an immediate fixnum table above the C stack
   --enable-fastimmfix=XXXX will reject low immediate fixnums unless 2^XXX can be attained
- --enable-min_pagewidth=xxx sets 1<<xxx byte pages
+  --enable-min_pagewidth=xxx sets 1<<xxx byte pages
   --enable-readline    enables command line completion via the readline library
   --enable-tcltk will try to build gcl-tk
   --enable-tkconfig=XXXX will force the use of a TK_CONFIG_PREFIX=XXXXX as place to look for tkConfig.sh and tclConfig.sh
@@ -7258,34 +7258,6 @@ esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
 
-# Check whether --enable-text_base was given.
-if test ${enable_text_base+y}
-then :
-  enableval=$enable_text_base; text_base=$enableval
-else case e in #(
-  e) text_base="0x1000000000" ;;
-esac
-fi
-
-# Check whether --enable-segment_alignment_bits was given.
-if test ${enable_segment_alignment_bits+y}
-then :
-  enableval=$enable_segment_alignment_bits; segment_alignment_bits=$enableval
-else case e in #(
-  e) segment_alignment_bits="14" ;;
-esac
-fi
-
-# Check whether --enable-saved_image_span was given.
-if test ${enable_saved_image_span+y}
-then :
-  enableval=$enable_saved_image_span; saved_image_span=$enableval
-else case e in #(
-  e) saved_image_span="0x2000000000" ;;
-esac
-fi
-
-
 case $use in
     *mingw*)
 	assert_arg_to_cflags -fno-zero-initialized-in-bss
@@ -7319,8 +7291,26 @@ case $use in
         fi;;
     aarch64-macosx)
 	LISP_CFLAGS="$LISP_CFLAGS -mcmodel=large" #fixme 26bit trampolines
+	# Check whether --enable-text_base was given.
+if test ${enable_text_base+y}
+then :
+  enableval=$enable_text_base; text_base=$enableval
+else case e in #(
+  e) text_base="0x1000000000" ;;
+esac
+fi
+
 
 printf "%s\n" "#define TEXT_BASE \$text_base" >>confdefs.h
+
+	# Check whether --enable-segment_alignment_bits was given.
+if test ${enable_segment_alignment_bits+y}
+then :
+  enableval=$enable_segment_alignment_bits; segment_alignment_bits=$enableval
+else case e in #(
+  e) segment_alignment_bits="14" ;;
+esac
+fi
 
 
 printf "%s\n" "#define SEGMENT_ALIGNMENT_BITS \$segment_alignment_bits" >>confdefs.h
@@ -7331,6 +7321,15 @@ esac
 
 case $use in
     *macosx*)
+    # Check whether --enable-saved_image_span was given.
+if test ${enable_saved_image_span+y}
+then :
+  enableval=$enable_saved_image_span; saved_image_span=$enableval
+else case e in #(
+  e) saved_image_span="0x2000000000" ;;
+esac
+fi
+
 
 printf "%s\n" "#define SAVED_IMAGE_SPAN \$saved_image_span" >>confdefs.h
 
