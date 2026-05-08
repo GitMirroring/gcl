@@ -297,6 +297,12 @@
 /* rl_readline_name returns type const char */
 #undef RL_READLINE_NAME_TYPE_CONST_CHAR
 
+/* address span for saved images */
+#undef SAVED_IMAGE_SPAN
+
+/* bit alignment for mach-o image segments */
+#undef SEGMENT_ALIGNMENT_BITS
+
 /* The size of 'char', as computed by sizeof. */
 #undef SIZEOF_CHAR
 
@@ -325,6 +331,9 @@
    required in a freestanding environment). This macro is provided for
    backward compatibility; new code need not use it. */
 #undef STDC_HEADERS
+
+/* base address for __TEXT */
+#undef TEXT_BASE
 
 /* have _cleanup function */
 #undef USE_CLEANUP

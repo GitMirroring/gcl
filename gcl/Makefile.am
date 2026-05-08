@@ -268,7 +268,9 @@ unixport/raw_%: unixport/lib%.a $(FF) $(LF)
 	! which otool >/dev/null || \
 		! otool -l $@ |grep -q LC_DYLD_CHAINED_FIXUPS || \
 		( echo Relinking raw image for mac arm && \
-		  $(CC) $$(otool -l $@ | bin/mac_arm_relink ps=14 base=0x300000000) $(AM_LDFLAGS) -rdynamic $(LDFLAGS) -o $@ $(FF) $< $(LF) $(LIBS))
+		  $(CC) \
+                     $$(otool -l $@ | bin/mac_arm_relink ps=$(SEGMENT_ALIGNMENT_BITS) base=$(TEXT_BASE)) \
+                     $(AM_LDFLAGS) -rdynamic $(LDFLAGS) -o $@ $(FF) $< $(LF) $(LIBS))
 
 unixport/gcl_cmpnopt_gcl_gprof.lsp unixport/gcl_cmpnopt_ansi_gcl_gprof.lsp:\
 unixport/gcl_cmpnopt_%_gprof.lsp: unixport/gcl_cmpnopt_%.lsp

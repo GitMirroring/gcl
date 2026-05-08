@@ -827,6 +827,9 @@ enable_debug
 enable_static
 enable_pic
 enable_dependency_tracking
+enable_text_base
+enable_segment_alignment_bits
+enable_saved_image_span
 enable_gprof
 with_x
 enable_xdr
@@ -1502,6 +1505,9 @@ put bootstrap code in shared library to be discarded
                           do not reject slow dependency extractors
   --disable-dependency-tracking
                           speeds up one-time build
+base address for __TEXT
+bit alignment for mach-o image segments
+address span for saved images
   --enable-gprof builds gcl with -pg in CFLAGS to enable profiling with gprof
   --enable-xdr=yes will compile in support for XDR
   --enable-immfix will enable an immediate fixnum table above the C stack
@@ -7285,8 +7291,49 @@ case $use in
         fi;;
     aarch64-macosx)
 	LISP_CFLAGS="$LISP_CFLAGS -mcmodel=large" #fixme 26bit trampolines
+	# Check whether --enable-text_base was given.
+if test ${enable_text_base+y}
+then :
+  enableval=$enable_text_base; text_base=$enableval
+else case e in #(
+  e) text_base="0x1000000000" ;;
+esac
+fi
+
+
+printf "%s\n" "#define TEXT_BASE \$text_base" >>confdefs.h
+
+	# Check whether --enable-segment_alignment_bits was given.
+if test ${enable_segment_alignment_bits+y}
+then :
+  enableval=$enable_segment_alignment_bits; segment_alignment_bits=$enableval
+else case e in #(
+  e) segment_alignment_bits="14" ;;
+esac
+fi
+
+
+printf "%s\n" "#define SEGMENT_ALIGNMENT_BITS \$segment_alignment_bits" >>confdefs.h
+
 	;;
     FreeBSD) assert_arg_to_ldflags -Z;;
+esac
+
+case $use in
+    *macosx*)
+	# Check whether --enable-saved_image_span was given.
+if test ${enable_saved_image_span+y}
+then :
+  enableval=$enable_saved_image_span; saved_image_span=$enableval
+else case e in #(
+  e) saved_image_span="0x2000000000" ;;
+esac
+fi
+
+
+printf "%s\n" "#define SAVED_IMAGE_SPAN \$saved_image_span" >>confdefs.h
+
+    ;;
 esac
 
 if test "$enable_static" = "yes" ; then
