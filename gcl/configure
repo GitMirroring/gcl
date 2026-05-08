@@ -7301,7 +7301,7 @@ esac
 fi
 
 
-printf "%s\n" "#define TEXT_BASE \$text_base" >>confdefs.h
+printf "%s\n" "#define TEXT_BASE $text_base" >>confdefs.h
 
 	# Check whether --enable-segment_alignment_bits was given.
 if test ${enable_segment_alignment_bits+y}
@@ -7313,7 +7313,7 @@ esac
 fi
 
 
-printf "%s\n" "#define SEGMENT_ALIGNMENT_BITS \$segment_alignment_bits" >>confdefs.h
+printf "%s\n" "#define SEGMENT_ALIGNMENT_BITS $segment_alignment_bits" >>confdefs.h
 
 	;;
     FreeBSD) assert_arg_to_ldflags -Z;;
@@ -7331,7 +7331,7 @@ esac
 fi
 
 
-printf "%s\n" "#define SAVED_IMAGE_SPAN \$saved_image_span" >>confdefs.h
+printf "%s\n" "#define SAVED_IMAGE_SPAN $saved_image_span" >>confdefs.h
 
     ;;
 esac
