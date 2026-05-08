@@ -309,6 +309,13 @@ AC_COMPILE_IFELSE(
      fi],
      [AC_MSG_ERROR([need to probe inline semantics])])
 
+AC_ARG_ENABLE([text_base],[base address for __TEXT],
+      [text_base=$enableval],[text_base="0x1000000000"])
+AC_ARG_ENABLE([segment_alignment_bits],[bit alignment for mach-o image segments],
+      [segment_alignment_bits=$enableval],[segment_alignment_bits="14"])
+AC_ARG_ENABLE([saved_image_span],[address span for saved images],
+      [saved_image_span=$enableval],[saved_image_span="0x2000000000"])
+
 case $use in
     *mingw*)
 	assert_arg_to_cflags -fno-zero-initialized-in-bss
@@ -342,11 +349,7 @@ case $use in
         fi;;
     aarch64-macosx)
 	LISP_CFLAGS="$LISP_CFLAGS -mcmodel=large" #fixme 26bit trampolines
-	AC_ARG_ENABLE([text_base],[base address for __TEXT],
-	      [text_base=$enableval],[text_base="0x1000000000"])
 	AC_DEFINE(TEXT_BASE,$text_base,[base address for __TEXT])
-	AC_ARG_ENABLE([segment_alignment_bits],[bit alignment for mach-o image segments],
-	      [segment_alignment_bits=$enableval],[segment_alignment_bits="14"])
 	AC_DEFINE(SEGMENT_ALIGNMENT_BITS,$segment_alignment_bits,[bit alignment for mach-o image segments])
 	;;
     FreeBSD) assert_arg_to_ldflags -Z;;
@@ -354,8 +357,6 @@ esac
 
 case $use in
     *macosx*)
-	AC_ARG_ENABLE([saved_image_span],[address span for saved images],
-	      [saved_image_span=$enableval],[saved_image_span="0x2000000000"])
 	AC_DEFINE(SAVED_IMAGE_SPAN,$saved_image_span,[address span for saved images])
     ;;
 esac

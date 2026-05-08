@@ -7258,6 +7258,34 @@ esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
 
+# Check whether --enable-text_base was given.
+if test ${enable_text_base+y}
+then :
+  enableval=$enable_text_base; text_base=$enableval
+else case e in #(
+  e) text_base="0x1000000000" ;;
+esac
+fi
+
+# Check whether --enable-segment_alignment_bits was given.
+if test ${enable_segment_alignment_bits+y}
+then :
+  enableval=$enable_segment_alignment_bits; segment_alignment_bits=$enableval
+else case e in #(
+  e) segment_alignment_bits="14" ;;
+esac
+fi
+
+# Check whether --enable-saved_image_span was given.
+if test ${enable_saved_image_span+y}
+then :
+  enableval=$enable_saved_image_span; saved_image_span=$enableval
+else case e in #(
+  e) saved_image_span="0x2000000000" ;;
+esac
+fi
+
+
 case $use in
     *mingw*)
 	assert_arg_to_cflags -fno-zero-initialized-in-bss
@@ -7291,26 +7319,8 @@ case $use in
         fi;;
     aarch64-macosx)
 	LISP_CFLAGS="$LISP_CFLAGS -mcmodel=large" #fixme 26bit trampolines
-	# Check whether --enable-text_base was given.
-if test ${enable_text_base+y}
-then :
-  enableval=$enable_text_base; text_base=$enableval
-else case e in #(
-  e) text_base="0x1000000000" ;;
-esac
-fi
-
 
 printf "%s\n" "#define TEXT_BASE \$text_base" >>confdefs.h
-
-	# Check whether --enable-segment_alignment_bits was given.
-if test ${enable_segment_alignment_bits+y}
-then :
-  enableval=$enable_segment_alignment_bits; segment_alignment_bits=$enableval
-else case e in #(
-  e) segment_alignment_bits="14" ;;
-esac
-fi
 
 
 printf "%s\n" "#define SEGMENT_ALIGNMENT_BITS \$segment_alignment_bits" >>confdefs.h
@@ -7321,15 +7331,6 @@ esac
 
 case $use in
     *macosx*)
-	# Check whether --enable-saved_image_span was given.
-if test ${enable_saved_image_span+y}
-then :
-  enableval=$enable_saved_image_span; saved_image_span=$enableval
-else case e in #(
-  e) saved_image_span="0x2000000000" ;;
-esac
-fi
-
 
 printf "%s\n" "#define SAVED_IMAGE_SPAN \$saved_image_span" >>confdefs.h
 
