@@ -856,6 +856,167 @@ copy_linkedit_zero (struct load_command *lc, long delta) {
 /* } */
 
 
+typedef struct {
+    uint32_t magic;           /* 0xfade0cc0 */
+    uint32_t length;          /* Total length of SuperBlob */
+    uint32_t count;           /* Number of sub-blobs (usually 1 or 2) */
+} CS_SuperBlob;
+
+typedef struct {
+    uint32_t type;            /* 0 for CodeDirectory, 5 for Entitlements */
+    uint32_t offset;          /* Offset from start of SuperBlob */
+} CS_BlobIndex;
+
+typedef struct {
+    uint32_t magic;           /* 0xfade0c02 */
+    uint32_t length;          /* Length of this blob */
+    uint32_t version;         /* 0x20400 for ARM64 compatibility */
+    uint32_t flags;           /* Ad-hoc is usually 0 or 0x2 (adhoc) */
+    uint32_t hashOffset;      /* Offset to the hashes from start of this blob */
+    uint32_t identOffset;     /* Offset to the identifier string */
+    uint32_t nSpecialSlots;   /* Number of special slots (usually 0 for ad-hoc) */
+    uint32_t nCodeSlots;      /* Number of 4K pages in the file */
+    uint32_t codeLimit;       /* Total size of file being signed */
+    uint8_t  hashSize;        /* 32 for SHA-256 */
+    uint8_t  hashType;        /* 2 for SHA-256 */
+    uint8_t  platform;        /* 0 */
+    uint8_t  pageSize;        /* 12 (means 2^12 = 4096) */
+    uint32_t spare2;          /* 0 */
+} CS_CodeDirectory;
+
+typedef struct {
+    uint32_t magic;   /* 0xfade7171 (Magic for Entitlements) */
+    uint32_t length;  /* Total length including this header */
+} CS_EntitlementsBlob;
+
+
+#include <CommonCrypto/CommonDigest.h>
+/*void calculate_page_hash(const void *data, size_t len, uint8_t *out_hash) {*/
+
+
+int
+dump_code_signature(int outfd) {
+
+#define RNDUP(x,y) ((x+y-1)&~(y-1))
+
+  CS_SuperBlob sb;
+  CS_BlobIndex bi[2];
+  CS_CodeDirectory cd;
+  CS_EntitlementsBlob eb;
+  const char *xml="<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://apple.com\"><plist version=\"1.0\"><dict>    <key>com.apple.security.get-task-allow</key>    <true/>    <!-- <key>com.apple.developer.kernel.extended-virtual-addressing</key> -->    <!-- <true/> --></dict></plist>";
+  const char *id="GCL";
+  long eb_len=sizeof(eb)+RNDUP(strlen(xml),8),nss=5,ss=32,cd_len,len,np,i;
+  uint8_t hash[32];
+  void *v;
+
+  lseek(outfd,0,SEEK_END);
+  len=lseek(outfd,0,SEEK_CUR);
+  np=RNDUP(len,(1<<12))>>12;
+
+  cd_len=sizeof(cd)+RNDUP(strlen(id)+1,8)+(nss+np)*ss;
+
+  sb.magic=htonl(0xfade0cc0);
+  sb.length=htonl(sizeof(sb)+sizeof(bi)+cd_len+eb_len);
+  sb.count=htonl(2);
+  bi[0].type=htonl(0);
+  bi[0].offset=htonl(sizeof(sb)+sizeof(*bi));
+  bi[1].type=htonl(5);
+  bi[1].offset=htonl(sizeof(sb)+sizeof(*bi)+cd_len);
+  cd.magic=htonl(0xfade0c02);
+  cd.length=htonl(cd_len);
+  cd.version=htonl(0x20400);
+  cd.flags=htonl(0);/*2*/
+  cd.hashOffset=htonl(cd_len-np*ss);
+  cd.identOffset=htonl(sizeof(cd));
+  cd.nSpecialSlots=htonl(5);
+  cd.nCodeSlots=htonl(np);
+  cd.codeLimit=htonl(len);
+  cd.hashSize=32;
+  cd.hashType=2;
+  cd.platform=0;
+  cd.pageSize=12;
+  cd.spare2=0;
+  eb.magic=htonl(0xfade7171);
+  eb.length=htonl(eb_len);
+
+  if (!unexec_write (len, &sb, sizeof (sb)))
+    unexec_error ("cannot write signature SuperBlob");
+  len+=sizeof(sb);
+  if (!unexec_write (len, &bi, sizeof (bi)))
+    unexec_error ("cannot write signature Blob indices");
+  len+=sizeof(bi);
+  if (!unexec_write (len, &cd, sizeof (cd)))
+    unexec_error ("cannot write signature CodeDirectory");
+  len+=sizeof(cd);
+  if (!unexec_write (len, id, strlen(id)))
+    unexec_error ("cannot write signature id");
+  len+=strlen(id);
+  if (!unexec_write_zero (len, RNDUP(strlen(id),8)-strlen(id)))
+    unexec_error ("cannot write signature id padding");
+  len+=RNDUP(strlen(id),8)-strlen(id);
+
+  if (!(v=alloca(eb_len)))
+    unexec_error("Cannot allocate eb buffer");
+  memcpy(v,&eb,sizeof(eb));
+  memcpy(v+sizeof(eb),xml,strlen(xml));
+  memset(v+sizeof(eb)+strlen(xml),0,eb_len-(sizeof(eb)+strlen(xml)));
+  CC_SHA256(v,eb_len,hash);
+
+  if (!unexec_write (len, hash, sizeof(hash)))
+    unexec_error ("cannot write slot -5 hash");
+  if (!unexec_write_zero (len, sizeof(hash)))
+    unexec_error ("cannot write slot -4 hash");
+  if (!unexec_write_zero (len, sizeof(hash)))
+    unexec_error ("cannot write slot -3 hash");
+  if (!unexec_write_zero (len, sizeof(hash)))
+    unexec_error ("cannot write slot -2 hash");
+  if (!unexec_write_zero (len, sizeof(hash)))
+    unexec_error ("cannot write slot -1 hash");
+
+  for (i=0;i<np-1;i++) {
+    char data[1<<12];
+    if (!unexec_read (data, sizeof(data)))
+    unexec_error ("cannot read output file data");
+    CC_SHA256(data,sizeof(data),hash);
+    if (!unexec_write (len, hash, sizeof(hash)))
+      unexec_error ("cannot write code slot hash");
+    len+=sizeof(hash);
+  }
+  {
+    char data[1<<12];
+    memset(data,0,sizeof(data));
+    if (!unexec_read (data, ntohl(cd.codeLimit)-(i<<12)))
+    unexec_error ("cannot read output file data");
+    CC_SHA256(data,sizeof(data),hash);
+    if (!unexec_write (len, hash, sizeof(hash)))
+      unexec_error ("cannot write code slot hash");
+    len+=sizeof(hash);
+  }
+  if (!unexec_write (len, &eb, sizeof(eb)))
+    unexec_error ("cannot write signature eb struct");
+  if (!unexec_write (len, xml, strlen(xml)))
+    unexec_error ("cannot write signature xml");
+
+  return 0;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Loop through all load commands and dump them.  Then write the Mach
    header.  */
 static void
