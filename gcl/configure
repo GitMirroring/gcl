@@ -7297,14 +7297,14 @@ case $use in
 	# Check whether --enable-text_base was given.
 if test ${enable_text_base+y}
 then :
-  enableval=$enable_text_base; text_base=$enableval
+  enableval=$enable_text_base; TEXT_BASE=$enableval
 else case e in #(
-  e) text_base="0x1000000000" ;;
+  e) TEXT_BASE="0x1000000000" ;;
 esac
 fi
 
 
-printf "%s\n" "#define TEXT_BASE $text_base" >>confdefs.h
+printf "%s\n" "#define TEXT_BASE $TEXT_BASE" >>confdefs.h
 
 
 	# Check whether --enable-segment_alignment_bits was given.
