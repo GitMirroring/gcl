@@ -7310,14 +7310,14 @@ printf "%s\n" "#define TEXT_BASE $TEXT_BASE" >>confdefs.h
 	# Check whether --enable-segment_alignment_bits was given.
 if test ${enable_segment_alignment_bits+y}
 then :
-  enableval=$enable_segment_alignment_bits; segment_alignment_bits=$enableval
+  enableval=$enable_segment_alignment_bits; SEGMENT_ALIGNMENT_BITS=$enableval
 else case e in #(
-  e) segment_alignment_bits="14" ;;
+  e) SEGMENT_ALIGNMENT_BITS="14" ;;
 esac
 fi
 
 
-printf "%s\n" "#define SEGMENT_ALIGNMENT_BITS $segment_alignment_bits" >>confdefs.h
+printf "%s\n" "#define SEGMENT_ALIGNMENT_BITS $SEGMENT_ALIGNMENT_BITS" >>confdefs.h
 
 
 	;;
@@ -7329,14 +7329,14 @@ case $use in
         # Check whether --enable-saved_image_span was given.
 if test ${enable_saved_image_span+y}
 then :
-  enableval=$enable_saved_image_span; saved_image_span=$enableval
+  enableval=$enable_saved_image_span; SAVED_IMAGE_SPAN=$enableval
 else case e in #(
-  e) saved_image_span="0x2000000000" ;;
+  e) SAVED_IMAGE_SPAN="0x2000000000" ;;
 esac
 fi
 
 
-printf "%s\n" "#define SAVED_IMAGE_SPAN $saved_image_span" >>confdefs.h
+printf "%s\n" "#define SAVED_IMAGE_SPAN $SAVED_IMAGE_SPAN" >>confdefs.h
 
 
     ;;
