@@ -163,6 +163,9 @@ DEFUN("XDR-READ",object,fSxdr_read,SI,2,2,NONE,OO,OO,OO,OO,(object str,object el
     return elt;
     break;
   default:
+    {short s;
+      xdr_short(xdrp,&s);
+    }/*ensure stub*/
     FEerror("unsupported xdr ~a",1,elt);
     return elt;
     break;
