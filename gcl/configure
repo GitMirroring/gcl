@@ -7299,7 +7299,7 @@ if test ${enable_text_base+y}
 then :
   enableval=$enable_text_base; TEXT_BASE=$enableval
 else case e in #(
-  e) TEXT_BASE="0x1000000000" ;;
+  e) TEXT_BASE="0x10000000000" ;;
 esac
 fi
 

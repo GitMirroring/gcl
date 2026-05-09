@@ -343,7 +343,7 @@ case $use in
     aarch64-macosx)
 	LISP_CFLAGS="$LISP_CFLAGS -mcmodel=large" #fixme 26bit trampolines
 	AC_ARG_ENABLE([text_base],[  --enable-text_base=0x.... set base address for __TEXT],
-	      [TEXT_BASE=$enableval],[TEXT_BASE="0x1000000000"])
+	      [TEXT_BASE=$enableval],[TEXT_BASE="0x10000000000"])
 	AC_DEFINE_UNQUOTED(TEXT_BASE,$TEXT_BASE,[base address for __TEXT])
 	AC_SUBST(TEXT_BASE)
 	AC_ARG_ENABLE([segment_alignment_bits],[  --enable-segment_alignment_bits=... set bit alignment for mach-o image segments],
