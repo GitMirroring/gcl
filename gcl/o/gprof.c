@@ -5,6 +5,14 @@
 
 static unsigned long gprof_on;
 
+/*all but this stub to be written in the future provided*/
+#if defined(__APPLE__) && defined(__aarch64__)
+void
+_mcleanup(void) {
+  return;
+}
+#endif
+
 DEFUN("MCLEANUP",object,fSmcleanup,SI,0,0,NONE,OO,OO,OO,OO,(void),"") {
 
   extern void _mcleanup(void);
