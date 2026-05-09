@@ -345,18 +345,21 @@ case $use in
 	AC_ARG_ENABLE([text_base],[  --enable-text_base=0x.... set base address for __TEXT],
 	      [text_base=$enableval],[text_base="0x1000000000"])
 	AC_DEFINE_UNQUOTED(TEXT_BASE,$text_base,[base address for __TEXT])
+	AC_SUBST(TEXT_BASE)
 	AC_ARG_ENABLE([segment_alignment_bits],[  --enable-segment_alignment_bits=... set bit alignment for mach-o image segments],
 	      [segment_alignment_bits=$enableval],[segment_alignment_bits="14"])
 	AC_DEFINE_UNQUOTED(SEGMENT_ALIGNMENT_BITS,$segment_alignment_bits,[bit alignment for mach-o image segments])
+	AC_SUBST(SEGMENT_ALIGNMENT_BITS)
 	;;
     FreeBSD) assert_arg_to_ldflags -Z;;
 esac
 
 case $use in
     *macosx*)
-    AC_ARG_ENABLE([saved_image_span],[  --enable-saved_image_span=0x.... set address span for saved images],
+        AC_ARG_ENABLE([saved_image_span],[  --enable-saved_image_span=0x.... set address span for saved images],
           [saved_image_span=$enableval],[saved_image_span="0x2000000000"])
 	AC_DEFINE_UNQUOTED(SAVED_IMAGE_SPAN,$saved_image_span,[address span for saved images])
+	AC_SUBST(SAVED_IMAGE_SPAN)
     ;;
 esac
 
