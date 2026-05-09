@@ -129,6 +129,7 @@ LFD(build_symbol_table)(void) {
       min_text=p<min_text ? p : min_text;
     }
   }
+  massert(min_text);
 
 }
 
