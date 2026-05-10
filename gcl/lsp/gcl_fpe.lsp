@@ -134,11 +134,11 @@
        (let ((x (fetestexcept fpe-enabled)))
 	 (unless (zerop x)
 	   (feclearexcept x)
-	   (floating-point-error x 0 0)
-	   )))
+	   (floating-point-error x 0 0))))
      (defun break-on-floating-point-exceptions 
-	 (&key suspend no-flush ,@(mapcar (lambda (x) `(,(car x) (logtest ,(caddr x) fpe-enabled))) +fe-list+) &aux r)
-       (unless no-flush (flush-floating-point-exceptions))
+	 (&key suspend no-flush
+	    ,@(mapcar (lambda (x) `(,(car x) (logtest ,(caddr x) fpe-enabled))) +fe-list+)
+	  &aux r (x (fetestexcept fpe-enabled)))
        (fe-enable
 	(if suspend 0
 	  (setq fpe-enabled 
@@ -147,6 +147,7 @@
 			     `(cond (,(car x) (push ,(intern (symbol-name (car x)) :keyword) r) ,(caddr x))
 				    (0)))
 			   +fe-list+)))))
+       (unless (or no-flush (zerop x)) (floating-point-error x 0 0))
        r))
 
 (defun subclasses (class)
@@ -171,4 +172,7 @@
 	  :operation (list :insn (pop m) :op (pop m) :fun fun :addr addr) :operands m :function-name (when fun (fun-name fun))))
      (break-on-floating-point-exceptions :no-flush t))
    (continue nil :report (lambda (s) (format s "Continue disabling floating point exception trapping"))
-	     (apply 'break-on-floating-point-exceptions :no-flush t (mapcan (lambda (x) (list x nil)) (break-on-floating-point-exceptions :no-flush t))))))
+	     (apply 'break-on-floating-point-exceptions
+		    :no-flush t
+		    (mapcan (lambda (x) (list x nil))
+			    (break-on-floating-point-exceptions :no-flush t))))))
