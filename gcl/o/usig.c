@@ -175,13 +175,13 @@ DEFUN("FEENABLEEXCEPT",object,fSfeenableexcept,SI,1,1,NONE,II,OO,OO,OO,(fixnum x
 
 DEFUN("FETESTEXCEPT",object,fSfetestexcept,SI,1,1,NONE,II,OO,OO,OO,(fixnum x),"") {
 
-  RETURN1((object)fetestexcept(x));
+  RETURN1((object)(long)fetestexcept(x));
 
 }
 
 DEFUN("FECLEAREXCEPT",object,fSfeclearexcept,SI,1,1,NONE,II,OO,OO,OO,(fixnum x),"") {
 
-  RETURN1((object)feclearexcept(x));
+  RETURN1((object)(long)feclearexcept(x));
 
 }
 
