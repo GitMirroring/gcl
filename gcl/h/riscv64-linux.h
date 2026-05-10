@@ -11,3 +11,5 @@
 #define NEED_STACK_CHK_GUARD
 
 #define OUTPUT_MACH bfd_mach_riscv64
+
+#define ADDITIONAL_FEATURES ADD_FEATURE("NO-SIGFPE")

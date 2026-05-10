@@ -8,3 +8,5 @@
 #define NEED_STACK_CHK_GUARD
 
 #define OUTPUT_MACH bfd_mach_arm_9
+
+#define ADDITIONAL_FEATURES ADD_FEATURE("NO-SIGFPE")

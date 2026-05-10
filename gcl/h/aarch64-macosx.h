@@ -187,3 +187,5 @@ if (realpath (buf, fub) == 0) {                             \
 #define CLEAR_CACHE sys_icache_invalidate(memory->cfd.cfd_start,memory->cfd.cfd_size)
 
 #define W_X
+
+#define ADDITIONAL_FEATURES ADD_FEATURE("NO-SIGFPE")

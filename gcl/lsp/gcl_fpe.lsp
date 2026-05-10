@@ -130,6 +130,7 @@
 
 
 #.`(let ((fpe-enabled 0))
+     #+no-sigfpe
      (defun flush-floating-point-exceptions nil
        (let ((x (fetestexcept fpe-enabled)))
 	 (unless (zerop x)
@@ -138,7 +139,7 @@
      (defun break-on-floating-point-exceptions 
 	 (&key suspend no-flush
 	    ,@(mapcar (lambda (x) `(,(car x) (logtest ,(caddr x) fpe-enabled))) +fe-list+)
-	  &aux r (x (fetestexcept fpe-enabled)))
+	  &aux r #+no-sigfpe(x (fetestexcept fpe-enabled)))
        (fe-enable
 	(if suspend 0
 	  (setq fpe-enabled 
@@ -147,6 +148,7 @@
 			     `(cond (,(car x) (push ,(intern (symbol-name (car x)) :keyword) r) ,(caddr x))
 				    (0)))
 			   +fe-list+)))))
+       #+no-sigfpe
        (unless (or no-flush (zerop x)) (floating-point-error x 0 0))
        r))
 

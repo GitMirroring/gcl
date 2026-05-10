@@ -7,3 +7,5 @@
 #define SGC
 
 #define OUTPUT_MACH bfd_mach_aarch64
+
+#define ADDITIONAL_FEATURES ADD_FEATURE("NO-SIGFPE")

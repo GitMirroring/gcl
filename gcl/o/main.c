@@ -1423,6 +1423,10 @@ init_main(void) {
   ADD_FEATURE("LARGE-MEMORY-MODEL");
 #endif
 
+#ifdef ADDITIONAL_FEATURES
+  ADDITIONAL_FEATURES;
+#endif
+
   make_special("*FEATURES*",features);}
   
   make_si_function("SAVE-SYSTEM", siLsave_system);
