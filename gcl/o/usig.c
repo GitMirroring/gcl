@@ -173,6 +173,18 @@ DEFUN("FEENABLEEXCEPT",object,fSfeenableexcept,SI,1,1,NONE,II,OO,OO,OO,(fixnum x
 
 }
 
+DEFUN("FETESTEXCEPT",object,fSfetestexcept,SI,1,1,NONE,II,OO,OO,OO,(fixnum x),"") {
+
+  RETURN1((object)fetestexcept(x));
+
+}
+
+DEFUN("FECLEAREXCEPT",object,fSfeclearexcept,SI,1,1,NONE,II,OO,OO,OO,(fixnum x),"") {
+
+  RETURN1((object)feclearexcept(x));
+
+}
+
 DEFUN("FEDISABLEEXCEPT",object,fSfedisableexcept,SI,0,0,NONE,IO,OO,OO,OO,(void),"") {
 
   fixnum x=0;

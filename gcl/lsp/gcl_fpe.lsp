@@ -2,6 +2,7 @@
 (in-package :fpe)
 
 (import 'si::(disassemble-instruction feenableexcept fedisableexcept fld *fixnum *float *double
+				      fetestexcept feclearexcept
 				      *fixnum *ushort *uint fun-name
 				      si-class-direct-subclasses si-class-name si-find-class
 				      +fe-list+ +mc-context-offsets+ floating-point-error 
@@ -129,8 +130,15 @@
 
 
 #.`(let ((fpe-enabled 0))
+     (defun flush-floating-point-exceptions nil
+       (let ((x (fetestexcept fpe-enabled)))
+	 (unless (zerop x)
+	   (feclearexcept x)
+	   (floating-point-error x 0 0)
+	   )))
      (defun break-on-floating-point-exceptions 
-       (&key suspend ,@(mapcar (lambda (x) `(,(car x) (logtest ,(caddr x) fpe-enabled))) +fe-list+) &aux r)
+	 (&key suspend no-flush ,@(mapcar (lambda (x) `(,(car x) (logtest ,(caddr x) fpe-enabled))) +fe-list+) &aux r)
+       (unless no-flush (flush-floating-point-exceptions))
        (fe-enable
 	(if suspend 0
 	  (setq fpe-enabled 
@@ -154,13 +162,13 @@
       'arithmetic-error))
 	 
 (defun floating-point-error (code addr context)
-  (break-on-floating-point-exceptions :suspend t)
+  (break-on-floating-point-exceptions :suspend t :no-flush t)
   (restart-case
    (unwind-protect
        (let* ((fun (function-by-address addr))(m (read-instruction addr context)))
 	 ((lambda (&rest r) (apply 'error (if (find-package :conditions) r (list (format nil "~s" r)))))
 	  (code-condition code)
 	  :operation (list :insn (pop m) :op (pop m) :fun fun :addr addr) :operands m :function-name (when fun (fun-name fun))))
-     (break-on-floating-point-exceptions))
+     (break-on-floating-point-exceptions :no-flush t))
    (continue nil :report (lambda (s) (format s "Continue disabling floating point exception trapping"))
-	     (apply 'break-on-floating-point-exceptions (mapcan (lambda (x) (list x nil)) (break-on-floating-point-exceptions))))))
+	     (apply 'break-on-floating-point-exceptions :no-flush t (mapcan (lambda (x) (list x nil)) (break-on-floating-point-exceptions :no-flush t))))))
