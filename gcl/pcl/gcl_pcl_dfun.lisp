@@ -1345,14 +1345,17 @@ And so, we are saved.
     (t   t)))
 
 (defun class-applicable-using-class-p (specl type)
-  (let ((pred (memq specl (if (eq *boot-state* 'complete)
+  (let* ((pred (memq specl (if (eq *boot-state* 'complete)
 			      (class-precedence-list type)
-			      (early-class-precedence-list type)))))
+			      (early-class-precedence-list type))))
+	 ;FIXME C compiler bug workaround ignored variadic decl macosx arm
+	 (scp (unless (or pred *in-precompute-effective-methods-p*)
+		(superclasses-compatible-p specl type))))
     (values pred
 	    (or pred
 		(if (not *in-precompute-effective-methods-p*)
 		    ;; classes might get common subclass
-		    (superclasses-compatible-p specl type)
+		    scp
 		    ;; worry only about existing classes
 		    (classes-have-common-subclass-p specl type))))))
 
