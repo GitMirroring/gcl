@@ -33,7 +33,10 @@ new_map(void *v,ufixnum s) {
   but not so large that the Mac linker ignores the segment designation
   and creates a __huge section under __DATA for this and other
   variables.  We enlarge this on unexec.*/
-asm (".zerofill __HEAP,__heap,__end,0x70000000\n\t.globl __end");
+unsigned long heap_vmsize=INITIAL_HEAP_VMSIZE;
+#define mstr(a) #a
+#define Mstr(a) mstr(a)
+asm (".zerofill __HEAP,__heap,__end," Mstr(INITIAL_HEAP_VMSIZE) "\n\t.globl __end");
 #endif
 
 int

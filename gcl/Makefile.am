@@ -255,9 +255,9 @@ unixport/saved_%: | unixport/raw_% unixport/gcl_cmpnopt_%.lsp \
 		( ! echo $@ | grep -q _gprof$$ || echo "(setq compiler::*default-prof-p* t)" >prof_init.lsp ) && \
 		echo "(system:save-system \"../$@\")" | \
 		cat ../unixport/init_raw.lsp prof_init.lsp - | \
-			GCL_LSPSYSDIR=../$(srcdir)/unixport/ GCL_MEM_BOUND=29 \
+			GCL_LSPSYSDIR=../$(srcdir)/unixport/ \
 				../unixport/raw_$* $$(dirname $$(pwd))/unixport/ -libdir $$(dirname $$(pwd))/  && \
-		rm -f ../unixport/gcl_cmpnopt.lsp #FIXME GCL_MEM_BOUND darwin limited raw heap xcode linker __huge issue
+		rm -f ../unixport/gcl_cmpnopt.lsp
 	! which otool >/dev/null || \
 		! otool -l $@ |grep -q LC_CODE_SIGNATURE || \
 		codesign -s - --entitlements entitlements.plist --force $@
@@ -286,12 +286,13 @@ unixport/lib%.a: lib/libbase_gcl.a $(LIBGPROF) unixport/sys_%.o
 $(addprefix unixport/lib,$(addsuffix .a,gcl_gprof ansi_gcl_gprof)): \
 unixport/lib%.a:lib/libbase_gcl_gprof.a unixport/sys_%.o
 
-.POSIX: # parallel job ordering
 E0=s typep nr deftype cmptype cmpinline cmpflet
 L0=c listlib seqlib type evalmacros
 E0_OBJS=$(addprefix gcl_,$(addsuffix .o,$(E0)))
 M0_OBJS=$(filter-out $(E0_OBJS) $(L0_OBJS),$(L_OBJS))
 L0_OBJS=$(addprefix gcl_,$(addsuffix .o,$(L0)))
+$(addprefix gcl0/,$(L0_OBJS)): | $(addprefix gcl0/,$(M0_OBJS))
+$(addprefix gcl0/,$(M0_OBJS)): | $(addprefix gcl0/,$(E0_OBJS))
 unixport/libgcl0.a: $(addprefix gcl0/,$(E0_OBJS) $(M0_OBJS) $(L0_OBJS))
 
 $(addprefix unixport/lib,$(addsuffix .a,gcl1 gcl2 gcl3 gcl)):\
@@ -376,7 +377,7 @@ $(addprefix gcl0/,$(LC_OBJS)): gcl0/%.o : cmpnew/%.lsp
 gcl0/%.o: | unixport/gcl0
 	rm -f $(@D)/$*.done
 	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" -compile $< -o $@
-	[ "$*" = "gcl_c" ] || [ "$*" = "gcl_listlib" ] || \
+	[ "$*" = "gcl_evalmacros" ] || [ "$*" = "gcl_top" ] || [ "$*" = "gcl_c" ] || [ "$*" = "gcl_listlib" ] || \
 		ln -f $@ $$(echo $@ |sed 's,\.o,\.done,g') #FIXME directory link
 
 $(addprefix gcl1/,$(LL_OBJS)): gcl1/%.o : lsp/%.lsp

@@ -1066,7 +1066,11 @@ dump_it () {
 	  extern char *data_start;
 	  struct section *sectp = (struct section *) (scp + 1);
 	  unsigned long header_offset=curr_header_offset + sizeof (struct segment_command);
-	  unsigned long heap_vmsize=SAVED_IMAGE_SPAN-(long)((long)data_start-text_vmaddr)-linkedit_vmsize;
+	  extern int in_pre_gcl;/*support libboot.so*/
+	  unsigned long heap_vmsize=					\
+	    (in_pre_gcl ? SAVED_PRE_IMAGE_SPAN : SAVED_IMAGE_SPAN) -	\
+	    (long)((long)data_start-text_vmaddr) -			\
+	    linkedit_vmsize;
 
 	  if (core_end-data_start>heap_vmsize)
 	    unexec_error ("data exceeds __HEAP vmsize");

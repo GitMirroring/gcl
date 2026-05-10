@@ -699,7 +699,6 @@ GMP
 HAVE_MALLOC_ZONE_MEMALIGN
 AMM_GPROF_FALSE
 AMM_GPROF_TRUE
-SAVED_IMAGE_SPAN
 SEGMENT_ALIGNMENT_BITS
 TEXT_BASE
 GCL_CC
@@ -832,6 +831,8 @@ enable_pic
 enable_dependency_tracking
 enable_text_base
 enable_segment_alignment_bits
+enable_initial_heap_vmsize
+enable_saved_pre_image_span
 enable_saved_image_span
 enable_gprof
 with_x
@@ -1510,6 +1511,8 @@ Optional Features:
                           speeds up one-time build
   --enable-text_base=0x.... set base address for __TEXT
   --enable-segment_alignment_bits=... set bit alignment for mach-o image segments
+  --enable-initial_heap_vmsize=0x.... set heap size for raw images
+  --enable-saved_pre_image_span=0x.... set address span for saved pre images
   --enable-saved_image_span=0x.... set address span for saved images
   --enable-gprof builds gcl with -pg in CFLAGS to enable profiling with gprof
   --enable-xdr=yes will compile in support for XDR
@@ -7299,12 +7302,9 @@ if test ${enable_text_base+y}
 then :
   enableval=$enable_text_base; TEXT_BASE=$enableval
 else case e in #(
-  e) TEXT_BASE="0x10000000000" ;;
+  e) TEXT_BASE=0x10000000000 ;;
 esac
 fi
-
-
-printf "%s\n" "#define TEXT_BASE $TEXT_BASE" >>confdefs.h
 
 
 	# Check whether --enable-segment_alignment_bits was given.
@@ -7312,12 +7312,9 @@ if test ${enable_segment_alignment_bits+y}
 then :
   enableval=$enable_segment_alignment_bits; SEGMENT_ALIGNMENT_BITS=$enableval
 else case e in #(
-  e) SEGMENT_ALIGNMENT_BITS="14" ;;
+  e) SEGMENT_ALIGNMENT_BITS=14 ;;
 esac
 fi
-
-
-printf "%s\n" "#define SEGMENT_ALIGNMENT_BITS $SEGMENT_ALIGNMENT_BITS" >>confdefs.h
 
 
 	;;
@@ -7326,20 +7323,46 @@ esac
 
 case $use in
     *macosx*)
-        # Check whether --enable-saved_image_span was given.
+        # Check whether --enable-initial_heap_vmsize was given.
+if test ${enable_initial_heap_vmsize+y}
+then :
+  enableval=$enable_initial_heap_vmsize; INITIAL_HEAP_VMSIZE=$enableval
+else case e in #(
+  e) INITIAL_HEAP_VMSIZE=0x70000000 ;;
+esac
+fi
+
+
+printf "%s\n" "#define INITIAL_HEAP_VMSIZE $INITIAL_HEAP_VMSIZE" >>confdefs.h
+
+
+	#Support libboot option
+	# Check whether --enable-saved_pre_image_span was given.
+if test ${enable_saved_pre_image_span+y}
+then :
+  enableval=$enable_saved_pre_image_span; SAVED_PRE_IMAGE_SPAN=$enableval
+else case e in #(
+  e) SAVED_PRE_IMAGE_SPAN=0x100000000 ;;
+esac
+fi
+
+
+printf "%s\n" "#define SAVED_PRE_IMAGE_SPAN $SAVED_PRE_IMAGE_SPAN" >>confdefs.h
+
+
+	# Check whether --enable-saved_image_span was given.
 if test ${enable_saved_image_span+y}
 then :
   enableval=$enable_saved_image_span; SAVED_IMAGE_SPAN=$enableval
 else case e in #(
-  e) SAVED_IMAGE_SPAN="0x2000000000" ;;
+  e) SAVED_IMAGE_SPAN=0x2000000000 ;;
 esac
 fi
 
 
 printf "%s\n" "#define SAVED_IMAGE_SPAN $SAVED_IMAGE_SPAN" >>confdefs.h
 
-
-    ;;
+	;;
 esac
 
 if test "$enable_static" = "yes" ; then

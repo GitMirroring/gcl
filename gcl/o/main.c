@@ -446,6 +446,13 @@ set_real_maxpage(void *beg) {
 
   mp=ufmin(mp,get_phys_pages1(0,0));
 
+#if defined(__APPLE__) && defined(__aarch64__)
+  {
+    extern unsigned long heap_vmsize;
+    mp=ufmin(mp,heap_vmsize>>PAGEWIDTH);
+  }
+#endif
+
   sz=ufmin(mem_bound,log_maxpage_bound);
   sz=(1UL<<sz)+((1UL<<sz)-1);
   mp=ufmin(mp,page(sz));

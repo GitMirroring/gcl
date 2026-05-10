@@ -343,12 +343,10 @@ case $use in
     aarch64-macosx)
 	LISP_CFLAGS="$LISP_CFLAGS -mcmodel=large" #fixme 26bit trampolines
 	AC_ARG_ENABLE([text_base],[  --enable-text_base=0x.... set base address for __TEXT],
-	      [TEXT_BASE=$enableval],[TEXT_BASE="0x10000000000"])
-	AC_DEFINE_UNQUOTED(TEXT_BASE,$TEXT_BASE,[base address for __TEXT])
+	      [TEXT_BASE=$enableval],[TEXT_BASE=0x10000000000])
 	AC_SUBST(TEXT_BASE)
 	AC_ARG_ENABLE([segment_alignment_bits],[  --enable-segment_alignment_bits=... set bit alignment for mach-o image segments],
-	      [SEGMENT_ALIGNMENT_BITS=$enableval],[SEGMENT_ALIGNMENT_BITS="14"])
-	AC_DEFINE_UNQUOTED(SEGMENT_ALIGNMENT_BITS,$SEGMENT_ALIGNMENT_BITS,[bit alignment for mach-o image segments])
+	      [SEGMENT_ALIGNMENT_BITS=$enableval],[SEGMENT_ALIGNMENT_BITS=14])
 	AC_SUBST(SEGMENT_ALIGNMENT_BITS)
 	;;
     FreeBSD) assert_arg_to_ldflags -Z;;
@@ -356,11 +354,19 @@ esac
 
 case $use in
     *macosx*)
-        AC_ARG_ENABLE([saved_image_span],[  --enable-saved_image_span=0x.... set address span for saved images],
-          [SAVED_IMAGE_SPAN=$enableval],[SAVED_IMAGE_SPAN="0x2000000000"])
+        AC_ARG_ENABLE([initial_heap_vmsize],[  --enable-initial_heap_vmsize=0x.... set heap size for raw images],
+          [INITIAL_HEAP_VMSIZE=$enableval],[INITIAL_HEAP_VMSIZE=0x70000000])
+	AC_DEFINE_UNQUOTED(INITIAL_HEAP_VMSIZE,$INITIAL_HEAP_VMSIZE,[heap size for raw images])
+
+	#Support libboot option
+	AC_ARG_ENABLE([saved_pre_image_span],[  --enable-saved_pre_image_span=0x.... set address span for saved pre images],
+          [SAVED_PRE_IMAGE_SPAN=$enableval],[SAVED_PRE_IMAGE_SPAN=0x100000000])
+	AC_DEFINE_UNQUOTED(SAVED_PRE_IMAGE_SPAN,$SAVED_PRE_IMAGE_SPAN,[address span for saved pre images])
+
+	AC_ARG_ENABLE([saved_image_span],[  --enable-saved_image_span=0x.... set address span for saved images],
+          [SAVED_IMAGE_SPAN=$enableval],[SAVED_IMAGE_SPAN=0x2000000000])
 	AC_DEFINE_UNQUOTED(SAVED_IMAGE_SPAN,$SAVED_IMAGE_SPAN,[address span for saved images])
-	AC_SUBST(SAVED_IMAGE_SPAN)
-    ;;
+	;;
 esac
 
 if test "$enable_static" = "yes" ; then
