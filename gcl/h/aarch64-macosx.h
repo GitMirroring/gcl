@@ -109,7 +109,7 @@ do {int c=0;                                                            \
 
 #define GET_FULL_PATH_SELF(a_)                              \
 do {                                                        \
-unsigned long bufsize = 1024;                               \
+uint32_t bufsize = 1024;                               \
 static char buf [1024];                                     \
 static char fub [1024];                                     \
 if (_NSGetExecutablePath (buf, &bufsize) != 0) {            \
