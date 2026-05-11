@@ -1,12 +1,12 @@
 /*
     GCL config file for Mac OS X.
-    
+
     To be used with the following configure switches :
         --enable-debug (optional)
         --enable-machine=powerpc-macosx
         --disable-statsysbfd
         --enable-custreloc
-    
+
     Aurelien Chanudet <aurelien.chanudet(at)m4x.org>
 */
 
@@ -95,7 +95,7 @@ do {                                                    \
 /** Misc stuff  */
 
 #define IEEEFLOAT
-       
+
 /* Mac OS X does not have _fileno as in linux.h. Nor does it have _cnt as in bsd.h.
    Let's see what we can do with this declaration found in {Net,Free,Open}BSD.h.  */
 #undef LISTEN_FOR_INPUT

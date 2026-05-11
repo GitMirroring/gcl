@@ -740,7 +740,7 @@ main(int argc, char **argv, char **envp) {
 
 #if defined(__APPLE__) && defined(__aarch64__)
   disable_aslr(argc, argv, envp);
-#endif  
+#endif
 
 #include "cstack.h"
 

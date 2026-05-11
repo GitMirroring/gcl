@@ -829,33 +829,6 @@ copy_linkedit_zero (struct load_command *lc, long delta) {
 
 }
 
-/* static void */
-/* copy_linkedit_zero_cmd (struct load_command *lc, long delta) { */
-
-/*   struct linkedit_data_command *ldc=(struct linkedit_data_command *)lc; */
-
-/*   ldc->dataoff+=delta; */
-/*   ldc->datasize=0; */
-/*   ldc->cmd=LC_NOTE; */
-/*   copy_other ((void *)ldc); */
-
-/* } */
-
-/* static void */
-/* copy_linkedit_dyld_info (struct load_command *lc, long delta) { */
-
-/*   struct dyld_info_command *ldc=(struct dyld_info_command *)lc; */
-
-/*   ldc->rebase_size=0; */
-/*   ldc->bind_size=0; */
-/*   ldc->weak_bind_size=0; */
-/*   ldc->lazy_bind_size=0; */
-/*   ldc->export_size=0; */
-/*   copy_other ((void *)ldc); */
-
-/* } */
-
-
 typedef struct {
     uint32_t magic;           /* 0xfade0cc0 */
     uint32_t length;          /* Total length of SuperBlob */
@@ -1128,20 +1101,13 @@ dump_it () {
       break;
 #endif
     case LC_CODE_SIGNATURE:
-      copy_linkedit(lca[i],linkedit_delta);
+      copy_linkedit(lca[i],linkedit_delta);/*FIXME*/
       break;
     case LC_DATA_IN_CODE:
     case LC_FUNCTION_STARTS:
     case LC_DYLD_EXPORTS_TRIE:
-    /* case LC_DYLD_CHAINED_FIXUPS: */
-      copy_linkedit_zero(lca[i],linkedit_delta);
+      copy_linkedit_zero(lca[i],linkedit_delta);/*FIXME*/
       break;
-    /* case LC_DYLD_INFO_ONLY: */
-    /*   copy_linkedit_dyld_info(lca[i],linkedit_delta); */
-    /*   break; */
-    /* case LC_DYLD_CHAINED_FIXUPS: */
-    /*   copy_linkedit_zero_cmd(lca[i],linkedit_delta); */
-    /*   break; */
     default:
       copy_other (lca[i]);
       break;

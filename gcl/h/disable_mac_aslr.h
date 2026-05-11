@@ -17,7 +17,7 @@ disable_aslr(int argc, char **argv, char **envp) {
   if (!_dyld_get_image_vmaddr_slide(0)) {
     return;
   }
-  
+
   posix_spawnattr_init(&attr);
   posix_spawnattr_setflags(&attr, POSIX_SPAWN_SETEXEC | POSIX_SPAWN_DISABLE_ASLR);
   if (posix_spawn(&pid, argv[0], NULL, &attr, argv, envp)) {
@@ -27,10 +27,3 @@ disable_aslr(int argc, char **argv, char **envp) {
   posix_spawnattr_destroy(&attr);
 
 }
-
-
-/* int main(int argc, char **argv, char **envp) { */
-/*     maybe_disable_aslr(argc, argv, envp); */
-    
-/*     // ... rest of your GCL initialization ... */
-/* } */
