@@ -341,7 +341,7 @@ case $use in
 	    assert_arg_to_ldflags -Wl,-headerpad,56
         fi;;
     aarch64-macosx)
-	LISP_CFLAGS="$LISP_CFLAGS -mcmodel=large" #fixme 26bit trampolines
+#	LISP_CFLAGS="$LISP_CFLAGS -mcmodel=large" #fixme 26bit trampolines
 	AC_ARG_ENABLE([text_base],[  --enable-text_base=0x.... set base address for __TEXT],
 	      [TEXT_BASE=$enableval],[TEXT_BASE=0x10000000000])
 	AC_SUBST(TEXT_BASE)
@@ -1951,7 +1951,8 @@ LI_GITTAG="$GIT_TAG"
 AC_SUBST(LI_GITTAG)
 LI_RELEASE="$RELEASE"
 AC_SUBST(LI_RELEASE)
-LI_CC="\"$GCL_CC -c `echo " $FINAL_CFLAGS $LISP_CFLAGS" | sed 's,-pg\b,,g'`\""
+#LI_CC="\"$GCL_CC -c `echo " $FINAL_CFLAGS $LISP_CFLAGS" | sed 's,-pg\b,,g'`\""
+LI_CC="\"$GCL_CC -c `echo " $FINAL_CFLAGS" | sed 's,-pg\b,,g'`\""
 AC_SUBST(LI_CC)
 LI_DFP="\"$GPL_FLAG\""
 AC_SUBST(LI_DFP)

@@ -139,13 +139,14 @@ relocate(struct relocation_info *ri,struct section *sec,
   struct scattered_relocation_info *sri=(void *)ri;
   ul *q=(void *)(sec->addr+(sri->r_scattered ? sri->r_address : ri->r_address));
   ul a,rel=(ul)(q+1);
+  static ul addend;
 
   if (sri->r_scattered)
     a=sri->r_value;
   else if (ri->r_extern)
     a=n1[ri->r_symbolnum].n_value;
   else
-    a=start;
+    a=ri->r_symbolnum;
 
   switch(sri->r_scattered ? sri->r_type : ri->r_type) {
     
@@ -210,6 +211,8 @@ load_memory(struct section *sec1,struct section *sece,void *v1,
   for (sec=sec1;sec<sece;sec++)
       sec->reserved3=0;/*FIXME unneeded?*/
 
+  gsz=**got ? (**got+1)*sizeof(**got)-1 : 0;
+
 #ifdef W_X
 
   massert(sece>sec1);
@@ -219,7 +222,7 @@ load_memory(struct section *sec1,struct section *sece,void *v1,
   for (sec=sec1+1,sa=-1;sec<sece;sec++)
     if (ALLOC_SEC(sec) && sa>sec->addr)
       sa=sec->addr;
-  text_pbits=(sa+PAGESIZE-1)>>PAGEWIDTH;
+  text_pbits=(sa+gsz+PAGESIZE-1)>>PAGEWIDTH;
   sa=(text_pbits<<PAGEWIDTH)-sa;
   for (sec=sec1+1;sec<sece;sec++)
     sec->addr+=(sec->reserved3=sa);
@@ -247,11 +250,7 @@ load_memory(struct section *sec1,struct section *sece,void *v1,
   ma=ma>sizeof(struct contblock) ? ma-1 : 0; 
   sz+=ma;
 
-  gsz=0;
-  if (**got) {
-    gsz=(**got+1)*sizeof(**got)-1;
-    sz+=gsz;
-  }
+  sz+=gsz;
 
   memory=new_cfdata();
   memory->cfd.cfd_size=sz;
@@ -276,7 +275,11 @@ load_memory(struct section *sec1,struct section *sece,void *v1,
 
   if (**got) {
     sz=**got;
+#ifdef W_X
+    *got=(void *)memory->cfd.cfd_start+(text_pbits<<PAGEWIDTH)-gsz;
+#else
     *got=(void *)memory->cfd.cfd_start+memory->cfd.cfd_size-gsz;
+#endif
     gsz=sizeof(**got)-1;
     *got=(void *)(((ul)*got+gsz)&~gsz);
     *gote=*got+sz;
@@ -550,11 +553,14 @@ seek_to_end_ofile(FILE *f) {
 #ifndef GOT_RELOC
 #define GOT_RELOC(a) 0
 #endif
+#ifndef GOT_RELOC_EXTRA
+#define GOT_RELOC_EXTRA(a) 0
+#endif
 
 static int
 label_got_symbols(void *v1,struct section *sec,struct nlist *n1,struct nlist *ne,ul *gs) {
 
-  struct relocation_info *ri,*re;
+  struct relocation_info *ri,*re;/*scattered?*/
   struct nlist *n;
 
   *gs=0;
@@ -567,8 +573,10 @@ label_got_symbols(void *v1,struct section *sec,struct nlist *n1,struct nlist *ne
     
       massert(ri->r_extern);
       n=n1+ri->r_symbolnum;
-      if (!n->n_desc)
+      if (!n->n_desc) {
 	n->n_desc=++*gs;
+	(*gs)+=GOT_RELOC_EXTRA(ri);
+      }
 
     }
 
@@ -640,9 +648,8 @@ fasload(object faslfile) {
   massert(!un_mmap(v1,ve));
   
   if(symbol_value(sLAload_verboseA)!=Cnil) {
-    printf(";; start address for %.*s %p\n",
-	   (int)VLEN(memory->cfd.cfd_name),memory->cfd.cfd_name->st.st_self,
-	   memory->cfd.cfd_start);
+    coerce_to_filename(memory->cfd.cfd_name,FN1);
+    printf(";; start address for %s %p\n",FN1,memory->cfd.cfd_start);
     fflush(stdout);
   }
 
