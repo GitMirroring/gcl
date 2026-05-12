@@ -258,9 +258,6 @@ unixport/saved_%: | unixport/raw_% unixport/gcl_cmpnopt_%.lsp \
 			GCL_LSPSYSDIR=../$(srcdir)/unixport/ \
 				../unixport/raw_$* $$(dirname $$(pwd))/unixport/ -libdir $$(dirname $$(pwd))/  && \
 		rm -f ../unixport/gcl_cmpnopt.lsp
-	! which otool >/dev/null || \
-		! otool -l $@ |grep -q LC_CODE_SIGNATURE || \
-		codesign -s - --entitlements entitlements.plist --force $@
 	rm -rf sb_$*
 
 unixport/raw_%: unixport/lib%.a $(FF) $(LF)
@@ -330,9 +327,6 @@ unixport/pcl_gcl:  | unixport/saved_mod_gcl
 unixport/ansi_gcl:  | unixport/saved_pcl_gcl
 $(addprefix unixport/,gcl0 gcl1): unixport/% : unixport/cinit.lisp | %
 	echo "(system:save-system \"$@\")" | cat $< - | $(word 2,$|)
-	! which otool >/dev/null || \
-		! otool -l $@ |grep -q LC_CODE_SIGNATURE || \
-		codesign -s - --entitlements entitlements.plist --force $@
 
 $(addprefix unixport/,gcl2 gcl3 gcl mod_gcl): unixport/% : | %
 	ln -snf $$(basename $(word 2,$|)) $@
@@ -342,9 +336,6 @@ unixport/mod_gcl0: xgcl-2/sysdef.lisp | mod_gcl0
 	[ "$(X_OBJS)" = "" ] || echo "(load \"$<\")" >$(@D)/in
 	echo "(compiler::cdebug)(si::save-system \"$@\")" >>$(@D)/in
 	$(word 2,$|) <$(@D)/in
-	! which otool >/dev/null || \
-		! otool -l $@ |grep -q LC_CODE_SIGNATURE || \
-		codesign -s - --entitlements entitlements.plist --force $@
 	rm $(@D)/in
 	cp gcl/all.hsh $(word 1,$|) #FIXME
 
@@ -357,9 +348,6 @@ unixport/pcl_gcl: clcs/package.lisp cmpnew/gcl_collectfn.lsp pcl/defsys.lisp  | 
 	      "(setq pcl::*default-pathname-extensions* (cons \"lisp\" \"o\"))" \
 	      "(setq pcl::*pathname-extensions* (cons \"lisp\" \"o\"))" \
 	      "(si::save-system \"$@\")" | $(word 2,$|)
-	! which otool >/dev/null || \
-		! otool -l $@ |grep -q LC_CODE_SIGNATURE || \
-		codesign -s - --entitlements entitlements.plist --force $@
 
 unixport/ansi_gcl: clcs/package.lisp clcs/gcl_clcs_precom.lisp \
 		   clcs/gcl_clcs_conditions.lisp clcs/gcl_clcs_condition_definitions.lisp \
@@ -367,16 +355,13 @@ unixport/ansi_gcl: clcs/package.lisp clcs/gcl_clcs_precom.lisp \
 	echo "(mapc (quote load) (list $(patsubst %,\"%\",$^)))" \
              "(compiler::cdebug)" \
              "(si::save-system \"$@\")" | $(word 2,$|)
-	! which otool >/dev/null || \
-		! otool -l $@ |grep -q LC_CODE_SIGNATURE || \
-		codesign -s - --entitlements entitlements.plist --force $@
 	cp pcl_gcl/all.hsh $(word 1,$|) #FIXME
 
 $(addprefix gcl0/,$(LL_OBJS)): gcl0/%.o : lsp/%.lsp
 $(addprefix gcl0/,$(LC_OBJS)): gcl0/%.o : cmpnew/%.lsp
 gcl0/%.o: | unixport/gcl0
 	rm -f $(@D)/$*.done
-	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" -compile $< -o $@
+	$(word 1,$|) -eval "(mapc 'load (directory \"$(@D)/*.done\"))" -compile $< -o $@
 	[ "$*" = "gcl_evalmacros" ] || [ "$*" = "gcl_top" ] || [ "$*" = "gcl_c" ] || [ "$*" = "gcl_listlib" ] || \
 		ln -f $@ $$(echo $@ |sed 's,\.o,\.done,g') #FIXME directory link
 

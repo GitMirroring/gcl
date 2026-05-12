@@ -818,185 +818,194 @@ copy_linkedit (struct load_command *lc, long delta) {
 
 }
 
-static void
-copy_linkedit_zero (struct load_command *lc, long delta) {
-
-  struct linkedit_data_command *ldc=(struct linkedit_data_command *)lc;
-
-  ldc->dataoff+=delta;
-  ldc->datasize=0;
-  copy_other ((void *)ldc);
-
-}
-
 typedef struct {
-    uint32_t magic;           /* 0xfade0cc0 */
-    uint32_t length;          /* Total length of SuperBlob */
-    uint32_t count;           /* Number of sub-blobs (usually 1 or 2) */
+  uint32_t magic;           /* 0xfade0cc0 */
+  uint32_t length;          /* Total length of SuperBlob */
+  uint32_t count;           /* Number of sub-blobs (usually 1 or 2) */
 } CS_SuperBlob;
 
 typedef struct {
-    uint32_t type;            /* 0 for CodeDirectory, 5 for Entitlements */
-    uint32_t offset;          /* Offset from start of SuperBlob */
+  uint32_t type;            /* 0 for CodeDirectory, 5 for Entitlements */
+  uint32_t offset;          /* Offset from start of SuperBlob */
 } CS_BlobIndex;
 
 typedef struct {
-    uint32_t magic;           /* 0xfade0c02 */
-    uint32_t length;          /* Length of this blob */
-    uint32_t version;         /* 0x20400 for ARM64 compatibility */
-    uint32_t flags;           /* Ad-hoc is usually 0 or 0x2 (adhoc) */
-    uint32_t hashOffset;      /* Offset to the hashes from start of this blob */
-    uint32_t identOffset;     /* Offset to the identifier string */
-    uint32_t nSpecialSlots;   /* Number of special slots (usually 0 for ad-hoc) */
-    uint32_t nCodeSlots;      /* Number of 4K pages in the file */
-    uint32_t codeLimit;       /* Total size of file being signed */
-    uint8_t  hashSize;        /* 32 for SHA-256 */
-    uint8_t  hashType;        /* 2 for SHA-256 */
-    uint8_t  platform;        /* 0 */
-    uint8_t  pageSize;        /* 12 (means 2^12 = 4096) */
-    uint32_t spare2;          /* 0 */
+  uint32_t magic;           /* 0xfade0c02 */
+  uint32_t length;          /* Length of this blob */
+  uint32_t version;         /* 0x20400 for ARM64 compatibility */
+  uint32_t flags;           /* Ad-hoc is usually 0 or 0x2 (adhoc) */
+  uint32_t hashOffset;      /* Offset to the hashes from start of this blob */
+  uint32_t identOffset;     /* Offset to the identifier string */
+  uint32_t nSpecialSlots;   /* Number of special slots (usually 0 for ad-hoc) */
+  uint32_t nCodeSlots;      /* Number of 4K pages in the file */
+  uint32_t codeLimit;       /* Total size of file being signed */
+  uint8_t  hashSize;        /* 32 for SHA-256 */
+  uint8_t  hashType;        /* 2 for SHA-256 */
+  uint8_t  platform;        /* 0 */
+  uint8_t  pageSize;        /* 12 (means 2^12 = 4096) */
+  uint32_t spare2;          /* 0 */
+  /* Version 0x20400 adds: */
+  uint32_t scatterOffset;   /* 0 */
+  uint32_t teamOffset;      /* 0 or offset to Team ID string */
+  uint32_t spare3;          /* 0 */
+  uint64_t codeLimit64;     /* 0 (unless file > 4GB) */
+  uint64_t execSegBase;     /* File offset of the __TEXT segment */
+  uint64_t execSegLimit;    /* Size of the __TEXT segment */
+  uint64_t execSegFlags;    /* Flags (CS_EXECSEG_*) */
 } CS_CodeDirectory;
 
 typedef struct {
-    uint32_t magic;   /* 0xfade7171 (Magic for Entitlements) */
-    uint32_t length;  /* Total length including this header */
-} CS_EntitlementsBlob;
+  uint32_t magic;      /* 0xfade0c01 (Requirements Set) */
+  uint32_t length;     /* Total length of this blob (usually 12 for empty sets) */
+  uint32_t count;      /* Number of Requirements in this set (0 for ad-hoc) */
+  /* Requirement Index entries follow if count > 0 */
+} CS_Requirements;
 
+typedef struct {
+  uint32_t magic;      /* 0xfade0b01 (CSMAGIC_BLOBWRAPPER) */
+  uint32_t length;     /* Total length of header + CMS data */
+} CS_BlobWrapper;
 
 #include <CommonCrypto/CommonDigest.h>
 /*void calculate_page_hash(const void *data, size_t len, uint8_t *out_hash) {*/
 
-
-int
-dump_code_signature(int outfd) {
-
+#define uassert(a_)							  \
+  ({errno=0;								  \
+    if (!(a_)) {							  \
+      emsg("The assertion %s on line %d of %s in function %s failed: %s", \
+	   #a_,__LINE__,__FILE__,__FUNCTION__,strerror(errno));		  \
+      do_gcl_abort();							  \
+    };})
+#define mwrite(a,b) uassert(write(outfd,a,b)==b);
+#define mpwrite(a,b,c) uassert(pwrite(outfd,a,b,c)==b);
+#define mpred(a,b,c) uassert(pread(outfd,a,b,c)==b)
 #define RNDUP(x,y) ((x+y-1)&~(y-1))
 
+int
+dump_code_signature(struct segment_command *le_seg,
+		    struct segment_command *tx_seg,
+		    unsigned long le_ho,int csf) {
+
+  struct linkedit_data_command ldc={LC_CODE_SIGNATURE,16,0,0};
   CS_SuperBlob sb;
-  CS_BlobIndex bi[2];
+  CS_BlobIndex bi[3];
   CS_CodeDirectory cd;
-  CS_EntitlementsBlob eb;
-  const char *xml="<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://apple.com\"><plist version=\"1.0\"><dict>    <key>com.apple.security.get-task-allow</key>    <true/>    <!-- <key>com.apple.developer.kernel.extended-virtual-addressing</key> -->    <!-- <true/> --></dict></plist>";
+  CS_Requirements rq;
+  CS_BlobWrapper cms;
   const char *id="GCL";
-  long eb_len=sizeof(eb)+RNDUP(strlen(xml),8),nss=5,ss=32,cd_len,len,np,i;
-  uint8_t hash[32];
+  const long nss=2,ss=32,id_len=RNDUP(strlen(id)+1,8);
+  long cd_len,len,np,i;
+  uint8_t hash[32],data[PAGESIZE];
   void *v;
+
 
   lseek(outfd,0,SEEK_END);
   len=lseek(outfd,0,SEEK_CUR);
-  np=RNDUP(len,(1<<12))>>12;
+  if (len%16) {
+    unsigned long x=0;
+    mwrite(&x,sizeof(x));
+    len=lseek(outfd,0,SEEK_CUR);
+  }
+  ldc.dataoff=len;
 
-  cd_len=sizeof(cd)+RNDUP(strlen(id)+1,8)+(nss+np)*ss;
+  np=RNDUP(len,PAGESIZE)>>PAGEWIDTH;
+  cd_len=sizeof(cd)+id_len+(nss+np)*ss;
+  ldc.datasize=sizeof(sb)+sizeof(bi)+cd_len+sizeof(rq)+sizeof(cms);
+  
+  mpwrite(&ldc,sizeof(ldc),curr_header_offset);
+  curr_header_offset+=ldc.cmdsize;
 
+  le_seg->filesize+=ldc.datasize;
+  le_seg->vmsize+=RNDUP(ldc.datasize,PAGESIZE);
+  mpwrite(le_seg,sizeof(*le_seg),le_ho);
+  
+  uassert(curr_header_offset<=text_seg_lowest_offset);
+  
+#if VERBOSE
+  printf ("%ld unused bytes follow Mach-O header\n",
+		 text_seg_lowest_offset - curr_header_offset);
+#endif
+  
+  mh.sizeofcmds=curr_header_offset-sizeof(mh);
+  mh.ncmds+=(1-csf);
+  mpwrite(&mh,sizeof(mh),0);
+  
   sb.magic=htonl(0xfade0cc0);
-  sb.length=htonl(sizeof(sb)+sizeof(bi)+cd_len+eb_len);
-  sb.count=htonl(2);
+  sb.length=htonl(sizeof(sb)+sizeof(bi)+cd_len+sizeof(rq)+sizeof(cms));
+  sb.count=htonl(sizeof(bi)/sizeof(*bi));
+  mwrite(&sb,sizeof(sb));
+
   bi[0].type=htonl(0);
-  bi[0].offset=htonl(sizeof(sb)+sizeof(*bi));
-  bi[1].type=htonl(5);
-  bi[1].offset=htonl(sizeof(sb)+sizeof(*bi)+cd_len);
+  bi[0].offset=htonl(sizeof(sb)+sizeof(bi));
+  bi[1].type=htonl(2);
+  bi[1].offset=htonl(sizeof(sb)+sizeof(bi)+cd_len);
+  bi[2].type=htonl(0x10000);
+  bi[2].offset=htonl(sizeof(sb)+sizeof(bi)+cd_len+sizeof(rq));
+  mwrite(&bi,sizeof(bi));
+
   cd.magic=htonl(0xfade0c02);
   cd.length=htonl(cd_len);
   cd.version=htonl(0x20400);
-  cd.flags=htonl(0);/*2*/
+  cd.flags=htonl(2);
   cd.hashOffset=htonl(cd_len-np*ss);
   cd.identOffset=htonl(sizeof(cd));
-  cd.nSpecialSlots=htonl(5);
+  cd.nSpecialSlots=htonl(nss);
   cd.nCodeSlots=htonl(np);
-  cd.codeLimit=htonl(len);
+  cd.codeLimit=htonl(len<0x100000000 ? len : 0);
   cd.hashSize=32;
   cd.hashType=2;
   cd.platform=0;
-  cd.pageSize=12;
+  cd.pageSize=PAGEWIDTH;
   cd.spare2=0;
-  eb.magic=htonl(0xfade7171);
-  eb.length=htonl(eb_len);
+  cd.scatterOffset=htonl(0);
+  cd.teamOffset=htonl(0);
+  cd.spare3=htonl(0);
+  cd.codeLimit64=htonll(len>=0x100000000 ? len : 0);
+  cd.execSegBase=htonll(tx_seg->fileoff);
+  cd.execSegLimit=htonll(tx_seg->filesize);
+  cd.execSegFlags=htonll(1);
+  mwrite(&cd,sizeof(cd));
 
-  if (!unexec_write (len, &sb, sizeof (sb)))
-    unexec_error ("cannot write signature SuperBlob");
-  len+=sizeof(sb);
-  if (!unexec_write (len, &bi, sizeof (bi)))
-    unexec_error ("cannot write signature Blob indices");
-  len+=sizeof(bi);
-  if (!unexec_write (len, &cd, sizeof (cd)))
-    unexec_error ("cannot write signature CodeDirectory");
-  len+=sizeof(cd);
-  if (!unexec_write (len, id, strlen(id)))
-    unexec_error ("cannot write signature id");
-  len+=strlen(id);
-  if (!unexec_write_zero (len, RNDUP(strlen(id),8)-strlen(id)))
-    unexec_error ("cannot write signature id padding");
-  len+=RNDUP(strlen(id),8)-strlen(id);
+  uassert(v=alloca(id_len));
+  uassert(memset(v,0,id_len));
+  uassert(strcpy(v,id));
+  mwrite(v,id_len);
 
-  if (!(v=alloca(eb_len)))
-    unexec_error("Cannot allocate eb buffer");
-  memcpy(v,&eb,sizeof(eb));
-  memcpy(v+sizeof(eb),xml,strlen(xml));
-  memset(v+sizeof(eb)+strlen(xml),0,eb_len-(sizeof(eb)+strlen(xml)));
-  CC_SHA256(v,eb_len,hash);
+  rq.magic=htonl(0xfade0c01);
+  rq.length=htonl(12);
+  rq.count=htonl(0);
+  CC_SHA256(&rq,sizeof(rq),hash);
+  mwrite(hash,sizeof(hash));
 
-  if (!unexec_write (len, hash, sizeof(hash)))
-    unexec_error ("cannot write slot -5 hash");
-  if (!unexec_write_zero (len, sizeof(hash)))
-    unexec_error ("cannot write slot -4 hash");
-  if (!unexec_write_zero (len, sizeof(hash)))
-    unexec_error ("cannot write slot -3 hash");
-  if (!unexec_write_zero (len, sizeof(hash)))
-    unexec_error ("cannot write slot -2 hash");
-  if (!unexec_write_zero (len, sizeof(hash)))
-    unexec_error ("cannot write slot -1 hash");
+  uassert(memset(hash,0,sizeof(hash)));
+  mwrite(hash,sizeof(hash));
 
-  for (i=0;i<np-1;i++) {
-    char data[1<<12];
-    if (!unexec_read (data, sizeof(data)))
-    unexec_error ("cannot read output file data");
+  for (i=0;i<np;i++) {
+    uassert(memset(data,0,sizeof(data)));
+    mpred(data,i==np-1 ? ntohl(cd.codeLimit)-(i<<PAGEWIDTH) : sizeof(data),i<<PAGEWIDTH);
     CC_SHA256(data,sizeof(data),hash);
-    if (!unexec_write (len, hash, sizeof(hash)))
-      unexec_error ("cannot write code slot hash");
-    len+=sizeof(hash);
+    mwrite(hash,sizeof(hash));
   }
-  {
-    char data[1<<12];
-    memset(data,0,sizeof(data));
-    if (!unexec_read (data, ntohl(cd.codeLimit)-(i<<12)))
-    unexec_error ("cannot read output file data");
-    CC_SHA256(data,sizeof(data),hash);
-    if (!unexec_write (len, hash, sizeof(hash)))
-      unexec_error ("cannot write code slot hash");
-    len+=sizeof(hash);
-  }
-  if (!unexec_write (len, &eb, sizeof(eb)))
-    unexec_error ("cannot write signature eb struct");
-  if (!unexec_write (len, xml, strlen(xml)))
-    unexec_error ("cannot write signature xml");
 
+  mwrite(&rq,sizeof(rq));
+
+  cms.magic=htonl(0xfade0b01);
+  cms.length=htonl(8);
+  mwrite(&cms,sizeof(cms));
+  
   return 0;
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* Loop through all load commands and dump them.  Then write the Mach
    header.  */
 static void
 dump_it () {
 
-  int i;
+  int i,csf=0;
   long linkedit_delta=0,linkedit_vmdelta=0,linkedit_vmsize=0,text_vmaddr=0;
+  struct segment_command *le_seg=NULL,*tx_seg=NULL;
+  unsigned long le_ho=0;
   
 #if VERBOSE
   printf ("--- Load Commands written to Output File ---\n");
@@ -1005,15 +1014,15 @@ dump_it () {
   for (i=0;i<nlc;i++)
     switch(lca[i]->cmd) {
     case LC_SEGMENT:
-      if (strncmp (((struct segment_command *) lca[i])->segname, SEG_LINKEDIT, 16) == 0)
+      if (strncmp (((struct segment_command *) lca[i])->segname, SEG_LINKEDIT, 16) == 0) {
 	linkedit_vmsize=((struct segment_command *) lca[i])->vmsize;
-      else if (strncmp (((struct segment_command *) lca[i])->segname, SEG_TEXT, 16) == 0)
+	le_seg=(struct segment_command *)lca[i];
+      } else if (strncmp (((struct segment_command *) lca[i])->segname, SEG_TEXT, 16) == 0) {
 	text_vmaddr=((struct segment_command *) lca[i])->vmaddr;
+	tx_seg=(struct segment_command *)lca[i];
+      }
     }
-  if (!linkedit_vmsize)
-    unexec_error ("cannot find LINKEDIT vmsize");
-  if (!text_vmaddr)
-    unexec_error ("cannot find TEXT vmaddr");
+  uassert(le_seg&&tx_seg);
   
   for (i = 0; i < nlc; i++)
     switch (lca[i]->cmd) {
@@ -1080,6 +1089,7 @@ dump_it () {
 	    unexec_error ("cannot handle multiple LINKEDIT segments in input file");
 	  linkedit_delta = curr_file_offset - scp->fileoff;
 	  scp->vmaddr+=linkedit_vmdelta;
+	  le_ho=curr_header_offset;
 	  copy_segment (lca[i]);
 	} else
 	  copy_segment (lca[i]);
@@ -1101,30 +1111,20 @@ dump_it () {
       break;
 #endif
     case LC_CODE_SIGNATURE:
-      copy_linkedit(lca[i],linkedit_delta);/*FIXME*/
+      csf=1;
       break;
     case LC_DATA_IN_CODE:
     case LC_FUNCTION_STARTS:
     case LC_DYLD_EXPORTS_TRIE:
-      copy_linkedit_zero(lca[i],linkedit_delta);/*FIXME*/
+      copy_linkedit(lca[i],linkedit_delta);/*FIXME*/
       break;
     default:
       copy_other (lca[i]);
       break;
     }
-  
-  if (curr_header_offset > text_seg_lowest_offset)
-    unexec_error ("not enough room for load commands for new __DATA segments");
-  
-#if VERBOSE
-  printf ("%ld unused bytes follow Mach-O header\n",
-		 text_seg_lowest_offset - curr_header_offset);
-#endif
-  
-  mh.sizeofcmds = curr_header_offset - sizeof (struct mach_header);
-  if (!unexec_write (0, &mh, sizeof (struct mach_header)))
-    unexec_error ("cannot write final header contents");
 
+  dump_code_signature(le_seg,tx_seg,le_ho,csf);
+  
 }
 
 /* Read header and load commands from input file.  Store the latter in
@@ -1226,7 +1226,7 @@ unexec (char *outfile, char *infile, void *start_data, void *start_bss,
   if ((infd = open (infile, O_RDONLY, 0)) < 0)
     unexec_error ("cannot open input file `%s'", infile);
 
-  if ((outfd = open (outfile, O_WRONLY | O_TRUNC | O_CREAT, 0755)) < 0) {
+  if ((outfd = open (outfile, O_RDWR | O_TRUNC | O_CREAT, 0755)) < 0) {
     close (infd);
     unexec_error ("cannot open output file `%s'", outfile);
   }
