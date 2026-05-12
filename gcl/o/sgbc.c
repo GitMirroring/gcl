@@ -193,7 +193,7 @@ sgc_sweep_phase(void) {
 #endif
 
 #ifdef W_X
-	if (type_of(x)==t_cfdata && !is_free(x))
+	if (type_of(x)==t_cfdata && !x->d.tt && !is_free(x))
 	  gcl_mprotect((void *)x->cfd.cfd_start,x->cfd.cfd_nexp<<PAGEWIDTH,PROT_READ|PROT_WRITE);
 #endif
 	

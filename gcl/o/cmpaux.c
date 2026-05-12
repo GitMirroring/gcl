@@ -616,6 +616,7 @@ gcl_init_or_load1(void (*fn)(void),const char *file) {
     massert(realpath(file,FN1));
     ltn=make_simple_string(FN1);
     memory=new_cfdata();
+    memory->d.tt=1;
     memory->cfd.cfd_name=ltn;
     memory->cfd.cfd_start=(char *)fn;
     faslfile=open_stream(ltn,smm_input,Cnil,sKerror);
