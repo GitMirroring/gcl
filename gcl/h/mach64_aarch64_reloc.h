@@ -11,7 +11,7 @@
     break;
   case ARM64_RELOC_BRANCH26:
     addend=0;
-    if (abs(((long)(ri->r_pcrel ? a-(ul)q : a))/4)&(~MASK(25))) {
+    if (labs(((long)(ri->r_pcrel ? a-(ul)q : a))/4)&(~MASK(25))) {
       int tramp[]={0x58ffffd0, /*ldr 19bit pc relative x16*/
 		   0xd61f0200};/*br x16*/
       got+=n1[ri->r_symbolnum].n_desc-1;
