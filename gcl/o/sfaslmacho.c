@@ -223,7 +223,7 @@ load_memory(struct section *sec1,struct section *sece,void *v1,
     if (ALLOC_SEC(sec) && sa>sec->addr)
       sa=sec->addr;
   text_pbits=(sa+gsz+PAGESIZE-1)>>PAGEWIDTH;
-  sa=(text_pbits<<PAGEWIDTH)-sa;
+  sa=(text_pbits<<PAGEWIDTH)+(sa&0xf)-sa;
   for (sec=sec1+1;sec<sece;sec++)
     sec->addr+=(sec->reserved3=sa);
 
