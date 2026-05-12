@@ -531,6 +531,10 @@
 (deftype binary-stream-element-type nil 'list)
 (defconstant +char-shft+ (1- (integer-length char-length)))
 
+(declaim (inline byte-index))
+(defun byte-index (k n)
+  #+:clx-little-endian k #-:clx-little-endian (- n 1 k))
+
 (defun read-byte (s &optional (eof-error-p t) eof-value &aux (i 0)(tp (stream-element-type s)))
   (declare (optimize (safety 1)))
   (check-type s stream)
@@ -538,9 +542,11 @@
   (let* ((n (if tp (ash (cadr tp) (- +char-shft+)) 1)))
     (dotimes (k n (let ((nb (ash n +char-shft+)))
 		  (if (when (eq (car tp) 'signed-byte) (logbitp (1- nb) i)) (- i (ash 1 nb)) i)))
-      (setq i (logior i (ash (let ((ch (read-char s eof-error-p eof-value)))
+      (setq i
+	    (logior i
+		    (ash (let ((ch (read-char s eof-error-p eof-value)))
 			       (if (eq ch eof-value) (return ch) (char-code ch)))
-			     (ash k +char-shft+)))))))
+			 (ash (byte-index k n) +char-shft+)))))))
 
 (defun write-byte (j s &aux (i j) (tp (stream-element-type s)))
   (declare (optimize (safety 1)))
@@ -549,8 +555,12 @@
   (check-type tp binary-stream-element-type)
   (let ((n (ash (cadr tp) (- +char-shft+))))
     (dotimes (k n j)
-      (write-char (code-char (logand i #.(1- (ash 1 char-length)))) s)
-      (setq i (ash i #.(- char-length))))))
+      (write-char
+       (code-char
+	(logand
+	 (ash i (ash (- (byte-index k n)) +char-shft+))
+	 #.(1- (ash 1 char-length))))
+       s))))
 
 #-pre-gcl
 (defdlfun (:fixnum "fread") :fixnum :fixnum :fixnum :fixnum)
