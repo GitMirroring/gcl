@@ -8,6 +8,7 @@
 				      +fe-list+ +mc-context-offsets+ floating-point-error 
 				      function-by-address clines defentry))
 (export '(break-on-floating-point-exceptions read-instruction))
+#+no-sigfpe (export '(flush-floating-point-exceptions))
 
 (eval-when
     (eval compile)
@@ -129,25 +130,28 @@
   (feenableexcept a))
 
 
-#.`(let ((fpe-enabled 0))
+#.`(let ((fpe-enabled 0)(fpe-set 0))
      #+no-sigfpe
      (defun flush-floating-point-exceptions nil
-       (let ((x (fetestexcept fpe-enabled)))
+       (let ((x (fetestexcept fpe-set)))
 	 (unless (zerop x)
 	   (feclearexcept x)
 	   (floating-point-error x 0 0))))
      (defun break-on-floating-point-exceptions 
 	 (&key suspend no-flush
 	    ,@(mapcar (lambda (x) `(,(car x) (logtest ,(caddr x) fpe-enabled))) +fe-list+)
-	  &aux r #+no-sigfpe(x (fetestexcept fpe-enabled)))
+	  &aux r #+no-sigfpe(x (fetestexcept fpe-set)))
        (fe-enable
-	(if suspend 0
-	  (setq fpe-enabled 
-		(logior
-		 ,@(mapcar (lambda (x)
-			     `(cond (,(car x) (push ,(intern (symbol-name (car x)) :keyword) r) ,(caddr x))
-				    (0)))
-			   +fe-list+)))))
+	(setq fpe-set
+	      (if suspend 0
+		  (setq fpe-enabled
+			(logior
+			 ,@(mapcar (lambda (x)
+				     `(cond (,(car x)
+					     (push ,(intern (symbol-name (car x)) :keyword) r)
+					      ,(caddr x))
+					    (0)))
+				   +fe-list+))))))
        #+no-sigfpe
        (unless (or no-flush (zerop x)) (floating-point-error x 0 0))
        r))
