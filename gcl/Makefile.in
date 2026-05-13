@@ -176,29 +176,27 @@ lib_libbase_gcl_a_AR = $(AR) $(ARFLAGS)
 lib_libbase_gcl_a_RANLIB = $(RANLIB)
 lib_libbase_gcl_a_LIBADD =
 am__lib_libbase_gcl_a_SOURCES_DIST = o/typespec.c o/alloc.c o/gbc.c \
-	o/bitop.c o/main.c o/eval.c o/macros.c o/lex.c o/bds.c \
-	o/frame.c o/predicate.c o/reference.c o/assignment.c o/bind.c \
-	o/let.c o/conditional.c o/block.c o/iteration.c o/prog.c \
-	o/multival.c o/catch.c o/cfun.c o/cmpaux.c o/big.c o/number.c \
-	o/num_pred.c o/num_comp.c o/num_arith.c o/num_sfun.c \
-	o/num_co.c o/num_log.c o/num_rand.c o/earith.c o/array.c \
-	o/regexpr.c o/structure.c o/toplevel.c o/backq.c o/format.c \
-	o/unixfsys.c o/unixfasl.c o/error.c o/unixtime.c o/unixsys.c \
-	o/unixsave.c o/funlink.c o/fat_string.c o/run_process.c \
-	o/nfunlink.c o/usig.c o/usig2.c o/utils.c o/makefun.c \
-	o/sockets.c o/gmp_wrappers.c o/clxsocket.c o/nsocket.c \
-	o/prelink.c o/sfasl.c o/msbrk.c o/bcmp.c o/bcopy.c o/bzero.c \
-	o/user_init.c o/user_match.c o/mapfun.c h/compbas2.h \
-	h/compbas.h h/compprotos.h h/cstack.h h/enum.h h/error.h \
-	h/eval.h h/fixnum.h h/frame.h h/funlink.h h/globals.h \
-	h/gmp_wrappers.h h/immnum.h h/include.h h/lex.h h/linux.h \
-	h/lu.h h/make-init.h h/mp.h h/notcomp.h h/num_include.h \
-	h/object.h h/options.h h/page.h h/pageinfo.h h/pbits.h \
-	h/pool.h h/prelink.h h/protoize.h h/ptable.h h/rgbc.h \
-	h/sfun_argd.h h/stacks.h h/type.h h/usig.h h/vs.h h/writable.h \
-	o/regexp.h h/arth.h h/bsd.h h/bds.h h/att_ext.h h/bfdef.h \
-	h/compat.h gcl-tk/sheader.h h/make-decl.h h/defun.h o/ntheap.h \
-	h/compdefs.h h/cmpincl1.h h/mgmp.h h/cmponly_last.h \
+	o/main.c o/eval.c o/macros.c o/lex.c o/bds.c o/frame.c \
+	o/predicate.c o/reference.c o/assignment.c o/bind.c o/let.c \
+	o/conditional.c o/block.c o/iteration.c o/prog.c o/multival.c \
+	o/catch.c o/cfun.c o/cmpaux.c o/big.c o/number.c o/num_pred.c \
+	o/num_comp.c o/num_arith.c o/num_sfun.c o/num_co.c o/num_log.c \
+	o/num_rand.c o/earith.c o/array.c o/regexpr.c o/structure.c \
+	o/toplevel.c o/backq.c o/format.c o/unixfsys.c o/unixfasl.c \
+	o/error.c o/unixtime.c o/unixsys.c o/unixsave.c o/funlink.c \
+	o/fat_string.c o/run_process.c o/usig.c o/usig2.c o/utils.c \
+	o/makefun.c o/sockets.c o/gmp_wrappers.c o/nsocket.c \
+	o/prelink.c o/sfasl.c o/msbrk.c o/user_init.c o/user_match.c \
+	o/mapfun.c h/compbas2.h h/compbas.h h/compprotos.h h/cstack.h \
+	h/enum.h h/error.h h/eval.h h/fixnum.h h/frame.h h/funlink.h \
+	h/globals.h h/gmp_wrappers.h h/immnum.h h/include.h h/lex.h \
+	h/linux.h h/lu.h h/make-init.h h/mp.h h/notcomp.h \
+	h/num_include.h h/object.h h/options.h h/page.h h/pageinfo.h \
+	h/pbits.h h/pool.h h/prelink.h h/protoize.h h/ptable.h \
+	h/rgbc.h h/sfun_argd.h h/stacks.h h/type.h h/usig.h h/vs.h \
+	h/writable.h o/regexp.h h/arth.h h/bsd.h h/bds.h h/att_ext.h \
+	h/bfdef.h h/compat.h gcl-tk/sheader.h h/make-decl.h h/defun.h \
+	o/ntheap.h h/compdefs.h h/cmpincl1.h h/mgmp.h h/cmponly_last.h \
 	h/elf32_armhf_reloc.h h/elf32_armhf_reloc_special.h \
 	h/elf32_arm_reloc.h h/elf32_arm_reloc_special.h \
 	h/elf32_hppa_reloc.h h/elf32_hppa_reloc_special.h \
@@ -226,9 +224,9 @@ am__lib_libbase_gcl_a_SOURCES_DIST = o/typespec.c o/alloc.c o/gbc.c \
 	h/solaris-i386.h o/boot.c
 am__dirstamp = $(am__leading_dot)dirstamp
 am__objects_1 = o/typespec.$(OBJEXT) o/alloc.$(OBJEXT) o/gbc.$(OBJEXT) \
-	o/bitop.$(OBJEXT) o/main.$(OBJEXT) o/eval.$(OBJEXT) \
-	o/macros.$(OBJEXT) o/lex.$(OBJEXT) o/bds.$(OBJEXT) \
-	o/frame.$(OBJEXT) o/predicate.$(OBJEXT) o/reference.$(OBJEXT) \
+	o/main.$(OBJEXT) o/eval.$(OBJEXT) o/macros.$(OBJEXT) \
+	o/lex.$(OBJEXT) o/bds.$(OBJEXT) o/frame.$(OBJEXT) \
+	o/predicate.$(OBJEXT) o/reference.$(OBJEXT) \
 	o/assignment.$(OBJEXT) o/bind.$(OBJEXT) o/let.$(OBJEXT) \
 	o/conditional.$(OBJEXT) o/block.$(OBJEXT) \
 	o/iteration.$(OBJEXT) o/prog.$(OBJEXT) o/multival.$(OBJEXT) \
@@ -242,12 +240,11 @@ am__objects_1 = o/typespec.$(OBJEXT) o/alloc.$(OBJEXT) o/gbc.$(OBJEXT) \
 	o/unixfasl.$(OBJEXT) o/error.$(OBJEXT) o/unixtime.$(OBJEXT) \
 	o/unixsys.$(OBJEXT) o/unixsave.$(OBJEXT) o/funlink.$(OBJEXT) \
 	o/fat_string.$(OBJEXT) o/run_process.$(OBJEXT) \
-	o/nfunlink.$(OBJEXT) o/usig.$(OBJEXT) o/usig2.$(OBJEXT) \
-	o/utils.$(OBJEXT) o/makefun.$(OBJEXT) o/sockets.$(OBJEXT) \
-	o/gmp_wrappers.$(OBJEXT) o/clxsocket.$(OBJEXT) \
-	o/nsocket.$(OBJEXT) o/prelink.$(OBJEXT) o/sfasl.$(OBJEXT) \
-	o/msbrk.$(OBJEXT) o/bcmp.$(OBJEXT) o/bcopy.$(OBJEXT) \
-	o/bzero.$(OBJEXT) o/user_init.$(OBJEXT) o/user_match.$(OBJEXT) \
+	o/usig.$(OBJEXT) o/usig2.$(OBJEXT) o/utils.$(OBJEXT) \
+	o/makefun.$(OBJEXT) o/sockets.$(OBJEXT) \
+	o/gmp_wrappers.$(OBJEXT) o/nsocket.$(OBJEXT) \
+	o/prelink.$(OBJEXT) o/sfasl.$(OBJEXT) o/msbrk.$(OBJEXT) \
+	o/user_init.$(OBJEXT) o/user_match.$(OBJEXT) \
 	o/mapfun.$(OBJEXT)
 am__objects_2 =
 @AMM_LIBBOOT_FALSE@am__objects_3 = o/boot.$(OBJEXT)
@@ -265,29 +262,27 @@ lib_libbase_gcl_gprof_a_AR = $(AR) $(ARFLAGS)
 lib_libbase_gcl_gprof_a_RANLIB = $(RANLIB)
 lib_libbase_gcl_gprof_a_LIBADD =
 am__lib_libbase_gcl_gprof_a_SOURCES_DIST = o/typespec.c o/alloc.c \
-	o/gbc.c o/bitop.c o/main.c o/eval.c o/macros.c o/lex.c o/bds.c \
-	o/frame.c o/predicate.c o/reference.c o/assignment.c o/bind.c \
-	o/let.c o/conditional.c o/block.c o/iteration.c o/prog.c \
-	o/multival.c o/catch.c o/cfun.c o/cmpaux.c o/big.c o/number.c \
-	o/num_pred.c o/num_comp.c o/num_arith.c o/num_sfun.c \
-	o/num_co.c o/num_log.c o/num_rand.c o/earith.c o/array.c \
-	o/regexpr.c o/structure.c o/toplevel.c o/backq.c o/format.c \
-	o/unixfsys.c o/unixfasl.c o/error.c o/unixtime.c o/unixsys.c \
-	o/unixsave.c o/funlink.c o/fat_string.c o/run_process.c \
-	o/nfunlink.c o/usig.c o/usig2.c o/utils.c o/makefun.c \
-	o/sockets.c o/gmp_wrappers.c o/clxsocket.c o/nsocket.c \
-	o/prelink.c o/sfasl.c o/msbrk.c o/bcmp.c o/bcopy.c o/bzero.c \
-	o/user_init.c o/user_match.c o/mapfun.c h/compbas2.h \
-	h/compbas.h h/compprotos.h h/cstack.h h/enum.h h/error.h \
-	h/eval.h h/fixnum.h h/frame.h h/funlink.h h/globals.h \
-	h/gmp_wrappers.h h/immnum.h h/include.h h/lex.h h/linux.h \
-	h/lu.h h/make-init.h h/mp.h h/notcomp.h h/num_include.h \
-	h/object.h h/options.h h/page.h h/pageinfo.h h/pbits.h \
-	h/pool.h h/prelink.h h/protoize.h h/ptable.h h/rgbc.h \
-	h/sfun_argd.h h/stacks.h h/type.h h/usig.h h/vs.h h/writable.h \
-	o/regexp.h h/arth.h h/bsd.h h/bds.h h/att_ext.h h/bfdef.h \
-	h/compat.h gcl-tk/sheader.h h/make-decl.h h/defun.h o/ntheap.h \
-	h/compdefs.h h/cmpincl1.h h/mgmp.h h/cmponly_last.h \
+	o/gbc.c o/main.c o/eval.c o/macros.c o/lex.c o/bds.c o/frame.c \
+	o/predicate.c o/reference.c o/assignment.c o/bind.c o/let.c \
+	o/conditional.c o/block.c o/iteration.c o/prog.c o/multival.c \
+	o/catch.c o/cfun.c o/cmpaux.c o/big.c o/number.c o/num_pred.c \
+	o/num_comp.c o/num_arith.c o/num_sfun.c o/num_co.c o/num_log.c \
+	o/num_rand.c o/earith.c o/array.c o/regexpr.c o/structure.c \
+	o/toplevel.c o/backq.c o/format.c o/unixfsys.c o/unixfasl.c \
+	o/error.c o/unixtime.c o/unixsys.c o/unixsave.c o/funlink.c \
+	o/fat_string.c o/run_process.c o/usig.c o/usig2.c o/utils.c \
+	o/makefun.c o/sockets.c o/gmp_wrappers.c o/nsocket.c \
+	o/prelink.c o/sfasl.c o/msbrk.c o/user_init.c o/user_match.c \
+	o/mapfun.c h/compbas2.h h/compbas.h h/compprotos.h h/cstack.h \
+	h/enum.h h/error.h h/eval.h h/fixnum.h h/frame.h h/funlink.h \
+	h/globals.h h/gmp_wrappers.h h/immnum.h h/include.h h/lex.h \
+	h/linux.h h/lu.h h/make-init.h h/mp.h h/notcomp.h \
+	h/num_include.h h/object.h h/options.h h/page.h h/pageinfo.h \
+	h/pbits.h h/pool.h h/prelink.h h/protoize.h h/ptable.h \
+	h/rgbc.h h/sfun_argd.h h/stacks.h h/type.h h/usig.h h/vs.h \
+	h/writable.h o/regexp.h h/arth.h h/bsd.h h/bds.h h/att_ext.h \
+	h/bfdef.h h/compat.h gcl-tk/sheader.h h/make-decl.h h/defun.h \
+	o/ntheap.h h/compdefs.h h/cmpincl1.h h/mgmp.h h/cmponly_last.h \
 	h/elf32_armhf_reloc.h h/elf32_armhf_reloc_special.h \
 	h/elf32_arm_reloc.h h/elf32_arm_reloc_special.h \
 	h/elf32_hppa_reloc.h h/elf32_hppa_reloc_special.h \
@@ -316,7 +311,6 @@ am__lib_libbase_gcl_gprof_a_SOURCES_DIST = o/typespec.c o/alloc.c \
 am__objects_5 = o/lib_libbase_gcl_gprof_a-typespec.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-alloc.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-gbc.$(OBJEXT) \
-	o/lib_libbase_gcl_gprof_a-bitop.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-main.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-eval.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-macros.$(OBJEXT) \
@@ -361,21 +355,16 @@ am__objects_5 = o/lib_libbase_gcl_gprof_a-typespec.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-funlink.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-fat_string.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-run_process.$(OBJEXT) \
-	o/lib_libbase_gcl_gprof_a-nfunlink.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-usig.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-usig2.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-utils.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-makefun.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-sockets.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-gmp_wrappers.$(OBJEXT) \
-	o/lib_libbase_gcl_gprof_a-clxsocket.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-nsocket.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-prelink.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-sfasl.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-msbrk.$(OBJEXT) \
-	o/lib_libbase_gcl_gprof_a-bcmp.$(OBJEXT) \
-	o/lib_libbase_gcl_gprof_a-bcopy.$(OBJEXT) \
-	o/lib_libbase_gcl_gprof_a-bzero.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-user_init.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-user_match.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-mapfun.$(OBJEXT)
@@ -499,13 +488,12 @@ am__depfiles_remade = bin/$(DEPDIR)/dpp.Po \
 	gcl-tk/$(DEPDIR)/gcltkaux-tkAppInit.Po \
 	gcl-tk/$(DEPDIR)/gcltkaux-tkMain.Po o/$(DEPDIR)/alloc.Po \
 	o/$(DEPDIR)/array.Po o/$(DEPDIR)/assignment.Po \
-	o/$(DEPDIR)/backq.Po o/$(DEPDIR)/bcmp.Po o/$(DEPDIR)/bcopy.Po \
-	o/$(DEPDIR)/bds.Po o/$(DEPDIR)/big.Po o/$(DEPDIR)/bind.Po \
-	o/$(DEPDIR)/bitop.Po o/$(DEPDIR)/block.Po o/$(DEPDIR)/boot.Po \
-	o/$(DEPDIR)/bzero.Po o/$(DEPDIR)/catch.Po o/$(DEPDIR)/cfun.Po \
-	o/$(DEPDIR)/character.Po o/$(DEPDIR)/clxsocket.Po \
-	o/$(DEPDIR)/cmpaux.Po o/$(DEPDIR)/conditional.Po \
-	o/$(DEPDIR)/earith.Po o/$(DEPDIR)/error.Po o/$(DEPDIR)/eval.Po \
+	o/$(DEPDIR)/backq.Po o/$(DEPDIR)/bds.Po o/$(DEPDIR)/big.Po \
+	o/$(DEPDIR)/bind.Po o/$(DEPDIR)/block.Po o/$(DEPDIR)/boot.Po \
+	o/$(DEPDIR)/catch.Po o/$(DEPDIR)/cfun.Po \
+	o/$(DEPDIR)/character.Po o/$(DEPDIR)/cmpaux.Po \
+	o/$(DEPDIR)/conditional.Po o/$(DEPDIR)/earith.Po \
+	o/$(DEPDIR)/error.Po o/$(DEPDIR)/eval.Po \
 	o/$(DEPDIR)/fat_string.Po o/$(DEPDIR)/file.Po \
 	o/$(DEPDIR)/format.Po o/$(DEPDIR)/frame.Po \
 	o/$(DEPDIR)/funlink.Po o/$(DEPDIR)/gbc.Po \
@@ -516,19 +504,14 @@ am__depfiles_remade = bin/$(DEPDIR)/dpp.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-array.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-assignment.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-backq.Po \
-	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bcmp.Po \
-	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bcopy.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bds.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-big.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bind.Po \
-	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bitop.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-block.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-boot.Po \
-	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bzero.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-catch.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-cfun.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-character.Po \
-	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-clxsocket.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-cmpaux.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-conditional.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-earith.Po \
@@ -555,7 +538,6 @@ am__depfiles_remade = bin/$(DEPDIR)/dpp.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-msbrk.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-multival.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-new_init.Po \
-	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-nfunlink.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-nsocket.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-num_arith.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-num_co.Po \
@@ -598,25 +580,25 @@ am__depfiles_remade = bin/$(DEPDIR)/dpp.Po \
 	o/$(DEPDIR)/macros.Po o/$(DEPDIR)/main.Po \
 	o/$(DEPDIR)/makefun.Po o/$(DEPDIR)/mapfun.Po \
 	o/$(DEPDIR)/msbrk.Po o/$(DEPDIR)/multival.Po \
-	o/$(DEPDIR)/new_init.Po o/$(DEPDIR)/nfunlink.Po \
-	o/$(DEPDIR)/nsocket.Po o/$(DEPDIR)/num_arith.Po \
-	o/$(DEPDIR)/num_co.Po o/$(DEPDIR)/num_comp.Po \
-	o/$(DEPDIR)/num_log.Po o/$(DEPDIR)/num_pred.Po \
-	o/$(DEPDIR)/num_rand.Po o/$(DEPDIR)/num_sfun.Po \
-	o/$(DEPDIR)/number.Po o/$(DEPDIR)/package.Po \
-	o/$(DEPDIR)/pathname.Po o/$(DEPDIR)/predicate.Po \
-	o/$(DEPDIR)/prelink.Po o/$(DEPDIR)/print.Po \
-	o/$(DEPDIR)/prog.Po o/$(DEPDIR)/qfv.Po o/$(DEPDIR)/read.Po \
-	o/$(DEPDIR)/reference.Po o/$(DEPDIR)/regexpr.Po \
-	o/$(DEPDIR)/run_process.Po o/$(DEPDIR)/sequence.Po \
-	o/$(DEPDIR)/sfasl.Po o/$(DEPDIR)/sockets.Po \
-	o/$(DEPDIR)/string.Po o/$(DEPDIR)/structure.Po \
-	o/$(DEPDIR)/symbol.Po o/$(DEPDIR)/toplevel.Po \
-	o/$(DEPDIR)/typespec.Po o/$(DEPDIR)/unixfasl.Po \
-	o/$(DEPDIR)/unixfsys.Po o/$(DEPDIR)/unixsave.Po \
-	o/$(DEPDIR)/unixsys.Po o/$(DEPDIR)/unixtime.Po \
-	o/$(DEPDIR)/user_init.Po o/$(DEPDIR)/user_match.Po \
-	o/$(DEPDIR)/usig.Po o/$(DEPDIR)/usig2.Po o/$(DEPDIR)/utils.Po \
+	o/$(DEPDIR)/new_init.Po o/$(DEPDIR)/nsocket.Po \
+	o/$(DEPDIR)/num_arith.Po o/$(DEPDIR)/num_co.Po \
+	o/$(DEPDIR)/num_comp.Po o/$(DEPDIR)/num_log.Po \
+	o/$(DEPDIR)/num_pred.Po o/$(DEPDIR)/num_rand.Po \
+	o/$(DEPDIR)/num_sfun.Po o/$(DEPDIR)/number.Po \
+	o/$(DEPDIR)/package.Po o/$(DEPDIR)/pathname.Po \
+	o/$(DEPDIR)/predicate.Po o/$(DEPDIR)/prelink.Po \
+	o/$(DEPDIR)/print.Po o/$(DEPDIR)/prog.Po o/$(DEPDIR)/qfv.Po \
+	o/$(DEPDIR)/read.Po o/$(DEPDIR)/reference.Po \
+	o/$(DEPDIR)/regexpr.Po o/$(DEPDIR)/run_process.Po \
+	o/$(DEPDIR)/sequence.Po o/$(DEPDIR)/sfasl.Po \
+	o/$(DEPDIR)/sockets.Po o/$(DEPDIR)/string.Po \
+	o/$(DEPDIR)/structure.Po o/$(DEPDIR)/symbol.Po \
+	o/$(DEPDIR)/toplevel.Po o/$(DEPDIR)/typespec.Po \
+	o/$(DEPDIR)/unixfasl.Po o/$(DEPDIR)/unixfsys.Po \
+	o/$(DEPDIR)/unixsave.Po o/$(DEPDIR)/unixsys.Po \
+	o/$(DEPDIR)/unixtime.Po o/$(DEPDIR)/user_init.Po \
+	o/$(DEPDIR)/user_match.Po o/$(DEPDIR)/usig.Po \
+	o/$(DEPDIR)/usig2.Po o/$(DEPDIR)/utils.Po \
 	xgcl-2/$(DEPDIR)/Events.Po xgcl-2/$(DEPDIR)/XStruct-2.Po \
 	xgcl-2/$(DEPDIR)/XStruct-4.Po xgcl-2/$(DEPDIR)/Xutil-2.Po \
 	xgcl-2/$(DEPDIR)/general-c.Po \
@@ -1059,16 +1041,18 @@ ARCHT_H = h/elf32_armhf_reloc.h h/elf32_armhf_reloc_special.h h/elf32_arm_reloc.
 	h/386-macosx.h h/mingw.h h/gnuwin95.h h/FreeBSD.h h/solaris.h h/solaris-i386.h
 
 BUILT_H = h/new_decl.h o/boot.h h/cmpinclude.h
-C_SRC = o/typespec.c o/alloc.c o/gbc.c o/bitop.c o/main.c o/eval.c o/macros.c o/lex.c o/bds.c o/frame.c\
+C_SRC = o/typespec.c o/alloc.c o/gbc.c  o/main.c o/eval.c o/macros.c o/lex.c o/bds.c o/frame.c\
       o/predicate.c o/reference.c o/assignment.c o/bind.c o/let.c o/conditional.c o/block.c o/iteration.c\
       o/prog.c o/multival.c o/catch.c o/cfun.c o/cmpaux.c o/big.c o/number.c o/num_pred.c o/num_comp.c\
       o/num_arith.c o/num_sfun.c o/num_co.c o/num_log.c o/num_rand.c o/earith.c\
       o/array.c o/regexpr.c o/structure.c o/toplevel.c o/backq.c o/format.c\
       o/unixfsys.c o/unixfasl.c o/error.c o/unixtime.c o/unixsys.c o/unixsave.c o/funlink.c  o/fat_string.c\
-      o/run_process.c o/nfunlink.c o/usig.c o/usig2.c o/utils.c o/makefun.c o/sockets.c o/gmp_wrappers.c\
-      o/clxsocket.c o/nsocket.c o/prelink.c o/sfasl.c o/msbrk.c \
-      o/bcmp.c o/bcopy.c o/bzero.c o/user_init.c o/user_match.c o/mapfun.c
+      o/run_process.c o/usig.c o/usig2.c o/utils.c o/makefun.c o/sockets.c o/gmp_wrappers.c\
+      o/nsocket.c o/prelink.c o/sfasl.c o/msbrk.c \
+      o/user_init.c o/user_match.c o/mapfun.c
 
+#     o/bitop.c o/nfunlink.c o/clxsocket.c
+#     o/bcmp.c o/bcopy.c o/bzero.c
 D_SRC = o/character.d o/file.d o/gcl_readline.d o/hash.d o/list.d o/package.d o/pathname.d o/print.d\
       o/read.d o/sequence.d o/string.d o/symbol.d
 
@@ -1341,7 +1325,6 @@ o/$(DEPDIR)/$(am__dirstamp):
 o/typespec.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/alloc.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/gbc.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
-o/bitop.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/main.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/eval.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/macros.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
@@ -1386,7 +1369,6 @@ o/unixsave.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/funlink.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/fat_string.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/run_process.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
-o/nfunlink.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/usig.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/usig2.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/utils.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
@@ -1394,14 +1376,10 @@ o/makefun.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/sockets.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/gmp_wrappers.$(OBJEXT): o/$(am__dirstamp) \
 	o/$(DEPDIR)/$(am__dirstamp)
-o/clxsocket.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/nsocket.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/prelink.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/sfasl.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/msbrk.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
-o/bcmp.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
-o/bcopy.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
-o/bzero.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/user_init.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/user_match.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/mapfun.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
@@ -1434,8 +1412,6 @@ o/lib_libbase_gcl_gprof_a-typespec.$(OBJEXT): o/$(am__dirstamp) \
 o/lib_libbase_gcl_gprof_a-alloc.$(OBJEXT): o/$(am__dirstamp) \
 	o/$(DEPDIR)/$(am__dirstamp)
 o/lib_libbase_gcl_gprof_a-gbc.$(OBJEXT): o/$(am__dirstamp) \
-	o/$(DEPDIR)/$(am__dirstamp)
-o/lib_libbase_gcl_gprof_a-bitop.$(OBJEXT): o/$(am__dirstamp) \
 	o/$(DEPDIR)/$(am__dirstamp)
 o/lib_libbase_gcl_gprof_a-main.$(OBJEXT): o/$(am__dirstamp) \
 	o/$(DEPDIR)/$(am__dirstamp)
@@ -1525,8 +1501,6 @@ o/lib_libbase_gcl_gprof_a-fat_string.$(OBJEXT): o/$(am__dirstamp) \
 	o/$(DEPDIR)/$(am__dirstamp)
 o/lib_libbase_gcl_gprof_a-run_process.$(OBJEXT): o/$(am__dirstamp) \
 	o/$(DEPDIR)/$(am__dirstamp)
-o/lib_libbase_gcl_gprof_a-nfunlink.$(OBJEXT): o/$(am__dirstamp) \
-	o/$(DEPDIR)/$(am__dirstamp)
 o/lib_libbase_gcl_gprof_a-usig.$(OBJEXT): o/$(am__dirstamp) \
 	o/$(DEPDIR)/$(am__dirstamp)
 o/lib_libbase_gcl_gprof_a-usig2.$(OBJEXT): o/$(am__dirstamp) \
@@ -1539,8 +1513,6 @@ o/lib_libbase_gcl_gprof_a-sockets.$(OBJEXT): o/$(am__dirstamp) \
 	o/$(DEPDIR)/$(am__dirstamp)
 o/lib_libbase_gcl_gprof_a-gmp_wrappers.$(OBJEXT): o/$(am__dirstamp) \
 	o/$(DEPDIR)/$(am__dirstamp)
-o/lib_libbase_gcl_gprof_a-clxsocket.$(OBJEXT): o/$(am__dirstamp) \
-	o/$(DEPDIR)/$(am__dirstamp)
 o/lib_libbase_gcl_gprof_a-nsocket.$(OBJEXT): o/$(am__dirstamp) \
 	o/$(DEPDIR)/$(am__dirstamp)
 o/lib_libbase_gcl_gprof_a-prelink.$(OBJEXT): o/$(am__dirstamp) \
@@ -1548,12 +1520,6 @@ o/lib_libbase_gcl_gprof_a-prelink.$(OBJEXT): o/$(am__dirstamp) \
 o/lib_libbase_gcl_gprof_a-sfasl.$(OBJEXT): o/$(am__dirstamp) \
 	o/$(DEPDIR)/$(am__dirstamp)
 o/lib_libbase_gcl_gprof_a-msbrk.$(OBJEXT): o/$(am__dirstamp) \
-	o/$(DEPDIR)/$(am__dirstamp)
-o/lib_libbase_gcl_gprof_a-bcmp.$(OBJEXT): o/$(am__dirstamp) \
-	o/$(DEPDIR)/$(am__dirstamp)
-o/lib_libbase_gcl_gprof_a-bcopy.$(OBJEXT): o/$(am__dirstamp) \
-	o/$(DEPDIR)/$(am__dirstamp)
-o/lib_libbase_gcl_gprof_a-bzero.$(OBJEXT): o/$(am__dirstamp) \
 	o/$(DEPDIR)/$(am__dirstamp)
 o/lib_libbase_gcl_gprof_a-user_init.$(OBJEXT): o/$(am__dirstamp) \
 	o/$(DEPDIR)/$(am__dirstamp)
@@ -1765,19 +1731,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/array.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/assignment.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/backq.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/bcmp.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/bcopy.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/bds.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/big.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/bind.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/bitop.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/block.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/boot.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/bzero.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/catch.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/cfun.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/character.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/clxsocket.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/cmpaux.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/conditional.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/earith.Po@am__quote@ # am--include-marker
@@ -1800,19 +1761,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-array.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-assignment.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-backq.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bcmp.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bcopy.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bds.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-big.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bind.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bitop.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-block.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-boot.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bzero.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-catch.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-cfun.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-character.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-clxsocket.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-cmpaux.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-conditional.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-earith.Po@am__quote@ # am--include-marker
@@ -1839,7 +1795,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-msbrk.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-multival.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-new_init.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-nfunlink.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-nsocket.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-num_arith.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-num_co.Po@am__quote@ # am--include-marker
@@ -1887,7 +1842,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/msbrk.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/multival.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/new_init.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/nfunlink.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/nsocket.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/num_arith.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/num_co.Po@am__quote@ # am--include-marker
@@ -2000,20 +1954,6 @@ o/lib_libbase_gcl_gprof_a-gbc.obj: o/gbc.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='o/gbc.c' object='o/lib_libbase_gcl_gprof_a-gbc.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libbase_gcl_gprof_a-gbc.obj `if test -f 'o/gbc.c'; then $(CYGPATH_W) 'o/gbc.c'; else $(CYGPATH_W) '$(srcdir)/o/gbc.c'; fi`
-
-o/lib_libbase_gcl_gprof_a-bitop.o: o/bitop.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libbase_gcl_gprof_a-bitop.o -MD -MP -MF o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bitop.Tpo -c -o o/lib_libbase_gcl_gprof_a-bitop.o `test -f 'o/bitop.c' || echo '$(srcdir)/'`o/bitop.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bitop.Tpo o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bitop.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='o/bitop.c' object='o/lib_libbase_gcl_gprof_a-bitop.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libbase_gcl_gprof_a-bitop.o `test -f 'o/bitop.c' || echo '$(srcdir)/'`o/bitop.c
-
-o/lib_libbase_gcl_gprof_a-bitop.obj: o/bitop.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libbase_gcl_gprof_a-bitop.obj -MD -MP -MF o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bitop.Tpo -c -o o/lib_libbase_gcl_gprof_a-bitop.obj `if test -f 'o/bitop.c'; then $(CYGPATH_W) 'o/bitop.c'; else $(CYGPATH_W) '$(srcdir)/o/bitop.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bitop.Tpo o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bitop.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='o/bitop.c' object='o/lib_libbase_gcl_gprof_a-bitop.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libbase_gcl_gprof_a-bitop.obj `if test -f 'o/bitop.c'; then $(CYGPATH_W) 'o/bitop.c'; else $(CYGPATH_W) '$(srcdir)/o/bitop.c'; fi`
 
 o/lib_libbase_gcl_gprof_a-main.o: o/main.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libbase_gcl_gprof_a-main.o -MD -MP -MF o/$(DEPDIR)/lib_libbase_gcl_gprof_a-main.Tpo -c -o o/lib_libbase_gcl_gprof_a-main.o `test -f 'o/main.c' || echo '$(srcdir)/'`o/main.c
@@ -2631,20 +2571,6 @@ o/lib_libbase_gcl_gprof_a-run_process.obj: o/run_process.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libbase_gcl_gprof_a-run_process.obj `if test -f 'o/run_process.c'; then $(CYGPATH_W) 'o/run_process.c'; else $(CYGPATH_W) '$(srcdir)/o/run_process.c'; fi`
 
-o/lib_libbase_gcl_gprof_a-nfunlink.o: o/nfunlink.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libbase_gcl_gprof_a-nfunlink.o -MD -MP -MF o/$(DEPDIR)/lib_libbase_gcl_gprof_a-nfunlink.Tpo -c -o o/lib_libbase_gcl_gprof_a-nfunlink.o `test -f 'o/nfunlink.c' || echo '$(srcdir)/'`o/nfunlink.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) o/$(DEPDIR)/lib_libbase_gcl_gprof_a-nfunlink.Tpo o/$(DEPDIR)/lib_libbase_gcl_gprof_a-nfunlink.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='o/nfunlink.c' object='o/lib_libbase_gcl_gprof_a-nfunlink.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libbase_gcl_gprof_a-nfunlink.o `test -f 'o/nfunlink.c' || echo '$(srcdir)/'`o/nfunlink.c
-
-o/lib_libbase_gcl_gprof_a-nfunlink.obj: o/nfunlink.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libbase_gcl_gprof_a-nfunlink.obj -MD -MP -MF o/$(DEPDIR)/lib_libbase_gcl_gprof_a-nfunlink.Tpo -c -o o/lib_libbase_gcl_gprof_a-nfunlink.obj `if test -f 'o/nfunlink.c'; then $(CYGPATH_W) 'o/nfunlink.c'; else $(CYGPATH_W) '$(srcdir)/o/nfunlink.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) o/$(DEPDIR)/lib_libbase_gcl_gprof_a-nfunlink.Tpo o/$(DEPDIR)/lib_libbase_gcl_gprof_a-nfunlink.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='o/nfunlink.c' object='o/lib_libbase_gcl_gprof_a-nfunlink.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libbase_gcl_gprof_a-nfunlink.obj `if test -f 'o/nfunlink.c'; then $(CYGPATH_W) 'o/nfunlink.c'; else $(CYGPATH_W) '$(srcdir)/o/nfunlink.c'; fi`
-
 o/lib_libbase_gcl_gprof_a-usig.o: o/usig.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libbase_gcl_gprof_a-usig.o -MD -MP -MF o/$(DEPDIR)/lib_libbase_gcl_gprof_a-usig.Tpo -c -o o/lib_libbase_gcl_gprof_a-usig.o `test -f 'o/usig.c' || echo '$(srcdir)/'`o/usig.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) o/$(DEPDIR)/lib_libbase_gcl_gprof_a-usig.Tpo o/$(DEPDIR)/lib_libbase_gcl_gprof_a-usig.Po
@@ -2729,20 +2655,6 @@ o/lib_libbase_gcl_gprof_a-gmp_wrappers.obj: o/gmp_wrappers.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libbase_gcl_gprof_a-gmp_wrappers.obj `if test -f 'o/gmp_wrappers.c'; then $(CYGPATH_W) 'o/gmp_wrappers.c'; else $(CYGPATH_W) '$(srcdir)/o/gmp_wrappers.c'; fi`
 
-o/lib_libbase_gcl_gprof_a-clxsocket.o: o/clxsocket.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libbase_gcl_gprof_a-clxsocket.o -MD -MP -MF o/$(DEPDIR)/lib_libbase_gcl_gprof_a-clxsocket.Tpo -c -o o/lib_libbase_gcl_gprof_a-clxsocket.o `test -f 'o/clxsocket.c' || echo '$(srcdir)/'`o/clxsocket.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) o/$(DEPDIR)/lib_libbase_gcl_gprof_a-clxsocket.Tpo o/$(DEPDIR)/lib_libbase_gcl_gprof_a-clxsocket.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='o/clxsocket.c' object='o/lib_libbase_gcl_gprof_a-clxsocket.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libbase_gcl_gprof_a-clxsocket.o `test -f 'o/clxsocket.c' || echo '$(srcdir)/'`o/clxsocket.c
-
-o/lib_libbase_gcl_gprof_a-clxsocket.obj: o/clxsocket.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libbase_gcl_gprof_a-clxsocket.obj -MD -MP -MF o/$(DEPDIR)/lib_libbase_gcl_gprof_a-clxsocket.Tpo -c -o o/lib_libbase_gcl_gprof_a-clxsocket.obj `if test -f 'o/clxsocket.c'; then $(CYGPATH_W) 'o/clxsocket.c'; else $(CYGPATH_W) '$(srcdir)/o/clxsocket.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) o/$(DEPDIR)/lib_libbase_gcl_gprof_a-clxsocket.Tpo o/$(DEPDIR)/lib_libbase_gcl_gprof_a-clxsocket.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='o/clxsocket.c' object='o/lib_libbase_gcl_gprof_a-clxsocket.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libbase_gcl_gprof_a-clxsocket.obj `if test -f 'o/clxsocket.c'; then $(CYGPATH_W) 'o/clxsocket.c'; else $(CYGPATH_W) '$(srcdir)/o/clxsocket.c'; fi`
-
 o/lib_libbase_gcl_gprof_a-nsocket.o: o/nsocket.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libbase_gcl_gprof_a-nsocket.o -MD -MP -MF o/$(DEPDIR)/lib_libbase_gcl_gprof_a-nsocket.Tpo -c -o o/lib_libbase_gcl_gprof_a-nsocket.o `test -f 'o/nsocket.c' || echo '$(srcdir)/'`o/nsocket.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) o/$(DEPDIR)/lib_libbase_gcl_gprof_a-nsocket.Tpo o/$(DEPDIR)/lib_libbase_gcl_gprof_a-nsocket.Po
@@ -2798,48 +2710,6 @@ o/lib_libbase_gcl_gprof_a-msbrk.obj: o/msbrk.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='o/msbrk.c' object='o/lib_libbase_gcl_gprof_a-msbrk.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libbase_gcl_gprof_a-msbrk.obj `if test -f 'o/msbrk.c'; then $(CYGPATH_W) 'o/msbrk.c'; else $(CYGPATH_W) '$(srcdir)/o/msbrk.c'; fi`
-
-o/lib_libbase_gcl_gprof_a-bcmp.o: o/bcmp.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libbase_gcl_gprof_a-bcmp.o -MD -MP -MF o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bcmp.Tpo -c -o o/lib_libbase_gcl_gprof_a-bcmp.o `test -f 'o/bcmp.c' || echo '$(srcdir)/'`o/bcmp.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bcmp.Tpo o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bcmp.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='o/bcmp.c' object='o/lib_libbase_gcl_gprof_a-bcmp.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libbase_gcl_gprof_a-bcmp.o `test -f 'o/bcmp.c' || echo '$(srcdir)/'`o/bcmp.c
-
-o/lib_libbase_gcl_gprof_a-bcmp.obj: o/bcmp.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libbase_gcl_gprof_a-bcmp.obj -MD -MP -MF o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bcmp.Tpo -c -o o/lib_libbase_gcl_gprof_a-bcmp.obj `if test -f 'o/bcmp.c'; then $(CYGPATH_W) 'o/bcmp.c'; else $(CYGPATH_W) '$(srcdir)/o/bcmp.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bcmp.Tpo o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bcmp.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='o/bcmp.c' object='o/lib_libbase_gcl_gprof_a-bcmp.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libbase_gcl_gprof_a-bcmp.obj `if test -f 'o/bcmp.c'; then $(CYGPATH_W) 'o/bcmp.c'; else $(CYGPATH_W) '$(srcdir)/o/bcmp.c'; fi`
-
-o/lib_libbase_gcl_gprof_a-bcopy.o: o/bcopy.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libbase_gcl_gprof_a-bcopy.o -MD -MP -MF o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bcopy.Tpo -c -o o/lib_libbase_gcl_gprof_a-bcopy.o `test -f 'o/bcopy.c' || echo '$(srcdir)/'`o/bcopy.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bcopy.Tpo o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bcopy.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='o/bcopy.c' object='o/lib_libbase_gcl_gprof_a-bcopy.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libbase_gcl_gprof_a-bcopy.o `test -f 'o/bcopy.c' || echo '$(srcdir)/'`o/bcopy.c
-
-o/lib_libbase_gcl_gprof_a-bcopy.obj: o/bcopy.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libbase_gcl_gprof_a-bcopy.obj -MD -MP -MF o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bcopy.Tpo -c -o o/lib_libbase_gcl_gprof_a-bcopy.obj `if test -f 'o/bcopy.c'; then $(CYGPATH_W) 'o/bcopy.c'; else $(CYGPATH_W) '$(srcdir)/o/bcopy.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bcopy.Tpo o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bcopy.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='o/bcopy.c' object='o/lib_libbase_gcl_gprof_a-bcopy.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libbase_gcl_gprof_a-bcopy.obj `if test -f 'o/bcopy.c'; then $(CYGPATH_W) 'o/bcopy.c'; else $(CYGPATH_W) '$(srcdir)/o/bcopy.c'; fi`
-
-o/lib_libbase_gcl_gprof_a-bzero.o: o/bzero.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libbase_gcl_gprof_a-bzero.o -MD -MP -MF o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bzero.Tpo -c -o o/lib_libbase_gcl_gprof_a-bzero.o `test -f 'o/bzero.c' || echo '$(srcdir)/'`o/bzero.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bzero.Tpo o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bzero.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='o/bzero.c' object='o/lib_libbase_gcl_gprof_a-bzero.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libbase_gcl_gprof_a-bzero.o `test -f 'o/bzero.c' || echo '$(srcdir)/'`o/bzero.c
-
-o/lib_libbase_gcl_gprof_a-bzero.obj: o/bzero.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libbase_gcl_gprof_a-bzero.obj -MD -MP -MF o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bzero.Tpo -c -o o/lib_libbase_gcl_gprof_a-bzero.obj `if test -f 'o/bzero.c'; then $(CYGPATH_W) 'o/bzero.c'; else $(CYGPATH_W) '$(srcdir)/o/bzero.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bzero.Tpo o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bzero.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='o/bzero.c' object='o/lib_libbase_gcl_gprof_a-bzero.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libbase_gcl_gprof_a-bzero.obj `if test -f 'o/bzero.c'; then $(CYGPATH_W) 'o/bzero.c'; else $(CYGPATH_W) '$(srcdir)/o/bzero.c'; fi`
 
 o/lib_libbase_gcl_gprof_a-user_init.o: o/user_init.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libbase_gcl_gprof_a-user_init.o -MD -MP -MF o/$(DEPDIR)/lib_libbase_gcl_gprof_a-user_init.Tpo -c -o o/lib_libbase_gcl_gprof_a-user_init.o `test -f 'o/user_init.c' || echo '$(srcdir)/'`o/user_init.c
@@ -4124,19 +3994,14 @@ distclean: distclean-am
 	-rm -f o/$(DEPDIR)/array.Po
 	-rm -f o/$(DEPDIR)/assignment.Po
 	-rm -f o/$(DEPDIR)/backq.Po
-	-rm -f o/$(DEPDIR)/bcmp.Po
-	-rm -f o/$(DEPDIR)/bcopy.Po
 	-rm -f o/$(DEPDIR)/bds.Po
 	-rm -f o/$(DEPDIR)/big.Po
 	-rm -f o/$(DEPDIR)/bind.Po
-	-rm -f o/$(DEPDIR)/bitop.Po
 	-rm -f o/$(DEPDIR)/block.Po
 	-rm -f o/$(DEPDIR)/boot.Po
-	-rm -f o/$(DEPDIR)/bzero.Po
 	-rm -f o/$(DEPDIR)/catch.Po
 	-rm -f o/$(DEPDIR)/cfun.Po
 	-rm -f o/$(DEPDIR)/character.Po
-	-rm -f o/$(DEPDIR)/clxsocket.Po
 	-rm -f o/$(DEPDIR)/cmpaux.Po
 	-rm -f o/$(DEPDIR)/conditional.Po
 	-rm -f o/$(DEPDIR)/earith.Po
@@ -4159,19 +4024,14 @@ distclean: distclean-am
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-array.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-assignment.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-backq.Po
-	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bcmp.Po
-	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bcopy.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bds.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-big.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bind.Po
-	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bitop.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-block.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-boot.Po
-	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bzero.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-catch.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-cfun.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-character.Po
-	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-clxsocket.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-cmpaux.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-conditional.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-earith.Po
@@ -4198,7 +4058,6 @@ distclean: distclean-am
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-msbrk.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-multival.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-new_init.Po
-	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-nfunlink.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-nsocket.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-num_arith.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-num_co.Po
@@ -4246,7 +4105,6 @@ distclean: distclean-am
 	-rm -f o/$(DEPDIR)/msbrk.Po
 	-rm -f o/$(DEPDIR)/multival.Po
 	-rm -f o/$(DEPDIR)/new_init.Po
-	-rm -f o/$(DEPDIR)/nfunlink.Po
 	-rm -f o/$(DEPDIR)/nsocket.Po
 	-rm -f o/$(DEPDIR)/num_arith.Po
 	-rm -f o/$(DEPDIR)/num_co.Po
@@ -4448,19 +4306,14 @@ maintainer-clean: maintainer-clean-am
 	-rm -f o/$(DEPDIR)/array.Po
 	-rm -f o/$(DEPDIR)/assignment.Po
 	-rm -f o/$(DEPDIR)/backq.Po
-	-rm -f o/$(DEPDIR)/bcmp.Po
-	-rm -f o/$(DEPDIR)/bcopy.Po
 	-rm -f o/$(DEPDIR)/bds.Po
 	-rm -f o/$(DEPDIR)/big.Po
 	-rm -f o/$(DEPDIR)/bind.Po
-	-rm -f o/$(DEPDIR)/bitop.Po
 	-rm -f o/$(DEPDIR)/block.Po
 	-rm -f o/$(DEPDIR)/boot.Po
-	-rm -f o/$(DEPDIR)/bzero.Po
 	-rm -f o/$(DEPDIR)/catch.Po
 	-rm -f o/$(DEPDIR)/cfun.Po
 	-rm -f o/$(DEPDIR)/character.Po
-	-rm -f o/$(DEPDIR)/clxsocket.Po
 	-rm -f o/$(DEPDIR)/cmpaux.Po
 	-rm -f o/$(DEPDIR)/conditional.Po
 	-rm -f o/$(DEPDIR)/earith.Po
@@ -4483,19 +4336,14 @@ maintainer-clean: maintainer-clean-am
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-array.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-assignment.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-backq.Po
-	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bcmp.Po
-	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bcopy.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bds.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-big.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bind.Po
-	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bitop.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-block.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-boot.Po
-	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-bzero.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-catch.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-cfun.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-character.Po
-	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-clxsocket.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-cmpaux.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-conditional.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-earith.Po
@@ -4522,7 +4370,6 @@ maintainer-clean: maintainer-clean-am
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-msbrk.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-multival.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-new_init.Po
-	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-nfunlink.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-nsocket.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-num_arith.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-num_co.Po
@@ -4570,7 +4417,6 @@ maintainer-clean: maintainer-clean-am
 	-rm -f o/$(DEPDIR)/msbrk.Po
 	-rm -f o/$(DEPDIR)/multival.Po
 	-rm -f o/$(DEPDIR)/new_init.Po
-	-rm -f o/$(DEPDIR)/nfunlink.Po
 	-rm -f o/$(DEPDIR)/nsocket.Po
 	-rm -f o/$(DEPDIR)/num_arith.Po
 	-rm -f o/$(DEPDIR)/num_co.Po
@@ -4916,8 +4762,9 @@ h/cmpincludea.h: $(filter-out gclincl.h,$(CMPINCLUDE_FILES)) | h/gclincl.h # FIX
 		$(AWK) '/^# |^$$|^#pragma/ {next}{print}' > $@
 
 o/qfv.c: o/pre_qfv.c h/new_decl.h bin/c23.awk
+#	$(CPP) $(AM_CPPFLAGS) -P $(CPPFLAGS) $< >$@
 	chmod +x $(word 3,$^)
-	$(CPP) $(AM_CPPFLAGS) -P $(CPPFLAGS) $< | $(word 3,$^) >$@
+	cat $< | $(word 3,$^) >$@
 
 h/cmpinclude.h: h/mcompdefs.h h/cmpincludea.h h/cmponly_last.h
 	@cat $^ >new_$(@F)

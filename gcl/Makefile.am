@@ -148,15 +148,17 @@ ARCHT_H=h/elf32_armhf_reloc.h h/elf32_armhf_reloc_special.h h/elf32_arm_reloc.h 
 	h/386-macosx.h h/mingw.h h/gnuwin95.h h/FreeBSD.h h/solaris.h h/solaris-i386.h
 BUILT_H=h/new_decl.h o/boot.h h/cmpinclude.h
 
-C_SRC=o/typespec.c o/alloc.c o/gbc.c o/bitop.c o/main.c o/eval.c o/macros.c o/lex.c o/bds.c o/frame.c\
+C_SRC=o/typespec.c o/alloc.c o/gbc.c  o/main.c o/eval.c o/macros.c o/lex.c o/bds.c o/frame.c\
       o/predicate.c o/reference.c o/assignment.c o/bind.c o/let.c o/conditional.c o/block.c o/iteration.c\
       o/prog.c o/multival.c o/catch.c o/cfun.c o/cmpaux.c o/big.c o/number.c o/num_pred.c o/num_comp.c\
       o/num_arith.c o/num_sfun.c o/num_co.c o/num_log.c o/num_rand.c o/earith.c\
       o/array.c o/regexpr.c o/structure.c o/toplevel.c o/backq.c o/format.c\
       o/unixfsys.c o/unixfasl.c o/error.c o/unixtime.c o/unixsys.c o/unixsave.c o/funlink.c  o/fat_string.c\
-      o/run_process.c o/nfunlink.c o/usig.c o/usig2.c o/utils.c o/makefun.c o/sockets.c o/gmp_wrappers.c\
-      o/clxsocket.c o/nsocket.c o/prelink.c o/sfasl.c o/msbrk.c \
-      o/bcmp.c o/bcopy.c o/bzero.c o/user_init.c o/user_match.c o/mapfun.c
+      o/run_process.c o/usig.c o/usig2.c o/utils.c o/makefun.c o/sockets.c o/gmp_wrappers.c\
+      o/nsocket.c o/prelink.c o/sfasl.c o/msbrk.c \
+      o/user_init.c o/user_match.c o/mapfun.c
+#     o/bitop.c o/nfunlink.c o/clxsocket.c
+#     o/bcmp.c o/bcopy.c o/bzero.c
 
 D_SRC=o/character.d o/file.d o/gcl_readline.d o/hash.d o/list.d o/package.d o/pathname.d o/print.d\
       o/read.d o/sequence.d o/string.d o/symbol.d
@@ -467,8 +469,9 @@ h/cmpincludea.h: $(filter-out gclincl.h,$(CMPINCLUDE_FILES)) | h/gclincl.h # FIX
 		$(AWK) '/^# |^$$|^#pragma/ {next}{print}' > $@
 
 o/qfv.c: o/pre_qfv.c h/new_decl.h bin/c23.awk
+#	$(CPP) $(AM_CPPFLAGS) -P $(CPPFLAGS) $< >$@
 	chmod +x $(word 3,$^)
-	$(CPP) $(AM_CPPFLAGS) -P $(CPPFLAGS) $< | $(word 3,$^) >$@
+	cat $< | $(word 3,$^) >$@
 
 h/cmpinclude.h: h/mcompdefs.h h/cmpincludea.h h/cmponly_last.h
 	@cat $^ >new_$(@F)
