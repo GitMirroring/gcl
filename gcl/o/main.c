@@ -178,7 +178,65 @@ mbrk(void *v) {
   return uc==(ufixnum)sbrk(uv-uc) ? 0 : -1;
 
 }
-    
+
+#if defined(__CYGWIN__)||defined(__MINGW32__)
+
+#include <windows.h>
+
+static ufixnum
+get_phys_pages_no_malloc(char n,char ramp) {
+
+  MEMORYSTATUS m;
+
+  m.dwLength=sizeof(m);
+  GlobalMemoryStatus(&m);
+  return m.dwTotalPhys>>PAGEWIDTH;
+
+}
+
+#elif defined (DARWIN)
+
+#include <sys/sysctl.h>
+
+static ufixnum
+get_phys_pages_no_malloc(char n,char ramp) {
+
+  uint64_t s;
+  size_t z=sizeof(s);
+  int m[2]={CTL_HW,HW_MEMSIZE};
+
+  if (sysctl(m,2,&s,&z,NULL,0)==0)
+    return s>>PAGEWIDTH;
+
+  return 0;
+
+}
+
+#elif defined(__sun__)
+
+static ufixnum
+get_phys_pages_no_malloc(char n,char ramp) {
+
+  return sysconf(_SC_PHYS_PAGES);
+
+}
+
+#elif defined(FREEBSD)
+
+#include <sys/types.h>
+#include <sys/sysctl.h>
+
+static ufixnum
+get_phys_pages_no_malloc(char n,char ramp) {
+
+  size_t i,len=sizeof(i);
+
+  return (sysctlbyname("hw.physmem",&i,&len,NULL,0) ? 0 : i)>>PAGEWIDTH;
+
+}
+
+#else /*Linux*/
+
 static char *
 next_line(int l,ufixnum *s) {
 
@@ -239,65 +297,6 @@ parse_proc_meminfo(ufixnum *t,ufixnum *f,ufixnum *st,ufixnum *sf) {
   massert(!close(l));
 
 }
-
-
-#if defined(__CYGWIN__)||defined(__MINGW32__)
-
-#include <windows.h>
-
-static ufixnum
-get_phys_pages_no_malloc(char n,char ramp) {
-
-  MEMORYSTATUS m;
-
-  m.dwLength=sizeof(m);
-  GlobalMemoryStatus(&m);
-  return m.dwTotalPhys>>PAGEWIDTH;
-
-}
-
-#elif defined (DARWIN)
-
-#include <sys/sysctl.h>
-
-static ufixnum
-get_phys_pages_no_malloc(char n,char ramp) {
-
-  uint64_t s;
-  size_t z=sizeof(s);
-  int m[2]={CTL_HW,HW_MEMSIZE};
-
-  if (sysctl(m,2,&s,&z,NULL,0)==0)
-    return s>>PAGEWIDTH;
-
-  return 0;
-
-}
-
-#elif defined(__sun__)
-
-static ufixnum
-get_phys_pages_no_malloc(char n,char ramp) {
-
-  return sysconf(_SC_PHYS_PAGES);
-
-}
-
-#elif defined(FREEBSD)
-
-#include <sys/types.h>
-#include <sys/sysctl.h>
-
-static ufixnum
-get_phys_pages_no_malloc(char n,char ramp) {
-
-  size_t i,len=sizeof(i);
-
-  return (sysctlbyname("hw.physmem",&i,&len,NULL,0) ? 0 : i)>>PAGEWIDTH;
-
-}
-
-#else /*Linux*/
 
 static ufixnum
 get_phys_pages_no_malloc(char freep,char ramp) {
