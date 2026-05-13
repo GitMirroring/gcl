@@ -88,6 +88,7 @@ store_vals(ul *w,ul m,ul v) {
 
 }
 
+#ifdef W_X
 static int
 add_vals(ul *w,ul m,ul v) {
 
@@ -101,7 +102,7 @@ add_valu(ul *w,ul m,ul v) {
   return store_valu(w,m,v+(*w&m));
 
 }
-
+#endif
 
 #ifndef _LP64
 /*redirect trampolines gcc-4.0 gives no reloc for stub sections on x86 only*/
@@ -139,7 +140,9 @@ relocate(struct relocation_info *ri,struct section *sec,
   struct scattered_relocation_info *sri=(void *)ri;
   ul *q=(void *)(sec->addr+(sri->r_scattered ? sri->r_address : ri->r_address));
   ul a,rel=(ul)(q+1);
+#ifdef W_X
   static ul addend;
+#endif
 
   if (sri->r_scattered)
     a=sri->r_value;
@@ -201,10 +204,13 @@ static object
 load_memory(struct section *sec1,struct section *sece,void *v1,
 	    ul *p,ul **got,ul **gote,ul *start) { 
 
-  ul sz,gsz,ma,a,fl,text_pbits;
+  ul sz,gsz,ma,a,fl;
   volatile ul sa;
   struct section *sec;
   object memory;
+#ifdef W_X
+  ul text_pbits;
+#endif
   
   BEGIN_NO_INTERRUPT;
 
