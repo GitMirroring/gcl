@@ -31,6 +31,14 @@ my_unixport_LIBRARIES=unixport/libgcl.a unixport/libansi_gcl.a
 bin_SCRIPTS=bin/gcl
 check_SCRIPTS=sb_ansi-tests/test_results sb_bench/timing_results
 info_TEXINFOS=info/gcl.texi info/gcl-si.texi
+info_gcl_TEXINFOS = $(addprefix info/,$(addsuffix .texi,\
+			chap-1 chap-2 chap-3 chap-4 chap-5 chap-6 chap-7 chap-8	chap-9 chap-10 chap-11 \
+			chap-12 chap-13 chap-14 chap-15 chap-16 chap-17 chap-18 chap-19 chap-20 chap-21 \
+			chap-22 chap-23 chap-24 chap-25 chap-26 chap-a))
+info_gcl_si_TEXINFOS = $(addprefix info/,$(addsuffix .texi,\
+			number sequence character list io form compile \
+			symbol system structure iteration user-interface doc type internal c-interface \
+			si-defs debug misc compiler-defs japi))
 my_unixport_DATA=$(LIBBOOTSO) $(addprefix unixport/,init_raw.lsp gcl.script \
 				       gcl_cmpnopt_gcl.lsp gcl_cmpnopt_ansi_gcl.lsp)
 my_h_DATA=h/cmpinclude.h
@@ -85,6 +93,7 @@ dist_noinst_DATA+=$(addprefix xgcl-2/,dwdoc.tex gnu.license dec.copyright versio
 			$(patsubst %.o,%.lsp,$(X_OBJS)))
 
 info_TEXINFOS+=info/gcl-dwdoc.texi
+info_gcl_dwdoc_TEXINFOS=
 
 if AMM_GPROF
 noinst_LIBRARIES+=lib/libxgcl_gprof.a
@@ -105,21 +114,14 @@ dist_gcltkdoc_DATA=$(addprefix gcl-tk/demos/,$(addsuffix .lisp,\
 			nqthm-stack showVars widget))
 dist_noinst_DATA+=gcl-tk/tkl.lisp gcl-tk/tinfo.lsp
 info_TEXINFOS+=info/gcl-tk.texi
-
+info_gcl_tk_TEXINFOS=$(addprefix info/,$(addsuffix .texi,general widgets control))
 endif
 
-EXTRA_DIST=$(D_SRC) $(INCL_C) $(INIT_L) $(INCL_TEXI)\
+EXTRA_DIST=$(D_SRC) $(INCL_C) $(INIT_L)\
 	   lsp cmpnew mod pcl clcs ansi-tests elisp xbin bench \
 	   majvers minvers git.tag release bin/c23.awk
 
 # end of primaries
-
-INCL_TEXI=$(addprefix info/,$(addsuffix .texi,\
-   bind c-interface chap-1 chap-10 chap-11 chap-12 chap-13 chap-14 chap-15 chap-16 chap-17 chap-18 chap-19 \
-   chap-2 chap-20 chap-21 chap-22 chap-23 chap-24 chap-25 chap-26 chap-3 chap-4 chap-5 chap-6 chap-7 chap-8 \
-   chap-9 chap-a character compile compiler-defs control debug doc form \
-   general internal io iteration japi list misc number sequence si-defs structure symbol system type \
-   user-interface widgets))
 
 INCL_C=o/sgbc.c o/gmp_big.c o/gmp.c o/gmp_num_log.c o/cmac.c o/regexp.c o/unexelf.c o/unexmacosx.c o/unexnt.c \
        o/save.c o/xdrfuns.c o/fasdump.c o/usig2_aux.c o/sfaslelf.c o/sfaslmacho.c o/sfaslcoff.c gcl-tk/comm.c \
@@ -364,8 +366,9 @@ $(addprefix gcl0/,$(LC_OBJS)): gcl0/%.o : cmpnew/%.lsp
 gcl0/%.o: | unixport/gcl0
 	rm -f $(@D)/$*.done
 	$(word 1,$|) -eval "(mapc 'load (directory \"$(@D)/*.done\"))" -compile $< -o $@
-	[ "$*" = "gcl_evalmacros" ] || [ "$*" = "gcl_top" ] || [ "$*" = "gcl_c" ] || [ "$*" = "gcl_listlib" ] || \
-		ln -f $@ $$(echo $@ |sed 's,\.o,\.done,g') #FIXME directory link
+	[ "$*" = "gcl_seqlib" ] || [ "$*" = "gcl_evalmacros" ] || [ "$*" = "gcl_top" ] || \
+	[ "$*" = "gcl_c" ] || [ "$*" = "gcl_listlib" ] || \
+		ln -f $@ $$(echo $@ |sed 's,\.o,\.done,g') #FIXME directory link, clang variadic pointer bug
 
 $(addprefix gcl1/,$(LL_OBJS)): gcl1/%.o : lsp/%.lsp
 $(addprefix gcl1/,$(LC_OBJS)): gcl1/%.o : cmpnew/%.lsp
@@ -590,7 +593,8 @@ info/gcl%-si.texi: info/gcl-si.texi
 info/gcl%-tk.texi: info/gcl-tk.texi
 	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
 info/gcl%.texi: info/gcl.texi
-	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
+	echo $* | grep -q '-' || sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
+	touch $@
 
 %.info: %.texi | xbin/mktmp # FIXME parallel ugliness
 	i=$$($| $@);ln -f $< $$i;$(MAKEINFO) $$i --output $@;rm -f $$i
@@ -624,18 +628,3 @@ AM_ETAGSFLAGS=--regex='/[ \n\t\#\.`]*(defun[ \n\t]+\([^ \n\t]+\)/' \
 	      --regex='/[ \n\t\#\.`]*(defmfun[ \n\t]+"[^ \n\t"]+"[ \n\t]+\([^ \n\t]+\)/\1/'
 
 TAGS_FILES=lsp/*.lsp cmpnew/*.lsp mod/*.lsp pcl/*sp clcs/*sp xgcl-2/*p
-
-info/gcl.texi: $(addprefix info/,$(addsuffix .texi,\
-			chap-1 chap-2 chap-3 chap-4 chap-5 chap-6 chap-7 chap-8	chap-9 chap-10 chap-11 \
-			chap-12 chap-13 chap-14 chap-15 chap-16 chap-17 chap-18 chap-19 chap-20 chap-21 \
-			chap-22 chap-23 chap-24 chap-25 chap-26 chap-a))
-	touch $@
-
-info/gcl-si.texi: $(addprefix info/,$(addsuffix .texi,\
-			number sequence character list io form compile \
-			symbol system structure iteration user-interface doc type internal c-interface \
-			si-defs debug misc compiler-defs japi))
-	touch $@
-
-info/gcl-tk.texi: $(addprefix info/,$(addsuffix .texi,general widgets control))
-	touch $@

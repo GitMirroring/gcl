@@ -741,7 +741,9 @@ am__define_uniq_tagged_files = \
     if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
   done | $(am__uniquify_input)`
 AM_RECURSIVE_TARGETS = cscope
-am__DIST_COMMON = $(dist_man1_MANS) $(srcdir)/Makefile.in \
+am__DIST_COMMON = $(dist_man1_MANS) $(info_gcl_TEXINFOS) \
+	$(info_gcl_dwdoc_TEXINFOS) $(info_gcl_si_TEXINFOS) \
+	$(info_gcl_tk_TEXINFOS) $(srcdir)/Makefile.in \
 	$(top_srcdir)/bin/gcl.in $(top_srcdir)/gcl-tk/gcltksrv.in \
 	$(top_srcdir)/h/gclincl.h.in \
 	$(top_srcdir)/unixport/init_raw.lsp.in AUTHORS COPYING \
@@ -955,6 +957,16 @@ bin_SCRIPTS = bin/gcl
 check_SCRIPTS = sb_ansi-tests/test_results sb_bench/timing_results
 info_TEXINFOS = info/gcl.texi info/gcl-si.texi $(am__append_6) \
 	$(am__append_9)
+info_gcl_TEXINFOS = $(addprefix info/,$(addsuffix .texi,\
+			chap-1 chap-2 chap-3 chap-4 chap-5 chap-6 chap-7 chap-8	chap-9 chap-10 chap-11 \
+			chap-12 chap-13 chap-14 chap-15 chap-16 chap-17 chap-18 chap-19 chap-20 chap-21 \
+			chap-22 chap-23 chap-24 chap-25 chap-26 chap-a))
+
+info_gcl_si_TEXINFOS = $(addprefix info/,$(addsuffix .texi,\
+			number sequence character list io form compile \
+			symbol system structure iteration user-interface doc type internal c-interface \
+			si-defs debug misc compiler-defs japi))
+
 my_unixport_DATA = $(LIBBOOTSO) $(addprefix unixport/,init_raw.lsp gcl.script \
 				       gcl_cmpnopt_gcl.lsp gcl_cmpnopt_ansi_gcl.lsp)
 
@@ -990,6 +1002,7 @@ dist_noinst_DATA = $(am__append_5) $(am__append_8)
 @AMM_XGCL_TRUE@		Xlib Xutil X XAtom defentry_events Xstruct XStruct_l_3 \
 @AMM_XGCL_TRUE@		general keysymdef X10 Xinit dwtrans tohtml index))
 
+@AMM_XGCL_TRUE@info_gcl_dwdoc_TEXINFOS = 
 @AMM_TK_TRUE@my_gcltk_SCRIPTS = gcl-tk/gcltksrv
 @AMM_TK_TRUE@my_gcltk_DATA = gcl-tk/tkl.o gcl-tk/tinfo.o gcl-tk/demos/gc-monitor.o
 @AMM_TK_TRUE@gcltkdoc_DATA = gcl-tk/demos/index.lsp
@@ -999,19 +1012,13 @@ dist_noinst_DATA = $(am__append_5) $(am__append_8)
 @AMM_TK_TRUE@			mkLabel mkListbox mkPlot mkRadio mkRuler mkSearch mkStyles mkTextBind mkVScale \
 @AMM_TK_TRUE@			nqthm-stack showVars widget))
 
-EXTRA_DIST = $(D_SRC) $(INCL_C) $(INIT_L) $(INCL_TEXI)\
+@AMM_TK_TRUE@info_gcl_tk_TEXINFOS = $(addprefix info/,$(addsuffix .texi,general widgets control))
+EXTRA_DIST = $(D_SRC) $(INCL_C) $(INIT_L)\
 	   lsp cmpnew mod pcl clcs ansi-tests elisp xbin bench \
 	   majvers minvers git.tag release bin/c23.awk
 
 
 # end of primaries
-INCL_TEXI = $(addprefix info/,$(addsuffix .texi,\
-   bind c-interface chap-1 chap-10 chap-11 chap-12 chap-13 chap-14 chap-15 chap-16 chap-17 chap-18 chap-19 \
-   chap-2 chap-20 chap-21 chap-22 chap-23 chap-24 chap-25 chap-26 chap-3 chap-4 chap-5 chap-6 chap-7 chap-8 \
-   chap-9 chap-a character compile compiler-defs control debug doc form \
-   general internal io iteration japi list misc number sequence si-defs structure symbol system type \
-   user-interface widgets))
-
 INCL_C = o/sgbc.c o/gmp_big.c o/gmp.c o/gmp_num_log.c o/cmac.c o/regexp.c o/unexelf.c o/unexmacosx.c o/unexnt.c \
        o/save.c o/xdrfuns.c o/fasdump.c o/usig2_aux.c o/sfaslelf.c o/sfaslmacho.c o/sfaslcoff.c gcl-tk/comm.c \
        o/sfasli.c o/firstfile.c o/lastfile.c o/pre_qfv.c
@@ -3106,7 +3113,7 @@ info/$(am__dirstamp):
 	@$(MKDIR_P) info
 	@: >>info/$(am__dirstamp)
 
-info/gcl.info: info/gcl.texi 
+info/gcl.info: info/gcl.texi $(info_gcl_TEXINFOS)
 	@test -f info/$(am__dirstamp) || $(MAKE) $(AM_MAKEFLAGS) info/$(am__dirstamp)
 	$(AM_V_MAKEINFO)restore=: && backupdir="$(am__leading_dot)am$$$$" && \
 	rm -rf $$backupdir && mkdir $$backupdir && \
@@ -3125,19 +3132,19 @@ info/gcl.info: info/gcl.texi
 	fi; \
 	rm -rf $$backupdir; exit $$rc
 
-info/gcl.dvi: info/gcl.texi  info/$(am__dirstamp)
+info/gcl.dvi: info/gcl.texi $(info_gcl_TEXINFOS) info/$(am__dirstamp)
 	$(AM_V_TEXI2DVI)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I info -I $(srcdir)/info' \
 	$(TEXI2DVI) $(AM_TEXI2FLAGS) -I info -I $(srcdir)/info $(AM_V_texinfo) --build-dir=$(@:.dvi=.t2d) -o $@ $(AM_V_texidevnull) \
 	`test -f 'info/gcl.texi' || echo '$(srcdir)/'`info/gcl.texi
 
-info/gcl.pdf: info/gcl.texi  info/$(am__dirstamp)
+info/gcl.pdf: info/gcl.texi $(info_gcl_TEXINFOS) info/$(am__dirstamp)
 	$(AM_V_TEXI2PDF)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I info -I $(srcdir)/info' \
 	$(TEXI2PDF) $(AM_TEXI2FLAGS) -I info -I $(srcdir)/info $(AM_V_texinfo) --build-dir=$(@:.pdf=.t2p) -o $@ $(AM_V_texidevnull) \
 	`test -f 'info/gcl.texi' || echo '$(srcdir)/'`info/gcl.texi
 
-info/gcl.html: info/gcl.texi  info/$(am__dirstamp)
+info/gcl.html: info/gcl.texi $(info_gcl_TEXINFOS) info/$(am__dirstamp)
 	$(AM_V_MAKEINFO)rm -rf $(@:.html=.htp)
 	$(AM_V_at)if $(MAKEINFOHTML) $(AM_MAKEINFOHTMLFLAGS) $(MAKEINFOFLAGS) -I info -I $(srcdir)/info \
 	 -o $(@:.html=.htp) `test -f 'info/gcl.texi' || echo '$(srcdir)/'`info/gcl.texi; \
@@ -3147,7 +3154,7 @@ info/gcl.html: info/gcl.texi  info/$(am__dirstamp)
 	  rm -rf $(@:.html=.htp); exit 1; \
 	fi
 
-info/gcl-si.info: info/gcl-si.texi 
+info/gcl-si.info: info/gcl-si.texi $(info_gcl_si_TEXINFOS)
 	@test -f info/$(am__dirstamp) || $(MAKE) $(AM_MAKEFLAGS) info/$(am__dirstamp)
 	$(AM_V_MAKEINFO)restore=: && backupdir="$(am__leading_dot)am$$$$" && \
 	rm -rf $$backupdir && mkdir $$backupdir && \
@@ -3166,19 +3173,19 @@ info/gcl-si.info: info/gcl-si.texi
 	fi; \
 	rm -rf $$backupdir; exit $$rc
 
-info/gcl-si.dvi: info/gcl-si.texi  info/$(am__dirstamp)
+info/gcl-si.dvi: info/gcl-si.texi $(info_gcl_si_TEXINFOS) info/$(am__dirstamp)
 	$(AM_V_TEXI2DVI)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I info -I $(srcdir)/info' \
 	$(TEXI2DVI) $(AM_TEXI2FLAGS) -I info -I $(srcdir)/info $(AM_V_texinfo) --build-dir=$(@:.dvi=.t2d) -o $@ $(AM_V_texidevnull) \
 	`test -f 'info/gcl-si.texi' || echo '$(srcdir)/'`info/gcl-si.texi
 
-info/gcl-si.pdf: info/gcl-si.texi  info/$(am__dirstamp)
+info/gcl-si.pdf: info/gcl-si.texi $(info_gcl_si_TEXINFOS) info/$(am__dirstamp)
 	$(AM_V_TEXI2PDF)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I info -I $(srcdir)/info' \
 	$(TEXI2PDF) $(AM_TEXI2FLAGS) -I info -I $(srcdir)/info $(AM_V_texinfo) --build-dir=$(@:.pdf=.t2p) -o $@ $(AM_V_texidevnull) \
 	`test -f 'info/gcl-si.texi' || echo '$(srcdir)/'`info/gcl-si.texi
 
-info/gcl-si.html: info/gcl-si.texi  info/$(am__dirstamp)
+info/gcl-si.html: info/gcl-si.texi $(info_gcl_si_TEXINFOS) info/$(am__dirstamp)
 	$(AM_V_MAKEINFO)rm -rf $(@:.html=.htp)
 	$(AM_V_at)if $(MAKEINFOHTML) $(AM_MAKEINFOHTMLFLAGS) $(MAKEINFOFLAGS) -I info -I $(srcdir)/info \
 	 -o $(@:.html=.htp) `test -f 'info/gcl-si.texi' || echo '$(srcdir)/'`info/gcl-si.texi; \
@@ -3188,7 +3195,7 @@ info/gcl-si.html: info/gcl-si.texi  info/$(am__dirstamp)
 	  rm -rf $(@:.html=.htp); exit 1; \
 	fi
 
-info/gcl-dwdoc.info: info/gcl-dwdoc.texi 
+info/gcl-dwdoc.info: info/gcl-dwdoc.texi $(info_gcl_dwdoc_TEXINFOS)
 	@test -f info/$(am__dirstamp) || $(MAKE) $(AM_MAKEFLAGS) info/$(am__dirstamp)
 	$(AM_V_MAKEINFO)restore=: && backupdir="$(am__leading_dot)am$$$$" && \
 	rm -rf $$backupdir && mkdir $$backupdir && \
@@ -3207,19 +3214,19 @@ info/gcl-dwdoc.info: info/gcl-dwdoc.texi
 	fi; \
 	rm -rf $$backupdir; exit $$rc
 
-info/gcl-dwdoc.dvi: info/gcl-dwdoc.texi  info/$(am__dirstamp)
+info/gcl-dwdoc.dvi: info/gcl-dwdoc.texi $(info_gcl_dwdoc_TEXINFOS) info/$(am__dirstamp)
 	$(AM_V_TEXI2DVI)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I info -I $(srcdir)/info' \
 	$(TEXI2DVI) $(AM_TEXI2FLAGS) -I info -I $(srcdir)/info $(AM_V_texinfo) --build-dir=$(@:.dvi=.t2d) -o $@ $(AM_V_texidevnull) \
 	`test -f 'info/gcl-dwdoc.texi' || echo '$(srcdir)/'`info/gcl-dwdoc.texi
 
-info/gcl-dwdoc.pdf: info/gcl-dwdoc.texi  info/$(am__dirstamp)
+info/gcl-dwdoc.pdf: info/gcl-dwdoc.texi $(info_gcl_dwdoc_TEXINFOS) info/$(am__dirstamp)
 	$(AM_V_TEXI2PDF)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I info -I $(srcdir)/info' \
 	$(TEXI2PDF) $(AM_TEXI2FLAGS) -I info -I $(srcdir)/info $(AM_V_texinfo) --build-dir=$(@:.pdf=.t2p) -o $@ $(AM_V_texidevnull) \
 	`test -f 'info/gcl-dwdoc.texi' || echo '$(srcdir)/'`info/gcl-dwdoc.texi
 
-info/gcl-dwdoc.html: info/gcl-dwdoc.texi  info/$(am__dirstamp)
+info/gcl-dwdoc.html: info/gcl-dwdoc.texi $(info_gcl_dwdoc_TEXINFOS) info/$(am__dirstamp)
 	$(AM_V_MAKEINFO)rm -rf $(@:.html=.htp)
 	$(AM_V_at)if $(MAKEINFOHTML) $(AM_MAKEINFOHTMLFLAGS) $(MAKEINFOFLAGS) -I info -I $(srcdir)/info \
 	 -o $(@:.html=.htp) `test -f 'info/gcl-dwdoc.texi' || echo '$(srcdir)/'`info/gcl-dwdoc.texi; \
@@ -3229,7 +3236,7 @@ info/gcl-dwdoc.html: info/gcl-dwdoc.texi  info/$(am__dirstamp)
 	  rm -rf $(@:.html=.htp); exit 1; \
 	fi
 
-info/gcl-tk.info: info/gcl-tk.texi 
+info/gcl-tk.info: info/gcl-tk.texi $(info_gcl_tk_TEXINFOS)
 	@test -f info/$(am__dirstamp) || $(MAKE) $(AM_MAKEFLAGS) info/$(am__dirstamp)
 	$(AM_V_MAKEINFO)restore=: && backupdir="$(am__leading_dot)am$$$$" && \
 	rm -rf $$backupdir && mkdir $$backupdir && \
@@ -3248,19 +3255,19 @@ info/gcl-tk.info: info/gcl-tk.texi
 	fi; \
 	rm -rf $$backupdir; exit $$rc
 
-info/gcl-tk.dvi: info/gcl-tk.texi  info/$(am__dirstamp)
+info/gcl-tk.dvi: info/gcl-tk.texi $(info_gcl_tk_TEXINFOS) info/$(am__dirstamp)
 	$(AM_V_TEXI2DVI)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I info -I $(srcdir)/info' \
 	$(TEXI2DVI) $(AM_TEXI2FLAGS) -I info -I $(srcdir)/info $(AM_V_texinfo) --build-dir=$(@:.dvi=.t2d) -o $@ $(AM_V_texidevnull) \
 	`test -f 'info/gcl-tk.texi' || echo '$(srcdir)/'`info/gcl-tk.texi
 
-info/gcl-tk.pdf: info/gcl-tk.texi  info/$(am__dirstamp)
+info/gcl-tk.pdf: info/gcl-tk.texi $(info_gcl_tk_TEXINFOS) info/$(am__dirstamp)
 	$(AM_V_TEXI2PDF)TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I info -I $(srcdir)/info' \
 	$(TEXI2PDF) $(AM_TEXI2FLAGS) -I info -I $(srcdir)/info $(AM_V_texinfo) --build-dir=$(@:.pdf=.t2p) -o $@ $(AM_V_texidevnull) \
 	`test -f 'info/gcl-tk.texi' || echo '$(srcdir)/'`info/gcl-tk.texi
 
-info/gcl-tk.html: info/gcl-tk.texi  info/$(am__dirstamp)
+info/gcl-tk.html: info/gcl-tk.texi $(info_gcl_tk_TEXINFOS) info/$(am__dirstamp)
 	$(AM_V_MAKEINFO)rm -rf $(@:.html=.htp)
 	$(AM_V_at)if $(MAKEINFOHTML) $(AM_MAKEINFOHTMLFLAGS) $(MAKEINFOFLAGS) -I info -I $(srcdir)/info \
 	 -o $(@:.html=.htp) `test -f 'info/gcl-tk.texi' || echo '$(srcdir)/'`info/gcl-tk.texi; \
@@ -4665,8 +4672,9 @@ $(addprefix gcl0/,$(LC_OBJS)): gcl0/%.o : cmpnew/%.lsp
 gcl0/%.o: | unixport/gcl0
 	rm -f $(@D)/$*.done
 	$(word 1,$|) -eval "(mapc 'load (directory \"$(@D)/*.done\"))" -compile $< -o $@
-	[ "$*" = "gcl_evalmacros" ] || [ "$*" = "gcl_top" ] || [ "$*" = "gcl_c" ] || [ "$*" = "gcl_listlib" ] || \
-		ln -f $@ $$(echo $@ |sed 's,\.o,\.done,g') #FIXME directory link
+	[ "$*" = "gcl_seqlib" ] || [ "$*" = "gcl_evalmacros" ] || [ "$*" = "gcl_top" ] || \
+	[ "$*" = "gcl_c" ] || [ "$*" = "gcl_listlib" ] || \
+		ln -f $@ $$(echo $@ |sed 's,\.o,\.done,g') #FIXME directory link, clang variadic pointer bug
 
 $(addprefix gcl1/,$(LL_OBJS)): gcl1/%.o : lsp/%.lsp
 $(addprefix gcl1/,$(LC_OBJS)): gcl1/%.o : cmpnew/%.lsp
@@ -4876,7 +4884,8 @@ info/gcl%-si.texi: info/gcl-si.texi
 info/gcl%-tk.texi: info/gcl-tk.texi
 	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
 info/gcl%.texi: info/gcl.texi
-	sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
+	echo $* | grep -q '-' || sed -e 's,gcl\([:.-]\),gcl$*\1,g' $< >$@
+	touch $@
 
 %.info: %.texi | xbin/mktmp # FIXME parallel ugliness
 	i=$$($| $@);ln -f $< $$i;$(MAKEINFO) $$i --output $@;rm -f $$i
@@ -4904,21 +4913,6 @@ clean-local: $(addprefix clean_,pre_gcl $(MY_DIRS) gcl_gprof ansi_gcl_gprof)
 distclean-local:
 	rm -rf gcl.script unixport/gcl.script #FIXME
 	rm -rf h/config.h #FIXME
-
-info/gcl.texi: $(addprefix info/,$(addsuffix .texi,\
-			chap-1 chap-2 chap-3 chap-4 chap-5 chap-6 chap-7 chap-8	chap-9 chap-10 chap-11 \
-			chap-12 chap-13 chap-14 chap-15 chap-16 chap-17 chap-18 chap-19 chap-20 chap-21 \
-			chap-22 chap-23 chap-24 chap-25 chap-26 chap-a))
-	touch $@
-
-info/gcl-si.texi: $(addprefix info/,$(addsuffix .texi,\
-			number sequence character list io form compile \
-			symbol system structure iteration user-interface doc type internal c-interface \
-			si-defs debug misc compiler-defs japi))
-	touch $@
-
-info/gcl-tk.texi: $(addprefix info/,$(addsuffix .texi,general widgets control))
-	touch $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
