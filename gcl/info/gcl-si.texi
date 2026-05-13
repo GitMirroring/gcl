@@ -39,8 +39,8 @@ END-INFO-DIR-ENTRY
 @center @titlefont{GCL SI Manual}
 @end titlepage
 
-@node Top, Numbers, (dir), (dir)
-@top
+@node Top
+@top Top
 
 @menu
 * Numbers::			
@@ -67,6 +67,7 @@ END-INFO-DIR-ENTRY
 * Function Index::	 
 * Variable Index::	 
 
+@detailmenu
  --- The Detailed Node Listing ---
 
 Operating System
@@ -96,6 +97,7 @@ Miscellaneous
 * Environment::			
 * Inititialization::		
 * Low Level X Interface::	
+@end detailmenu
 @end menu
 
 @include number.texi

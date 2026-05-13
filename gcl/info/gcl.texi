@@ -43,7 +43,8 @@ END-INFO-DIR-ENTRY
 @c @defcodeindex IK 
 @c Keyword Index
 
-@node Top, Introduction (Introduction), (dir), (dir)
+@node Top
+@top Top
 
 @menu
 * Introduction (Introduction)::	 
@@ -74,6 +75,7 @@ END-INFO-DIR-ENTRY
 * Glossary (Glossary)::		
 * Appendix::			
 
+@detailmenu
  --- The Detailed Node Listing ---
 
 Introduction
@@ -2017,6 +2019,7 @@ Removed Language Features
 * Removed Variables::		
 * Removed Reader Syntax::	
 * Packages No Longer Required::	 
+@end detailmenu
 @end menu
 
 @c includes

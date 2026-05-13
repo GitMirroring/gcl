@@ -88,26 +88,25 @@ the sections specified in @i{Figure~4--1}.
 that are particularly relevant to the object system.
 @i{Figure~9--1} lists the defined @i{condition} @i{types}.
 
-@format
-@group
-@noindent
-@w{  @b{Section}                                Data Type                         }
-@w{  _________________________________________________________________________}
-@w{  @ref{Classes}                        Object System types               }
-@w{  @ref{Slots}                          Object System types               }
-@w{  @ref{Objects}                        Object System types               }
-@w{  @ref{Generic Functions and Methods}  Object System types               }
-@w{  @ref{Condition System Concepts}      Condition System types            }
-@w{  @ref{Types and Classes}              Miscellaneous types               }
-@w{  @ref{Syntax}                         All types---read and print syntax  }
-@w{  @ref{The Lisp Printer}               All types---print syntax           }
-@w{  @ref{Compilation}                    All types---compilation issues     }
 
+@sp 1
 @noindent
-@w{           Figure 4--1: Cross-References to Data Type Information          }
+@multitable @columnfractions .53 .47
+@headitem Section @tab Data Type
+@item @ref{Classes} @tab Object System types
+@item @ref{Slots} @tab Object System types
+@item @ref{Objects} @tab Object System types
+@item @ref{Generic Functions and Methods} @tab Object System types
+@item @ref{Condition System Concepts} @tab Condition System types
+@item @ref{Types and Classes} @tab Miscellaneous types
+@item @ref{Syntax} @tab All types---read and print syntax
+@item @ref{The Lisp Printer} @tab All types---print syntax
+@item @ref{Compilation} @tab All types---compilation issues
+@end multitable
 
-@end group
-@end format
+@sp 1
+@center Figure 4--1: Cross-References to Data Type Information
+
 
 @node Type Relationships, Type Specifiers, Data Type Definition, Types
 @subsection Type Relationships

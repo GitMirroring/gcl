@@ -21,7 +21,7 @@ which reference other libraries, but in general this practice is not
 portable.
 
 
-@node External Shared Libraries,  , C Interface, C Interface
+@node External Shared Libraries,  , Available Symbols, C Interface
 @section External Shared Libraries
 
 @deffn {Macro} DEFDLFUN

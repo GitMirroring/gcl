@@ -28,14 +28,15 @@ END-INFO-DIR-ENTRY
 @center @titlefont{GCL TK Manual}
 @end titlepage
 
-@node Top, General, (dir), (dir)
-@top
+@node Top
+@top Top
 
 @menu
 * General::                     
 * Widgets::                     
 * Control::                     
 
+@detailmenu
  --- The Detailed Node Listing ---
 
 General
@@ -94,6 +95,7 @@ Control
 * update::			
 * winfo::			
 * wm::				
+@end detailmenu
 @end menu
 
 @include general.texi

@@ -429,7 +429,7 @@ be any non-negative, non-complex number.
 
 @end defun
 
-@node Environment Variables, Operating System Definitions, Operating System, Operating System
+@node Environment Variables, , Operating System Definitions, Operating System
 @section Environment Variables
 
 Several environment variables affect GCL:
