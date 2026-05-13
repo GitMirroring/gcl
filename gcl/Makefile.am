@@ -469,9 +469,8 @@ h/cmpincludea.h: $(filter-out gclincl.h,$(CMPINCLUDE_FILES)) | h/gclincl.h # FIX
 		$(AWK) '/^# |^$$|^#pragma/ {next}{print}' > $@
 
 o/qfv.c: o/pre_qfv.c h/new_decl.h bin/c23.awk
-#	$(CPP) $(AM_CPPFLAGS) -P $(CPPFLAGS) $< >$@
 	chmod +x $(word 3,$^)
-	cat $< | $(word 3,$^) >$@
+	$(CPP) $(AM_CPPFLAGS) -P $(CPPFLAGS) -Wno-unused-function $< | $(word 3,$^) >$@
 
 h/cmpinclude.h: h/mcompdefs.h h/cmpincludea.h h/cmponly_last.h
 	@cat $^ >new_$(@F)
