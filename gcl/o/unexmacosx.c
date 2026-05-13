@@ -876,10 +876,10 @@ typedef struct {
 	   #a_,__LINE__,__FILE__,__FUNCTION__,strerror(errno));		  \
       do_gcl_abort();							  \
     };})
-#define mwrite(a,b) uassert(write(outfd,a,b)==b);
-#define mpwrite(a,b,c) uassert(pwrite(outfd,a,b,c)==b);
-#define mpred(a,b,c) uassert(pread(outfd,a,b,c)==b)
-#define RNDUP(x,y) ((x+y-1)&~(y-1))
+#define mwrite(a,b) uassert(write(outfd,(a),(b))==(b));
+#define mpwrite(a,b,c) uassert(pwrite(outfd,(a),(b),(c))==(b));
+#define mpred(a,b,c) uassert(pread(outfd,(a),(b),(c))==(b))
+#define RNDUP(x,y) (((x)+(y)-1)&~((y)-1))
 
 int
 dump_code_signature(struct segment_command *le_seg,
