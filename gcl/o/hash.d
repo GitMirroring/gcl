@@ -178,7 +178,7 @@ BEGIN:
   if (depth++<=3)
     switch ((tx=type_of(x))) {
     case t_cons:
-      h^=ihash_equal(x->c.c_car,depth)^rtb[labs(depth%(sizeof(rtb)/sizeof(*rtb)))];
+      h^=ihash_equal(x->c.c_car,depth)^rtb[labs(depth%(long)(sizeof(rtb)/sizeof(*rtb)))];
       x = x->c.c_cdr;
       goto BEGIN;
       break;
@@ -249,7 +249,7 @@ BEGIN:
   if (depth++ <=3)
     switch ((tx=type_of(x))) {
     case t_cons:
-      h += ihash_equalp(x->c.c_car,depth)^rtb[labs(depth%(sizeof(rtb)/sizeof(*rtb)))];
+      h += ihash_equalp(x->c.c_car,depth)^rtb[labs(depth%(long)(sizeof(rtb)/sizeof(*rtb)))];
       x = x->c.c_cdr;
       goto BEGIN;
       break;
