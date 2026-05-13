@@ -1,5 +1,14 @@
+#ifdef __APPLE__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-function"
+#endif
+
 #include "include.h"
 #include "arth.h"
+
+#ifdef __APPLE__
+#pragma clang diagnostic pop
+#endif
 
 #define EMPTY()
 #define DEFER(id) id EMPTY()
