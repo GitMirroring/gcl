@@ -544,43 +544,46 @@ make_socket_pair()
  * with "C" type streams.
  */
 
+#include <spawn.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
+#ifdef __APPLE__
+#include <crt_externs.h>
+#define environ (*_NSGetEnviron())
+#else
+extern char **environ;
+#endif
+
 static void
 spawn_process_with_streams(object istream,object ostream,char *pname,char **argv) {
 
-  int fdin;
-  int fdout;
+  int fdin,fdout,spawn_err;
+  pid_t pid;
+  posix_spawn_file_actions_t actions;
 
-  if (istream->sm.sm_fp == NULL || ostream->sm.sm_fp == NULL)
-    FEerror("Cannot spawn process with given stream", 0);
+  massert(istream->sm.sm_fp&&ostream->sm.sm_fp);
 
   fdin = istream->sm.sm_int;
   fdout = ostream->sm.sm_int;
 
-  if (!pvfork()) {
+  massert(!posix_spawn_file_actions_init(&actions));
+  massert(!posix_spawn_file_actions_adddup2(&actions,fdin,0));
+  massert(!posix_spawn_file_actions_adddup2(&actions,fdout,1));
 
-    /* the child --- replace standard in and out with descriptors given */
-    close(0);
-    massert(dup(fdin)>=0);
-    close(1);
-    massert(dup(fdout)>=0);
+  massert(!posix_spawn_file_actions_addclose(&actions,fileno(istream->sm.sm_fp)));
+  massert(!posix_spawn_file_actions_addclose(&actions,fileno(ostream->sm.sm_fp)));
 
-    close(fileno(istream->sm.sm_fp));
-    close(fileno(ostream->sm.sm_fp));
+  spawn_err = posix_spawnp(&pid, pname, &actions, NULL, argv, environ);
 
-    errno=0;
-    execvp(pname,argv);
-    _exit(128|(errno&0x7f));
+  posix_spawn_file_actions_destroy(&actions);
 
-  } else {
-
-    close(fdin);
-    close(fdout);
-
-  }
+  massert(!spawn_err);
+  massert(!close(fdin));
+  massert(!close(fdout));
 
 }
-    
-      
+
 void
 run_process(char *filename,char **argv) {
 
