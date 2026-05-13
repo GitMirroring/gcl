@@ -1900,7 +1900,7 @@ DEFUN("SOCKET-INT",object,fSsocket_int,SI,7,7,NONE,OO,OO,OO,OO,
 
     massert(!sigaction(SIGCHLD,&sa,&osa));
 
-    switch((pid=pvfork())) {
+    switch((pid=pfork())) {
     case -1:
       FEerror("Cannot fork", 0);
       break;
@@ -1909,7 +1909,7 @@ DEFUN("SOCKET-INT",object,fSsocket_int,SI,7,7,NONE,OO,OO,OO,OO,
       massert(setsid()>=0);
 
       if (daemon == sKpersistent)
-	switch(pvfork()) {
+	switch(pfork()) {
 	case -1:
 	  FEerror("daemon fork error", 0);
 	  break;
@@ -1952,7 +1952,7 @@ DEFUN("SOCKET-INT",object,fSsocket_int,SI,7,7,NONE,OO,OO,OO,OO,
 	  
 	  y=maccept(x);
 	  
-	  switch((pid=pvfork())) {
+	  switch((pid=pfork())) {
 	  case 0:
 	    massert(!sigaction(SIGCHLD,&osa,NULL));
 	    ifuncall1(server,y);
