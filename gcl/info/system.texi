@@ -120,7 +120,7 @@ will bear a name based on the name of the file, so that it may be invoked
 by name by C code.
 @end vtable
 
-@node Operating System Definitions,  , Command Line, Operating System
+@node Operating System Definitions, Environment Variables , Command Line, Operating System
 @section Operating System Definitions
 
 @defun GET-DECODED-TIME ()

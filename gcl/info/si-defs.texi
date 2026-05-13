@@ -441,7 +441,7 @@ a lisp variable indicating the TYPE which caused the current collection.
 Package:SI
 
 Returns 6 values:
-@table @asis{}
+@table @asis
 @item nfree
 number free 
 @item npages

@@ -8,7 +8,7 @@
 * External Shared Libraries::
 @end menu
 
-@node Available Symbols,  , C Interface, C Interface
+@node Available Symbols, External Shared Libraries , C Interface, C Interface
 @section Available Symbols
 
 When GCL is built, those symbols in the system libraries which
