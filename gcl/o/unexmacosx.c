@@ -911,25 +911,25 @@ dump_code_signature(struct segment_command *le_seg,
   np=RNDUP(len,PAGESIZE)>>PAGEWIDTH;
   cd_len=sizeof(cd)+id_len+(nss+np)*ss;
   ldc.datasize=sizeof(sb)+sizeof(bi)+cd_len+sizeof(rq)+sizeof(cms);
-  
+
   mpwrite(&ldc,sizeof(ldc),curr_header_offset);
   curr_header_offset+=ldc.cmdsize;
 
   le_seg->filesize+=ldc.datasize;
   le_seg->vmsize+=RNDUP(ldc.datasize,PAGESIZE);
   mpwrite(le_seg,sizeof(*le_seg),le_ho);
-  
+
   uassert(curr_header_offset<=text_seg_lowest_offset);
-  
+
 #if VERBOSE
   printf ("%ld unused bytes follow Mach-O header\n",
 		 text_seg_lowest_offset - curr_header_offset);
 #endif
-  
+
   mh.sizeofcmds=curr_header_offset-sizeof(mh);
   mh.ncmds+=(1-csf);
   mpwrite(&mh,sizeof(mh),0);
-  
+
   sb.magic=htonl(0xfade0cc0);
   sb.length=htonl(sizeof(sb)+sizeof(bi)+cd_len+sizeof(rq)+sizeof(cms));
   sb.count=htonl(sizeof(bi)/sizeof(*bi));
@@ -992,7 +992,7 @@ dump_code_signature(struct segment_command *le_seg,
   cms.magic=htonl(0xfade0b01);
   cms.length=htonl(8);
   mwrite(&cms,sizeof(cms));
-  
+
   return 0;
 
 }
@@ -1124,7 +1124,7 @@ dump_it () {
     }
 
   dump_code_signature(le_seg,tx_seg,le_ho,csf);
-  
+
 }
 
 /* Read header and load commands from input file.  Store the latter in

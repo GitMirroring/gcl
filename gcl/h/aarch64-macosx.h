@@ -105,8 +105,6 @@ do {int c=0;                                                            \
         return(FALSE);                                                  \
 } while (0)
 
-/* extern int _NSGetExecutablePath (char *, unsigned long *);  \ */
-
 #define GET_FULL_PATH_SELF(a_)                              \
 do {                                                        \
 uint32_t bufsize = 1024;                               \
@@ -121,13 +119,9 @@ if (realpath (buf, fub) == 0) {                             \
 (a_) = fub;                                                 \
 } while (0)
 
-/* #ifdef _LP64 */
 #define C_GC_OFFSET 4
 #include <mach-o/arm64/reloc.h>
 #define RELOC_H "mach64_aarch64_reloc.h"
-/* #else */
-/* #define RELOC_H "mach32_i386_reloc.h" */
-/* #endif */
 
 #define FPE_TCODE(x_) \
   ({ufixnum _x=(x_),_y=0;			\
@@ -146,34 +140,6 @@ if (realpath (buf, fub) == 0) {                             \
 #define FPE_CTXT(v_) Cnil
 
 #define FPE_INIT Cnil
-
-
-
-/* #define UC(a_) ((ucontext_t *)a_) */
-/* #define SF(a_) ((siginfo_t *)a_) */
-
-/* #define FPE_CODE(i_,v_) make_fixnum((fixnum)FFN(fSfpe_code)(*(fixnum *)&UC(v_)->uc_mcontext->__fs.__fpu_fsw,UC(v_)->uc_mcontext->__fs.__fpu_mxcsr)) */
-/* #define FPE_ADDR(i_,v_) make_fixnum(UC(v_)->uc_mcontext->__fs.__fpu_fop ? UC(v_)->uc_mcontext->__fs.__fpu_ip : (fixnum)SF(i_)->si_addr) */
-/* #define FPE_CTXT(v_) list(3,make_fixnum((fixnum)&UC(v_)->uc_mcontext->__ss), \ */
-/* 			  make_fixnum((fixnum)&UC(v_)->uc_mcontext->__fs.__fpu_stmm0), \ */
-/* 			  make_fixnum((fixnum)&UC(v_)->uc_mcontext->__fs.__fpu_xmm0)) */
-
-
-/* #define MC(b_) v.uc_mcontext->b_ */
-/* #define REG_LIST(a_,b_) MMcons(make_fixnum(a_*sizeof(b_)),make_fixnum(sizeof(b_))) */
-/* #define MCF(b_) ((MC(__fs)).b_) */
-
-/* #ifdef __x86_64__ */
-/* #define FPE_RLST "RAX RBX RCX RDX RDI RSI RBP RSP R8 R9 R10 R11 R12 R13 R14 R15 RIP RFLAGS CS FS GS" */
-/* #elif defined(__i386__) */
-/* #define FPE_RLST "GS FS ES DS EDI ESI EBP ESP EBX EDX ECX EAX TRAPNO ERR EIP CS EFL UESP SS" */
-/* #else */
-/* #error Missing reg list */
-/* #endif */
-
-/* #define FPE_INIT ({ucontext_t v;list(3,MMcons(make_simple_string(({const char *s=FPE_RLST;s;})),REG_LIST(21,MC(__ss))),	\ */
-/* 				     REG_LIST(8,MCF(__fpu_stmm0)),REG_LIST(16,MCF(__fpu_xmm0)));}) */
-
 
 #include <sys/param.h>/*PATH_MAX MAXPATHLEN*/
 #undef MIN
