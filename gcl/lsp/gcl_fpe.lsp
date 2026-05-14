@@ -2,7 +2,7 @@
 (in-package :fpe)
 
 (import 'si::(disassemble-instruction feenableexcept fedisableexcept fld *fixnum *float *double
-				      fetestexcept feclearexcept
+				      fetestexcept feclearexcept address
 				      *fixnum *ushort *uint fun-name
 				      si-class-direct-subclasses si-class-name si-find-class
 				      +fe-list+ +mc-context-offsets+ floating-point-error 
@@ -132,11 +132,11 @@
 
 #.`(let ((fpe-enabled 0)(fpe-set 0))
      #+no-sigfpe
-     (defun flush-floating-point-exceptions nil
+     (defun flush-floating-point-exceptions (name args &optional (fun (symbol-function name)))
        (let ((x (fetestexcept fpe-set)))
 	 (unless (zerop x)
 	   (feclearexcept x)
-	   (floating-point-error x 0 0))))
+	   (floating-point-error x (list* fun "unknown" name args) 0))))
      (defun break-on-floating-point-exceptions 
 	 (&key suspend no-flush
 	    ,@(mapcar (lambda (x) `(,(car x) (logtest ,(caddr x) fpe-enabled))) +fe-list+)
@@ -168,17 +168,23 @@
 	  :initial-value nil)
       'arithmetic-error))
 	 
-(defun floating-point-error (code addr context)
+(defun floating-point-error (code addr context &aux (l (listp addr)))
   (break-on-floating-point-exceptions :suspend t :no-flush t)
   (restart-case
    (unwind-protect
-       (let* ((fun (function-by-address addr))(m (read-instruction addr context)))
-	 ((lambda (&rest r) (apply 'error (if (find-package :conditions) r (list (format nil "~s" r)))))
+	(let* ((fun (if l (pop addr) (function-by-address addr)))
+	       (m (if l addr (read-instruction addr context)))
+	       (addr (if l (address fun) addr)))
+	 ((lambda (&rest r)
+	    (apply 'error (if (find-package :conditions) r (list (format nil "~s" r)))))
 	  (code-condition code)
-	  :operation (list :insn (pop m) :op (pop m) :fun fun :addr addr) :operands m :function-name (when fun (fun-name fun))))
+	  :operation (list :insn (pop m) :op (pop m) :fun fun :addr addr)
+	  :operands m
+	  :function-name (when fun (fun-name fun))))
      (break-on-floating-point-exceptions :no-flush t))
-   (continue nil :report (lambda (s) (format s "Continue disabling floating point exception trapping"))
-	     (apply 'break-on-floating-point-exceptions
-		    :no-flush t
-		    (mapcan (lambda (x) (list x nil))
-			    (break-on-floating-point-exceptions :no-flush t))))))
+    (continue nil
+      :report (lambda (s) (format s "Continue disabling floating point exception trapping"))
+      (apply 'break-on-floating-point-exceptions
+	     :no-flush t
+	     (mapcan (lambda (x) (list x nil))
+		     (break-on-floating-point-exceptions :no-flush t))))))
