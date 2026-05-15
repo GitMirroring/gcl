@@ -360,7 +360,7 @@ case $use in
 
 	#Support libboot option
 	AC_ARG_ENABLE([saved_pre_image_span],[  --enable-saved_pre_image_span=0x.... set address span for saved pre images],
-          [SAVED_PRE_IMAGE_SPAN=$enableval],[SAVED_PRE_IMAGE_SPAN=0x100000000])
+          [SAVED_PRE_IMAGE_SPAN=$enableval],[SAVED_PRE_IMAGE_SPAN=0xFFF00000])
 	AC_DEFINE_UNQUOTED(SAVED_PRE_IMAGE_SPAN,$SAVED_PRE_IMAGE_SPAN,[address span for saved pre images])
 
 	AC_ARG_ENABLE([saved_image_span],[  --enable-saved_image_span=0x.... set address span for saved images],

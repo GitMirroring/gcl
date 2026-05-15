@@ -7342,7 +7342,7 @@ if test ${enable_saved_pre_image_span+y}
 then :
   enableval=$enable_saved_pre_image_span; SAVED_PRE_IMAGE_SPAN=$enableval
 else case e in #(
-  e) SAVED_PRE_IMAGE_SPAN=0x100000000 ;;
+  e) SAVED_PRE_IMAGE_SPAN=0xFFF00000 ;;
 esac
 fi
 
