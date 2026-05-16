@@ -87,10 +87,11 @@
 		  (let ((val (symbol-value form)))
 		    (or 
 		     (c1constant-value val nil)
-		     (when (functionp val)
-		       (c1function (list (fle val))))
-		     `(location ,(make-info :type (object-type val)) (VV ,(add-constant form))))))
-					;                 ((c1var form))))
+		     `(location
+		       ,(make-info
+			 :type (if (functionp val) #tfunction (object-type val)));FIXME
+		       (VV ,(add-constant form))))))
+;                 ((c1var form))))
                  ((c1expr-avct (c1var form))))) ;FIXME pcl
           ((consp form)
            (let ((fun (car form)))
