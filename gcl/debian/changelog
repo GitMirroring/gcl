@@ -1,6 +1,6 @@
 gcl27 (2.7.1-21) unstable; urgency=high
 
-  * Version_2_7_2pre22
+  * Version_2_7_2pre23
   * Bug fix: "FTBFS on loong64: Killed after 3 days of &quot;Tick&quot;",
     thanks to Sebastian Ramacher (Closes: #1135720).
 
