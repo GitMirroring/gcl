@@ -1308,7 +1308,7 @@ gcl_init_alloc(void *cs_start) {
       ufixnum k;
       for (p=pagetochar(page(v)),k=0;k<tm->tm_nppage;k++,p+=tm->tm_size) {
  	object o=p;
- 	if (!is_free(o) && type_of(o)==t_cfdata && (void *)o->cfd.cfd_start>=data_start)
+ 	if (!is_free(o) && type_of(o)==t_cfdata && !x->d.tt && (void *)o->cfd.cfd_start>=data_start)
 	  gcl_mprotect((void *)o->cfd.cfd_start,o->cfd.cfd_nexp<<PAGEWIDTH,PROT_READ|PROT_EXEC);
       }
     }
