@@ -1707,7 +1707,12 @@ malloc_internal(size_t size) {
     recursive_malloc=1;
     gcl_init_alloc(&size);
     recursive_malloc=0;
-  }
+  } else
+    /*FIXME idempotent but required gcl_init_alloc functions in saved images*/
+#ifdef INITIALIZE_BRK
+    INITIALIZE_BRK;
+#endif
+
 
   CHECK_INTERRUPT;
   
