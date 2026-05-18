@@ -82,6 +82,10 @@ if test "$use" = "gnuwin95" ; then
    AC_SUBST(LF)
    libboot="no"
 fi
+case $use in
+   *86*gnu) libboot="no";;
+esac
+
 
 AM_CONDITIONAL([AMM_LIBBOOT],[test "$libboot" = "yes"])
 if test "$libboot" = "yes" ; then
@@ -276,7 +280,8 @@ add_args_to_cflags  -fsigned-char -pipe -fcommon \
                     -fno-PIE -fno-pie -fno-PIC -fno-pic \
 	            -Wall \
 	            -Wno-builtin-requires-header -Wno-empty-body -Wno-self-assign \
-	            -Wno-unused-but-set-variable -D_FILE_OFFSET_BITS=64 -D_TIME_BITS=64 \
+	            -Wno-unused-but-set-variable -Wno-tautological-compare \
+		    -D_FILE_OFFSET_BITS=64 -D_TIME_BITS=64 \
 		    -fbracket-depth=512
 
 add_args_to_ldflags -no-pie -Wl,-z,relro # -Wl,-z,lazy
