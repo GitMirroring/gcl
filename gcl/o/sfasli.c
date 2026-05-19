@@ -133,13 +133,6 @@ LFD(build_symbol_table)(void) {
 
 }
 
-#if defined(__APPLE__) && defined(__aarch64__)/*FIXME*/
-dcomplex
-__divdc3(dcomplex a,dcomplex b) {
-  return a/b;
-}
-#endif
-
 #ifndef _WIN32
 int
 use_symbols(double d,...) {

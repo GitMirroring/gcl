@@ -31,6 +31,10 @@
 #define LOAD_SEC(sec) ({ul _fl=sec->flags&SECTION_TYPE;\
       (_fl<=S_SYMBOL_STUBS || _fl==S_16BYTE_LITERALS) && _fl!=S_ZEROFILL && !(sec->flags&S_ATTR_DEBUG);})
 
+#define GCL_EXTERNAL(sym) ((sym)->n_type & N_EXT || \
+			   (((sym)->n_type & N_TYPE) == N_SECT && \
+			    (sym)->n_sect == 1 && \
+			    !memcmp(strtab+(sym)->n_un.n_strx,"___",3)))
 
 #define MASK(n) (~(~0ULL << (n)))
 
@@ -488,7 +492,7 @@ load_self_symbols() {
 
   for (a=c_table.ptable,sym=sym1;sym<syme;sym++) {
     
-    if ((sym->n_type & N_STAB) || !(sym->n_type & N_EXT))
+    if ((sym->n_type & N_STAB) || !GCL_EXTERNAL(sym))
       continue;
 
     a->address=sym->n_value;
@@ -504,7 +508,7 @@ load_self_symbols() {
 
   for (c_table.local_ptable=a,sym=sym1;sym<syme;sym++) {
 
-    if ((sym->n_type & N_STAB) || sym->n_type & N_EXT)
+    if ((sym->n_type & N_STAB) || GCL_EXTERNAL(sym))
       continue;
 
     a->address=sym->n_value;
