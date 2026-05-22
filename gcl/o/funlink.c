@@ -291,7 +291,7 @@ call_proc_new23(object sym,ufixnum clp,ufixnum vld,void **link,ufixnum argd,obje
       	fas=0;
       else if (u.f.va &&(nfargs<fun->fun.fun_minarg || nfargs>fun->fun.fun_maxarg))/*u.f.va -> varg, xxx*/
 	fas=0;
-      else if (u.f.va && VFUN_NARGS<0 && fun->fun.fun_minarg==fun->fun.fun_maxarg)/*runtime apply #arg checking omitted in reg fns*/
+      else if (u.f.va && /* VFUN_NARGS<0 &&  */fun->fun.fun_minarg==fun->fun.fun_maxarg)/*runtime apply #arg checking omitted in reg fns*/
 	fas=0;
       /* else if (u.f.va && VFUN_NARGS<0 && */
       /* 	       (nargs-1<fun->fun.fun_minarg || nargs-1>fun->fun.fun_maxarg))/\*u.f.va -> varg, xxx*\/ */
