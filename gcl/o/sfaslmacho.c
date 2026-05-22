@@ -649,10 +649,12 @@ fasload(object faslfile) {
   
   massert(!clear_protect_memory(memory));
 
-#if defined(HAVE_BUILTIN_CLEAR_CACHE)
-  __builtin___clear_cache((void *)memory->cfd.cfd_start,(void *)memory->cfd.cfd_start+memory->cfd.cfd_size);
-#elif defined(CLEAR_CACHE)
+#if defined(CLEAR_CACHE)
   CLEAR_CACHE;
+#elif defined(HAVE_BUILTIN_CLEAR_CACHE)
+  __builtin___clear_cache((void *)memory->cfd.cfd_start,(void *)memory->cfd.cfd_start+memory->cfd.cfd_size);
+#else
+  #error "No clear cache"
 #endif
   
   massert(!un_mmap(v1,ve));
