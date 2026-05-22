@@ -350,6 +350,7 @@
 		cadddr cdaddr cddadr cdddar cddddr logand lognot logior logxor c-type complex-real
 		complex-imag ratio-numerator ratio-denominator cnum-type si::number-plus si::number-minus
 		si::number-times si::number-divide ;FIXME more
+		si::expand-deftype
 		,@(mapcar (lambda (x) (cdr x)) (remove-if-not (lambda (x) (symbolp (cdr x))) +cmp-type-alist+))))
   (si::putprop l t 'c1no-side-effects))
 
