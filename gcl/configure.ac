@@ -835,10 +835,10 @@ AC_RUN_IFELSE(
 
 
 case $use in
-    sh4*) ;;     #FIXME, these exceptions needed as of gcc 4.7
-    hppa*) ;;    #FIXME
-    powerpc*) ;; #FIXME
-    alpha*) ;;   #FIXME
+#    sh4*) ;;     #FIXME, these exceptions needed as of gcc 4.7
+#    hppa*) ;;    #FIXME
+#    powerpc*) ;; #FIXME
+#    alpha*) ;;   #FIXME
     ia64*) ;;    #FIXME
     *)
 	AC_MSG_CHECKING([__builtin___clear_cache])

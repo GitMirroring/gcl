@@ -41,13 +41,13 @@
 #define	M68K
 /* #define SGC *//*FIXME:  Unknown m68k cpu in modern emulators*/
 
-#include <asm/cachectl.h>
-int cacheflush(void *,int,int,int);
-#define CLEAR_CACHE_LINE_SIZE 32
-#define CLEAR_CACHE do {void *v=memory->cfd.cfd_start,*ve=v+memory->cfd.cfd_size; \
-                        v=(void *)((unsigned long)v & ~(CLEAR_CACHE_LINE_SIZE - 1));\
-                        cacheflush(v,FLUSH_SCOPE_PAGE,FLUSH_CACHE_BOTH,ve-v);\
-                    } while(0)
+/* #include <asm/cachectl.h> */
+/* int cacheflush(void *,int,int,int); */
+/* #define CLEAR_CACHE_LINE_SIZE 32 */
+/* #define CLEAR_CACHE do {void *v=memory->cfd.cfd_start,*ve=v+memory->cfd.cfd_size; \ */
+/*                         v=(void *)((unsigned long)v & ~(CLEAR_CACHE_LINE_SIZE - 1));\ */
+/*                         cacheflush(v,FLUSH_SCOPE_PAGE,FLUSH_CACHE_BOTH,ve-v);\ */
+/*                     } while(0) */
 
 #define C_GC_OFFSET 2
 
