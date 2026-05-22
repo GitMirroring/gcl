@@ -895,9 +895,9 @@
    (get 'truncate 'inline-always))
 (push '((fixnum) (returns-exactly fixnum fixnum) #.(flags rfa)"({fixnum _t=(#0);@1(#0)-_t@ _t;})")
    (get 'truncate 'inline-always))
-(push '((short-float) (returns-exactly fixnum short-float) #.(flags rfa)"({float _t=(#0);@1(#0)-_t@ _t;})")
+(push '((short-float) (returns-exactly fixnum short-float) #.(flags rfa)"({fixnum _t=(#0);@1(#0)-_t@ _t;})")
    (get 'truncate 'inline-always))
-(push '((long-float) (returns-exactly fixnum long-float) #.(flags rfa)"({double _t=(#0);@1(#0)-_t@ _t;})")
+(push '((long-float) (returns-exactly fixnum long-float) #.(flags rfa)"({fixnum _t=(#0);@1(#0)-_t@ _t;})")
    (get 'truncate 'inline-always))
 
 ;;COMPLEXP
