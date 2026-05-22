@@ -8885,8 +8885,8 @@ int
 main (void)
 {
 
-			void *v,*ve;
-			__builtin___clear_cache(v,ve);
+			char v[1<<12];
+			__builtin___clear_cache(v,v+sizeof(v));
 
   ;
   return 0;

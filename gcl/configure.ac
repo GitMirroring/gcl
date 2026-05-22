@@ -841,13 +841,13 @@ case $use in
     alpha*) ;;   #FIXME
     ia64*) ;;    #FIXME
     *)
-	AC_MSG_CHECKING(__builtin___clear_cache)
+	AC_MSG_CHECKING([__builtin___clear_cache])
 	AC_RUN_IFELSE(
 	    [AC_LANG_PROGRAM(
 		    [[]],
 		    [[
-			void *v,*ve;
-			__builtin___clear_cache(v,ve);
+			char v[1<<12];
+			__builtin___clear_cache(v,v+sizeof(v));
 		    ]])],
 	    [AC_DEFINE(HAVE_BUILTIN_CLEAR_CACHE,1,[have __builtin__clear_cache instruction])
 	     AC_MSG_RESULT(yes)],
