@@ -100,8 +100,8 @@
   (check-type y (integer 1899))
   (check-type tz rational)
   (cond ((eql 1899 y)
-	 (assert (and (when tzp (eql (+ h tz) 24)) (eql d 31) (eql m 12)))
-	 (+ s (* n 60)))
+	 (assert (and tzp (>= (+ h tz) 24) (eql d 31) (eql m 12)))
+	 (+ s (* n 60) (* 3600 (+ h tz -24))))
 	((+ (mktime s n h d (1- m) (- y 1900) (if tzp 0 -1)) +secs-to-1970+ tzo))))
 
 (defun get-decoded-time ()
