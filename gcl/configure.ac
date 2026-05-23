@@ -833,26 +833,17 @@ AC_RUN_IFELSE(
      AC_DEFINE(HAVE_CTZL,[1],[ctzl instruction])],
     [AC_MSG_RESULT([no])])
 
-
-case $use in
-#    sh4*) ;;     #FIXME, these exceptions needed as of gcc 4.7
-#    hppa*) ;;    #FIXME
-#    powerpc*) ;; #FIXME
-#    alpha*) ;;   #FIXME
-    ia64*) ;;    #FIXME
-    *)
-	AC_MSG_CHECKING([__builtin___clear_cache])
-	AC_RUN_IFELSE(
-	    [AC_LANG_PROGRAM(
-		    [[]],
-		    [[
-			char v[1<<12];
-			__builtin___clear_cache(v,v+sizeof(v));
-		    ]])],
-	    [AC_DEFINE(HAVE_BUILTIN_CLEAR_CACHE,1,[have __builtin__clear_cache instruction])
-	     AC_MSG_RESULT(yes)],
-	    AC_MSG_RESULT(no));;
-esac
+AC_MSG_CHECKING([__builtin___clear_cache])
+AC_RUN_IFELSE(
+    [AC_LANG_PROGRAM(
+	    [[]],
+	    [[
+		char v[1<<12];
+		__builtin___clear_cache(v,v+sizeof(v));
+	    ]])],
+    [AC_DEFINE(HAVE_BUILTIN_CLEAR_CACHE,1,[have __builtin__clear_cache instruction])
+     AC_MSG_RESULT(yes)],
+    AC_MSG_RESULT(no))
 
 #AC_CONFIG_SUBDIRS($MY_SUBDIRS)
 

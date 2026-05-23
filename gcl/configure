@@ -8861,17 +8861,9 @@ esac
 fi
 
 
-
-case $use in
-#    sh4*) ;;     #FIXME, these exceptions needed as of gcc 4.7
-#    hppa*) ;;    #FIXME
-#    powerpc*) ;; #FIXME
-#    alpha*) ;;   #FIXME
-    ia64*) ;;    #FIXME
-    *)
-	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking __builtin___clear_cache" >&5
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking __builtin___clear_cache" >&5
 printf %s "checking __builtin___clear_cache... " >&6; }
-	if test "$cross_compiling" = yes
+if test "$cross_compiling" = yes
 then :
   { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in '$ac_pwd':" >&5
 printf "%s\n" "$as_me: error: in '$ac_pwd':" >&2;}
@@ -8885,8 +8877,8 @@ int
 main (void)
 {
 
-			char v[1<<12];
-			__builtin___clear_cache(v,v+sizeof(v));
+		char v[1<<12];
+		__builtin___clear_cache(v,v+sizeof(v));
 
   ;
   return 0;
@@ -8897,7 +8889,7 @@ then :
 
 printf "%s\n" "#define HAVE_BUILTIN_CLEAR_CACHE 1" >>confdefs.h
 
-	     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
 else case e in #(
   e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
@@ -8908,8 +8900,7 @@ rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext ;;
 esac
 fi
-;;
-esac
+
 
 #AC_CONFIG_SUBDIRS($MY_SUBDIRS)
 
