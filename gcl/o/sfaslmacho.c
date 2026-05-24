@@ -458,6 +458,26 @@ relocate_code(void *v1,struct section *sec1,struct section *sece,
 
 }
 
+static char *
+dup_sym(char *src) {
+  static char buf[256];
+  const char *e="$DARWIN_EXTSN";
+  char *c;
+
+  if ((c=strstr(src,e))) {
+    memcpy(buf,src,(c-src));
+    buf[c-src]=0;
+    printf("dup %s -> %s\n",src,buf);
+    return buf;
+  }
+  if (!strcmp(src,"_my_free")||!strcmp(src,"_my_calloc")||!strcmp(src,"_my_malloc")||!strcmp(src,"_my_realloc")) {
+    strcpy(buf,src+3);
+    printf("dup %s -> %s\n",src,buf);
+    return buf;
+  }
+  return NULL;
+}
+
 static int 
 load_self_symbols() {
 
@@ -465,7 +485,7 @@ load_self_symbols() {
   struct nlist *sym1=NULL,*sym,*syme=NULL;
   struct node *a;
   ul ns,sl,*uio=NULL;
-  char *strtab=NULL,*ste,*s;
+  char *strtab=NULL,*ste,*s,*c;
   void *addr,*addre;
   FILE *f;
   
@@ -484,6 +504,11 @@ load_self_symbols() {
     ns++;
     sl+=strlen(sym->n_un.n_strx+strtab)+1;
 
+    if ((c=dup_sym(strtab+sym->n_un.n_strx))) {
+      ns++;
+      sl+=strlen(c)+1;
+    }
+
   }
   
   c_table.alloc_length=ns;
@@ -501,6 +526,17 @@ load_self_symbols() {
 
     a++;
     s+=strlen(s)+1;
+
+    if ((c=dup_sym(strtab+sym->n_un.n_strx))) {
+
+      a->address=sym->n_value;
+      a->string=s;
+      strcpy(s,c);
+
+      a++;
+      s+=strlen(s)+1;
+
+    }
 
   }
   c_table.length=a-c_table.ptable;
