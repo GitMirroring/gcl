@@ -127,6 +127,7 @@
 (defun fe-enable (a)
   (declare (fixnum a))
   (fedisableexcept)
+  (feclearexcept -1)
   (feenableexcept a))
 
 

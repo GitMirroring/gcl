@@ -191,14 +191,14 @@ DEFUN("FEDISABLEEXCEPT",object,fSfedisableexcept,SI,0,0,NONE,IO,OO,OO,OO,(void),
 
 #ifdef HAVE_FEENABLEEXCEPT
 
-  feclearexcept(FE_ALL_EXCEPT);
+  /* feclearexcept(FE_ALL_EXCEPT); */
   x=fedisableexcept(FE_ALL_EXCEPT);
 
 #elif defined(__x86_64__) || defined(__i386__)
 #define ASM __asm__ __volatile__
   {
     volatile unsigned int i=0;
-    ASM("fnclex");
+    /* ASM("fnclex"); */
     ASM("stmxcsr %0" :: "m" (i));
     i=(i|(FE_ALL_EXCEPT<<7));
     ASM("ldmxcsr %0" : "=m" (i));
