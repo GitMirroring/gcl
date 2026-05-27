@@ -467,7 +467,7 @@ CLEANFILES+=h/cmpinclude.h h/mstdint.h h/cmpincludea.h h/mcompdefs.h
 h/mstdint.h:
 	echo "#include <stdint.h>" | \
 		$(CPP) $(AM_CPPFLAGS) -P $(CPPFLAGS) - | \
-		grep -E '^typedef .*u?int(8|16|32|64|128)_t;' >$@
+		grep -E 'typedef .*u?int(8|16|32|64|128)_t;' >$@
 
 h/mcompdefs.h: h/compdefs.h h/new_decl.h
 	$(AWK) 'BEGIN {print "#include \"include.h\"";print "#include \"page.h\"";print "---"} {a=$$1;gsub("\\.\\.\\.","",a);print "\"#define " $$1 "\" " a}' $< |\
