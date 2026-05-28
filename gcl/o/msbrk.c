@@ -7,6 +7,11 @@ static void *m;
 static ufixnum sz,mps;
 
 int
+msbrk_initialized(void) {
+  return m!=NULL;
+}
+
+int
 msbrk_end(void) {
 
   sz+=(ufixnum)m;

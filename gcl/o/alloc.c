@@ -1700,19 +1700,14 @@ bool writable_malloc=0;
 static void *
 malloc_internal(size_t size) {
 
-  if (!gcl_alloc_initialized) {
+  if (!msbrk_initialized()) {
     static bool recursive_malloc;
     if (recursive_malloc)
       error("Bad malloc");
     recursive_malloc=1;
     gcl_init_alloc(&size);
     recursive_malloc=0;
-  } else
-    /*FIXME idempotent but required gcl_init_alloc functions in saved images*/
-#ifdef INITIALIZE_BRK
-    INITIALIZE_BRK;
-#endif
-
+  }
 
   CHECK_INTERRUPT;
   
