@@ -12,6 +12,8 @@
 
 #export GCL_MEM_MULTIPLE=0.1
 
+export FORCE_SOURCE_DATE=1
+
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
 
