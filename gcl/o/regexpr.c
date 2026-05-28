@@ -115,7 +115,7 @@ be over written.   \
   int len,start,end;
   va_list ap;
   object v=sSAmatch_dataA->s.s_dbind,l=Cnil,f=OBJNULL;
-  char **pp,*str,save_c=0;
+  char **pp,*str;
 
   if (!stringp(pattern) && type_of(pattern)!=t_symbol &&
       (type_of(pattern)!=t_vector || pattern->v.v_elttype!=aet_uchar))
@@ -168,11 +168,6 @@ be over written.   \
     }
 
     str=string->st.st_self;
-    if (!(str=alloca(VLEN(string)+1)))
-      FEerror("Cannot allocate memory on C stack",0);
-    memcpy(str,string->st.st_self,VLEN(string));
-    str[end]=0;
-
     ans = regexec(compiled_regexp,str+start,str,end-start);
 
     if (!ans ) {

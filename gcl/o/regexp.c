@@ -746,9 +746,12 @@ regoptail(char *p, char *val)
  * Global work variables for regexec().
  */
 static char *reginput;		/* String-input pointer. */
+static char *regend;		/* String-input pointer. */
 static char *regbol;		/* Beginning of input, for ^ check. */
 static char **regstartp;	/* Pointer to startp array. */
 static char **regendp;		/* Ditto for endp. */
+
+#define GET_UCHAR(a_) ({char *_a=(a_);_a<regend ? *(unsigned char *)_a : 0;})
 
 /*
  * Forwards.
@@ -775,7 +778,6 @@ static int
 regexec(register regexp *prog, register char *string, char *start, int length)
 {
 	register char *s;
-	char saved,*savedp=NULL;
 	int value;
 
 	/* Be paranoid... */
@@ -806,13 +808,8 @@ regexec(register regexp *prog, register char *string, char *start, int length)
 			return(0);
 	}
 
-	/* null terminate string */
-	if (length)
-	  { savedp = &string[length];
-	    saved = *savedp;
-	    if (saved) *savedp=0;
-	  }
-	else saved=0;
+	regend=string+length;
+
 #define RETURN_VAL(i) do {value=i; goto DO_RETURN;}while(0)
 
 	/* Mark beginning of line for ^ . */
@@ -836,13 +833,13 @@ regexec(register regexp *prog, register char *string, char *start, int length)
 
 	    
 	    int amt;
-	    unsigned char *s = (unsigned char *)string+ advance -1;
+	    char *s = string+ advance -1;
 	    min_initial_branch_length(prog, buf,advance);
 	    switch(advance) {
 	    case 1:
 	      while (1)
-	      { if (buf[*s]==0)
-		  { if (*s == 0) RETURN_VAL(0);
+		{ if (buf[GET_UCHAR(s)]==0)
+		    { if (GET_UCHAR(s) == 0) RETURN_VAL(0);
 		    else
 		      if (regtry(prog,(char *)s-(1-1))) RETURN_VAL(1);}
 		s++; }
@@ -851,10 +848,10 @@ regexec(register regexp *prog, register char *string, char *start, int length)
 	    case 2:
 	    while (length > 0)
 	      { 
-		amt = (buf[s[0]]);
+		amt = (buf[GET_UCHAR(s)]);
 		if (amt == 0)
 		  {
-		    amt = buf[s[-1]]-1;
+		    amt = buf[GET_UCHAR(s-1)]-1;
 		    if (amt <=0) {
 		      if (regtry(prog,(char *)s-(advance-1))) 
 			RETURN_VAL(1);
@@ -867,24 +864,24 @@ regexec(register regexp *prog, register char *string, char *start, int length)
 	    RETURN_VAL(0);
 	  case 3:
 	    while (length > 0)
-	      { amt = (buf[s[0]]);
+	      { amt = (buf[GET_UCHAR(s)]);
 		if (amt == 0)
-		  {amt = buf[s[-1]]-1;
+		  {amt = buf[GET_UCHAR(s-1)]-1;
 		   if (amt <=0)
-		     {amt = buf[s[-2]]-2;
+		     {amt = buf[GET_UCHAR(s-2)]-2;
 		      if (amt <=0)
 		        {if (regtry(prog,(char *)s-(advance-1))) RETURN_VAL(1);
 			else amt =1;}}}
 		s += amt; length -= amt;}
 	  case 4:
 	    while (length > 0)
-	      { amt = (buf[s[0]]);
+	      { amt = (buf[GET_UCHAR(s)]);
 		if (amt == 0)
-		  {amt = buf[s[-1]]-1;
+		  {amt = buf[GET_UCHAR(s-1)]-1;
 		   if (amt <=0)
-		     {amt = buf[s[-2]]-2;
+		     {amt = buf[GET_UCHAR(s-2)]-2;
 		      if (amt <=0)
-			{amt = buf[s[-3]]-3;
+			{amt = buf[GET_UCHAR(s-3)]-3;
 			 if (amt <=0)
 			   {if (regtry(prog,(char *)s-(advance-1))) RETURN_VAL(1);
 			   else amt =1;}}}}
@@ -892,15 +889,15 @@ regexec(register regexp *prog, register char *string, char *start, int length)
 
 	  default:
 	    while (length > 0)
-	      { amt = (buf[s[0]]);
+	      { amt = (buf[GET_UCHAR(s)]);
 		if (amt == 0)
-		  {amt = buf[s[-1]]-1;
+		  {amt = buf[GET_UCHAR(s-1)]-1;
 		   if (amt <=0)
-		     {amt = buf[s[-2]]-2;
+		     {amt = buf[GET_UCHAR(s-2)]-2;
 		      if (amt <=0)
-			{amt = buf[s[-3]]-3;
+			{amt = buf[GET_UCHAR(s-3)]-3;
 			 if (amt <=0)
-			   {amt = buf[s[-4]]-4;
+			   {amt = buf[GET_UCHAR(s-4)]-4;
 			    if (amt <=0)
 			   {if (regtry(prog,(char *)s-(advance-1))) RETURN_VAL(1);
 			   else amt =1;}}}}}
@@ -913,13 +910,13 @@ regexec(register regexp *prog, register char *string, char *start, int length)
 		/* We know what char it must start with. */
 	  { if (case_fold_search)
 	      {char ch = tolower(prog->regstart);
-	       while (*s)
-		 { if (tolower(*s)==ch)
+		while (GET_UCHAR(s))
+		  { if (tolower((GET_UCHAR(s)))==ch)
 		     {if (regtry(prog, s))
 			RETURN_VAL(1);}
 		   s++;}}
 	    else
-	      while ((s = strchr(s, prog->regstart)) != NULL) {
+	      while ((s = memchr(s, prog->regstart,regend-s)) != NULL) {
 		if (regtry(prog, s))
 		  RETURN_VAL(1);
 		s++;
@@ -930,12 +927,11 @@ regexec(register regexp *prog, register char *string, char *start, int length)
 		do {
 			if (regtry(prog, s))
 				RETURN_VAL(1);
-		} while (*s++ != '\0');
+		} while (GET_UCHAR(s) && s++);
 
 	/* Failure. */
 	RETURN_VAL(0);
       DO_RETURN:
-	if(saved) *savedp=saved;
 	return value;
 	
 }
@@ -1040,11 +1036,11 @@ regmatch(char *prog)
 				return(0);
 			break;
 		case EOL:
-			if (*reginput != '\0')
+		  if (GET_UCHAR(reginput) != '\0')
 				return(0);
 			break;
 		case ANY:
-			if (*reginput == '\0')
+		  if (GET_UCHAR(reginput) == '\0')
 				return(0);
 			reginput++;
 			break;
@@ -1055,12 +1051,12 @@ regmatch(char *prog)
 				opnd = OPERAND(scan);
 				if (case_fold_search)
 				while (*opnd )
-				  { if (tolower(*opnd) != tolower(*ch))
+				  { if (tolower(*opnd) != tolower(GET_UCHAR(ch)))
 				       return 0;
 				    else { ch++; opnd++;}}
 				else
 				while (*opnd )
-				  { if (*opnd != *ch)
+				  { if (*opnd != GET_UCHAR(ch))
 				       return 0;
 				    else { ch++; opnd++;}}
 				/* a match */
@@ -1068,14 +1064,14 @@ regmatch(char *prog)
 			}
 			break;
 		case ANYOF:
- 			if (*reginput == '\0' ||
-			    OPERAND(scan)[*(unsigned char *)reginput] == 0)
+		  if (GET_UCHAR(reginput) == '\0' ||
+		      OPERAND(scan)[GET_UCHAR(reginput)] == 0)
 				return(0);
 			reginput++;
 			break;
 		case ANYBUT:
- 			if (*reginput == '\0' ||
-    			    OPERAND(scan)[*(unsigned char *)reginput] != 0)
+		  if (GET_UCHAR(reginput) == '\0' ||
+		      OPERAND(scan)[GET_UCHAR(reginput)] != 0)
 				return(0);
 			reginput++;
 			break;
@@ -1168,9 +1164,9 @@ regmatch(char *prog)
 				while (no >= min) {
 					/* If it could work, try it. */
 					if (nextch == '\0' ||
-					    *reginput == nextch
+					    GET_UCHAR(reginput) == nextch
 					    || (case_fold_search &&
-					      tolower(*reginput) == nextch))
+						tolower(GET_UCHAR(reginput)) == nextch))
 						if (regmatch(next))
 							return(1);
 					/* Couldn't or didn't -- back up. */
@@ -1217,34 +1213,34 @@ regrepeat(char *p)
 	opnd = OPERAND(p);
 	switch (OP(p)) {
 	case ANY:
-		count = strlen(scan);
+		count = regend-scan/* strlen(scan) */;
 		scan += count;
 		break;
 	case EXACTLY:
 		{ char ch = *opnd;
 		if (case_fold_search)
 		  { ch = tolower(*opnd);
-		    while (ch == tolower(*scan))
+		    while (ch == tolower(GET_UCHAR(scan)))
 		      {
 			count++;
 			scan++;}}
 		else
-		  while (ch  == *scan) {
+		  while (ch  == GET_UCHAR(scan)) {
 		    count++;
 		    scan++;
 		}}
 		break;
 	case ANYOF:
-		while (*scan != '\0' &&
-		       opnd[*(unsigned char *)scan] != 0)
+	  while (GET_UCHAR(scan) != '\0' &&
+		 opnd[GET_UCHAR(scan)] != 0)
 		  {
 			count++;
 			scan++;
 		}
 		break;
 	case ANYBUT:
-		while (*scan != '\0' &&
-		       opnd[*(unsigned char *)scan] == 0)
+	  while (GET_UCHAR(scan) != '\0' &&
+		 opnd[GET_UCHAR(scan)] == 0)
 	  {
 			count++;
 			scan++;
