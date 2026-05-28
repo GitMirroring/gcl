@@ -168,19 +168,12 @@ be over written.   \
     }
 
     str=string->st.st_self;
-    if (NULL_OR_ON_C_STACK(str+end) || str+end==(void *)compiled_regexp) {
-
-      if (!(str=alloca(VLEN(string)+1)))
-	FEerror("Cannot allocate memory on C stack",0);
-      memcpy(str,string->st.st_self,VLEN(string));
-
-    } else
-      save_c=str[end];
+    if (!(str=alloca(VLEN(string)+1)))
+      FEerror("Cannot allocate memory on C stack",0);
+    memcpy(str,string->st.st_self,VLEN(string));
     str[end]=0;
 
     ans = regexec(compiled_regexp,str+start,str,end-start);
-
-    str[end] = save_c;
 
     if (!ans ) {
       END_NO_INTERRUPT;
