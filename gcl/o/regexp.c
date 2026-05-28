@@ -230,8 +230,13 @@ int case_fold_search = 0;
  * Beware that the optimization-preparation code in here knows about some
  * of the structure of the compiled regexp.
  */
+
+static char *regend;		/* Non null terminated string end */
+#define GET_UCHAR(a_) ({char *_a=(a_);_a<regend ? *(unsigned char *)_a : 0;})
+
+
 static regexp *
-regcomp(char *exp,ufixnum *sz)
+regcomp(char *exp,ufixnum *sz,ufixnum length)
 {
 	register regexp *r;
 	register char *scan;
@@ -244,6 +249,7 @@ regcomp(char *exp,ufixnum *sz)
 
 	/* First pass: determine size, legality. */
 	regparse = exp;
+	regend=exp+length;
 	regnpar = 1;
 	regsize = 0L;
 	regcode = &regdummy;
@@ -263,6 +269,7 @@ regcomp(char *exp,ufixnum *sz)
 
 	/* Second pass: emit code. */
 	regparse = exp;
+	regend=exp+length;
 	regnpar = 1;
 	regcode = r->program;
 	regc(MAGIC);
@@ -356,7 +363,7 @@ reg(int paren, int *flagp)
 	if (!(flags&HASWIDTH))
 		*flagp &= ~HASWIDTH;
 	*flagp |= flags&SPSTART;
-	while (*regparse == '|') {
+	while (GET_UCHAR(regparse) == '|') {
 		regparse++;
 		br = regbranch(&flags);
 		if (br == NULL)
@@ -376,10 +383,10 @@ reg(int paren, int *flagp)
 		regoptail(br, ender);
 
 	/* Check for proper termination. */
-	if (paren && *regparse++ != ')') {
+	if (paren && GET_UCHAR(regparse++) != ')') {
 		FAIL("unmatched ()");
-	} else if (!paren && *regparse != '\0') {
-		if (*regparse == ')') {
+	} else if (!paren && GET_UCHAR(regparse) != '\0') {
+	  if (GET_UCHAR(regparse) == ')') {
 			FAIL("unmatched ()");
 		} else
 			FAIL("junk on end");	/* "Can't happen". */
@@ -406,7 +413,7 @@ regbranch(int *flagp)
 
 	ret = regnode(BRANCH);
 	chain = NULL;
-	while (*regparse != '\0' && *regparse != '|' && *regparse != ')') {
+	while (GET_UCHAR(regparse) != '\0' && GET_UCHAR(regparse) != '|' && GET_UCHAR(regparse) != ')') {
 		latest = regpiece(&flags);
 		if (latest == NULL)
 			return(NULL);
@@ -444,7 +451,7 @@ regpiece(int *flagp)
 	if (ret == NULL)
 		return(NULL);
 
-	op = *regparse;
+	op = GET_UCHAR(regparse);
 	if (!ISMULT(op)) {
 		*flagp = flags;
 		return(ret);
@@ -481,7 +488,7 @@ regpiece(int *flagp)
 		regoptail(ret, next);
 	}
 	regparse++;
-	if (ISMULT(*regparse))
+	if (ISMULT(GET_UCHAR(regparse)))
 		FAIL("nested *?+");
 
 	return(ret);
@@ -503,7 +510,7 @@ regatom(int *flagp)
 
 	*flagp = WORST;		/* Tentatively. */
 
-	switch (*regparse++) {
+	switch (GET_UCHAR(regparse++)) {
 	case '^':
 		ret = regnode(BOL);
 		break;
@@ -524,19 +531,19 @@ regatom(int *flagp)
 			register int classend;
 			ret = regnode(ANYOF);
 
-			if (*regparse == '^') {	/* Complement of range. */
+			if (GET_UCHAR(regparse) == '^') {	/* Complement of range. */
 				matches = 0;
 				regparse++;}
-			if (*regparse == ']' || *regparse == '-')
-				REGC(*regparse++);
-			while (*regparse != '\0' && *regparse != ']') {
-				if (*regparse == '-') {
+			if (GET_UCHAR(regparse) == ']' || GET_UCHAR(regparse) == '-')
+			  REGC(GET_UCHAR(regparse++));
+			while (GET_UCHAR(regparse) != '\0' && GET_UCHAR(regparse) != ']') {
+			  if (GET_UCHAR(regparse) == '-') {
 					regparse++;
-					if (*regparse == ']' || *regparse == '\0')
+					if (GET_UCHAR(regparse) == ']' || GET_UCHAR(regparse) == '\0')
 						REGC('-');
 					else {
-						clss = UCHARAT(regparse-2)+1;
-						classend = UCHARAT(regparse);
+						clss = GET_UCHAR(regparse-2)+1;
+						classend = GET_UCHAR(regparse);
 						if (clss > classend+1)
 							FAIL("invalid [] range");
 						for (; clss <= classend; clss++)
@@ -544,10 +551,10 @@ regatom(int *flagp)
 						regparse++;
 					}
 				} else
-					REGC(*regparse++);
+			    REGC(GET_UCHAR(regparse++));
 			}
 			REGC('\0');
-			if (*regparse != ']')
+			if (GET_UCHAR(regparse) != ']')
 				FAIL("unmatched []");
 			regparse++;
 			*flagp |= HASWIDTH|SIMPLE;
@@ -597,10 +604,10 @@ regatom(int *flagp)
 		/* NOTREACHED */
 		break;
 	case '\\':
-		if (*regparse == '\0')
+	  if (GET_UCHAR(regparse) == '\0')
 			FAIL("trailing \\");
 		ret = regnode(EXACTLY);
-		regc(*regparse++);
+		regc(GET_UCHAR(regparse++));
 		regc('\0');
 		*flagp |= HASWIDTH|SIMPLE;
 		break;
@@ -609,10 +616,12 @@ regatom(int *flagp)
 			register char ender;
 
 			regparse--;
-			len = strcspn(regparse, META);
+			len=({ufixnum _l=0;char _c,*_s=regparse;/*strcspn*/
+			    for (;(_c=GET_UCHAR(_s++)) && !strchr(META,_c);_l++);
+			    _l;});
 			if (len <= 0)
 				FAIL("internal disaster");
-			ender = *(regparse+len);
+			ender = GET_UCHAR(regparse+len);
 			if (len > 1 && ISMULT(ender))
 				len--;		/* Back off clear of ?+* operand. */
 			*flagp |= HASWIDTH;
@@ -620,7 +629,7 @@ regatom(int *flagp)
 				*flagp |= SIMPLE;
 			ret = regnode(EXACTLY);
 			while (len > 0) {
-				regc(*regparse++);
+			  regc(GET_UCHAR(regparse++));
 				len--;
 			}
 			regc('\0');
@@ -746,12 +755,9 @@ regoptail(char *p, char *val)
  * Global work variables for regexec().
  */
 static char *reginput;		/* String-input pointer. */
-static char *regend;		/* String-input pointer. */
 static char *regbol;		/* Beginning of input, for ^ check. */
 static char **regstartp;	/* Pointer to startp array. */
 static char **regendp;		/* Ditto for endp. */
-
-#define GET_UCHAR(a_) ({char *_a=(a_);_a<regend ? *(unsigned char *)_a : 0;})
 
 /*
  * Forwards.

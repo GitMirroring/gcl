@@ -65,18 +65,13 @@ DEFUN("MATCH-END",object,fSmatch_end,SI,1,1,NONE,OI,OO,OO,OO,(fixnum i),
 DEFUN("COMPILE-REGEXP",object,fScompile_regexp,SI,1,1,NONE,OO,OO,OO,OO,(object p),
 	  "Provide handle to export pre-compiled regexp's to string-match") {
 
-  char *tmp;
   object res;
   void *v;
   ufixnum sz=0;
 
   p=coerce_to_string(p);
-  if (!(tmp=alloca(VLEN(p)+1)))
-    FEerror("out of C stack",0);
-  memcpy(tmp,p->st.st_self,VLEN(p));
-  tmp[VLEN(p)]=0;
 
-  if (!(v=(void *)regcomp(tmp,&sz)))
+  if (!(v=(void *)regcomp(p->st.st_self,&sz,VLEN(p))))
     FEerror("regcomp failure",0);
 
   res=alloc_object(t_vector);
