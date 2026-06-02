@@ -196,7 +196,7 @@
 (defvar *c-debug* nil)
 (defvar *dump-inl-hash* nil)
 (defun compile-file1 (input-pathname
-                      &key (output-file (compile-file-pathname (truename input-pathname)))
+                      &key (output-file (compile-file-pathname input-pathname))
                            (o-file t)
                            (c-file *default-c-file*)
                            (h-file *default-h-file*)
@@ -261,7 +261,7 @@ Cannot compile ~a.~%" (namestring (merge-pathnames input-pathname *compiler-defa
    (setq *init-name* (init-name output-file t))
    (delete-file output-file)
    (setq *function-filename* (unless *compiler-compile*
-			       (namestring (truename (pathname *compiler-input*)))))
+			       (namestring (pathname *compiler-input*))))
 
    (let* ((eof (cons nil nil))
 	  (device (pathname-device output-file))

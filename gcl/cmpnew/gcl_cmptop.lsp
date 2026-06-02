@@ -179,8 +179,7 @@
 (defun init-name (p &optional sp)
 
   (if sp
-      (let* ((p (truename p))
-	     (pn (pathname-name p))
+      (let* ((pn (pathname-name p))
 	     (g (zerop (si::string-match #v"^gcl_" pn))))
 	(dash-to-underscore
 	 (namestring
@@ -200,7 +199,7 @@
       (dash-to-underscore fname)
       "__"
       (if (boundp '*compiler-input*)
-	  (subseq *init-name* 4)
+	  *init-name*
 	"")))))
 
 (defvar *top-form* nil)
