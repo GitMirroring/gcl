@@ -788,7 +788,7 @@
   (with-open-file (s f :direction :output)
     (prin1 '(in-package :compiler) s)
     (terpri s)
-    (maphash (lambda (x y)
+    (mapc (lambda (l &aux (x (pop l)) (y (car l)))
 	       (prin1
 		`(merge-inls
 		  ',x
@@ -805,7 +805,9 @@
 			     (car y))))
 		s)
 	       (terpri s))
-	     *inl-hash*))
+	  (let (r)
+	    (maphash (lambda (x y) (push (list x y) r)) *inl-hash*)
+	    (sort r 'string< :key (lambda (x) (prin1-to-string (car x)))))))
   nil)
 
 (defun show-inls (fn)
