@@ -23,6 +23,7 @@ LFD(siLsave)(void) {
 
   check_arg(1);
 
+  shared_lib_start=NULL;
   gcl_cleanup(1);
 
   coerce_to_filename(vs_base[0], FN1);
