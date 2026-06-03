@@ -79,7 +79,7 @@ rando(object x, object rs) {
 
 
 #ifdef UNIX
-#define RS_DEF_INIT time(0)
+#define RS_DEF_INIT ({char *e=getenv("SOURCE_DATE_EPOCH");e ? strtoul(e,NULL,10) : time(0);})
 #else
 #define RS_DEF_INIT 0
 #endif
