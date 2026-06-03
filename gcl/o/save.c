@@ -20,6 +20,7 @@ extern void _cleanup();
 LFD(siLsave)(void) {
 
   extern char *kcl_self;
+  extern void *shared_lib_start;
 
   check_arg(1);
 
