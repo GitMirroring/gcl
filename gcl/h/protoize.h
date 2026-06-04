@@ -1675,3 +1675,5 @@ int msbrk_init(void);
 int msbrk_end(void);
 object quick_call_function_vec(object,ufixnum,object *);
 int msbrk_initialized(void);
+void *mdlopen(const char *,int);
+void close_dlopen_list(void);

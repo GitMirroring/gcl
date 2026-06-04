@@ -29,6 +29,8 @@ LFD(siLsave)(void) {
 
   coerce_to_filename(vs_base[0], FN1);
 
+  /*FIXME clean this up when done*/
+  close_dlopen_list();
 #ifdef MEMORY_SAVE
   MEMORY_SAVE(kcl_self,FN1);
 #else	  

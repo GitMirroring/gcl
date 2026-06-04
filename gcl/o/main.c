@@ -573,7 +573,7 @@ init_boot(void) {
   z=alloca(n);
   snprintf(z,n,"%-*.*s%s",(int)m,(int)m,d,s);
 #ifdef USE_LIBBOOT
-  if (!(v=dlopen(z,RTLD_LAZY|RTLD_GLOBAL)))
+  if (!(v=mdlopen(z,RTLD_LAZY|RTLD_GLOBAL)))
     printf("%s\n",dlerror());
   if (!(q=dlsym(v,"gcl_init_boot")))
     printf("%s\n",dlerror());

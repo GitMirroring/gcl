@@ -73,7 +73,27 @@ DEFUN("CFDL",object,fScfdl,SI,0,0,NONE,OO,OO,OO,OO,(void),"") {
   }
   RETURN1(Cnil);
 }
-    
+
+DEFVAR("*DLOPEN-HANDLES*",sSAdlopen_handlesA,SI,Cnil,"");
+
+void
+close_dlopen_list(void) {
+  for (;sSAdlopen_handlesA->s.s_dbind!=Cnil;sSAdlopen_handlesA->s.s_dbind=sSAdlopen_handlesA->s.s_dbind->c.c_cdr)
+    dlclose((void *)fix(sSAdlopen_handlesA->s.s_dbind->c.c_car));
+}
+
+void *
+mdlopen(const char *name,int flags) {
+  void *v=dlopen(name,flags);
+  if (name) {
+    object x=sSAdlopen_handlesA->s.s_dbind;
+    for (;x!=Cnil && fix(x->c.c_car)!=(fixnum)v;x=x->c.c_cdr);
+    if (x==Cnil)
+      sSAdlopen_handlesA->s.s_dbind=MMcons(make_fixnum((fixnum)v),sSAdlopen_handlesA->s.s_dbind);
+  }
+  return v;
+}
+
 DEFUN("DLSYM",object,fSdlsym,SI,2,2,NONE,OI,OO,OO,OO,(fixnum h,object name),"") {
 
   void *ad;
@@ -90,9 +110,9 @@ DEFUN("DLSYM",object,fSdlsym,SI,2,2,NONE,OI,OO,OO,OO,(fixnum h,object name),"") 
   if (h) ad=dlsym((void *)h,FN1);
   {
     static void *n,*u,*c;
-    n=n ? n : dlopen("ntdll.dll",RTLD_LAZY|RTLD_GLOBAL);
-    u=u ? u : dlopen("ucrtbase.dll",RTLD_LAZY|RTLD_GLOBAL);
-    c=c ? c : dlopen("cygwin1.dll",RTLD_LAZY|RTLD_GLOBAL);
+    n=n ? n : mdlopen("ntdll.dll",RTLD_LAZY|RTLD_GLOBAL);
+    u=u ? u : mdlopen("ucrtbase.dll",RTLD_LAZY|RTLD_GLOBAL);
+    c=c ? c : mdlopen("cygwin1.dll",RTLD_LAZY|RTLD_GLOBAL);
     ad=ad ? ad : dlsym(n,FN1);
     ad=ad ? ad : dlsym(u,FN1);
     ad=ad ? ad : dlsym(c,FN1);
@@ -142,10 +162,10 @@ DEFUN("DLOPEN",object,fSdlopen,SI,1,1,NONE,OO,OO,OO,OO,(object name),"") {
   dlerror();
   name=coerce_to_string(name);
   if (!strncmp("libc.so",name->st.st_self,VLEN(name)) || !strncmp("libm.so",name->st.st_self,VLEN(name)))
-    v=dlopen(0,RTLD_LAZY|RTLD_GLOBAL);
+    v=mdlopen(0,RTLD_LAZY|RTLD_GLOBAL);
   else {
     massert(snprintf(FN1,sizeof(FN1),"%-.*s",VLEN(name),name->st.st_self)>0);
-    v=dlopen(FN1,RTLD_LAZY|RTLD_GLOBAL);
+    v=mdlopen(FN1,RTLD_LAZY|RTLD_GLOBAL);
   }
   if ((err=dlerror()))
     FEerror("dlopen failure on ~s: ~s",2,name,make_simple_string(err));
