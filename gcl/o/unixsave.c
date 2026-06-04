@@ -24,6 +24,8 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 	unixsave.c
 */
 
+#define NO_PRELINK_UNEXEC_DIVERSION
+
 #define IN_UNIXSAVE
 #ifndef FIRSTWORD
 #include "include.h"
