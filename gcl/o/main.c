@@ -736,6 +736,8 @@ main(int argc, char **argv, char **envp) {
   GET_FULL_PATH_SELF(kcl_self);
   *argv=kcl_self;
 
+#include "unrandomize.h"
+
   vs_top = vs_base = vs_org;
   ihs_top = ihs_org-1;
   bds_top = bds_org-1;
