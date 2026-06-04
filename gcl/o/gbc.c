@@ -813,7 +813,9 @@ mark_phase(void) {
 #ifndef N_RECURSION_REQD
 #define N_RECURSION_REQD 2
 #endif
-  mark_c_stack(0,N_RECURSION_REQD,mark_stack_carefully);
+
+  if (!saving_system)
+    mark_c_stack(0,N_RECURSION_REQD,mark_stack_carefully);
   
 }
 

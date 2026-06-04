@@ -147,7 +147,8 @@ sgc_mark_phase(void) {
   }
 #endif	
   
-  mark_c_stack(0,N_RECURSION_REQD,mark_stack_carefully);
+  if (!saving_system)
+    mark_c_stack(0,N_RECURSION_REQD,mark_stack_carefully);
   
 }
 

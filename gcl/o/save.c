@@ -27,13 +27,14 @@ LFD(siLsave)(void) {
 
   check_arg(1);
 
-  gcl_cleanup(1);
-
   memset(FN1,0,sizeof(FN1));
   coerce_to_filename(vs_base[0], FN1);
 
-  /*FIXME clean this up when done*/
   close_dlopen_list();
+  gcl_cleanup(1);
+
+  /*FIXME clean this up when done*/
+
   shared_lib_start=NULL;
   memset(gmp_jmp,0,sizeof(gmp_jmp));
   memset(frs_org,0,(frs_limit-frs_org)*sizeof(*frs_org));
