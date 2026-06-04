@@ -134,12 +134,17 @@ funcall_vec(object fun,fixnum n,object *b) {
 
 }
 
+static object eval_vec[MAX_ARGS+1];
+
+void
+clear_eval_vec(void) {
+  memset(eval_vec,0,sizeof(eval_vec));
+}
 
 static object
 funcall_ap(object fun,fixnum n,va_list ap) {
 
-  static object b[MAX_ARGS+1];
-  object *t=b;
+  object *t=eval_vec;
   ufixnum j=labs(n),i;
 
   for (i=j;i--;)
@@ -148,11 +153,11 @@ funcall_ap(object fun,fixnum n,va_list ap) {
     object x=*--t;
     for (i=fun->fun.fun_minarg-(j-1);i--;*t++=x->c.c_car,x=x->c.c_cdr,n--)
       if (x==Cnil)
-	FEtoo_few_arguments(b,t);
+	FEtoo_few_arguments(eval_vec,t);
     *t++=x;
   }
 
-  return funcall_vec(fun,n,b);
+  return funcall_vec(fun,n,eval_vec);
 
 }
     
