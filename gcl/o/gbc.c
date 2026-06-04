@@ -925,6 +925,8 @@ mark_c_stack(jmp_buf env1, int n, void (*fn)(void *,void *,int)) {
   }
 #endif
 
+  c_stack_where=NULL;
+
 }
 
 static void
