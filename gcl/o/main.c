@@ -661,7 +661,7 @@ stack_ret(char *s,unsigned long size) {
   return r;
 }
 
-int
+static int
 get_stack_to_be_allocated(unsigned long size) {
   stack_to_be_allocated=alloca(size);
   memset(stack_to_be_allocated,0,size);
@@ -671,10 +671,14 @@ get_stack_to_be_allocated(unsigned long size) {
 DEFUN("EQUAL-TAIL-RECURSION-CHECK",object,fSequal_tail_recursion_check,SI,1,1,NONE,II,OO,OO,OO,(fixnum s),"") {
   object x0=make_list(s/sizeof(object)),x1=make_list(s/sizeof(object));
   char *w;
+  fixnum f;
+
   get_stack_to_be_allocated(s);
   fLequal(x0,x1);
   for (w=stack_to_be_allocated;w<stack_to_be_allocated+s && !*w;w++);
-  RETURN1((object)(w-stack_to_be_allocated));
+  f=w-stack_to_be_allocated;
+  stack_to_be_allocated=NULL;
+  RETURN1((object)f);
 }
 
 #if !defined(DARWIN)&&!defined(__MINGW32__)
