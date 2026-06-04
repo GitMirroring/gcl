@@ -434,6 +434,10 @@ next_shared_lib_map_no_malloc(void)  {
 static void *stack_map_base=(void *)-1;
 void *shared_lib_start=(void *)-1;
 
+#if defined(__APPLE__) && defined(__aarch64__)
+unsigned long heap_vmsize=INITIAL_HEAP_VMSIZE;
+#endif
+
 static int
 set_real_maxpage(void *beg) {
 
@@ -446,10 +450,7 @@ set_real_maxpage(void *beg) {
   mp=ufmin(mp,get_phys_pages1(0,0));
 
 #if defined(__APPLE__) && defined(__aarch64__)
-  {
-    extern unsigned long heap_vmsize;
-    mp=ufmin(mp,heap_vmsize>>PAGEWIDTH);
-  }
+  mp=ufmin(mp,heap_vmsize>>PAGEWIDTH);
 #endif
 
   sz=ufmin(mem_bound,log_maxpage_bound);

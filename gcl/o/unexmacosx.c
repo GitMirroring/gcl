@@ -1006,6 +1006,9 @@ dump_it () {
   long linkedit_delta=0,linkedit_vmdelta=0,linkedit_vmsize=0,text_vmaddr=0;
   struct segment_command *le_seg=NULL,*tx_seg=NULL;
   unsigned long le_ho=0;
+  extern unsigned long heap_vmsize;
+  extern int in_pre_gcl;/*support libboot.so*/
+  extern char *data_start;
   
 #if VERBOSE
   printf ("--- Load Commands written to Output File ---\n");
@@ -1023,6 +1026,12 @@ dump_it () {
       }
     }
   uassert(le_seg&&tx_seg);
+  {
+    heap_vmsize=							\
+      (in_pre_gcl ? SAVED_PRE_IMAGE_SPAN : SAVED_IMAGE_SPAN) -		\
+      (long)((long)data_start-text_vmaddr) -				\
+      linkedit_vmsize;
+  }
   
   for (i = 0; i < nlc; i++)
     switch (lca[i]->cmd) {
@@ -1049,10 +1058,6 @@ dump_it () {
 	  struct section *sectp = (struct section *) (scp + 1);
 	  unsigned long header_offset=curr_header_offset + sizeof (struct segment_command);
 	  extern int in_pre_gcl;/*support libboot.so*/
-	  unsigned long heap_vmsize=					\
-	    (in_pre_gcl ? SAVED_PRE_IMAGE_SPAN : SAVED_IMAGE_SPAN) -	\
-	    (long)((long)data_start-text_vmaddr) -			\
-	    linkedit_vmsize;
 
 	  if (core_end-data_start>heap_vmsize)
 	    unexec_error ("data exceeds __HEAP vmsize");
