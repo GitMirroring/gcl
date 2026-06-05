@@ -76,18 +76,15 @@ DEFUN("CFDL",object,fScfdl,SI,0,0,NONE,OO,OO,OO,OO,(void),"") {
     
 DEFUN("DLSYM",object,fSdlsym,SI,2,2,NONE,OI,OO,OO,OO,(fixnum h,object name),"") {
 
-  void *ad;
+  void *ad=0;
 
   dlerror();
   name=coerce_to_string(name);
   massert(snprintf(FN1,sizeof(FN1),"%-.*s",VLEN(name),name->st.st_self)>0);
-#ifndef __CYGWIN__
-  ad=dlsym(h ? (void *)h : RTLD_DEFAULT,FN1);
-  ad=ad ? ad : dlsym(RTLD_DEFAULT,FN1);
-  ad=is_text_addr(ad) ? dlsym(RTLD_NEXT,FN1) : ad;
-#else
-  ad=0;
+
   if (h) ad=dlsym((void *)h,FN1);
+
+#if defined(__CYGWIN__)
   {
     static void *n,*u,*c;
     n=n ? n : dlopen("ntdll.dll",RTLD_LAZY|RTLD_GLOBAL);
@@ -96,9 +93,19 @@ DEFUN("DLSYM",object,fSdlsym,SI,2,2,NONE,OI,OO,OO,OO,(fixnum h,object name),"") 
     ad=ad ? ad : dlsym(n,FN1);
     ad=ad ? ad : dlsym(u,FN1);
     ad=ad ? ad : dlsym(c,FN1);
-    ad=ad ? ad : dlsym(RTLD_DEFAULT,FN1);
+  }
+#elif defined (__APPLE__)
+  {
+    static void *v;
+    v=v ? v : dlopen("libSystem.B.dylib",RTLD_LAZY|RTLD_GLOBAL);
+    ad=ad ? ad : dlsym(v,FN1);
   }
 #endif
+
+  ad=ad ? ad : dlsym(RTLD_DEFAULT,FN1);
+
+  ad=is_text_addr(ad) ? dlsym(RTLD_NEXT,FN1) : ad;
+
   if (!ad) {
     char *er=dlerror();
     FEerror("dlsym lookup failure on ~s: ~s",2,name,make_simple_string(er ? er : ""));
