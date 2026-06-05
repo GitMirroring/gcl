@@ -434,7 +434,7 @@ next_shared_lib_map_no_malloc(void)  {
 static void *stack_map_base=(void *)-1;
 void *shared_lib_start=(void *)-1;
 
-#if defined(__APPLE__) && defined(__aarch64__)
+#if defined(__APPLE__)
 unsigned long heap_vmsize=INITIAL_HEAP_VMSIZE;
 #endif
 
@@ -449,7 +449,7 @@ set_real_maxpage(void *beg) {
 
   mp=ufmin(mp,get_phys_pages1(0,0));
 
-#if defined(__APPLE__) && defined(__aarch64__)
+#if defined(__APPLE__)
   mp=ufmin(mp,heap_vmsize>>PAGEWIDTH);
 #endif
 
@@ -723,7 +723,7 @@ DEFUN("KCL-SELF",object,fSkcl_self,SI,0,0,NONE,OO,OO,OO,OO,(void),"") {
 
 }
 
-#if defined(__APPLE__) && defined(__aarch64__)
+#if defined(__APPLE__)
 #include "disable_mac_aslr.h"
 #endif
 
@@ -738,7 +738,7 @@ main(int argc, char **argv, char **envp) {
   bds_top = bds_org-1;
   frs_top = frs_org-1;
 
-#if defined(__APPLE__) && defined(__aarch64__)
+#if defined(__APPLE__)
   disable_aslr(argc, argv, envp);
 #endif
 
