@@ -613,7 +613,7 @@ gcl_init_or_load1(void (*fn)(void),const char *file) {
 
     printf("Initializing %s\n",file);fflush(stdout);
     lpn=make_simple_string(file);
-    if (reproducible)
+    if (raw_image)
       ltn=lpn;
     else {
       massert(realpath(file,FN1));

@@ -289,7 +289,7 @@ DEFUN("READLINKAT",object,fSreadlinkat,SI,2,2,NONE,OI,OO,OO,OO,(fixnum d,object 
 
 DEFUN("GETCWD",object,fSgetcwd,SI,0,0,NONE,OO,OO,OO,OO,(void),"") {
 
-  if (reproducible)
+  if (raw_image)
     massert(snprintf(FN1,sizeof(FN1),"./")>=0);
   else
     massert(getcwd(FN1,sizeof(FN1)));

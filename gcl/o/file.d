@@ -1396,7 +1396,7 @@ load(const char *s) {
 
   filename = make_simple_string(s);
   vs_push(filename);
-  if (reproducible)
+  if (raw_image)
     tfn=filename;
   else {
     massert(realpath(s,FN2));
