@@ -12142,7 +12142,8 @@ LI_GITTAG="$GIT_TAG"
 LI_RELEASE="$RELEASE"
 
 #LI_CC="\"$GCL_CC -c `echo " $FINAL_CFLAGS $LISP_CFLAGS" | sed 's,-pg\b,,g'`\""
-LI_CC="\"$GCL_CC -c `echo " $FINAL_CFLAGS" | sed 's,-pg\b,,g'`\""
+STRIP_FINAL_CFLAGS=`echo $FINAL_CFLAGS | sed "s,$(pwd),<CWD>,g"`
+LI_CC="\"$GCL_CC -c `echo " $STRIP_FINAL_CFLAGS" | sed 's,-pg\b,,g'`\""
 
 LI_DFP="\"$GPL_FLAG\""
 

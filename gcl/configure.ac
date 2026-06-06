@@ -1948,7 +1948,8 @@ AC_SUBST(LI_GITTAG)
 LI_RELEASE="$RELEASE"
 AC_SUBST(LI_RELEASE)
 #LI_CC="\"$GCL_CC -c `echo " $FINAL_CFLAGS $LISP_CFLAGS" | sed 's,-pg\b,,g'`\""
-LI_CC="\"$GCL_CC -c `echo " $FINAL_CFLAGS" | sed 's,-pg\b,,g'`\""
+STRIP_FINAL_CFLAGS=`echo $FINAL_CFLAGS | sed "s,$(pwd),<CWD>,g"`
+LI_CC="\"$GCL_CC -c `echo " $STRIP_FINAL_CFLAGS" | sed 's,-pg\b,,g'`\""
 AC_SUBST(LI_CC)
 LI_DFP="\"$GPL_FLAG\""
 AC_SUBST(LI_DFP)
