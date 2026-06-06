@@ -456,7 +456,7 @@
       (file-output-stream (when outp (c-stream-fp strm))))))
 
 (defun load-pathname-exists (z)
-  (or (probe-file z)
+  (or (when (probe-file z) z)
       (when *allow-gzipped-file*
 	(when (probe-file (string-concatenate (namestring z) ".gz"))
 	  z))))
