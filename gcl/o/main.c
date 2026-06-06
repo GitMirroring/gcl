@@ -737,8 +737,7 @@ DEFUN("KCL-SELF",object,fSkcl_self,SI,0,0,NONE,OO,OO,OO,OO,(void),"") {
 int
 main(int argc, char **argv, char **envp) {
 
-  GET_FULL_PATH_SELF(kcl_self);
-  *argv=kcl_self;
+  kcl_self=*argv;
 
 #include "unrandomize.h"
 
