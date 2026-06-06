@@ -260,7 +260,7 @@ unixport/saved_%: | unixport/raw_% unixport/gcl_cmpnopt_%.lsp \
 		echo "(system:save-system \"../$@\")" | \
 		cat ../unixport/init_raw.lsp prof_init.lsp - | \
 			GCL_LSPSYSDIR=../$(srcdir)/unixport/ \
-				../unixport/raw_$* $$(dirname $$(pwd))/unixport/ -libdir $$(dirname $$(pwd))/  && \
+				../unixport/raw_$* unixport/ -libdir ./  && \
 		rm -f ../unixport/gcl_cmpnopt.lsp
 	rm -rf sb_$*
 
