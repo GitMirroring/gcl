@@ -422,7 +422,7 @@ EXTER long holepage;			/*  hole pages  */
 EXTER fixnum new_holepage,starting_hole_div,starting_relb_heap_mult;
 
 EXTER ulfixnum cumulative_allocation,recent_allocation;
-EXTER ufixnum wait_on_abort;
+EXTER ufixnum wait_on_abort,reproducible;
 EXTER double gc_alloc_min,mem_multiple,gc_page_min,gc_page_max;
 EXTER char *multiprocess_memory_pool;
 

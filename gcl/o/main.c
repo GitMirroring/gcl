@@ -338,6 +338,10 @@ get_gc_environ(void) {
 
   const char *e;
 
+  reproducible=0;
+  if (getenv("GCL_REPRODUCIBLE"))
+    reproducible=1;
+
   mem_multiple=1.0;
   if ((e=getenv("GCL_MEM_MULTIPLE"))) {
     massert(sscanf(e,"%lf",&mem_multiple)==1);

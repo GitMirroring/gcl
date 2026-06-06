@@ -613,8 +613,12 @@ gcl_init_or_load1(void (*fn)(void),const char *file) {
 
     printf("Initializing %s\n",file);fflush(stdout);
     lpn=make_simple_string(file);
-    massert(realpath(file,FN1));
-    ltn=make_simple_string(FN1);
+    if (reproducible)
+      ltn=lpn;
+    else {
+      massert(realpath(file,FN1));
+      ltn=make_simple_string(FN1);
+    }
     memory=new_cfdata();
     memory->d.tt=1;
     memory->cfd.cfd_name=ltn;
