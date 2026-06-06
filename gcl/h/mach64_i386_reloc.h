@@ -2,13 +2,13 @@
 
 #define GOT_RELOC(ri) ri->r_type==X86_64_RELOC_GOT_LOAD||ri->r_type==X86_64_RELOC_GOT
 
-
   case X86_64_RELOC_UNSIGNED:		// for absolute addresses
 
      if (ri->r_extern || !ri->r_pcrel) 
       store_val(q,~0L,ri->r_pcrel ? a-rel : a);
 
     break; 
+
   case X86_64_RELOC_GOT_LOAD:		// a MOVQ load of a GOT entry
   case X86_64_RELOC_GOT:		// a MOVQ load of a GOT entry
 
@@ -24,3 +24,16 @@
 
     break;
 
+  case X86_64_RELOC_SIGNED_1:
+
+     if (ri->r_extern || !ri->r_pcrel)
+       store_val(q,MASK(32),(ri->r_pcrel ? a+1-((ul)q+4) : a)+(signed)(*q&MASK(32)));
+
+    break;
+
+  case X86_64_RELOC_SIGNED_4:
+
+     if (ri->r_extern || !ri->r_pcrel)
+       store_val(q,MASK(32),(ri->r_pcrel ? a+4-((ul)q+4) : a)+(signed)(*q&MASK(32)));
+
+    break;
