@@ -120,6 +120,7 @@ close_pool(void) {
     massert(!close(pool));
     massert(!munmap(Pool,sizeof(struct pool)));
     pool=-1;
+    memset(gcl_pool,0,sizeof(gcl_pool));
   }
 #endif
   
