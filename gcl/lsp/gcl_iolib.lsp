@@ -456,17 +456,17 @@
       (file-output-stream (when outp (c-stream-fp strm))))))
 
 (defun load-pathname-exists (z)
-  (or (when (probe-file z) z)
-      (when *allow-gzipped-file*
-	(when (probe-file (string-concatenate (namestring z) ".gz"))
-	  z))))
+  (when (or (probe-file z)
+	    (when *allow-gzipped-file*
+	      (probe-file (string-concatenate (namestring z) ".gz"))))
+    z))
 
 (defun load-pathname (p print if-does-not-exist external-format
 			&aux (pp (merge-pathnames p))
 			(epp (reduce (lambda (y x) (or y (load-pathname-exists (translate-pathname x "" p))))
 				     '(#P".o" #P".lsp" #P".lisp" #P"") :initial-value nil)));FIXME newest?
   (if epp
-      (let* ((*load-pathname* pp)(*load-truename* epp))
+      (let* ((*load-pathname* pp)(*load-truename* (or (probe-file epp) epp)))
 	(with-open-file
 	 (s epp :external-format external-format)
 	 (if (member (peek-char nil s nil 'eof) '#.(mapcar 'code-char (list 127 #xcf #xce #x4c #x64)))
