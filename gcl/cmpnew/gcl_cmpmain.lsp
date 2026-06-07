@@ -615,7 +615,11 @@ Cannot compile ~a.~%" (namestring (merge-pathnames input-pathname *compiler-defa
 	(concatenate 'string (subseq flags 0 i) (remove-flag flag (subseq flags (+ i (length flag)))))
       flags)))
 
-(defun compiler-command (&rest args &aux (*cc* (mysub *cc* "<CWD>" (namestring si::*current-directory*))))
+(defun compiler-command (&rest args
+			 &aux
+			   (*cc* (mysub *cc* "<CWD>"
+					(let ((s (namestring si::*current-directory*)))
+					  (subseq s 0 (1- (length s)))))))
   (declare (special *c-debug*))
   (format nil  "~a ~a -I~a ~a ~a -c ~a -o ~a"
 	  (concatenate 'string
