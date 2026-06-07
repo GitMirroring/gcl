@@ -76,11 +76,15 @@ LFD(siLsave)(void) {
   }
 
 
+  {
+    void *v=kcl_self;
+    kcl_self=NULL;
 #ifdef MEMORY_SAVE
-  MEMORY_SAVE(kcl_self,FN1);
+    MEMORY_SAVE(v,FN1);
 #else	  
-  memory_save(kcl_self, FN1);
-#endif	
+    memory_save(v, FN1);
+#endif
+  }
 
   /*  no return  */
   exit(0);
