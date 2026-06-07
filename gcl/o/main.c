@@ -654,7 +654,7 @@ gcl_cleanup(int gc) {
 static char *stack_to_be_allocated;
 
 int
-stack_ret(char *s,unsigned long size) {
+stack_ret(volatile char *s,unsigned long size) {
   int r,i;
   for (i=r=0;i<size;i++)
     r^=((unsigned char)s[i])|((ufixnum)(s+i));
@@ -673,10 +673,10 @@ DEFUN("EQUAL-TAIL-RECURSION-CHECK",object,fSequal_tail_recursion_check,SI,1,1,NO
   char *w;
   fixnum f;
 
-  get_stack_to_be_allocated(s);
+  f=get_stack_to_be_allocated(s);
   fLequal(x0,x1);
   for (w=stack_to_be_allocated;w<stack_to_be_allocated+s && !*w;w++);
-  f=w-stack_to_be_allocated;
+  f+=w-stack_to_be_allocated;
   stack_to_be_allocated=NULL;
   RETURN1((object)f);
 }
