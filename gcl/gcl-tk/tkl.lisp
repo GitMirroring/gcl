@@ -1496,7 +1496,7 @@ on ~a as in: ~s~%" host command )))
    (format st "~%(in-package ~s)" (package-name *package*))
    (dolist (v lis) (get-file-autoloads v st))
    (format st "~%(in-package ~s)" (package-name *package*))
-   (format st "~2%~s" `(setq si::*load-path* (append ',*paths* si::*load-path*)))
+   ;(format st "~2%~s" `(setq si::*load-path* (append ',*paths* si::*load-path*)))
 
    ))
 
