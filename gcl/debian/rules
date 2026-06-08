@@ -13,6 +13,8 @@
 #export GCL_MEM_MULTIPLE=0.1
 
 export FORCE_SOURCE_DATE=1
+export FORCE_TEXLIVE_BUILD=1
+export SOURCE_DATE_EPOCH_TEX_PRIMITIVES=1
 
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
