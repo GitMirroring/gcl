@@ -4896,14 +4896,16 @@ info/gcl%.texi: info/gcl.texi
 	touch $@
 
 %.info: %.texi | xbin/mktmp # FIXME parallel ugliness
-	i=$$($| $@);ln -f $< $$i;$(MAKEINFO) $$i --output $@;rm -f $$i
+	i=$$($| $@);ln -f $< $$i;mkdir $$i.d;cp $(<D)/*.texi $$i.d;$(MAKEINFO) $$i.d/$(<F) --output $@;rm -rf $$i*
 %.pdf: %.dvi | xbin/mktmp
 	i=$$($| $@);j=$$i.$$(echo $< | sed 's,.*\.,,g');ln -f $< $$j;\
-		dvipdfm $$j -o $@ && rm -f $$i*
+		mkdir $$j.d;cp $< $$j.d;(cd  $$j.d;dvipdfm $(<F)) && mv $$j.d/$(*F).pdf $@ && rm -rf $$i*
 %.dvi: %.texi | xbin/mktmp
 	i=$$($| $@);j=$$i.$$(echo $< | sed 's,.*\.,,g');ln -f $< $$j;\
 		TEXINPUTS=$(srcdir):$$TEXINPUTS \
-		tex -output-directory=$(@D) $$j|tail && mv $$i.dvi $@ && rm -f $$i*
+		mkdir $$j.d;cp $(<D)/*.texi $$j.d;\
+		(cd $$j.d;TEXINPUTS=$(srcdir):$$TEXINPUTS \
+		tex --output-comment="TeX output" $(<F)|tail) && mv $$j.d/$(*F).dvi $@ && rm -rf $$i*
 %.html: %.texi | xbin/mktmp
 	mkdir -p $@
 	i=$$($| $@);ln -f $< $$i;$(MAKEINFO) --html $$i --output $@;rm -f $$i
