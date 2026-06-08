@@ -40,10 +40,11 @@
       (destructuring-bind
 	  (output-truename warnings-p failure-p)
 	  vals
-	(print (namestring (truename target-pathname)))
-	(print (namestring output-truename))
+;	(print (namestring (truename target-pathname)))
+;	(print (namestring output-truename))
 	(values
-	 (let ((v1 (or print verbose
+	 (let ((v0 (string= (namestring (truename target-pathname)) (namestring output-truename)))
+	       (v1 (or print verbose
 		       (and (not print-p) *compile-print*)
 		       (and (not verbose-p) *compile-verbose*)
 		       (string= str "")))
@@ -57,8 +58,8 @@
 	       (v7 (equalpt-or-report (namestring (truename target-pathname))
 				      (namestring output-truename)))
 	       (v8 (not (fboundp funname))))
-	   (if (and v1 v2 v3 v4 v5 v6 (eql v7 t) v8) t
-	     (list v1 v2 v3 v4 v5 v6 v7 v8)))
+	   (if (and v0 v1 v2 v3 v4 v5 v6 (eql v7 t) v8) t
+	     (list v0 v1 v2 v3 v4 v5 v6 v7 v8)))
 	 (progn
 	   (load output-truename)
 	   (funcall funname)))))))

@@ -39,4 +39,5 @@
 
 ;#+gcl(fpe::break-on-floating-point-exceptions :division-by-zero t :floating-point-overflow t :floating-point-underflow t)
 
-(time (regression-test:do-tests))
+(regression-test:do-tests)
+;(time (regression-test:do-tests))
