@@ -25,7 +25,11 @@
   (declare (dynamic-extent r))
   (let* ((n (name-lib n))
 	 (psym (find-symbol n pk))
-	 (psyms (if psym (push psym r) (when (zerop (length n)) (do-symbols (s pk r) (push s r)))))
+	 (psyms (if psym
+		    (push psym r)
+		    (when (zerop (length n))
+		      (when (fboundp 'typep);FIXME
+			(do-symbols (s pk r) (push s r))))))
 	 sym
 	 (vals (mapc (lambda (x &aux (s (find-symbol str x)))
 		       (when s
@@ -35,7 +39,7 @@
     sym))
 
 (defun mdlsym (str &optional (n "" np)
-		     &aux (pk #.(or (find-package "LIB") (make-package "LIB"))))
+		     &aux (pk (load-time-value (or (find-package "LIB") (make-package "LIB")))))
   (or
    (fdlsym str n pk);FIXME repeated dlsym unreliable on non-Linux
    (let* ((k  (if np (dlopen n) 0))
