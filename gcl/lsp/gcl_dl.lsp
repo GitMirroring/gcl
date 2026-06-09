@@ -25,16 +25,16 @@
     (setq n (esubseq n 0 (match-beginning 1))))
   n)
 
-(defun find-internal-symbol (str p)
+(defun find-external-symbol (str p)
   (multiple-value-bind (sym key) (find-symbol str p)
-    (when (eq key :internal)
+    (when (eq key :external)
       sym)))
 
 (defun fdlsym (str n pk &aux r sym)
   (declare (dynamic-extent r))
   (let* ((n (name-lib n))
 	 (psym (find-symbol n pk)))
-    (mapc (lambda (x &aux (s (find-internal-symbol str x)))
+    (mapc (lambda (x &aux (s (find-external-symbol str x)))
 	    (when s
 	      (when (if sym (<= (symbol-value s) (symbol-value sym)) t)
 		(setq sym s))))
