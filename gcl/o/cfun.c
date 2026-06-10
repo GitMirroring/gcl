@@ -82,29 +82,9 @@ DEFUN("DLSYM",object,fSdlsym,SI,2,2,NONE,OI,OO,OO,OO,(fixnum h,object name),"") 
   name=coerce_to_string(name);
   massert(snprintf(FN1,sizeof(FN1),"%-.*s",VLEN(name),name->st.st_self)>0);
 
-  if (h) ad=dlsym((void *)h,FN1);
+  ad=dlsym(h ? (void *)h : RTLD_DEFAULT,FN1);
 
-#if defined(__CYGWIN__)
-  {
-    static void *n,*u,*c;
-    n=n ? n : dlopen("ntdll.dll",RTLD_LAZY|RTLD_GLOBAL);
-    u=u ? u : dlopen("ucrtbase.dll",RTLD_LAZY|RTLD_GLOBAL);
-    c=c ? c : dlopen("cygwin1.dll",RTLD_LAZY|RTLD_GLOBAL);
-    ad=ad ? ad : dlsym(n,FN1);
-    ad=ad ? ad : dlsym(u,FN1);
-    ad=ad ? ad : dlsym(c,FN1);
-  }
-#elif defined (__APPLE__)
-  {
-    static void *v;
-    v=v ? v : dlopen("libSystem.B.dylib",RTLD_LAZY|RTLD_GLOBAL);
-    ad=ad ? ad : dlsym(v,FN1);
-  }
-#endif
-
-  ad=ad ? ad : dlsym(RTLD_DEFAULT,FN1);
-
-  ad=is_text_addr(ad) ? dlsym(RTLD_NEXT,FN1) : ad;
+  ad=ad && is_text_addr(ad) ? dlsym(RTLD_NEXT,FN1) : ad;
 
   if (!ad) {
     char *er=dlerror();
@@ -148,12 +128,8 @@ DEFUN("DLOPEN",object,fSdlopen,SI,1,1,NONE,OO,OO,OO,OO,(object name),"") {
 
   dlerror();
   name=coerce_to_string(name);
-  if (!strncmp("libc.so",name->st.st_self,VLEN(name)) || !strncmp("libm.so",name->st.st_self,VLEN(name)))
-    v=dlopen(0,RTLD_LAZY|RTLD_GLOBAL);
-  else {
-    massert(snprintf(FN1,sizeof(FN1),"%-.*s",VLEN(name),name->st.st_self)>0);
-    v=dlopen(FN1,RTLD_LAZY|RTLD_GLOBAL);
-  }
+  massert(snprintf(FN1,sizeof(FN1),"%-.*s",VLEN(name),name->st.st_self)>=0);
+  v=dlopen(strlen(FN1) ? FN1 : 0,RTLD_LAZY|RTLD_GLOBAL);
   if ((err=dlerror()))
     FEerror("dlopen failure on ~s: ~s",2,name,make_simple_string(err));
 
