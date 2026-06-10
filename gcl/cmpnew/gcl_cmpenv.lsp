@@ -258,7 +258,12 @@
      (local-fun-fn fname)
      (get fname 'cmp-inline)
      (member (symbol-package fname)
-	     (load-time-value (mapcar #'symbol-package (list 'c-t-tt (mdlsym "sin") (mdlsym "memmove"))))))))
+	     (load-time-value
+	      (remove-duplicates
+	       (mapcar #'symbol-package
+		       (list 'c-t-tt
+			     (mdlsym "fabs");FOXME dladdr macos unreliable, need core mdl in raw images
+			     (mdlsym "sin") (mdlsym "memmove")))))))))
 
 ;; (defun inline-asserted (fname)
 ;;   (unless *compiler-push-events*
