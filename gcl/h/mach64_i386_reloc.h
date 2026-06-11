@@ -20,20 +20,20 @@
   case X86_64_RELOC_BRANCH:		// a CALL/JMP instruction with 32-bit displacement
 
      if (ri->r_extern || !ri->r_pcrel) 	   
-       store_val(q,MASK(32),(ri->r_pcrel ? a-((ul)q+4) : a)+(signed)(*q&MASK(32)));
+       store_vals(q,MASK(32),(ri->r_pcrel ? a-((ul)q+4) : a)+(signed)(*q&MASK(32)));
 
     break;
 
   case X86_64_RELOC_SIGNED_1:
 
      if (ri->r_extern || !ri->r_pcrel)
-       store_val(q,MASK(32),(ri->r_pcrel ? a+1-((ul)q+4) : a)+(signed)(*q&MASK(32)));
+       store_vals(q,MASK(32),(ri->r_pcrel ? a-((ul)q+4+1) : a)+(signed)(*q&MASK(32)));
 
     break;
 
   case X86_64_RELOC_SIGNED_4:
 
      if (ri->r_extern || !ri->r_pcrel)
-       store_val(q,MASK(32),(ri->r_pcrel ? a+4-((ul)q+4) : a)+(signed)(*q&MASK(32)));
+       store_vals(q,MASK(32),(ri->r_pcrel ? a-((ul)q+4+4) : a)+(signed)(*q&MASK(32)));
 
     break;
