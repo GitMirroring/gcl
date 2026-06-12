@@ -17,23 +17,11 @@
     a=(ul)got;
 
   case X86_64_RELOC_SIGNED:		// for signed 32-bit displacement
+  case X86_64_RELOC_SIGNED_1:           // adjustment in *q
+  case X86_64_RELOC_SIGNED_4:           // adjustment in *q
   case X86_64_RELOC_BRANCH:		// a CALL/JMP instruction with 32-bit displacement
 
      if (ri->r_extern || !ri->r_pcrel) 	   
        store_vals(q,MASK(32),(ri->r_pcrel ? a-((ul)q+4) : a)+(signed)(*q&MASK(32)));
-
-    break;
-
-  case X86_64_RELOC_SIGNED_1:
-
-     if (ri->r_extern || !ri->r_pcrel)
-       store_vals(q,MASK(32),(ri->r_pcrel ? a-((ul)q+4+1) : a)+(signed)(*q&MASK(32)));
-
-    break;
-
-  case X86_64_RELOC_SIGNED_4:
-
-     if (ri->r_extern || !ri->r_pcrel)
-       store_vals(q,MASK(32),(ri->r_pcrel ? a-((ul)q+4+4) : a)+(signed)(*q&MASK(32)));
 
     break;
