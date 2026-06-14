@@ -864,6 +864,7 @@ typedef struct {
 typedef struct {
   uint32_t magic;      /* 0xfade0b01 (CSMAGIC_BLOBWRAPPER) */
   uint32_t length;     /* Total length of header + CMS data */
+  uint8_t zero[18040-30];
 } CS_BlobWrapper;
 
 #include <CommonCrypto/CommonDigest.h>
@@ -893,7 +894,7 @@ dump_code_signature(struct segment_command *le_seg,
   CS_Requirements rq;
   CS_BlobWrapper cms;
   const char *id="GCL";
-  const long nss=2,ss=32,id_len=RNDUP(strlen(id)+1,8);
+  const long nss=2,ss=32,id_len=strlen(id)+1;
   long cd_len,len,np,i;
   uint8_t hash[32],data[PAGESIZE];
   void *v;
@@ -901,11 +902,6 @@ dump_code_signature(struct segment_command *le_seg,
 
   lseek(outfd,0,SEEK_END);
   len=lseek(outfd,0,SEEK_CUR);
-  if (len%16) {
-    unsigned long x=0;
-    mwrite(&x,sizeof(x));
-    len=lseek(outfd,0,SEEK_CUR);
-  }
   ldc.dataoff=len;
 
   np=RNDUP(len,PAGESIZE)>>PAGEWIDTH;
@@ -931,7 +927,7 @@ dump_code_signature(struct segment_command *le_seg,
   mpwrite(&mh,sizeof(mh),0);
 
   sb.magic=htonl(0xfade0cc0);
-  sb.length=htonl(sizeof(sb)+sizeof(bi)+cd_len+sizeof(rq)+sizeof(cms));
+  sb.length=htonl(ldc.datasize-sizeof(cms.zero)-2);
   sb.count=htonl(sizeof(bi)/sizeof(*bi));
   mwrite(&sb,sizeof(sb));
 
@@ -972,7 +968,7 @@ dump_code_signature(struct segment_command *le_seg,
   mwrite(v,id_len);
 
   rq.magic=htonl(0xfade0c01);
-  rq.length=htonl(12);
+  rq.length=htonl(sizeof(rq));
   rq.count=htonl(0);
   CC_SHA256(&rq,sizeof(rq),hash);
   mwrite(hash,sizeof(hash));
@@ -991,6 +987,7 @@ dump_code_signature(struct segment_command *le_seg,
 
   cms.magic=htonl(0xfade0b01);
   cms.length=htonl(8);
+  memset(cms.zero,0,sizeof(cms.zero));
   mwrite(&cms,sizeof(cms));
 
   return 0;
