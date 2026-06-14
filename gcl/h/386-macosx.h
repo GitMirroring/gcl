@@ -20,11 +20,6 @@
 #undef HAVE_AOUT
 #undef HAVE_ELF
 
-
-/* Alternatively, we could use the global variable vm_page_size.  */
-#define PAGEWIDTH 12
-
-
 #include <unistd.h> /* to get sbrk defined */
 
 
@@ -154,7 +149,7 @@ do {                                                        \
 				     REG_LIST(8,MCF(__fpu_stmm0)),REG_LIST(16,MCF(__fpu_xmm0)));})
 
 
-#include <sys/param.h>/*PATH_MAX MAXPATHLEN*/
+#include <sys/param.h>
 #undef MIN
 #undef MAX
 
