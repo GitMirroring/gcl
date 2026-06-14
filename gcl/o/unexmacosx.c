@@ -912,7 +912,7 @@ dump_code_signature(struct segment_command *le_seg,
   curr_header_offset+=ldc.cmdsize;
 
   le_seg->filesize+=ldc.datasize;
-  le_seg->vmsize+=RNDUP(ldc.datasize,PAGESIZE);
+  le_seg->vmsize+=RNDUP(ldc.datasize,1<<14);
   mpwrite(le_seg,sizeof(*le_seg),le_ho);
 
   uassert(curr_header_offset<=text_seg_lowest_offset);
@@ -977,9 +977,9 @@ dump_code_signature(struct segment_command *le_seg,
   mwrite(hash,sizeof(hash));
 
   for (i=0;i<np;i++) {
-    uassert(memset(data,0,sizeof(data)));
-    mpred(data,i==np-1 ? ntohl(cd.codeLimit)-(i<<PAGEWIDTH) : sizeof(data),i<<PAGEWIDTH);
-    CC_SHA256(data,sizeof(data),hash);
+    unsigned long n=i==np-1 ? ntohl(cd.codeLimit)-(i<<PAGEWIDTH) : sizeof(data);
+    mpred(data,n,i<<PAGEWIDTH);
+    CC_SHA256(data,n,hash);
     mwrite(hash,sizeof(hash));
   }
 
@@ -987,7 +987,6 @@ dump_code_signature(struct segment_command *le_seg,
 
   cms.magic=htonl(0xfade0b01);
   cms.length=htonl(8);
-  memset(cms.zero,0,sizeof(cms.zero));
   mwrite(&cms,sizeof(cms));
 
   return 0;
