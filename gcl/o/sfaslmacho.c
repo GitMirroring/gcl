@@ -96,7 +96,7 @@ store_vals(ul *w,ul m,ul v) {
 static int
 add_vals(ul *w,ul m,ul v) {
 
-  return store_vals(w,m,v+(*w&m));
+  return store_vals(w,m,v+(*w&m)-((*w&((m+1)>>1))<<1));
 
 }
 
