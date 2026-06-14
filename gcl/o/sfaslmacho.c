@@ -467,12 +467,10 @@ dup_sym(char *src) {
   if ((c=strstr(src,e))) {
     memcpy(buf,src,(c-src));
     buf[c-src]=0;
-    printf("dup %s -> %s\n",src,buf);
     return buf;
   }
   if (!strcmp(src,"_my_free")||!strcmp(src,"_my_calloc")||!strcmp(src,"_my_malloc")||!strcmp(src,"_my_realloc")) {
     strcpy(buf,src+3);
-    printf("dup %s -> %s\n",src,buf);
     return buf;
   }
   return NULL;
