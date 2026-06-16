@@ -10,7 +10,7 @@
 (defun esubseq (s &optional (b 0) (e (length s)) &aux (s (string s)));avoid mdl/memmove call in subseq
   (make-vector 'character (- e b) nil nil s b nil nil))
 
-(defun name-lib (n)
+(defun name-lib (n &aux (n (string n)))
   (when (>= (string-match (load-time-value (compile-regexp "\([^/]*\)$")) n) 0)
     (setq n (esubseq n (match-beginning 1) (match-end 1))))
   (when (>= (string-match (load-time-value (compile-regexp "(\.(so|dylib|dll))$")) n) 0)
