@@ -28,6 +28,10 @@ LFD(siLsave)(void) {
   check_arg(1);
 
   memset(FN1,0,sizeof(FN1));
+  gcl_cleanup(1);
+
+  set_global_env_defaults();
+
   coerce_to_filename(vs_base[0], FN1);
 
   close_dlopen_list();

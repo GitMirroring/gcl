@@ -333,18 +333,29 @@ acceptable_log_maxpage_bound(ufixnum l) {
      (void *)heap_end-data_start+CEI(rb_pointer-rb_begin(),PAGESIZE) < (1UL<<(l+1)));
 }
 
+void
+set_global_env_defaults(void) {
+  mem_multiple=1.0;
+  mem_bound=sizeof(fixnum)*8-1;
+  gc_alloc_min=0.05;
+  gc_page_min=0.5;
+  gc_page_max=0.75;
+  multiprocess_memory_pool=NULL;
+  wait_on_abort=0;
+}
+
 static void
 get_gc_environ(void) {
 
   const char *e;
 
-  mem_multiple=1.0;
+  set_global_env_defaults();
+
   if ((e=getenv("GCL_MEM_MULTIPLE"))) {
     massert(sscanf(e,"%lf",&mem_multiple)==1);
     massert(mem_multiple>=0.0);
   }
 
-  mem_bound=sizeof(fixnum)*8-1;
   if ((e=getenv("GCL_MEM_BOUND"))) {
     ufixnum f;
     massert(sscanf(e,"%lud",&f)==1);
@@ -354,19 +365,16 @@ get_gc_environ(void) {
     }
   }
 
-  gc_alloc_min=0.05;
   if ((e=getenv("GCL_GC_ALLOC_MIN"))) {
     massert(sscanf(e,"%lf",&gc_alloc_min)==1);
     massert(gc_alloc_min>=0.0);
   }
 
-  gc_page_min=0.5;
   if ((e=getenv("GCL_GC_PAGE_MIN"))||(e=getenv("GCL_GC_PAGE_THRESH"))) {/*legacy support*/
     massert(sscanf(e,"%lf",&gc_page_min)==1);
     massert(gc_page_min>=0.0);
   }
 
-  gc_page_max=0.75;
   if ((e=getenv("GCL_GC_PAGE_MAX"))) {
     massert(sscanf(e,"%lf",&gc_page_max)==1);
     massert(gc_page_max>=0.0);
@@ -377,7 +385,6 @@ get_gc_environ(void) {
       (*multiprocess_memory_pool=='t' || *multiprocess_memory_pool=='T'))/*GCL 2.6 compatability*/
     multiprocess_memory_pool=getenv("HOME");
 
-  wait_on_abort=0;
   if ((e=getenv("GCL_WAIT_ON_ABORT")))
     massert(sscanf(e,"%lu",&wait_on_abort)==1);
 
