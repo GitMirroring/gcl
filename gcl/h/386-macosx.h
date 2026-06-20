@@ -20,11 +20,6 @@
 #undef HAVE_AOUT
 #undef HAVE_ELF
 
-
-/* Alternatively, we could use the global variable vm_page_size.  */
-#define PAGEWIDTH 12
-
-
 #include <unistd.h> /* to get sbrk defined */
 
 
@@ -107,18 +102,17 @@ do {int c=0;                                                            \
 
 #define GET_FULL_PATH_SELF(a_)                              \
 do {                                                        \
-extern int _NSGetExecutablePath (char *, unsigned long *);  \
-unsigned long bufsize = 1024;                               \
-static char buf [1024];                                     \
-static char fub [1024];                                     \
-if (_NSGetExecutablePath (buf, &bufsize) != 0) {            \
+  uint32_t bufsize = 1024;				    \
+  static char buf [1024];				    \
+  static char fub [1024];				    \
+  if (_NSGetExecutablePath (buf, &bufsize) != 0) {	    \
     error ("_NSGetExecutablePath failed");                  \
-}                                                           \
-if (realpath (buf, fub) == 0) {                             \
+  }							    \
+  if (realpath (buf, fub) == 0) {			    \
     error ("realpath failed");                              \
-}                                                           \
-(a_) = fub;                                                 \
-} while (0)
+  }							    \
+  (a_) = fub;						    \
+ } while (0)
 
 #ifdef _LP64
 #define C_GC_OFFSET 4
@@ -155,7 +149,7 @@ if (realpath (buf, fub) == 0) {                             \
 				     REG_LIST(8,MCF(__fpu_stmm0)),REG_LIST(16,MCF(__fpu_xmm0)));})
 
 
-#include <sys/param.h>/*PATH_MAX MAXPATHLEN*/
+#include <sys/param.h>
 #undef MIN
 #undef MAX
 

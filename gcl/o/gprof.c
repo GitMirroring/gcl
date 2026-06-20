@@ -6,7 +6,7 @@
 static unsigned long gprof_on;
 
 /*all but this stub to be written in the future provided*/
-#if defined(__APPLE__) && defined(__aarch64__)
+#if defined(__APPLE__)
 void
 _mcleanup(void) {
   return;

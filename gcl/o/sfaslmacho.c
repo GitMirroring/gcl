@@ -48,7 +48,7 @@ typedef unsigned long ul;
 STATIC_RELOC_VARS
 #endif
 
-static int
+static inline int
 ovchks(ul v,ul m) {
 
   m|=m>>1;
@@ -58,14 +58,14 @@ ovchks(ul v,ul m) {
 
 }
 
-static int
+static inline int
 ovchku(ul v,ul m) {
 
   return !(v&=m);
 
 }
 
-static int
+static inline int
 store_val(ul *w,ul m,ul v) {
 
   *w=(v&m)|(*w&~m);
@@ -74,7 +74,7 @@ store_val(ul *w,ul m,ul v) {
 
 }
 
-static int
+static inline int
 store_valu(ul *w,ul m,ul v) {
 
   massert(ovchku(v,~m));
@@ -84,7 +84,7 @@ store_valu(ul *w,ul m,ul v) {
 
 }
 
-static int
+static inline int
 store_vals(ul *w,ul m,ul v) {
 
   massert(ovchks(v,~m));
@@ -92,21 +92,19 @@ store_vals(ul *w,ul m,ul v) {
 
 }
 
-#ifdef W_X
-static int
+static inline int
 add_vals(ul *w,ul m,ul v) {
 
-  return store_vals(w,m,v+(*w&m));
+  return store_vals(w,m,v+(*w&m)-((*w&((m+1)>>1))<<1));
 
 }
 
-static int
+static inline int
 add_valu(ul *w,ul m,ul v) {
 
   return store_valu(w,m,v+(*w&m));
 
 }
-#endif
 
 #ifndef _LP64
 /*redirect trampolines gcc-4.0 gives no reloc for stub sections on x86 only*/
@@ -467,12 +465,10 @@ dup_sym(char *src) {
   if ((c=strstr(src,e))) {
     memcpy(buf,src,(c-src));
     buf[c-src]=0;
-    printf("dup %s -> %s\n",src,buf);
     return buf;
   }
   if (!strcmp(src,"_my_free")||!strcmp(src,"_my_calloc")||!strcmp(src,"_my_malloc")||!strcmp(src,"_my_realloc")) {
     strcpy(buf,src+3);
-    printf("dup %s -> %s\n",src,buf);
     return buf;
   }
   return NULL;

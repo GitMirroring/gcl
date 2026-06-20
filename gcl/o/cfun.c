@@ -101,24 +101,10 @@ DEFUN("DLSYM",object,fSdlsym,SI,2,2,NONE,OI,OO,OO,OO,(fixnum h,object name),"") 
   dlerror();
   name=coerce_to_string(name);
   massert(snprintf(FN1,sizeof(FN1),"%-.*s",VLEN(name),name->st.st_self)>0);
-#ifndef __CYGWIN__
+
   ad=dlsym(h ? (void *)h : RTLD_DEFAULT,FN1);
-  ad=ad ? ad : dlsym(RTLD_DEFAULT,FN1);
-  ad=is_text_addr(ad) ? dlsym(RTLD_NEXT,FN1) : ad;
-#else
-  ad=0;
-  if (h) ad=dlsym((void *)h,FN1);
-  {
-    static void *n,*u,*c;
-    n=n ? n : mdlopen("ntdll.dll",RTLD_LAZY|RTLD_GLOBAL);
-    u=u ? u : mdlopen("ucrtbase.dll",RTLD_LAZY|RTLD_GLOBAL);
-    c=c ? c : mdlopen("cygwin1.dll",RTLD_LAZY|RTLD_GLOBAL);
-    ad=ad ? ad : dlsym(n,FN1);
-    ad=ad ? ad : dlsym(u,FN1);
-    ad=ad ? ad : dlsym(c,FN1);
-    ad=ad ? ad : dlsym(RTLD_DEFAULT,FN1);
-  }
-#endif
+  ad=ad && is_text_addr(ad) ? dlsym(RTLD_NEXT,FN1) : ad;
+
   if (!ad) {
     char *er=dlerror();
     FEerror("dlsym lookup failure on ~s: ~s",2,name,make_simple_string(er ? er : ""));
@@ -161,12 +147,8 @@ DEFUN("DLOPEN",object,fSdlopen,SI,1,1,NONE,OO,OO,OO,OO,(object name),"") {
 
   dlerror();
   name=coerce_to_string(name);
-  if (!strncmp("libc.so",name->st.st_self,VLEN(name)) || !strncmp("libm.so",name->st.st_self,VLEN(name)))
-    v=mdlopen(0,RTLD_LAZY|RTLD_GLOBAL);
-  else {
-    massert(snprintf(FN1,sizeof(FN1),"%-.*s",VLEN(name),name->st.st_self)>0);
-    v=mdlopen(FN1,RTLD_LAZY|RTLD_GLOBAL);
-  }
+  massert(snprintf(FN1,sizeof(FN1),"%-.*s",VLEN(name),name->st.st_self)>=0);
+  v=mdlopen(strlen(FN1) ? FN1 : 0,RTLD_LAZY|RTLD_GLOBAL);
   if ((err=dlerror()))
     FEerror("dlopen failure on ~s: ~s",2,name,make_simple_string(err));
 

@@ -864,6 +864,7 @@ typedef struct {
 typedef struct {
   uint32_t magic;      /* 0xfade0b01 (CSMAGIC_BLOBWRAPPER) */
   uint32_t length;     /* Total length of header + CMS data */
+  uint8_t zero[18040-30];
 } CS_BlobWrapper;
 
 #include <CommonCrypto/CommonDigest.h>
@@ -893,7 +894,7 @@ dump_code_signature(struct segment_command *le_seg,
   CS_Requirements rq;
   CS_BlobWrapper cms;
   const char *id="GCL";
-  const long nss=2,ss=32,id_len=RNDUP(strlen(id)+1,8);
+  const long nss=2,ss=32,id_len=strlen(id)+1;
   long cd_len,len,np,i;
   uint8_t hash[32],data[PAGESIZE];
   void *v;
@@ -901,11 +902,6 @@ dump_code_signature(struct segment_command *le_seg,
 
   lseek(outfd,0,SEEK_END);
   len=lseek(outfd,0,SEEK_CUR);
-  if (len%16) {
-    unsigned long x=0;
-    mwrite(&x,sizeof(x));
-    len=lseek(outfd,0,SEEK_CUR);
-  }
   ldc.dataoff=len;
 
   np=RNDUP(len,PAGESIZE)>>PAGEWIDTH;
@@ -916,7 +912,7 @@ dump_code_signature(struct segment_command *le_seg,
   curr_header_offset+=ldc.cmdsize;
 
   le_seg->filesize+=ldc.datasize;
-  le_seg->vmsize+=RNDUP(ldc.datasize,PAGESIZE);
+  le_seg->vmsize+=RNDUP(ldc.datasize,1<<14);
   mpwrite(le_seg,sizeof(*le_seg),le_ho);
 
   uassert(curr_header_offset<=text_seg_lowest_offset);
@@ -931,7 +927,7 @@ dump_code_signature(struct segment_command *le_seg,
   mpwrite(&mh,sizeof(mh),0);
 
   sb.magic=htonl(0xfade0cc0);
-  sb.length=htonl(sizeof(sb)+sizeof(bi)+cd_len+sizeof(rq)+sizeof(cms));
+  sb.length=htonl(ldc.datasize-sizeof(cms.zero)-2);
   sb.count=htonl(sizeof(bi)/sizeof(*bi));
   mwrite(&sb,sizeof(sb));
 
@@ -972,7 +968,7 @@ dump_code_signature(struct segment_command *le_seg,
   mwrite(v,id_len);
 
   rq.magic=htonl(0xfade0c01);
-  rq.length=htonl(12);
+  rq.length=htonl(sizeof(rq));
   rq.count=htonl(0);
   CC_SHA256(&rq,sizeof(rq),hash);
   mwrite(hash,sizeof(hash));
@@ -981,9 +977,9 @@ dump_code_signature(struct segment_command *le_seg,
   mwrite(hash,sizeof(hash));
 
   for (i=0;i<np;i++) {
-    uassert(memset(data,0,sizeof(data)));
-    mpred(data,i==np-1 ? ntohl(cd.codeLimit)-(i<<PAGEWIDTH) : sizeof(data),i<<PAGEWIDTH);
-    CC_SHA256(data,sizeof(data),hash);
+    unsigned long n=i==np-1 ? ntohl(cd.codeLimit)-(i<<PAGEWIDTH) : sizeof(data);
+    mpred(data,n,i<<PAGEWIDTH);
+    CC_SHA256(data,n,hash);
     mwrite(hash,sizeof(hash));
   }
 
@@ -1006,6 +1002,9 @@ dump_it () {
   long linkedit_delta=0,linkedit_vmdelta=0,linkedit_vmsize=0,text_vmaddr=0;
   struct segment_command *le_seg=NULL,*tx_seg=NULL;
   unsigned long le_ho=0;
+  extern unsigned long heap_vmsize;
+  extern int in_pre_gcl;/*support libboot.so*/
+  extern char *data_start;
   
 #if VERBOSE
   printf ("--- Load Commands written to Output File ---\n");
@@ -1023,6 +1022,12 @@ dump_it () {
       }
     }
   uassert(le_seg&&tx_seg);
+  {
+    heap_vmsize=							\
+      (in_pre_gcl ? SAVED_PRE_IMAGE_SPAN : SAVED_IMAGE_SPAN) -		\
+      (long)((long)data_start-text_vmaddr) -				\
+      linkedit_vmsize;
+  }
   
   for (i = 0; i < nlc; i++)
     switch (lca[i]->cmd) {
@@ -1049,10 +1054,6 @@ dump_it () {
 	  struct section *sectp = (struct section *) (scp + 1);
 	  unsigned long header_offset=curr_header_offset + sizeof (struct segment_command);
 	  extern int in_pre_gcl;/*support libboot.so*/
-	  unsigned long heap_vmsize=					\
-	    (in_pre_gcl ? SAVED_PRE_IMAGE_SPAN : SAVED_IMAGE_SPAN) -	\
-	    (long)((long)data_start-text_vmaddr) -			\
-	    linkedit_vmsize;
 
 	  if (core_end-data_start>heap_vmsize)
 	    unexec_error ("data exceeds __HEAP vmsize");
