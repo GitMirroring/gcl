@@ -864,7 +864,6 @@ typedef struct {
 typedef struct {
   uint32_t magic;      /* 0xfade0b01 (CSMAGIC_BLOBWRAPPER) */
   uint32_t length;     /* Total length of header + CMS data */
-  uint8_t zero[18040-30];
 } CS_BlobWrapper;
 
 #include <CommonCrypto/CommonDigest.h>
@@ -927,7 +926,7 @@ dump_code_signature(struct segment_command *le_seg,
   mpwrite(&mh,sizeof(mh),0);
 
   sb.magic=htonl(0xfade0cc0);
-  sb.length=htonl(ldc.datasize-sizeof(cms.zero)-2);
+  sb.length=htonl(ldc.datasize);
   sb.count=htonl(sizeof(bi)/sizeof(*bi));
   mwrite(&sb,sizeof(sb));
 
