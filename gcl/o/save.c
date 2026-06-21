@@ -43,12 +43,16 @@ LFD(siLsave)(void) {
   memset(ihs_org,0,(ihs_limit-ihs_org)*sizeof(*ihs_org));
   memset(vs_org,0,(vs_limit-vs_org)*sizeof(*vs_org));
   {
+#if !defined(__APPLE__)
     extern char **__environ;
+#endif
     extern FILE *rl_instream;
     extern char *rl_line_buffer;
     extern void clear_eval_vec(void);
 
+#if !defined(__APPLE__)
     __environ=NULL;
+#endif
     rl_instream=NULL;
     rl_readline_name=NULL;
     rl_line_buffer=NULL;
