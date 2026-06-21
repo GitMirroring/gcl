@@ -28,10 +28,6 @@ LFD(siLsave)(void) {
   check_arg(1);
 
   memset(FN1,0,sizeof(FN1));
-  gcl_cleanup(1);
-
-  set_global_env_defaults();
-
   coerce_to_filename(vs_base[0], FN1);
 
   close_dlopen_list();
@@ -39,6 +35,7 @@ LFD(siLsave)(void) {
 
   /*FIXME clean this up when done*/
 
+  set_global_env_defaults();
   shared_lib_start=NULL;
   memset(gmp_jmp,0,sizeof(gmp_jmp));
   memset(frs_org,0,(frs_limit-frs_org)*sizeof(*frs_org));

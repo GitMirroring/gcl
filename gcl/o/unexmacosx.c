@@ -1049,10 +1049,8 @@ dump_it () {
 
 	} else if (strncmp (scp->segname, "__HEAP", 16) == 0) {
 
-	  extern char *data_start;
 	  struct section *sectp = (struct section *) (scp + 1);
 	  unsigned long header_offset=curr_header_offset + sizeof (struct segment_command);
-	  extern int in_pre_gcl;/*support libboot.so*/
 
 	  if (core_end-data_start>heap_vmsize)
 	    unexec_error ("data exceeds __HEAP vmsize");
