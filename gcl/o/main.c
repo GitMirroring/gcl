@@ -743,7 +743,7 @@ main(int argc, char **argv, char **envp) {
 
   kcl_self=*argv;
 
-#include "unrandomize.h"
+/* #include "unrandomize.h" */
 
   vs_top = vs_base = vs_org;
   ihs_top = ihs_org-1;
@@ -752,6 +752,8 @@ main(int argc, char **argv, char **envp) {
 
 #if defined(__APPLE__)
   disable_aslr(argc, argv, envp);
+#else
+  #include "unrandomize.h"
 #endif
 
 #include "cstack.h"
