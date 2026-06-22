@@ -191,12 +191,4 @@ object ihs_top_function_name(ihs_ptr h);
 
 #define ASSERT(a_) do {if (!(a_)) NERROR("The assertion " #a_ " failed");} while (0)
 
-#define gcl_abort()  ({\
-   frame_ptr fr=frs_sch_catch(sSPtop_abort_tagP->s.s_dbind);\
-   vs_base[0]=sSPtop_abort_tagP->s.s_dbind;\
-   vs_top=vs_base+1;\
-   if (fr) unwind(fr,sSPtop_abort_tagP->s.s_dbind);\
-   abort();\
- })
-
 #endif /*ERROR_H*/

@@ -28,7 +28,7 @@ disable_aslr(int argc, char **argv, char **envp) {
   posix_spawnattr_setflags(&attr, POSIX_SPAWN_SETEXEC | POSIX_SPAWN_DISABLE_ASLR);
   if (posix_spawn(&pid, argv[0], NULL, &attr, argv, envp)) {
     perror("posix_spawn to disable ASLR failed");
-    gcl_abort();
+    do_gcl_abort();
   }
   posix_spawnattr_destroy(&attr);
 
@@ -92,9 +92,6 @@ disable_aslr(int argc, char **argv, char **envp) {
 
   long pers;
   long flag = ADDR_NO_RANDOMIZE|(sizeof(flag)==4 ? ADDR_LIMIT_3GB : 0);
-  int i,j,k;
-  char **n,**a;
-  void *v;
 
   massert((pers=personality(-1))!=-1);
 

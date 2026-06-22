@@ -1963,7 +1963,7 @@ DEFUN("SOCKET-INT",object,fSsocket_int,SI,7,7,NONE,OO,OO,OO,OO,
 	    exit(0);
 	    break;
 	  case -1:
-	    gcl_abort();
+	    do_gcl_abort();
 	    break;
 	  default:
 	    close_stream(y);

@@ -273,7 +273,7 @@ before_interrupt(struct save_for_interrupt *p,int allowed) {
 #include "usig2_aux.c"
 
    if (pp-p->save_objects>=(sizeof(p->save_objects)/sizeof(void *)))
-     gcl_abort();
+     do_gcl_abort();
 
  }
 

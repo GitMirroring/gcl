@@ -60,7 +60,6 @@ LFD(siLsave)(void) {
     cs_limit=NULL;
     cs_base=NULL;
     cs_org=NULL;
-    /* memset(FN1,0,sizeof(FN1)); */
     memset(FN2,0,sizeof(FN2));
     memset(FN3,0,sizeof(FN3));
     memset(FN4,0,sizeof(FN4));
@@ -75,7 +74,6 @@ LFD(siLsave)(void) {
     my_rl_completion_entry_function_ptr=NULL;
 
   }
-
 
   {
     void *v=kcl_self;

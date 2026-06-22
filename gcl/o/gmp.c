@@ -10,7 +10,7 @@ static void *gcl_gmp_realloc(void *oldmem, size_t oldsize, size_t newsize)
 {
   unsigned int *old,*new;
   if (!jmp_gmp) { /* No gc in alloc if jmp_gmp */
-    if (MP_SELF(big_gcprotect)) gcl_abort();
+    if (MP_SELF(big_gcprotect)) do_gcl_abort();
     MP_SELF(big_gcprotect)=oldmem;
     MP_ALLOCATED(big_gcprotect)=oldsize/MP_LIMB_SIZE;
   }

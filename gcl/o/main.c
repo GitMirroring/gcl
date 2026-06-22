@@ -627,8 +627,15 @@ DEFVAR("*CODE-BLOCK-RESERVE*",sSAcode_block_reserveA,SI,Cnil,"");
 void
 gcl_cleanup(int gc) {
 
+  frame_ptr fr;
+
   if (getenv("GCL_WAIT"))
     sleep(30);
+
+   fr=frs_sch_catch(sSPtop_abort_tagP->s.s_dbind);\
+   vs_base[0]=sSPtop_abort_tagP->s.s_dbind;\
+   vs_top=vs_base+1;\
+   if (fr) unwind(fr,sSPtop_abort_tagP->s.s_dbind);\
 
 #ifdef USE_GPROF
   gprof_cleanup();
@@ -809,7 +816,7 @@ error(char *s)
   printf("\nUnrecoverable error: %s.\n", s);
   fflush(stdout);
 #ifdef UNIX
-  gcl_abort();
+  do_gcl_abort();
 #endif
 }
 

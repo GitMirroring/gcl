@@ -61,7 +61,7 @@
 #endif
 
 #define VOID void
-#define ERROR_MESSAGE(msg)     do{ emsg(msg); gcl_abort() ; } while(0)
+#define ERROR_MESSAGE(msg)     do{ emsg(msg); do_gcl_abort() ; } while(0)
 
 #ifdef STAND
 
