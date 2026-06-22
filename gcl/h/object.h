@@ -630,7 +630,7 @@ EXTER object sSlambda_block_expanded;
 # ifdef __GNUC__ 
 # define assert(ex)\
 {if (!(ex)){(void)fprintf(stderr, \
-    "Assertion failed: file \"%s\", line %d\n", __FILE__, __LINE__);gcl_abort();}}
+    "Assertion failed: file \"%s\", line %d\n", __FILE__, __LINE__);do_gcl_abort();}}
 # else
 # define assert(ex)
 # endif
@@ -652,7 +652,7 @@ EXTER object sSlambda_block_expanded;
 #define END_NO_INTERRUPT_SAFE \
   signals_allowed = old_signals_allowed; \
   if (signals_pending) \
-    do{ if(signals_allowed ==0) /* should not get here*/gcl_abort(); \
+    do{ if(signals_allowed ==0) /* should not get here*/do_gcl_abort(); \
    raise_pending_signals(sig_safe)}while(0)
 
 
