@@ -27,6 +27,7 @@ LFD(siLsave)(void) {
   coerce_to_filename(vs_base[0], FN1);
 
   close_dlopen_list();
+  frs_top=frs_org-1;
   gcl_cleanup(1);
 
   /*FIXME clean this up when done*/

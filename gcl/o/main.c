@@ -632,10 +632,12 @@ gcl_cleanup(int gc) {
   if (getenv("GCL_WAIT"))
     sleep(30);
 
-   fr=frs_sch_catch(sSPtop_abort_tagP->s.s_dbind);\
-   vs_base[0]=sSPtop_abort_tagP->s.s_dbind;\
-   vs_top=vs_base+1;\
-   if (fr) unwind(fr,sSPtop_abort_tagP->s.s_dbind);\
+  if (sSPtop_abort_tagP && sSPtop_abort_tagP->s.s_dbind!=Cnil) {
+    fr=frs_sch_catch(sSPtop_abort_tagP->s.s_dbind);
+    vs_base[0]=sSPtop_abort_tagP->s.s_dbind;
+    vs_top=vs_base+1;
+    if (fr) unwind(fr,sSPtop_abort_tagP->s.s_dbind);
+  }
 
 #ifdef USE_GPROF
   gprof_cleanup();
