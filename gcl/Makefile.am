@@ -158,7 +158,7 @@ C_SRC=o/typespec.c o/alloc.c o/gbc.c  o/main.c o/eval.c o/macros.c o/lex.c o/bds
       o/unixfsys.c o/unixfasl.c o/error.c o/unixtime.c o/unixsys.c o/unixsave.c o/funlink.c  o/fat_string.c\
       o/run_process.c o/usig.c o/usig2.c o/utils.c o/makefun.c o/sockets.c o/gmp_wrappers.c\
       o/nsocket.c o/prelink.c o/sfasl.c o/msbrk.c \
-      o/user_init.c o/user_match.c o/mapfun.c
+      o/user_init.c o/user_match.c o/mapfun.c o/disable_aslr.c
 #     o/bitop.c o/nfunlink.c o/clxsocket.c
 #     o/bcmp.c o/bcopy.c o/bzero.c
 

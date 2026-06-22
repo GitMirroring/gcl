@@ -187,16 +187,17 @@ am__lib_libbase_gcl_a_SOURCES_DIST = o/typespec.c o/alloc.c o/gbc.c \
 	o/fat_string.c o/run_process.c o/usig.c o/usig2.c o/utils.c \
 	o/makefun.c o/sockets.c o/gmp_wrappers.c o/nsocket.c \
 	o/prelink.c o/sfasl.c o/msbrk.c o/user_init.c o/user_match.c \
-	o/mapfun.c h/compbas2.h h/compbas.h h/compprotos.h h/cstack.h \
-	h/enum.h h/error.h h/eval.h h/fixnum.h h/frame.h h/funlink.h \
-	h/globals.h h/gmp_wrappers.h h/immnum.h h/include.h h/lex.h \
-	h/linux.h h/lu.h h/make-init.h h/mp.h h/notcomp.h \
-	h/num_include.h h/object.h h/options.h h/page.h h/pageinfo.h \
-	h/pbits.h h/pool.h h/prelink.h h/protoize.h h/ptable.h \
-	h/rgbc.h h/sfun_argd.h h/stacks.h h/type.h h/usig.h h/vs.h \
-	h/writable.h o/regexp.h h/arth.h h/bsd.h h/bds.h h/att_ext.h \
-	h/bfdef.h h/compat.h gcl-tk/sheader.h h/make-decl.h h/defun.h \
-	o/ntheap.h h/compdefs.h h/cmpincl1.h h/mgmp.h h/cmponly_last.h \
+	o/mapfun.c o/disable_aslr.c h/compbas2.h h/compbas.h \
+	h/compprotos.h h/cstack.h h/enum.h h/error.h h/eval.h \
+	h/fixnum.h h/frame.h h/funlink.h h/globals.h h/gmp_wrappers.h \
+	h/immnum.h h/include.h h/lex.h h/linux.h h/lu.h h/make-init.h \
+	h/mp.h h/notcomp.h h/num_include.h h/object.h h/options.h \
+	h/page.h h/pageinfo.h h/pbits.h h/pool.h h/prelink.h \
+	h/protoize.h h/ptable.h h/rgbc.h h/sfun_argd.h h/stacks.h \
+	h/type.h h/usig.h h/vs.h h/writable.h o/regexp.h h/arth.h \
+	h/bsd.h h/bds.h h/att_ext.h h/bfdef.h h/compat.h \
+	gcl-tk/sheader.h h/make-decl.h h/defun.h o/ntheap.h \
+	h/compdefs.h h/cmpincl1.h h/mgmp.h h/cmponly_last.h \
 	h/elf32_armhf_reloc.h h/elf32_armhf_reloc_special.h \
 	h/elf32_arm_reloc.h h/elf32_arm_reloc_special.h \
 	h/elf32_hppa_reloc.h h/elf32_hppa_reloc_special.h \
@@ -245,7 +246,7 @@ am__objects_1 = o/typespec.$(OBJEXT) o/alloc.$(OBJEXT) o/gbc.$(OBJEXT) \
 	o/gmp_wrappers.$(OBJEXT) o/nsocket.$(OBJEXT) \
 	o/prelink.$(OBJEXT) o/sfasl.$(OBJEXT) o/msbrk.$(OBJEXT) \
 	o/user_init.$(OBJEXT) o/user_match.$(OBJEXT) \
-	o/mapfun.$(OBJEXT)
+	o/mapfun.$(OBJEXT) o/disable_aslr.$(OBJEXT)
 am__objects_2 =
 @AMM_LIBBOOT_FALSE@am__objects_3 = o/boot.$(OBJEXT)
 am_lib_libbase_gcl_a_OBJECTS = $(am__objects_1) $(am__objects_2) \
@@ -273,16 +274,17 @@ am__lib_libbase_gcl_gprof_a_SOURCES_DIST = o/typespec.c o/alloc.c \
 	o/fat_string.c o/run_process.c o/usig.c o/usig2.c o/utils.c \
 	o/makefun.c o/sockets.c o/gmp_wrappers.c o/nsocket.c \
 	o/prelink.c o/sfasl.c o/msbrk.c o/user_init.c o/user_match.c \
-	o/mapfun.c h/compbas2.h h/compbas.h h/compprotos.h h/cstack.h \
-	h/enum.h h/error.h h/eval.h h/fixnum.h h/frame.h h/funlink.h \
-	h/globals.h h/gmp_wrappers.h h/immnum.h h/include.h h/lex.h \
-	h/linux.h h/lu.h h/make-init.h h/mp.h h/notcomp.h \
-	h/num_include.h h/object.h h/options.h h/page.h h/pageinfo.h \
-	h/pbits.h h/pool.h h/prelink.h h/protoize.h h/ptable.h \
-	h/rgbc.h h/sfun_argd.h h/stacks.h h/type.h h/usig.h h/vs.h \
-	h/writable.h o/regexp.h h/arth.h h/bsd.h h/bds.h h/att_ext.h \
-	h/bfdef.h h/compat.h gcl-tk/sheader.h h/make-decl.h h/defun.h \
-	o/ntheap.h h/compdefs.h h/cmpincl1.h h/mgmp.h h/cmponly_last.h \
+	o/mapfun.c o/disable_aslr.c h/compbas2.h h/compbas.h \
+	h/compprotos.h h/cstack.h h/enum.h h/error.h h/eval.h \
+	h/fixnum.h h/frame.h h/funlink.h h/globals.h h/gmp_wrappers.h \
+	h/immnum.h h/include.h h/lex.h h/linux.h h/lu.h h/make-init.h \
+	h/mp.h h/notcomp.h h/num_include.h h/object.h h/options.h \
+	h/page.h h/pageinfo.h h/pbits.h h/pool.h h/prelink.h \
+	h/protoize.h h/ptable.h h/rgbc.h h/sfun_argd.h h/stacks.h \
+	h/type.h h/usig.h h/vs.h h/writable.h o/regexp.h h/arth.h \
+	h/bsd.h h/bds.h h/att_ext.h h/bfdef.h h/compat.h \
+	gcl-tk/sheader.h h/make-decl.h h/defun.h o/ntheap.h \
+	h/compdefs.h h/cmpincl1.h h/mgmp.h h/cmponly_last.h \
 	h/elf32_armhf_reloc.h h/elf32_armhf_reloc_special.h \
 	h/elf32_arm_reloc.h h/elf32_arm_reloc_special.h \
 	h/elf32_hppa_reloc.h h/elf32_hppa_reloc_special.h \
@@ -367,7 +369,8 @@ am__objects_5 = o/lib_libbase_gcl_gprof_a-typespec.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-msbrk.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-user_init.$(OBJEXT) \
 	o/lib_libbase_gcl_gprof_a-user_match.$(OBJEXT) \
-	o/lib_libbase_gcl_gprof_a-mapfun.$(OBJEXT)
+	o/lib_libbase_gcl_gprof_a-mapfun.$(OBJEXT) \
+	o/lib_libbase_gcl_gprof_a-disable_aslr.$(OBJEXT)
 @AMM_LIBBOOT_FALSE@am__objects_6 =  \
 @AMM_LIBBOOT_FALSE@	o/lib_libbase_gcl_gprof_a-boot.$(OBJEXT)
 am__objects_7 = $(am__objects_5) $(am__objects_2) $(am__objects_2) \
@@ -492,8 +495,8 @@ am__depfiles_remade = bin/$(DEPDIR)/dpp.Po \
 	o/$(DEPDIR)/bind.Po o/$(DEPDIR)/block.Po o/$(DEPDIR)/boot.Po \
 	o/$(DEPDIR)/catch.Po o/$(DEPDIR)/cfun.Po \
 	o/$(DEPDIR)/character.Po o/$(DEPDIR)/cmpaux.Po \
-	o/$(DEPDIR)/conditional.Po o/$(DEPDIR)/earith.Po \
-	o/$(DEPDIR)/error.Po o/$(DEPDIR)/eval.Po \
+	o/$(DEPDIR)/conditional.Po o/$(DEPDIR)/disable_aslr.Po \
+	o/$(DEPDIR)/earith.Po o/$(DEPDIR)/error.Po o/$(DEPDIR)/eval.Po \
 	o/$(DEPDIR)/fat_string.Po o/$(DEPDIR)/file.Po \
 	o/$(DEPDIR)/format.Po o/$(DEPDIR)/frame.Po \
 	o/$(DEPDIR)/funlink.Po o/$(DEPDIR)/gbc.Po \
@@ -514,6 +517,7 @@ am__depfiles_remade = bin/$(DEPDIR)/dpp.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-character.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-cmpaux.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-conditional.Po \
+	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-disable_aslr.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-earith.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-error.Po \
 	o/$(DEPDIR)/lib_libbase_gcl_gprof_a-eval.Po \
@@ -870,7 +874,6 @@ TK_INCLUDE = @TK_INCLUDE@
 TK_LIBRARY = @TK_LIBRARY@
 TK_LIB_SPEC = @TK_LIB_SPEC@
 TK_XLIB_DIR = @TK_XLIB_DIR@
-USE_CLEANUP = @USE_CLEANUP@
 VERSION = @VERSION@
 WORDS_BIGENDIAN = @WORDS_BIGENDIAN@
 XMKMF = @XMKMF@
@@ -1056,7 +1059,7 @@ C_SRC = o/typespec.c o/alloc.c o/gbc.c  o/main.c o/eval.c o/macros.c o/lex.c o/b
       o/unixfsys.c o/unixfasl.c o/error.c o/unixtime.c o/unixsys.c o/unixsave.c o/funlink.c  o/fat_string.c\
       o/run_process.c o/usig.c o/usig2.c o/utils.c o/makefun.c o/sockets.c o/gmp_wrappers.c\
       o/nsocket.c o/prelink.c o/sfasl.c o/msbrk.c \
-      o/user_init.c o/user_match.c o/mapfun.c
+      o/user_init.c o/user_match.c o/mapfun.c o/disable_aslr.c
 
 #     o/bitop.c o/nfunlink.c o/clxsocket.c
 #     o/bcmp.c o/bcopy.c o/bzero.c
@@ -1390,6 +1393,8 @@ o/msbrk.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/user_init.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/user_match.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/mapfun.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
+o/disable_aslr.$(OBJEXT): o/$(am__dirstamp) \
+	o/$(DEPDIR)/$(am__dirstamp)
 o/boot.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/character.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
 o/file.$(OBJEXT): o/$(am__dirstamp) o/$(DEPDIR)/$(am__dirstamp)
@@ -1533,6 +1538,8 @@ o/lib_libbase_gcl_gprof_a-user_init.$(OBJEXT): o/$(am__dirstamp) \
 o/lib_libbase_gcl_gprof_a-user_match.$(OBJEXT): o/$(am__dirstamp) \
 	o/$(DEPDIR)/$(am__dirstamp)
 o/lib_libbase_gcl_gprof_a-mapfun.$(OBJEXT): o/$(am__dirstamp) \
+	o/$(DEPDIR)/$(am__dirstamp)
+o/lib_libbase_gcl_gprof_a-disable_aslr.$(OBJEXT): o/$(am__dirstamp) \
 	o/$(DEPDIR)/$(am__dirstamp)
 o/lib_libbase_gcl_gprof_a-boot.$(OBJEXT): o/$(am__dirstamp) \
 	o/$(DEPDIR)/$(am__dirstamp)
@@ -1748,6 +1755,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/character.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/cmpaux.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/conditional.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/disable_aslr.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/earith.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/error.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/eval.Po@am__quote@ # am--include-marker
@@ -1778,6 +1786,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-character.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-cmpaux.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-conditional.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-disable_aslr.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-earith.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-error.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@o/$(DEPDIR)/lib_libbase_gcl_gprof_a-eval.Po@am__quote@ # am--include-marker
@@ -2759,6 +2768,20 @@ o/lib_libbase_gcl_gprof_a-mapfun.obj: o/mapfun.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='o/mapfun.c' object='o/lib_libbase_gcl_gprof_a-mapfun.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libbase_gcl_gprof_a-mapfun.obj `if test -f 'o/mapfun.c'; then $(CYGPATH_W) 'o/mapfun.c'; else $(CYGPATH_W) '$(srcdir)/o/mapfun.c'; fi`
+
+o/lib_libbase_gcl_gprof_a-disable_aslr.o: o/disable_aslr.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libbase_gcl_gprof_a-disable_aslr.o -MD -MP -MF o/$(DEPDIR)/lib_libbase_gcl_gprof_a-disable_aslr.Tpo -c -o o/lib_libbase_gcl_gprof_a-disable_aslr.o `test -f 'o/disable_aslr.c' || echo '$(srcdir)/'`o/disable_aslr.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) o/$(DEPDIR)/lib_libbase_gcl_gprof_a-disable_aslr.Tpo o/$(DEPDIR)/lib_libbase_gcl_gprof_a-disable_aslr.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='o/disable_aslr.c' object='o/lib_libbase_gcl_gprof_a-disable_aslr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libbase_gcl_gprof_a-disable_aslr.o `test -f 'o/disable_aslr.c' || echo '$(srcdir)/'`o/disable_aslr.c
+
+o/lib_libbase_gcl_gprof_a-disable_aslr.obj: o/disable_aslr.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libbase_gcl_gprof_a-disable_aslr.obj -MD -MP -MF o/$(DEPDIR)/lib_libbase_gcl_gprof_a-disable_aslr.Tpo -c -o o/lib_libbase_gcl_gprof_a-disable_aslr.obj `if test -f 'o/disable_aslr.c'; then $(CYGPATH_W) 'o/disable_aslr.c'; else $(CYGPATH_W) '$(srcdir)/o/disable_aslr.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) o/$(DEPDIR)/lib_libbase_gcl_gprof_a-disable_aslr.Tpo o/$(DEPDIR)/lib_libbase_gcl_gprof_a-disable_aslr.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='o/disable_aslr.c' object='o/lib_libbase_gcl_gprof_a-disable_aslr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -c -o o/lib_libbase_gcl_gprof_a-disable_aslr.obj `if test -f 'o/disable_aslr.c'; then $(CYGPATH_W) 'o/disable_aslr.c'; else $(CYGPATH_W) '$(srcdir)/o/disable_aslr.c'; fi`
 
 o/lib_libbase_gcl_gprof_a-boot.o: o/boot.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lib_libbase_gcl_gprof_a_CPPFLAGS) $(CPPFLAGS) $(lib_libbase_gcl_gprof_a_CFLAGS) $(CFLAGS) -MT o/lib_libbase_gcl_gprof_a-boot.o -MD -MP -MF o/$(DEPDIR)/lib_libbase_gcl_gprof_a-boot.Tpo -c -o o/lib_libbase_gcl_gprof_a-boot.o `test -f 'o/boot.c' || echo '$(srcdir)/'`o/boot.c
@@ -4011,6 +4034,7 @@ distclean: distclean-am
 	-rm -f o/$(DEPDIR)/character.Po
 	-rm -f o/$(DEPDIR)/cmpaux.Po
 	-rm -f o/$(DEPDIR)/conditional.Po
+	-rm -f o/$(DEPDIR)/disable_aslr.Po
 	-rm -f o/$(DEPDIR)/earith.Po
 	-rm -f o/$(DEPDIR)/error.Po
 	-rm -f o/$(DEPDIR)/eval.Po
@@ -4041,6 +4065,7 @@ distclean: distclean-am
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-character.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-cmpaux.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-conditional.Po
+	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-disable_aslr.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-earith.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-error.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-eval.Po
@@ -4323,6 +4348,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f o/$(DEPDIR)/character.Po
 	-rm -f o/$(DEPDIR)/cmpaux.Po
 	-rm -f o/$(DEPDIR)/conditional.Po
+	-rm -f o/$(DEPDIR)/disable_aslr.Po
 	-rm -f o/$(DEPDIR)/earith.Po
 	-rm -f o/$(DEPDIR)/error.Po
 	-rm -f o/$(DEPDIR)/eval.Po
@@ -4353,6 +4379,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-character.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-cmpaux.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-conditional.Po
+	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-disable_aslr.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-earith.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-error.Po
 	-rm -f o/$(DEPDIR)/lib_libbase_gcl_gprof_a-eval.Po

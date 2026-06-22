@@ -74,6 +74,7 @@ configure-stamp:
 	eval `dpkg-buildflags --export=sh` && \
 	CC=$(MCC) CFLAGS="$$CFLAGS $(CFLAGS_APPEND)" ./configure \
 		--host=$$(dpkg-architecture -qDEB_HOST_GNU_TYPE) \
+		--disable-aslr \
 		$(DEBUG) \
 		--prefix=/usr
 

@@ -734,29 +734,21 @@ DEFUN("KCL-SELF",object,fSkcl_self,SI,0,0,NONE,OO,OO,OO,OO,(void),"") {
 
 }
 
-#if defined(__APPLE__)
-#include "disable_mac_aslr.h"
-#endif
-
 int
 main(int argc, char **argv, char **envp) {
 
-  kcl_self=*argv;
+#ifdef DISABLE_ASLR
+  disable_aslr(argc,argv,envp);
+#endif
 
-/* #include "unrandomize.h" */
+#include "cstack.h"
+
+  kcl_self=*argv;
 
   vs_top = vs_base = vs_org;
   ihs_top = ihs_org-1;
   bds_top = bds_org-1;
   frs_top = frs_org-1;
-
-#if defined(__APPLE__)
-  disable_aslr(argc, argv, envp);
-#else
-  #include "unrandomize.h"
-#endif
-
-#include "cstack.h"
 
   gcl_init_alloc(alloca(1));
 

@@ -813,6 +813,7 @@ enable_debug
 enable_static
 enable_pic
 enable_dependency_tracking
+enable_aslr
 enable_text_base
 enable_segment_alignment_bits
 enable_initial_heap_vmsize
@@ -1493,6 +1494,7 @@ Optional Features:
                           do not reject slow dependency extractors
   --disable-dependency-tracking
                           speeds up one-time build
+  --disable-aslr will ensure reproducible builds and/or work around absent no-pie
   --enable-text_base=0x.... set base address for __TEXT
   --enable-segment_alignment_bits=... set bit alignment for mach-o image segments
   --enable-initial_heap_vmsize=0x.... set heap size for raw images
@@ -7441,6 +7443,35 @@ add_args_to_cflags  -fsigned-char -pipe -fcommon \
 		    -fbracket-depth=512
 
 add_args_to_ldflags -no-pie -Wl,-z,relro # -Wl,-z,lazy
+
+# Check whether --enable-aslr was given.
+if test ${enable_aslr+y}
+then :
+  enableval=$enable_aslr; enable_aslr=$enableval
+else case e in #(
+  e) enable_asrl="yes" ;;
+esac
+fi
+
+
+{ printf '%s\n' "$as_me:${as_lineno-$LINENO}: checking whether aslr must be disabled due to absent -no-pie" >&5
+printf %s "checking whether aslr must be disabled due to absent -no-pie... " >&6; }
+if ! echo $LDFLAGS |grep -q -w '\-no\-pie'; then
+   { printf '%s\n' "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf '%s\n' "yes" >&6; }
+   enable_aslr="no"
+else
+   { printf '%s\n' "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf '%s\n' "no" >&6; }
+fi
+
+if test "$enable_aslr" != "yes" ; then
+
+printf '%s\n' "#define DISABLE_ASLR 1" >>confdefs.h
+
+fi
+
+
 
 { printf '%s\n' "$as_me:${as_lineno-$LINENO}: checking for inline semantics" >&5
 printf %s "checking for inline semantics... " >&6; }

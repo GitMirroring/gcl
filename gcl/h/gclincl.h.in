@@ -15,6 +15,9 @@
 /* debug safecdr code */
 #undef DEBUG_SAFE_CDR
 
+/* disable aslr */
+#undef DISABLE_ASLR
+
 /* big endian word order */
 #undef DOUBLE_BIGENDIAN
 
@@ -334,9 +337,6 @@
    required in a freestanding environment). This macro is provided for
    backward compatibility; new code need not use it. */
 #undef STDC_HEADERS
-
-/* have _cleanup function */
-#undef USE_CLEANUP
 
 /* use fionbio for non-blocking io */
 #undef USE_FIONBIO
