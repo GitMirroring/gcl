@@ -683,45 +683,6 @@ DEFUN("EQUAL-TAIL-RECURSION-CHECK",object,fSequal_tail_recursion_check,SI,1,1,NO
   RETURN1((object)f);
 }
 
-#if !defined(DARWIN)&&!defined(__MINGW32__)
-
-static int
-mbin(const char *s,char *o) {
-
-  struct stat ss;
-
-  if (!stat(s,&ss) && (ss.st_mode&S_IFMT)==S_IFREG && !access(s,R_OK|X_OK)) {
-    massert(realpath(s,o));
-    return 1;
-  }
-
-  return 0;
-
-}
-
-static int
-which(const char *n,char *o) {
-
-  char *s;
-
-  if (strchr(n,'/'))
-    return mbin(n,o);
-
-  massert(snprintf(FN1,sizeof(FN1),"%s",getenv("PATH"))>1);
-  for (s=NULL;(s=strtok(s ? NULL : FN1,":"));) {
-
-    massert(snprintf(FN2,sizeof(FN2),"%s/%s",s,n));
-    if (mbin(FN2,o))
-      return 1;
-
-  }
-
-  return 0;
-
-}
-
-#endif
-
 DEFUN("KCL-SELF",object,fSkcl_self,SI,0,0,NONE,OO,OO,OO,OO,(void),"") {
 
   return make_simple_string(kcl_self);
