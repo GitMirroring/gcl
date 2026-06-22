@@ -624,17 +624,11 @@ gcl_mprotect(void *v,unsigned long l,int p) {
 
 DEFVAR("*CODE-BLOCK-RESERVE*",sSAcode_block_reserveA,SI,Cnil,"");
 
-#define HAVE_GCL_CLEANUP
-
 void
 gcl_cleanup(int gc) {
 
   if (getenv("GCL_WAIT"))
     sleep(30);
-
-#if defined(USE_CLEANUP)
-  {extern void _cleanup(void);_cleanup();}
-#endif
 
 #ifdef USE_GPROF
   gprof_cleanup();

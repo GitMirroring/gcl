@@ -15,10 +15,6 @@ memory_save(char *original_file, char *save_file)
   unexec(save_file,original_file,0,0,0);
 }
 
-#ifdef USE_CLEANUP
-extern void _cleanup();
-#endif
-
 LFD(siLsave)(void) {
 
   extern char *kcl_self;

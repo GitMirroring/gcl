@@ -1756,9 +1756,6 @@ if test "$no_setenv" = "1" ; then
     AC_SUBST(HAVE_PUTENV)
 fi
 
-AC_CHECK_FUNC(_cleanup, [AC_DEFINE(USE_CLEANUP,1,[have _cleanup function])],)
-AC_SUBST(USE_CLEANUP)
-
 AC_MSG_CHECKING([FIONBIO vs. O_NONBLOCK for nonblocking I/O])
 
 case $system in

@@ -663,7 +663,6 @@ TCLSH
 HAVE_SIGEMT
 HAVE_SIGSYS
 HAVE_SV_ONSTACK
-USE_CLEANUP
 HAVE_PUTENV
 HAVE_SETENV
 NO_PROFILE
@@ -11607,16 +11606,6 @@ fi
 
 
 fi
-
-ac_fn_c_check_func "$LINENO" "_cleanup" "ac_cv_func__cleanup"
-if test "x$ac_cv_func__cleanup" = xyes
-then :
-
-printf '%s\n' "#define USE_CLEANUP 1" >>confdefs.h
-
-fi
-
-
 
 { printf '%s\n' "$as_me:${as_lineno-$LINENO}: checking FIONBIO vs. O_NONBLOCK for nonblocking I/O" >&5
 printf %s "checking FIONBIO vs. O_NONBLOCK for nonblocking I/O... " >&6; }
