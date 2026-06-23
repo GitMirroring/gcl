@@ -1737,6 +1737,7 @@ free(void *ptr) {
   
   for (p = &malloc_list,pp=*p; pp && !endp(pp);  p = &((pp)->c.c_cdr),pp=pp->c.c_cdr)
     if ((pp)->c.c_car->st.st_self == ptr) {
+      memset((pp)->c.c_car->st.st_self,0,(pp)->c.c_car->st.st_dim);
       (pp)->c.c_car->st.st_self = NULL;
       *p = pp->c.c_cdr;
       return;
@@ -1782,6 +1783,7 @@ realloc(void *ptr, size_t size) {
 	VFILLP_SET(x,size);
 	return(ptr);
       } else {
+	memset(x->st.st_self,0,x->st.st_dim);
 	x->st.st_self = alloc_contblock(size);
 	x->st.st_dim = size;
 	VSET_MAX_FILLP(x);
