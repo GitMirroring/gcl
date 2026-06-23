@@ -141,6 +141,7 @@ clean: debian/control debian/gcl$(EXT).templates debian/po/POTFILES.in
 	dh_testdir
 	dh_testroot
 	debconf-updatepo
+	rm -f debian/gcl$(EXT).templates debian/po/POTFILES.in
 
 	! [ -e Makefile ] || $(MAKE) $(MAKEFLAGS) distclean
 
@@ -157,6 +158,7 @@ debian-clean: debian/control debian/gcl$(EXT).templates debian/po/POTFILES.in
 	dh_testdir
 	dh_testroot
 	debconf-updatepo
+	rm -f debian/gcl$(EXT).templates debian/po/POTFILES.in
 
 	dh_clean
 
