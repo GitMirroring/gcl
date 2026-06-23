@@ -111,16 +111,20 @@ open_pool(void) {
 void
 close_pool(void) {
 
+  static int no_recur;
+
 #ifndef NO_FILE_LOCKING
-  if (pool!=-1) {
+  if (pool!=-1 && !no_recur) {
+    no_recur=1;
     f.l_type=F_WRLCK;
     if (!fcntl(pool,F_SETLK,&f))
       massert(!unlink(gcl_pool) || errno==ENOENT);
     register_pool(-1);
-    massert(!close(pool));
     massert(!munmap(Pool,sizeof(struct pool)));
+    massert(!close(pool));
     pool=-1;
     memset(gcl_pool,0,sizeof(gcl_pool));
+    no_recur=0;
   }
 #endif
   
