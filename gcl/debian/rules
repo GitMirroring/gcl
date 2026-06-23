@@ -141,7 +141,6 @@ clean: debian/control debian/gcl$(EXT).templates debian/po/POTFILES.in
 	dh_testdir
 	dh_testroot
 	debconf-updatepo
-	rm -f debian/gcl$(EXT).templates debian/po/POTFILES.in
 
 	! [ -e Makefile ] || $(MAKE) $(MAKEFLAGS) distclean
 
@@ -150,7 +149,7 @@ clean: debian/control debian/gcl$(EXT).templates debian/po/POTFILES.in
 
 	for i in $(INS); do echo $^ | grep -q $$i || rm -rf $$i ; done
 	rm -rf debian/substvars debian.upstream
-	rm -rf *stamp build-indep
+	rm -rf *stamp build-indep config.log
 	rm -f  debian/elpa-gcl$(EXT).elpa debian/gcl$(EXT)-pkg.el
 	rm -rf $(EXT_TARGS) info/gcl$(EXT)*.info* gcl_pool
 
@@ -158,13 +157,12 @@ debian-clean: debian/control debian/gcl$(EXT).templates debian/po/POTFILES.in
 	dh_testdir
 	dh_testroot
 	debconf-updatepo
-	rm -f debian/gcl$(EXT).templates debian/po/POTFILES.in
 
 	dh_clean
 
 	for i in $(INS); do echo $^ | grep -q $$i || rm -rf $$i ; done
 	rm -rf debian/substvars debian.upstream
-	rm -rf *stamp build-indep
+	rm -rf *stamp build-indep config.log
 	rm -f  debian/elpa-gcl$(EXT).elpa debian/gcl$(EXT)-pkg.el
 	rm -rf $(EXT_TARGS) info/gcl$(EXT)*.info* gcl_pool
 
