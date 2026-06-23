@@ -132,6 +132,14 @@ disable_aslr(int argc, char **argv, char **envp) {
   }
 
 }
+
+#else  /*Unneeded on Hurd, cygwin/mingw via coff header flag*/
+
+void
+disable_aslr(int argc, char **argv, char **envp) {
+  return;
+}
+
 #endif
 
 #endif
