@@ -358,4 +358,4 @@ EXTER gmp_randfnptr_t Mersenne_Twister_Generator_Noseed;
 #define READ_STREAM_OR_FASD(strm_) \
   type_of(strm_)==t_stream ? read_object_non_recursive(strm_) : fSread_fasd_top(strm_)
 
-#define NO_TRUENAME (raw_image || getenv("GCL_NO_TRUENAME"))
+#define NO_TRUENAME (raw_image || no_truename)

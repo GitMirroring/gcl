@@ -342,6 +342,7 @@ set_global_env_defaults(void) {
   gc_page_max=0.75;
   multiprocess_memory_pool=NULL;
   wait_on_abort=0;
+  no_truename=0;
 }
 
 static void
@@ -350,6 +351,9 @@ get_gc_environ(void) {
   const char *e;
 
   set_global_env_defaults();
+
+  if (getenv("GCL_NO_TRUENAME"))
+    no_truename=1;
 
   if ((e=getenv("GCL_MEM_MULTIPLE"))) {
     massert(sscanf(e,"%lf",&mem_multiple)==1);
