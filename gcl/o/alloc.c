@@ -1696,18 +1696,28 @@ static char *baby_malloc(n)
 /*  #endif */
 
 bool writable_malloc=0;
+static void *malloc_pre_main_base,*malloc_pre_main_ptr,*malloc_pre_main_end;
 
 static void *
 malloc_internal(size_t size) {
 
   if (!msbrk_initialized()) {
     static bool recursive_malloc;
-    if (recursive_malloc)
-      error("Bad malloc");
+    unsigned long s=PAGESIZE;
+
+    massert(!recursive_malloc);
     recursive_malloc=1;
-    gcl_init_alloc(&size);
+    if (!malloc_pre_main_base) {
+      massert((malloc_pre_main_base=mmap(NULL,s,PROT_READ|PROT_WRITE,MAP_PRIVATE|MAP_ANON,-1,0))!=(void *)-1);
+      malloc_pre_main_ptr=malloc_pre_main_base;
+      malloc_pre_main_end=malloc_pre_main_base+s;
+    }
+    massert(size<=(malloc_pre_main_end-malloc_pre_main_ptr));
+    malloc_pre_main_ptr+=size;
     recursive_malloc=0;
-  }
+    return malloc_pre_main_ptr-size;
+  } else
+    malloc_pre_main_base=malloc_pre_main_ptr=malloc_pre_main_end=NULL;
 
   CHECK_INTERRUPT;
   
@@ -1732,7 +1742,7 @@ free(void *ptr) {
 
   object *p,pp;
   
-  if (ptr == 0)
+  if (ptr == 0 || ptr < data_start || ptr >= core_end)
     return;
   
   for (p = &malloc_list,pp=*p; pp && !endp(pp);  p = &((pp)->c.c_cdr),pp=pp->c.c_cdr)
