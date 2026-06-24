@@ -1079,8 +1079,11 @@ GBC(enum type t) {
       if (tm->tm_type==v->type)
 	for (x=pagetochar(page(v)),j=tm->tm_nppage;j--;x+=tm->tm_size) {
 	  object o=x;
-	  if (type_of(o)==t_stream && !is_free(o) && o->sm.sm_fp && o->sm.sm_fp!=stdin && o->sm.sm_fp!=stdout && o->sm.sm_fp!=stderr)
-	    close_stream(o);
+	  if (type_of(o)==t_stream && !is_free(o) && o->sm.sm_fp) {
+	    if (o->sm.sm_fp!=stdin && o->sm.sm_fp!=stdout && o->sm.sm_fp!=stderr)
+	      close_stream(o);
+	    o->sm.sm_fp=NULL;
+	  }
 	}
 
     gc_time = -1;
