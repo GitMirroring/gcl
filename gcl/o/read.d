@@ -1637,6 +1637,9 @@ Lsharp_dollar_reader()
 	tx=type_of(x);
 	vs_base[0] = alloc_object(t_random);
 	init_gmp_rnd_state(&vs_base[0]->rnd.rnd_state);
+#if __GNU_MP_VERSION > 4 || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR >= 2)
+	vs_base[0]->rnd.rnd_state._mp_algdata._mp_lc=&Mersenne_Twister_Generator_Noseed;
+#endif
 	if (tx!=t_fixnum || fix(x)) {
 	  if (tx==t_fixnum) {
 	    if (vs_base[0]->rnd.rnd_state._mp_seed->_mp_size!=1)
