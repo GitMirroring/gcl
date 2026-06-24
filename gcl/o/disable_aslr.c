@@ -91,7 +91,7 @@ void
 disable_aslr(int argc, char **argv, char **envp) {
 
   long pers;
-  long flag = ADDR_NO_RANDOMIZE|(sizeof(flag)==4 ? ADDR_LIMIT_3GB : 0);
+  long flag = ADDR_NO_RANDOMIZE|(sizeof(flag)==4 ? ADDR_COMPAT_LAYOUT : 0);
 
   massert((pers=personality(-1))!=-1);
 
