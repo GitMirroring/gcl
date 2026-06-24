@@ -120,9 +120,9 @@ close_pool(void) {
     if (!fcntl(pool,F_SETLK,&f))
       massert(!unlink(gcl_pool) || errno==ENOENT);
     register_pool(-1);
-    massert(!munmap(Pool,sizeof(struct pool)));
     massert(!close(pool));
     pool=-1;
+    massert(!munmap(Pool,sizeof(struct pool)));
     memset(gcl_pool,0,sizeof(gcl_pool));
     no_recur=0;
   }
