@@ -113,14 +113,14 @@
 	 (coerce-to-package (eval (read))))))
 ;(declaim (inline coerce-to-package))
 
-(defun reset-lib-syms nil
+(defun reset-lib-syms (on)
   (when (find-package "LIB")
     (do-external-symbols 
      (p "LIB")
-     (setf (symbol-value p) (dlopen (lib-name p)))
+     (setf (symbol-value p) (when on (dlopen (lib-name p))))
      (do-external-symbols 
       (s p)
-      (setf (symbol-value s) (dlsym (symbol-value p) s)))))
+      (setf (symbol-value s) (when on (dlsym (symbol-value p) s))))))
   (cfdl))
 
 (defun top-level1 ()
@@ -698,7 +698,7 @@ First directory is checked for first name and all extensions etc."
 
 (defun set-up-top-level (&aux (i (argc)) tem)
   (declare (fixnum i))
-  (reset-lib-syms)
+  (reset-lib-syms t)
   (setq *tmp-dir* (get-temp-dir) *current-directory* (current-directory-namestring))
   (when *cc* ;raw-image init complete
     (setq *current-directory* (pathname *current-directory*)

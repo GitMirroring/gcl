@@ -49,6 +49,8 @@ make_cfun(void (*self)(), object name, object data, char *start, int size) {
 
 }
 
+DEF_ORDINARY("RESET-LIB-SYMS",sSreset_lib_syms,SI,"");
+
 DEFUN("CFDL",object,fScfdl,SI,0,0,NONE,OO,OO,OO,OO,(void),"") {
 
   struct typemanager *tm=tm_of(t_cfdata);
