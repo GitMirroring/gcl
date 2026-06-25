@@ -1,0 +1,31 @@
+#!/bin/bash
+set -x
+export TMPDIR=$HOME/tmp
+if [ "$4" = "" ] ; then S="b" ; else S="e"; fi
+D="r$2_$3_$S"
+
+mkdir -p $TMPDIR/$D
+
+E=""
+if [ "$S" = "e" ] ; then
+#    mkdir $TMPDIR/shuf-$D
+#    disorderfs --reverse-dirents=yes "$TMPDIR/$D" "$TMPDIR/shuf-$D"
+    sbuild --chroot-mode=unshare \
+   -d unstable \
+   --build-path=/build/gcl-$D/ \
+   --jobs=$3 \
+   --post-build-commands="%SBUILD_CHROOT_EXEC tar -c -C /build/gcl-$D/ . | tar -x -C $TMPDIR/$D/" \
+   --chroot-setup-commands="echo 'TZ=Asia/Tokyo; export TZ' >> /etc/environment" \
+   --chroot-setup-commands="echo 'LC_ALL=fr_CH.UTF-8; export LC_ALL' >> /etc/environment" \
+   --chroot-setup-commands="echo 'LANG=fr_CH.UTF-8; export LANG' >> /etc/environment" \
+   --chroot-setup-commands="echo 'USER=nobody; export USER' >> /etc/environment" \
+   --chroot-setup-commands="echo 'LOGNAME=nobody; export LOGNAME' >> /etc/environment" \
+   $1
+else   
+    sbuild --chroot-mode=unshare \
+   -d unstable \
+   --build-path=/build/gcl-$D/ \
+   --jobs=$3 \
+   --post-build-commands="%SBUILD_CHROOT_EXEC tar -c -C /build/gcl-$D/ . | tar -x -C $TMPDIR/$D/" \
+   $1
+fi

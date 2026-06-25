@@ -1,0 +1,8 @@
+export SOURCE_DATE_EPOCH=$(dpkg-parsechangelog -S Date | date -f - +%s)
+export DEB_BUILD_OPTIONS="reproducible=+all"
+export FORCE_SOURCE_DATE=1
+export LC_ALL=C.UTF-8
+export LANG=C.UTF-8
+export TZ=UTC
+export USER=nobody
+export LOGNAME=nobody
