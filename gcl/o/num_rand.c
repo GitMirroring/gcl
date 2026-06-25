@@ -84,7 +84,6 @@ rando(object x, object rs) {
 #define RS_DEF_INIT 0
 #endif
 
-#if __GNU_MP_VERSION > 4 || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR >= 2)
 extern void * (*gcl_gmp_allocfun) (size_t);
 static void * (*old_gcl_gmp_allocfun) (size_t);
 static void * trap_result;
@@ -103,52 +102,44 @@ trap_gcl_gmp_allocfun(size_t size){
   }
 
 }
-#endif
 
 void
 reinit_gmp() {
 
-#if __GNU_MP_VERSION > 4 || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR >= 2)
   Mersenne_Twister_Generator_Noseed.b=__gmp_randget_mt;
   Mersenne_Twister_Generator_Noseed.c=__gmp_randclear_mt;
   Mersenne_Twister_Generator_Noseed.d=__gmp_randiset_mt;
-#endif
 
 }
 
 void
-init_gmp_rnd_state(__gmp_randstate_struct *x) {
+init_gmp_rnd_state(__gmp_randstate_struct *x,object rs) {
 
   static int n;
 
   bzero(x,sizeof(*x));
   
-#if __GNU_MP_VERSION > 4 || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR >= 2)
-/*   if (!trap_size) { */
   old_gcl_gmp_allocfun=gcl_gmp_allocfun;
   gcl_gmp_allocfun=trap_gcl_gmp_allocfun;
-/*   } */
-#endif
   gmp_randinit_default(x);
-#if __GNU_MP_VERSION > 4 || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR >= 2)
   if (!n) {
 
     if (x->_mp_seed->_mp_d!=trap_result)
       FEerror("Unknown pointer in rnd_state!",0);
-/* #ifndef __hppa__ /\*FIXME*\/ */
-/*     if (((gmp_randfnptr_t *)x->_mp_algdata._mp_lc)->b!=Mersenne_Twister_Generator_Noseed.b || */
-/* 	((gmp_randfnptr_t *)x->_mp_algdata._mp_lc)->c!=Mersenne_Twister_Generator_Noseed.c || */
-/* 	((gmp_randfnptr_t *)x->_mp_algdata._mp_lc)->d!=Mersenne_Twister_Generator_Noseed.d) */
-/*       FEerror("Unknown pointer data in rnd_state!",0); */
-/* #endif */
 
     n=1;
 
   }
   gcl_gmp_allocfun=old_gcl_gmp_allocfun;
   x->_mp_seed->_mp_alloc=x->_mp_seed->_mp_size=trap_size;
-#endif
-    
+
+  if (rs == Ct)
+    gmp_randseed_ui(x,RS_DEF_INIT);
+  else if (type_of(rs)==t_random)
+    memcpy(x->_mp_seed->_mp_d,rs->rnd.rnd_state._mp_seed->_mp_d,
+	   rs->rnd.rnd_state._mp_seed->_mp_alloc*sizeof(*x->_mp_seed->_mp_d));
+
+  x->_mp_algdata._mp_lc=&Mersenne_Twister_Generator_Noseed;
 
 }
 
@@ -168,18 +159,8 @@ make_random_state(object rs) {
   }
   
   z = alloc_object(t_random);
-  init_gmp_rnd_state(&z->rnd.rnd_state);
+  init_gmp_rnd_state(&z->rnd.rnd_state,rs);
 
-    
-  if (rs == Ct) 
-    gmp_randseed_ui(&z->rnd.rnd_state,RS_DEF_INIT);
-  else
-    memcpy(z->rnd.rnd_state._mp_seed->_mp_d,rs->rnd.rnd_state._mp_seed->_mp_d,
-	   rs->rnd.rnd_state._mp_seed->_mp_alloc*sizeof(*z->rnd.rnd_state._mp_seed->_mp_d));
-  
-#if __GNU_MP_VERSION > 4 || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR >= 2)
-  z->rnd.rnd_state._mp_algdata._mp_lc=&Mersenne_Twister_Generator_Noseed;
-#endif
   return(z);
 
 }

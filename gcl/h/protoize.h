@@ -1347,7 +1347,7 @@ object Icall_gen_error_handler(object,object,object,object,ufixnum,...);
 
 void * gcl_gmp_alloc(size_t);
 
-void init_gmp_rnd_state(__gmp_randstate_struct *);
+void init_gmp_rnd_state(__gmp_randstate_struct *,object);
 
 int my_plt(const char *,unsigned long *);
 
@@ -1482,12 +1482,6 @@ fixnum set_tm_maxpage(struct typemanager *,fixnum);
 fixnum elt_size(fixnum);
 
 fixnum elt_mode(fixnum);
-
-void init_gmp_rnd_state(__gmp_randstate_struct *);
-
-/* void set_sgc_bit(struct pageinfo *,void *); */
-
-void reinit_gmp(void);
 
 object mod(object,object);
 
