@@ -123,6 +123,7 @@ close_pool(void) {
     massert(!close(pool));
     pool=-1;
     massert(!munmap(Pool,sizeof(struct pool)));
+    Pool=NULL;
     memset(gcl_pool,0,sizeof(gcl_pool));
     no_recur=0;
   }
