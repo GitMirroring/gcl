@@ -575,6 +575,7 @@ init_boot(void) {
 
   char *sysd=getenv("GCL_SYSDIR"),*d=sysd ? sysd : kcl_self;
 #ifdef USE_LIBBOOT
+  extern bool leak_malloc;
   void *v,*q;
 #endif
   char *z,*s="libboot.so";
@@ -585,8 +586,10 @@ init_boot(void) {
   z=alloca(n);
   snprintf(z,n,"%-*.*s%s",(int)m,(int)m,d,s);
 #ifdef USE_LIBBOOT
+  leak_malloc=1;
   if (!(v=mdlopen(z,RTLD_LAZY|RTLD_GLOBAL)))
     printf("%s\n",dlerror());
+  leak_malloc=0;
   if (!(q=dlsym(v,"gcl_init_boot")))
     printf("%s\n",dlerror());
 #endif

@@ -1695,15 +1695,36 @@ static char *baby_malloc(n)
 /*  } */
 /*  #endif */
 
-bool writable_malloc=0;
+bool writable_malloc=0,leak_malloc=0;
 static void *malloc_pre_main_base,*malloc_pre_main_ptr,*malloc_pre_main_end;
+
 
 static void *
 malloc_internal(size_t size) {
 
-  if (!msbrk_initialized()) {
+  /*GCL originally strove to capture all malloc memory in its heap to avoid interference
+   with its heap growth in limited address range contexts.  While static linking is still
+   possible, in most environments there will be external shared libraries in the address
+   space, and this is beneficial from a system performance perspective in any case.  GCL
+   goes to significant lengths to detect mmap_base and move it out of the way where possible
+   to allow for maximum contiguous heap growth (e.g. just under 3Gb on 32bit systems at
+   present).  Linking against libX11 at a minimum will call malloc before main via
+   constructors in that library.  Likewise dlopen of GCL's libboot.so will malloc early,
+   but after main.  Such calls as these have no effective cleanup routines available before
+   exit, and furthermore write aslr random data therein foiling reproducibility if saved
+   in the heap.  Such would be useless dead space on reexec if stored there in any case.
+   Traditionally we called gcl_init_alloc here, and this works, but it seems more advisable
+   to ring fence the aslr/shared library world into its own domain and store such mallocs
+   outside the heap in non-reclaimable memory (ie. leaked).  At present leak_malloc is only
+   used for the dlopen of libboot.so which is critical for a reproducible build, but wrapping
+   all dlopen thus may be advisable someday.  Right now the image dumps from raw image
+   runs, and from saved images with GCL_NO_TRUENAME set and in which the run just loads
+   .o files and saves are reproducible, which is sufficient for Debian gcl dependencies:
+   hol88,maxima,acl2,fricas and axiom.  CM 20260625*/
+
+  if (!msbrk_initialized()||leak_malloc) {
     static bool recursive_malloc;
-    unsigned long s=PAGESIZE;
+    unsigned long s=1<<13;
 
     massert(!recursive_malloc);
     recursive_malloc=1;
@@ -1712,11 +1733,12 @@ malloc_internal(size_t size) {
       malloc_pre_main_ptr=malloc_pre_main_base;
       malloc_pre_main_end=malloc_pre_main_base+s;
     }
+    size=(size+sizeof(max_align_t)-1)&~(sizeof(max_align_t)-1);
     massert(size<=(malloc_pre_main_end-malloc_pre_main_ptr));
     malloc_pre_main_ptr+=size;
     recursive_malloc=0;
     return malloc_pre_main_ptr-size;
-  } else
+  } else if (malloc_pre_main_base)
     malloc_pre_main_base=malloc_pre_main_ptr=malloc_pre_main_end=NULL;
 
   CHECK_INTERRUPT;
@@ -1742,7 +1764,7 @@ free(void *ptr) {
 
   object *p,pp;
   
-  if (ptr == 0 || ptr < data_start || ptr >= core_end)
+  if (ptr == 0 || ptr < data_start || ptr >= (void *)core_end)
     return;
   
   for (p = &malloc_list,pp=*p; pp && !endp(pp);  p = &((pp)->c.c_cdr),pp=pp->c.c_cdr)
