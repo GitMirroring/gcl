@@ -10369,11 +10369,7 @@ printf '%s\n' "$as_me: max log text start reduced to $max considering c stack ad
 
 	# Need to get over default cstack and related maps between 0x1000000 and 0x2000000
 	if test "$use" == "386-gnu" || test "$use" == "amd64-gnu" ; then
-	   if test "$use" == "386-gnu" ; then
-	      q=24;
-	   else
-	      q=23;
-	   fi
+	   q=24;
 	   if test $min -lt $q && test $q -lt $max && test $q -lt 30; then
 	      min=$q
 	      { printf '%s\n' "$as_me:${as_lineno-$LINENO}: min log text start increased to $min over c stack address" >&5
