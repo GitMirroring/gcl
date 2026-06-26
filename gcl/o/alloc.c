@@ -1695,12 +1695,17 @@ static char *baby_malloc(n)
 /*  } */
 /*  #endif */
 
-bool writable_malloc=0,leak_malloc=0;
+bool writable_malloc=0;
 static void *malloc_pre_main_base,*malloc_pre_main_ptr,*malloc_pre_main_end;
 
 
 static void *
 malloc_internal(size_t size) {
+
+  static bool recursive_malloc;
+
+  massert(!recursive_malloc);
+  recursive_malloc=1;
 
   /*GCL originally strove to capture all malloc memory in its heap to avoid interference
    with its heap growth in limited address range contexts.  While static linking is still
@@ -1722,12 +1727,16 @@ malloc_internal(size_t size) {
    .o files and saves are reproducible, which is sufficient for Debian gcl dependencies:
    hol88,maxima,acl2,fricas and axiom.  CM 20260625*/
 
-  if (!msbrk_initialized()||leak_malloc) {
-    static bool recursive_malloc;
+  /* Only necessary if no desire to leak pre-main malloc or
+     need to grab heap maps before the leaked NULL mmap*/
+  if (!msbrk_initialized())
+    gcl_init_alloc(&size);
+
+  /* Only necessary if want to ringfence early non-freeable malloc
+     with random ASLR data away from heap*/
+  if (leak_malloc) {
     unsigned long s=1<<13;
 
-    massert(!recursive_malloc);
-    recursive_malloc=1;
     if (!malloc_pre_main_base) {
       massert((malloc_pre_main_base=mmap(NULL,s,PROT_READ|PROT_WRITE,MAP_PRIVATE|MAP_ANON,-1,0))!=(void *)-1);
       malloc_pre_main_ptr=malloc_pre_main_base;
@@ -1738,8 +1747,10 @@ malloc_internal(size_t size) {
     malloc_pre_main_ptr+=size;
     recursive_malloc=0;
     return malloc_pre_main_ptr-size;
-  } else if (malloc_pre_main_base)
+  } else if (malloc_pre_main_base) {
+    printf("waste a page: %ld %ld\n",malloc_pre_main_ptr-malloc_pre_main_base,malloc_pre_main_end-malloc_pre_main_ptr);
     malloc_pre_main_base=malloc_pre_main_ptr=malloc_pre_main_end=NULL;
+  }
 
   CHECK_INTERRUPT;
   
@@ -1747,6 +1758,7 @@ malloc_internal(size_t size) {
   malloc_list->c.c_car->st.st_self = alloc_contblock(size);
   malloc_list->c.c_car->st.st_writable=writable_malloc;
   
+  recursive_malloc=0;
   return(malloc_list->c.c_car->st.st_self);
 
 }

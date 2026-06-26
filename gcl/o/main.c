@@ -433,6 +433,12 @@ next_shared_lib_map_no_malloc(void)  {
 
   massert(!close(l));
 
+  if (c) {
+    write(1,c,strlen(c));
+    c[0]=10;
+    write(1,c,1);
+  }
+
   return (void *)(c ? a : -1);
 
 #else
@@ -569,45 +575,48 @@ dir_name_length(const char *s) {
 }
 
 int initializing_boot=0;
+bool leak_malloc=1;
+int in_pre_gcl=0;
 
 void
 init_boot(void) {
 
-  char *sysd=getenv("GCL_SYSDIR"),*d=sysd ? sysd : kcl_self;
-#ifdef USE_LIBBOOT
-  extern bool leak_malloc;
-  void *v,*q;
-#endif
-  char *z,*s="libboot.so";
-  size_t m=sysd ? strlen(sysd) : dir_name_length(kcl_self),n=m+strlen(s)+1;
-  object omp=sSAoptimize_maximum_pagesA->s.s_dbind;
+  if (raw_image||in_pre_gcl) {
 
-  sSAoptimize_maximum_pagesA->s.s_dbind=Cnil;
-  z=alloca(n);
-  snprintf(z,n,"%-*.*s%s",(int)m,(int)m,d,s);
+    char *sysd=getenv("GCL_SYSDIR"),*d=sysd ? sysd : kcl_self;
 #ifdef USE_LIBBOOT
-  leak_malloc=1;
-  if (!(v=mdlopen(z,RTLD_LAZY|RTLD_GLOBAL)))
-    printf("%s\n",dlerror());
-  leak_malloc=0;
-  if (!(q=dlsym(v,"gcl_init_boot")))
-    printf("%s\n",dlerror());
+    void *v,*q;
 #endif
-  initializing_boot=1;
+    char *z,*s="libboot.so";
+    size_t m=sysd ? strlen(sysd) : dir_name_length(kcl_self),n=m+strlen(s)+1;
+    object omp=sSAoptimize_maximum_pagesA->s.s_dbind;
+
+    sSAoptimize_maximum_pagesA->s.s_dbind=Cnil;
+    z=alloca(n);
+    snprintf(z,n,"%-*.*s%s",(int)m,(int)m,d,s);
+#ifdef USE_LIBBOOT
+    if (!(v=mdlopen(z,RTLD_LAZY|RTLD_GLOBAL)))
+      printf("%s\n",dlerror());
+    if (!(q=dlsym(v,"gcl_init_boot")))
+      printf("%s\n",dlerror());
+#endif
+    initializing_boot=1;
 #ifndef USE_LIBBOOT
-  {
-    extern void gcl_init_boot(void);
-    gcl_init_boot();
-  }
+    {
+      extern void gcl_init_boot(void);
+      gcl_init_boot();
+    }
 #else
-  ((void (*)())q)();
+    ((void (*)())q)();
 #endif
-  initializing_boot=0;
-  sSAoptimize_maximum_pagesA->s.s_dbind=omp;
+    initializing_boot=0;
+    sSAoptimize_maximum_pagesA->s.s_dbind=omp;
+  }
+
+  leak_malloc=0;
 
 }
 
-int in_pre_gcl=0;
 object def_env1[2]={(object)1,Cnil},*def_env=def_env1+1;
 object src_env1[2]={(object)1,Cnil},*src_env=src_env1+1;
 
@@ -735,7 +744,7 @@ main(int argc, char **argv, char **envp) {
   ARGC = argc;
   ARGV = argv;
   ENVP = envp;
-  
+
   if (raw_image) {
 
     printf("GCL (GNU Common Lisp)  %s  %ld pages\n",LISP_IMPLEMENTATION_VERSION,real_maxpage);
@@ -764,7 +773,7 @@ main(int argc, char **argv, char **envp) {
     __stack_chk_guard=random_ulong();/*Cannot be safely set inside a function which returns*/
 #endif
 
-    if (in_pre_gcl) init_boot();
+    init_boot();
 
   }
 

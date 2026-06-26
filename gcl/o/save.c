@@ -34,6 +34,8 @@ LFD(siLsave)(void) {
 
   /*FIXME clean this up when done*/
 
+  leak_malloc=1;
+
   set_global_env_defaults();
   shared_lib_start=NULL;
   memset(&fcall,0,sizeof(fcall));
