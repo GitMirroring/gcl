@@ -1735,7 +1735,7 @@ malloc_internal(size_t size) {
   /* Only necessary if want to ringfence early non-freeable malloc
      with random ASLR data away from heap*/
   if (leak_malloc) {
-    unsigned long s=1<<13;
+    unsigned long s=1<<14;
 
     if (!malloc_pre_main_base) {
       massert((malloc_pre_main_base=mmap(NULL,s,PROT_READ|PROT_WRITE,MAP_PRIVATE|MAP_ANON,-1,0))!=(void *)-1);
