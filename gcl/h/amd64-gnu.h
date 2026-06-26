@@ -1,10 +1,5 @@
 #include "linux.h"
 
-#define ADDITIONAL_FEATURES \
-		     ADD_FEATURE("BSD386"); \
-      	             ADD_FEATURE("MC68020")
-
-
 #define	I386
 #define SGC
 
