@@ -21,3 +21,5 @@
 
 #undef HAVE_D_TYPE /*FIXME defined, but not implemented in readdir*/
 /* #define NO_FILE_LOCKING */ /*FIXME*/
+
+#define ADDITIONAL_FEATURES ADD_FEATURE("NO-SIGFPE")
