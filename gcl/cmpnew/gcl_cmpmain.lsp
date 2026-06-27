@@ -555,8 +555,8 @@ Cannot compile ~a.~%" (namestring (merge-pathnames input-pathname *compiler-defa
 		   (with-open-file (st hn)
 		     (si::copy-stream st *standard-output*))
 		   (when *disassemble-objdump*
-		     (si::copy-stream (open (concatenate 'string "|objdump --source " (namestring on)))
-				      *standard-output*))
+		     (with-open-file (s (concatenate 'string "|objdump --source " (namestring on)))
+		       (si::copy-stream s *standard-output*)))
 		   (delete-file cn)
 		   (delete-file dn)
 		   (delete-file hn)
