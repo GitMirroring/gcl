@@ -1768,8 +1768,8 @@ malloc_internal(size_t size) {
 
   /* Only necessary if no desire to leak pre-main malloc or
      need to grab heap maps before the leaked NULL mmap*/
-  if (!msbrk_initialized())
-    gcl_init_alloc(&size);
+  /* if (!msbrk_initialized()) */
+  /*   gcl_init_alloc(&size); */
 
   /* Only necessary if want to ringfence early non-freeable malloc
      with random ASLR data away from heap*/
