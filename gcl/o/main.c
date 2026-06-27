@@ -433,12 +433,6 @@ next_shared_lib_map_no_malloc(void)  {
 
   massert(!close(l));
 
-  if (c) {
-    write(1,c,strlen(c));
-    c[0]=10;
-    write(1,c,1);
-  }
-
   return (void *)(c ? a : -1);
 
 #else

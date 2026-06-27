@@ -1710,8 +1710,6 @@ void
 set_leak_malloc_off(void) {
 
   leak_malloc_p=0;
-  if (malloc_pre_main_base)
-    printf("waste a page: %ld %ld\n",malloc_pre_main_ptr-malloc_pre_main_base,malloc_pre_main_end-malloc_pre_main_ptr);
   malloc_pre_main_base=malloc_pre_main_ptr=malloc_pre_main_end=NULL;
 
 }
@@ -1766,13 +1764,6 @@ malloc_internal(size_t size) {
    .o files and saves are reproducible, which is sufficient for Debian gcl dependencies:
    hol88,maxima,acl2,fricas and axiom.  CM 20260625*/
 
-  /* Only necessary if no desire to leak pre-main malloc or
-     need to grab heap maps before the leaked NULL mmap*/
-  /* if (!msbrk_initialized()) */
-  /*   gcl_init_alloc(&size); */
-
-  /* Only necessary if want to ringfence early non-freeable malloc
-     with random ASLR data away from heap*/
   if (leak_malloc_p)
     MALLOC_RETURN(leak_malloc(size));
 
