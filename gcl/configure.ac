@@ -287,7 +287,7 @@ add_args_to_cflags  -fsigned-char -pipe -fcommon \
 add_args_to_ldflags -no-pie -Wl,-z,relro # -Wl,-z,lazy
 
 AC_ARG_ENABLE([aslr],[  --disable-aslr will ensure reproducible builds and/or work around absent no-pie],
-	      [enable_aslr=$enableval],[enable_asrl="yes"])
+	      [enable_aslr=$enableval],[enable_aslr="yes"])
 
 AC_MSG_CHECKING([whether aslr must be disabled due to absent -no-pie])
 if ! echo $LDFLAGS |grep -q -w '\-no\-pie'; then
