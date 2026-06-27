@@ -575,7 +575,6 @@ dir_name_length(const char *s) {
 }
 
 int initializing_boot=0;
-bool leak_malloc=1;
 int in_pre_gcl=0;
 
 void
@@ -613,7 +612,7 @@ init_boot(void) {
     sSAoptimize_maximum_pagesA->s.s_dbind=omp;
   }
 
-  leak_malloc=0;
+  set_leak_malloc_off();
 
 }
 

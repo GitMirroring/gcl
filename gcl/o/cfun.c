@@ -86,13 +86,23 @@ close_dlopen_list(void) {
 
 void *
 mdlopen(const char *name,int flags) {
-  void *v=dlopen(name,flags);
+
+  void *v;
+  char *err;
+
+  set_leak_malloc_on();
+  v=dlopen(name,flags);
+  set_leak_malloc_off();
+  if ((err=dlerror()))
+    FEerror("dlopen failure on ~s: ~s",2,name,make_simple_string(err));
   if (name) {
     object x=sSAdlopen_handlesA->s.s_dbind;
     for (;x!=Cnil && fix(x->c.c_car)!=(fixnum)v;x=x->c.c_cdr);
     if (x==Cnil)
       sSAdlopen_handlesA->s.s_dbind=MMcons(make_fixnum((fixnum)v),sSAdlopen_handlesA->s.s_dbind);
+    update_real_maxpage();
   }
+
   return v;
 }
 
@@ -144,20 +154,11 @@ DEFUN("DLADDR",object,fSdladdr,SI,2,2,NONE,OI,OO,OO,OO,(fixnum ad,object n),"") 
 
 DEFUN("DLOPEN",object,fSdlopen,SI,1,1,NONE,OO,OO,OO,OO,(object name),"") {
 
-  char *err;
-  void *v;
-
   dlerror();
   name=coerce_to_string(name);
   massert(snprintf(FN1,sizeof(FN1),"%-.*s",VLEN(name),name->st.st_self)>=0);
-  v=mdlopen(strlen(FN1) ? FN1 : 0,RTLD_LAZY|RTLD_GLOBAL);
-  if ((err=dlerror()))
-    FEerror("dlopen failure on ~s: ~s",2,name,make_simple_string(err));
-
-  if (strlen(FN1))
-    update_real_maxpage();
   
-  RETURN1(make_fixnum((fixnum)v));
+  RETURN1(make_fixnum((fixnum)mdlopen(strlen(FN1) ? FN1 : 0,RTLD_LAZY|RTLD_GLOBAL)));
 
 }
 

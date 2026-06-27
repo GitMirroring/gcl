@@ -1696,8 +1696,47 @@ static char *baby_malloc(n)
 /*  #endif */
 
 bool writable_malloc=0;
+bool leak_malloc_p=1;
 static void *malloc_pre_main_base,*malloc_pre_main_ptr,*malloc_pre_main_end;
 
+void
+set_leak_malloc_on(void) {
+
+  leak_malloc_p=1;
+
+}
+
+void
+set_leak_malloc_off(void) {
+
+  leak_malloc_p=0;
+  if (malloc_pre_main_base)
+    printf("waste a page: %ld %ld\n",malloc_pre_main_ptr-malloc_pre_main_base,malloc_pre_main_end-malloc_pre_main_ptr);
+  malloc_pre_main_base=malloc_pre_main_ptr=malloc_pre_main_end=NULL;
+
+}
+
+static void *
+leak_malloc(size_t size) {
+
+  unsigned long s=1<<14;
+
+  if (!malloc_pre_main_base) {
+    massert((malloc_pre_main_base=mmap(NULL,s,PROT_READ|PROT_WRITE,MAP_PRIVATE|MAP_ANON,-1,0))!=(void *)-1);
+    malloc_pre_main_ptr=malloc_pre_main_base;
+    malloc_pre_main_end=malloc_pre_main_base+s;
+  }
+
+  size=(size+sizeof(max_align_t)-1)&~(sizeof(max_align_t)-1);
+  massert(size<=(malloc_pre_main_end-malloc_pre_main_ptr));
+
+  malloc_pre_main_ptr+=size;
+
+  return malloc_pre_main_ptr-size;
+
+}
+
+#define MALLOC_RETURN(_v) ({void *v=_v;recursive_malloc=0;return v;})
 
 static void *
 malloc_internal(size_t size) {
@@ -1734,23 +1773,8 @@ malloc_internal(size_t size) {
 
   /* Only necessary if want to ringfence early non-freeable malloc
      with random ASLR data away from heap*/
-  if (leak_malloc) {
-    unsigned long s=1<<14;
-
-    if (!malloc_pre_main_base) {
-      massert((malloc_pre_main_base=mmap(NULL,s,PROT_READ|PROT_WRITE,MAP_PRIVATE|MAP_ANON,-1,0))!=(void *)-1);
-      malloc_pre_main_ptr=malloc_pre_main_base;
-      malloc_pre_main_end=malloc_pre_main_base+s;
-    }
-    size=(size+sizeof(max_align_t)-1)&~(sizeof(max_align_t)-1);
-    massert(size<=(malloc_pre_main_end-malloc_pre_main_ptr));
-    malloc_pre_main_ptr+=size;
-    recursive_malloc=0;
-    return malloc_pre_main_ptr-size;
-  } else if (malloc_pre_main_base) {
-    printf("waste a page: %ld %ld\n",malloc_pre_main_ptr-malloc_pre_main_base,malloc_pre_main_end-malloc_pre_main_ptr);
-    malloc_pre_main_base=malloc_pre_main_ptr=malloc_pre_main_end=NULL;
-  }
+  if (leak_malloc_p)
+    MALLOC_RETURN(leak_malloc(size));
 
   CHECK_INTERRUPT;
   
@@ -1758,8 +1782,7 @@ malloc_internal(size_t size) {
   malloc_list->c.c_car->st.st_self = alloc_contblock(size);
   malloc_list->c.c_car->st.st_writable=writable_malloc;
   
-  recursive_malloc=0;
-  return(malloc_list->c.c_car->st.st_self);
+  MALLOC_RETURN(malloc_list->c.c_car->st.st_self);
 
 }
 

@@ -34,7 +34,7 @@ LFD(siLsave)(void) {
 
   /*FIXME clean this up when done*/
 
-  leak_malloc=1;
+  set_leak_malloc_on();
 
   set_global_env_defaults();
   shared_lib_start=NULL;

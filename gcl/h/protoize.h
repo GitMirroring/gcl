@@ -1673,3 +1673,5 @@ void *mdlopen(const char *,int);
 void close_dlopen_list(void);
 void set_global_env_defaults(void);
 void disable_aslr(int,char **,char **);
+void set_leak_malloc_on(void);
+void set_leak_malloc_off(void);
