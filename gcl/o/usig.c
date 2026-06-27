@@ -155,7 +155,7 @@ DEFUN("FEENABLEEXCEPT",object,fSfeenableexcept,SI,1,1,NONE,II,OO,OO,OO,(fixnum x
 
   x=feenableexcept(x);
 
-#elif defined(__x86_64__) || defined(__i386__)
+#elif (defined(__x86_64__) && !defined(__gnu_hurd__)) || defined(__i386__)
 #define ASM __asm__ __volatile__
   {
     volatile unsigned short s=0;
@@ -194,7 +194,7 @@ DEFUN("FEDISABLEEXCEPT",object,fSfedisableexcept,SI,0,0,NONE,IO,OO,OO,OO,(void),
   /* feclearexcept(FE_ALL_EXCEPT); */
   x=fedisableexcept(FE_ALL_EXCEPT);
 
-#elif defined(__x86_64__) || defined(__i386__)
+#elif (defined(__x86_64__) && !defined(__gnu_hurd__)) || defined(__i386__)
 #define ASM __asm__ __volatile__
   {
     volatile unsigned int i=0;

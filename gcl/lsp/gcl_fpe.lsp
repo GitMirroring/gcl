@@ -139,7 +139,8 @@
 	   (feclearexcept x)
 	   (floating-point-error x (list* fun "unknown" name args) 0))))
      (defun break-on-floating-point-exceptions 
-	 (&key suspend no-flush
+	 (&rest all
+	  &key suspend no-flush
 	    ,@(mapcar (lambda (x) `(,(car x) (logtest ,(caddr x) fpe-enabled))) +fe-list+)
 	  &aux r #+no-sigfpe(x (fetestexcept fpe-set)))
        (fe-enable
@@ -154,7 +155,9 @@
 					    (0)))
 				   +fe-list+))))))
        #+no-sigfpe
-       (unless (or no-flush (zerop x)) (floating-point-error x 0 0))
+       (unless (or no-flush (zerop x))
+	 (let ((x 'break-on-floating-point-exceptions))
+	   (floating-point-error x (list (symbol-function x) "unknown" x all) 0)))
        r))
 
 (defun subclasses (class)
