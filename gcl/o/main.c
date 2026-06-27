@@ -68,11 +68,6 @@ bool saving_system=FALSE;
 
 char *system_directory;
 
-#define EXTRA_BUFSIZE 8
-char stdin_buf[BUFSIZ + EXTRA_BUFSIZE];
-char stdout_buf[BUFSIZ + EXTRA_BUFSIZE];
-char stderr_buf[BUFSIZ + EXTRA_BUFSIZE];
-
 #include "stacks.h"
 
 int debug;			/* debug switch */

@@ -28,7 +28,10 @@ EXTER int catch_fatal;
 EXTER long real_maxpage;
 EXTER char *this_lisp;
 
-EXTER char stdin_buf[],stdout_buf[];
+#define EXTRA_BUFSIZE 8
+EXTER char stdin_buf[BUFSIZ + EXTRA_BUFSIZE];
+EXTER char stdout_buf[BUFSIZ + EXTRA_BUFSIZE];
+EXTER char stderr_buf[BUFSIZ + EXTRA_BUFSIZE];
 
 EXTER object user_package;
 

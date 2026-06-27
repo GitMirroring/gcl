@@ -40,6 +40,9 @@ LFD(siLsave)(void) {
   shared_lib_start=NULL;
   memset(&fcall,0,sizeof(fcall));
   memset(gmp_jmp,0,sizeof(gmp_jmp));
+  memset(stdin_buf,0,sizeof(stdin_buf));
+  memset(stdout_buf,0,sizeof(stdout_buf));
+  memset(stderr_buf,0,sizeof(stderr_buf));
   memset(frs_org,0,(frs_limit-frs_org)*sizeof(*frs_org));
   memset(bds_org,0,(bds_limit-bds_org)*sizeof(*bds_org));
   memset(ihs_org,0,(ihs_limit-ihs_org)*sizeof(*ihs_org));
