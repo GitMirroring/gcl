@@ -156,8 +156,8 @@
 				   +fe-list+))))))
        #+no-sigfpe
        (unless (or no-flush (zerop x))
-	 (let ((x 'break-on-floating-point-exceptions))
-	   (floating-point-error x (list (symbol-function x) "unknown" x all) 0)))
+	 (let ((y 'break-on-floating-point-exceptions))
+	   (floating-point-error x (list (symbol-function y) "unknown" y all) 0)))
        r))
 
 (defun subclasses (class)
