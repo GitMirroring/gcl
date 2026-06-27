@@ -32,6 +32,13 @@ object siSuniversal_error_handler;
 
 object sSterminal_interrupt;
 
+#if defined(__APPLE__)
+char *
+strerrordesc_np(int errnum) {
+  return (errnum >= 0 && errnum < sys_nerr) ? sys_errlist[errnum] : "Unknown error";
+}
+#endif
+
 void
 assert_error(const char *a,unsigned l,const char *f,const char *n) {
 
