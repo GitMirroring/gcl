@@ -1841,12 +1841,12 @@ realloc(void *ptr, size_t size) {
 	VFILLP_SET(x,size);
 	return(ptr);
       } else {
-	memset(x->st.st_self,0,x->st.st_dim);
 	x->st.st_self = alloc_contblock(size);
+	for (i = 0;  i < x->st.st_dim;  i++)
+	  x->st.st_self[i] = ((char *)ptr)[i];
+	memset(ptr,0,x->st.st_dim);
 	x->st.st_dim = size;
 	VSET_MAX_FILLP(x);
-	for (i = 0;  i < size;  i++)
-	  x->st.st_self[i] = ((char *)ptr)[i];
 	return(x->st.st_self);
       }
     }
