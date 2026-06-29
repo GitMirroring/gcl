@@ -28,7 +28,6 @@ LFD(siLsave)(void) {
   coerce_to_filename(vs_base[0], FN1);
 
   ifuncall1(sSreset_lib_syms,Cnil);
-  close_dlopen_list();
   frs_top=frs_org-1;
   gcl_cleanup(1);
 

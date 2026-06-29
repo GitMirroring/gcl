@@ -76,14 +76,6 @@ DEFUN("CFDL",object,fScfdl,SI,0,0,NONE,OO,OO,OO,OO,(void),"") {
   RETURN1(Cnil);
 }
 
-DEFVAR("*DLOPEN-HANDLES*",sSAdlopen_handlesA,SI,Cnil,"");
-
-void
-close_dlopen_list(void) {
-  for (;sSAdlopen_handlesA->s.s_dbind!=Cnil;sSAdlopen_handlesA->s.s_dbind=sSAdlopen_handlesA->s.s_dbind->c.c_cdr)
-    dlclose((void *)fix(sSAdlopen_handlesA->s.s_dbind->c.c_car));
-}
-
 void *
 mdlopen(const char *name,int flags) {
 
@@ -95,13 +87,8 @@ mdlopen(const char *name,int flags) {
   set_leak_malloc_off();
   if ((err=dlerror()))
     FEerror("dlopen failure on ~s: ~s",2,name,make_simple_string(err));
-  if (name) {
-    object x=sSAdlopen_handlesA->s.s_dbind;
-    for (;x!=Cnil && fix(x->c.c_car)!=(fixnum)v;x=x->c.c_cdr);
-    if (x==Cnil)
-      sSAdlopen_handlesA->s.s_dbind=MMcons(make_fixnum((fixnum)v),sSAdlopen_handlesA->s.s_dbind);
+  if (name)
     update_real_maxpage();
-  }
 
   return v;
 }
