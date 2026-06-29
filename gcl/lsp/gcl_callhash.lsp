@@ -290,7 +290,7 @@
   (dolist (s (gen-all-ftype-symbols))
     (let* ((f (or (file s) ""))
 	   (sig (car (sym-plist s))))
-      (when (and sig (member f fl :test 'string=));e.g. fns in o/, interpreted, wrong-file
+      (when (and sig (member f fl :test 'search));e.g. fns in o/, interpreted, wrong-file
 	(push (list s sig) r))))
   (write-sys-proclaims1 sp r))
 
