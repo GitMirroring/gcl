@@ -21,15 +21,16 @@ LFD(siLsave)(void) {
   extern void *shared_lib_start;
   extern jmp_buf gmp_jmp;
   extern object sSreset_lib_syms;
+  object x=vs_base[0];
 
   check_arg(1);
-
-  memset(FN1,0,sizeof(FN1));
-  coerce_to_filename(vs_base[0], FN1);
 
   ifuncall1(sSreset_lib_syms,Cnil);
   frs_top=frs_org-1;
   gcl_cleanup(1);
+
+  memset(FN1,0,sizeof(FN1));
+  coerce_to_filename(x,FN1);
 
   /*FIXME clean this up when done*/
 
