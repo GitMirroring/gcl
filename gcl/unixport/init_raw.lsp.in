@@ -55,6 +55,7 @@
        (lsp (append x (list "lsp")))
        (cmpnew (append x (list "cmpnew")))
        (h (append x (list "h")))
+       (u (append x (list "unixport")))
        (xgcl-2 (append x (list "xgcl-2")))
        (pcl (append x (list "pcl")))
        (clcs (append x (list "clcs")))
@@ -64,7 +65,7 @@
   (load (make-pathname :name "tk-package" :type "lsp" :directory gtk))
   (load (make-pathname :name "gcl_lfun_list" :type "lsp" :directory cmpnew))
   (load (make-pathname :name "gcl_cmpopt" :type "lsp" :directory cmpnew))
-  (let* ((x (merge-pathnames (make-pathname :name "gcl_cmpnopt" :type "lsp") *system-directory*)))
+  (let* ((x (make-pathname :name "gcl_cmpnopt" :type "lsp" :directory u)))
     (when (probe-file x) (load x)))
   (load (make-pathname :name "gcl_auto_new" :type "lsp" :directory lsp))
   
