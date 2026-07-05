@@ -66,12 +66,12 @@
 (defdlfun (:double    "carg"     ) :dcomplex)
 
 (defun bsqrt (x);this is an instruction, or a jump to main body
-  (declare (long-float x))
+  (check-type x long-float)
   (lit :double "sqrt(" (:double x) ")"))
 (setf (get 'bsqrt 'compiler::cmp-inline) t)
 
 (defun bsqrtf (x);this is an instruction, or a jump to main body
-  (declare (short-float x))
+  (check-type x short-float)
   (lit :float "sqrtf(" (:float x) ")"))
 (setf (get 'bsqrtf 'compiler::cmp-inline) t)
 
