@@ -210,7 +210,7 @@ gcl_tk_gcltkaux_SOURCES=$(GCLTK_SRC)
 gcl_tk_gcltkaux_CPPFLAGS=$(AM_CPPFLAGS) $(TK_INCLUDE) $(TCL_INCLUDE) $(TK_XINCLUDES)
 gcl_tk_gcltkaux_LDADD=$(TK_LIB_SPEC) $(TCL_LIB_SPEC)
 
-MY_DIRS=gcl0 gcl1 gcl2 gcl3 gcl mod_gcl0 mod_gcl pcl_gcl ansi_gcl
+MY_DIRS=gcl0 gcl1 gcl2 gcl3 gcl mod_gcl0 mod_gcl pcl_gcl ansi_gcl0 ansi_gcl
 
 L_STUBS=s sf c listlib predlib deftype typeof subtypep bit type typep typecase arraylib \
         seq seqlib bnum fle dl rm nr lr sym hash sharp \
@@ -285,8 +285,9 @@ unixport/gcl_cmpnopt_%_gprof.lsp: unixport/gcl_cmpnopt_%.lsp
 unixport/gcl_cmpnopt_pre_gcl.lsp: # FIXME necessary?
 	touch $@
 unixport/gcl_cmpnopt_%.lsp: unixport/lib%.a | unixport/%
-	echo "(mapc (quote load) (directory \"$*/*.hsh\"))" \
-	     "(compiler::dump-inl-hash \"$@\" t)" | $|
+	echo "(clrhash compiler::*inl-hash*)" \
+             "(mapc (quote load) (directory \"$*/*.hsh\"))" \
+	     "(compiler::dump-inl-hash \"$@\")" | $|
 
 $(addprefix unixport/lib,$(addsuffix .a,pre_gcl $(MY_DIRS))): \
 unixport/lib%.a: lib/libbase_gcl.a $(LIBGPROF) unixport/sys_%.o
@@ -306,9 +307,14 @@ $(addprefix unixport/lib,$(addsuffix .a,gcl1 gcl2 gcl3 gcl)):\
 unixport/lib%.a: $(addprefix %/,$(L_OBJS))
 unixport/libmod_gcl0.a unixport/libmod_gcl.a:\
 unixport/lib%.a: $(addprefix %/,$(MOD_OBJS)) $(L_FOBJS) $(X_LIB)
-unixport/libgcl.a unixport/libmod_gcl.a: unixport/lib%.a: %/recompile
 unixport/libpcl_gcl.a: $(PCL_FOBJS)
-unixport/libansi_gcl.a: $(ANSI_FOBJS)
+unixport/libansi_gcl0.a unixport/libansi_gcl.a: \
+unixport/lib%.a: $(addprefix %/,$(CLCS_OBJS)) $(PCL_FOBJS)
+
+unixport/libgcl.a unixport/libmod_gcl.a unixport/libansi_gcl.a: unixport/lib%.a: %/recompile
+gcl/recompile: $(L_FOBJS)
+mod_gcl/recompile: $(MOD_FOBJS)
+ansi_gcl/recompile: $(ANSI_FOBJS)
 
 unixport/libgcl_gprof.a: $(patsubst %.o,%.go,$(L_FOBJS))
 unixport/libansi_gcl_gprof.a: $(patsubst %.o,%.go,$(ANSI_FOBJS))
@@ -319,6 +325,7 @@ unixport/lib%.a: | xbin/ar_merge
 %/recompile: | unixport/%
 	$| -batch \
 	   -eval "(let ((si::*do-recomp-output-dir* \"$(@D)\")) (si::do-recomp t))" \
+	   -eval "(mapc (quote delete-file) (directory \"$(@D)/*.hsh\"))" \
 	   -eval "(compiler::dump-inl-hash \"$(@D)/all.hsh\" t)"
 	touch $@
 
@@ -334,11 +341,12 @@ unixport/gcl:  | unixport/saved_gcl3
 unixport/mod_gcl0:  | unixport/saved_gcl
 unixport/mod_gcl:  | unixport/saved_mod_gcl0
 unixport/pcl_gcl:  | unixport/saved_mod_gcl
-unixport/ansi_gcl:  | unixport/saved_pcl_gcl
+unixport/ansi_gcl0:  | unixport/saved_pcl_gcl
+unixport/ansi_gcl:  | unixport/saved_ansi_gcl0
 $(addprefix unixport/,gcl0 gcl1): unixport/% : unixport/cinit.lisp | %
 	echo "(system:save-system \"$@\")" | cat $< - | $(word 2,$|)
 
-$(addprefix unixport/,gcl2 gcl3 gcl mod_gcl): unixport/% : | %
+$(addprefix unixport/,gcl2 gcl3 gcl mod_gcl ansi_gcl): unixport/% : | %
 	ln -snf $$(basename $(word 2,$|)) $@
 
 unixport/mod_gcl0: xgcl-2/sysdef.lisp | mod_gcl0
@@ -359,9 +367,9 @@ unixport/pcl_gcl: clcs/package.lisp cmpnew/gcl_collectfn.lsp pcl/defsys.lisp  | 
 	      "(setq pcl::*pathname-extensions* (cons \"lisp\" \"o\"))" \
 	      "(si::save-system \"$@\")" | $(word 2,$|)
 
-unixport/ansi_gcl: clcs/package.lisp clcs/gcl_clcs_precom.lisp \
+unixport/ansi_gcl0: clcs/package.lisp clcs/gcl_clcs_precom.lisp \
 		   clcs/gcl_clcs_conditions.lisp clcs/gcl_clcs_condition_definitions.lisp \
-		   | ansi_gcl
+		   | ansi_gcl0
 	echo "(mapc (quote load) (list $(patsubst %,\"%\",$^)))" \
              "(compiler::cdebug)" \
              "(si::save-system \"$@\")" | $(word 2,$|)
@@ -388,12 +396,12 @@ gcl1/%.o: | unixport/gcl1
 $(addprefix gcl2/,$(LL_OBJS)): gcl2/%.o : lsp/%.lsp
 $(addprefix gcl2/,$(LC_OBJS)): gcl2/%.o : cmpnew/%.lsp
 gcl2/%.o: | unixport/gcl2
-	$| -eval "(compiler::cdebug)(setq compiler::*dump-inl-hash* t)" -compile $< -o $@
+	$| -eval "(progn (compiler::cdebug)(setq compiler::*dump-inl-hash* t))" -compile $< -o $@
 
 $(addprefix gcl3/,$(LL_OBJS)): gcl3/%.o : lsp/%.lsp
 $(addprefix gcl3/,$(LC_OBJS)): gcl3/%.o : cmpnew/%.lsp
 gcl3/%.o: | unixport/gcl3
-	$| -eval "(compiler::cdebug)(setq compiler::*dump-inl-hash* t)" -compile $< -o $@
+	$| -eval "(progn (compiler::cdebug)(setq compiler::*dump-inl-hash* t))" -compile $< -o $@
 
 gcl/%.o: gcl3/%.o | gcl
 	cp $(patsubst %.o,%.*,$<) $(@D)
@@ -405,7 +413,6 @@ mod_gcl0/%.o: | unixport/mod_gcl0
 
 mod_gcl/%.o: mod_gcl0/%.o | unixport/mod_gcl
 	cp $(patsubst %.o,%.*,$<) $(@D)
-
 
 %/c1: | unixport/%
 	echo "(pcl::compile-pcl)" | $|
@@ -450,8 +457,12 @@ $(addprefix pcl_gcl/,$(PCL_OBJS)): pcl_gcl/all.hsh
 	touch $@
 
 
-ansi_gcl/%.o: clcs/%.lisp | unixport/ansi_gcl
+ansi_gcl0/%.o: clcs/%.lisp | unixport/ansi_gcl0
 	$| -eval "(setq compiler::*dump-inl-hash* t)" -compile $< -o $@
+
+ansi_gcl/%.o: ansi_gcl0/%.o | unixport/ansi_gcl
+	cp $(patsubst %.o,%.*,$<) $(@D)
+
 
 %.go: %.o mod_gcl/recompile #FIXME parallel
 	$(CC) $(AM_CPPFLAGS) -I $(<D) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) \
