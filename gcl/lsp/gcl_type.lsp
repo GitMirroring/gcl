@@ -4,7 +4,7 @@
 (export '(cmp-norm-tp tp-p
 	  cmp-unnorm-tp
 ;	  type-and type-or1 type>= type<=
-	  tp-not tp-and tp-or tp<= tp>= tp= uniq-tp tsrch uniq-sig
+	  tp-not tp-and tp-or tp<= tp>= tp= uniq-tp tsrch parent all-children uniq-sig
 	  atomic-tp tp-bnds object-tp
 	  cmpt t-to-nil returs-exactly funcallable-symbol-function
 	  infer-tp cnum creal long
@@ -757,6 +757,23 @@
   (let ((x (member tp y :test 'tp<= :key 'car)))
     (when x
       (or (tsrch tp (cdar x)) (caar x)))))
+
+(defun parent (tp &optional (y *useful-type-tree*))
+  (let ((x (member tp y :test (lambda (x y) (unless (tp<= y x) (tp<= x y))) :key 'car)))
+    (when x
+	(or (parent tp (cdar x)) (caar x)))))
+
+(defun children (tp &optional (y (list (cons #tt *useful-type-tree*))))
+  (let ((x (member tp y :test 'tp<= :key 'car)))
+    (when x
+      (or (children tp (cdar x)) (cdar x)))))
+
+(defun flatten-children (c)
+  (mapcan (lambda (x) (cons (car x) (flatten-children (cdr x)))) c))
+
+(defun all-children (tp)
+  (remove-duplicates (flatten-children (children tp))))
+
 
 (defvar *uniq-tp* (make-hash-table :test 'eq))
 
