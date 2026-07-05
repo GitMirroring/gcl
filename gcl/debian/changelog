@@ -1,3 +1,11 @@
+gcl27 (2.7.1-32) unstable; urgency=medium
+
+  * Version_2_7_2pre35
+  * Bug fix: "FTBFS: ERROR: See make.log.", thanks to Santiago Vila
+    (Closes: #1140970).
+
+ -- Camm Maguire <camm@debian.org>  Sun, 05 Jul 2026 14:49:40 -0400
+
 gcl27 (2.7.1-31) unstable; urgency=medium
 
   * Version_2_7_2pre34
