@@ -533,6 +533,7 @@
 
 (declaim (inline byte-index))
 (defun byte-index (k n)
+  #+:clx-little-endian (declare (ignore n))
   #+:clx-little-endian k #-:clx-little-endian (- n 1 k))
 
 (defun read-byte (s &optional (eof-error-p t) eof-value &aux (i 0)(tp (stream-element-type s)))
