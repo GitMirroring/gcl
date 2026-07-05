@@ -601,8 +601,10 @@
     (cond ((ntp-subtp x m) x)
 	  ((unless ux (ntp-subtp xy xx)) oy)
 	  ((unless uy (ntp-subtp xx xy)) ox)
-	  ((list (list x m `(and ,(if ux (car lx) (car (nreconstruct-type ox)))
-				 ,(if uy (car ly) (car (nreconstruct-type oy)))))
+	  ((list (list x m
+		       (let ((x (if ux (car lx) (car (nreconstruct-type ox))))
+			     (y (if uy (car ly) (car (nreconstruct-type oy)))))
+			 (if (equal x y) x `(and ,x ,y))))
 		 d t)))))
 
 (defun ntp-or-unknown (ox lx ux oy ly uy d)
@@ -611,8 +613,10 @@
     (cond ((ntp-subtp x m) x)
 	  ((unless ux (ntp-subtp mx my)) oy)
 	  ((unless uy (ntp-subtp my mx)) ox)
-	  ((list (list x m `(or ,(if ux (car lx) (car (nreconstruct-type ox)))
-				,(if uy (car ly) (car (nreconstruct-type oy)))))
+	  ((list (list x m
+		       (let ((x (if ux (car lx) (car (nreconstruct-type ox))))
+			     (y (if uy (car ly) (car (nreconstruct-type oy)))))
+			 (if (equal x y) x `(or ,x ,y))))
 		 d t)))))
 
 (defun ntp-and?c2-nil-p (x y ?c2)
