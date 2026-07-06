@@ -79,7 +79,7 @@ static ufixnum
 ufixhash(ufixnum g) {
   ufixnum i,h;
   for (h=i=0;i<sizeof(g);g>>=CHAR_SIZE,i++)
-    h^=rtb[g&MASK(CHAR_SIZE)];
+    h^=rtb[(g+i)&MASK(CHAR_SIZE)];
   return h;
 }
 
@@ -200,11 +200,11 @@ BEGIN:
 
 	for (;u<ue;) {
 	  ufixnum v=(*u++)>>s;
-	  if (u<ue||m) {
+	  if (s&&(u<ue||m)) {
 	    ufixnum w=(*u);
 	    if (u==ue)
 	      w&=BIT_MASK(m);
-	    v|=w<<(sizeof(*u)-s);
+	    v|=w<<(BV_BITS-s);
 	  }
 	  h^=ufixhash(v);
 	}
@@ -276,11 +276,11 @@ BEGIN:
 
 	for (;u<ue;) {
 	  ufixnum v=(*u++)>>s;
-	  if (u<ue||m) {
+	  if (s&&(u<ue||m)) {
 	    ufixnum w=(*u);
 	    if (u==ue)
 	      w&=BIT_MASK(m);
-	    v|=w<<(sizeof(*u)-s);
+	    v|=w<<(BV_BITS-s);
 	  }
 	  h^=ufixhash(v);
 	}
