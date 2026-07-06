@@ -259,6 +259,7 @@ unixport/saved_%: | unixport/raw_% unixport/gcl_cmpnopt_%.lsp \
 		( ! echo $@ | grep -q _gprof$$ || echo "(setq compiler::*default-prof-p* t)" >prof_init.lsp ) && \
 		echo "(system:save-system \"../$@\")" | \
 		cat ../unixport/init_raw.lsp prof_init.lsp - | \
+			GCL_MEM_BOUND=29 \
 			GCL_LSPSYSDIR=../$(srcdir)/unixport/ \
 				../unixport/raw_$* unixport/ -libdir ./  && \
 		rm -f ../unixport/gcl_cmpnopt.lsp
