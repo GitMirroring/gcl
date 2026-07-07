@@ -273,7 +273,7 @@ char *envp[];
             {
                 dfprintf(stderr, "guis,vforked child : %d\n", p);
 
-                _exit(p);
+                _exit(0);
                 /*
                    return p;
                    */
