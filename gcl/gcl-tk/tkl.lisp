@@ -1487,18 +1487,15 @@ on ~a as in: ~s~%" host command )))
   (setf (msg-index) (the fixnum (+ m 1)))
   m)
 
-(defun get-autoloads (&optional (lis (directory "*.lisp")) ( out "index.lsp")
-				&aux *paths*
-				)
-  (declare (special *paths*))
+(defun get-autoloads (&optional
+			(lis (sort (directory "*.lisp") 'string<= :key 'namestring))
+			(out "index.lsp"))
   (with-open-file
    (st out :direction :output)
    (format st "~%(in-package ~s)" (package-name *package*))
    (dolist (v lis) (get-file-autoloads v st))
    (format st "~%(in-package ~s)" (package-name *package*))
-   ;(format st "~2%~s" `(setq si::*load-path* (append ',*paths* si::*load-path*)))
-
-   ))
+   (format st "~%(push (namestring (make-pathname :directory (pathname-directory *load-pathname*))) si::*load-path*)")))
 
 
 		  
@@ -1506,16 +1503,10 @@ on ~a as in: ~s~%" host command )))
 				&aux (eof '(nil))
 				(*package* *package*)
 				saw-package
-				name  )
-  (declare (special *paths*))
+				name)
   (setq name (pathname-name (pathname file)))
   (with-open-file
    (st file)
-   (if (boundp '*paths*)
-       (pushnew (namestring (make-pathname :directory
-					   (pathname-directory
-					    (truename st))))
-		*paths* :test 'equal))
    (sloop for tem = (read st nil eof)
 	  while (not (eq tem eof))
 	  do (cond ((and (consp tem) (eq (car tem) 'defun))

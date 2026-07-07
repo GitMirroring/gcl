@@ -583,7 +583,7 @@ gcl-tk/%.o: gcl-tk/%.lsp | unixport/saved_ansi_gcl
 CLEANFILES+=gcl-tk/demos/index.lsp gcl-tk/demos/gc-monitor.o
 gcl-tk/demos/index.lsp: gcl-tk/tkl.o | unixport/saved_gcl
 	[ -d $(@D) ] || mkdir -p $(@D)
-	cd $(@D) && echo "(load \"../../$<\")(tk::get-autoloads (directory \"*.lisp\"))" | ../../$|
+	cd $(@D) && echo "(load \"../../$<\")(tk::get-autoloads)" | ../../$|
 
 sb_cmpnew/gcl_collectfn.o: cmpnew/gcl_collectfn.lsp | unixport/saved_gcl
 	[ -d $(@D) ] || mkdir -p $(@D)
