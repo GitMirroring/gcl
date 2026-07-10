@@ -798,7 +798,8 @@
 	(car inls)))
 
 (defun iterate-over-inls (nm at &optional (it 0)
-			  &aux (inls (copy-tree (get-inl-list (list nm))))
+			  &aux *apply-inl-hash*
+			    (inls (copy-tree (get-inl-list (list nm))))
 			    (have-2 (member 2 (car inls) :key 'caddr)))
 
   (flet ((try (s tps chg) ;(print (list 'trying nm s (mapcar 'cmp-unnorm-tp tps)))
@@ -807,6 +808,7 @@
 	     (print (list nm s (mapcar 'cmp-unnorm-tp tps) chg))
 	     (return-from iterate-over-inls (iterate-over-inls nm at (1+ it))))))
     (mapc (lambda (inl &aux (tps (copy-list (car inl))))
+	    (try (caddr inl) (car inl) (list 'no-mod))
 	    (when (eql 0 (caddr inl))
 	      (try 1 (car inl) (list 0 '-> 1)))
 	    (mapl (lambda (ptp pstp &aux (tp (car ptp))(stp (car pstp)))
