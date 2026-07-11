@@ -685,12 +685,15 @@
        (let ((i -1)) (mapcan (lambda (x &aux (y (incf i))) (unless (atomic-tp x) (list y))) tps))
        tr)))
 
+(defun tr-unused-tps (tr tps &aux (i -1))
+  (mapcar (lambda (x) (if (member (incf i) tr) t x)) tps))
+
 (defun ?update-fm-propagator (fm cl tr tps)
   (when (symbolp (car cl))
     (when (get (car cl) 'type-propagator);?more
       (when (eq (car fm) 'lit)
 	(when (member-if 'integerp tr) ;otherwise no point
-	  (push (list (car cl) tr tps) (ninth fm)))))))
+	  (push (list (car cl) tr (tr-unused-tps tr tps)) (ninth fm)))))))
 
 (defun merge-inl (cl inl pl &aux (tps (pop inl))(tr (pop inl)))
   (let ((z (member-if (lambda (x) (can-coalesce x tr inl tps)) (car pl))))
