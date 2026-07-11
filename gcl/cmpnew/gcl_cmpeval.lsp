@@ -650,7 +650,7 @@
 (defun lit-inl2 (form &aux (lf (eq 'lit (car form))))
   (list (this-safety-level)
 	(mapcar (lambda (x) (assert (eq (car x) 'ub)) (third x)) (when lf (fifth form)))
-	(cons (when lf (third form)) (info-type (cadr form)))
+	(cons (when lf (third form)) (ensure-known-type (info-type (cadr form))))
 	(ninth form)
 	(if lf (remove-comment (fourth form)) "")))
 
@@ -705,7 +705,7 @@
   (mapc (lambda (x) (merge-inl cl x pl)) inls))
 
 (defun ?add-inl (cl fms fm)
-  (let* ((tps (mapcar (lambda (x) (info-type (caddr x))) fms))
+  (let* ((tps (mapcar (lambda (x) (ensure-known-type (info-type (caddr x)))) fms))
 	 (tr (mapcar (lambda (x &aux (v (car (last x))))
 		       (when (and (consp v) (eq (car v) 'var))
 			 (position (cddr v) fms :key 'cdddr :test 'equalp)));FIXME
@@ -718,8 +718,6 @@
   (if *annotate*
       (si::string-concatenate "/* " (prin1-to-string form) " */" (remove-comment s))
       s))
-
-(defvar *apply-inl-hash* t)
 
 (defun update-info-type-from-inl (i inl fms &aux (tps (mapcar (lambda (x) (info-type (caddr x))) fms)))
   (setf (info-type i)
@@ -745,8 +743,14 @@
     (mapc (lambda (y) (?update-fm-propagator x y tr (caddr y)))
 	  (sixth inl))))
 
+(defvar *block-apply-inl* nil)
 
-(defun apply-inl (cl fms &aux (inl (when *apply-inl-hash* (inls-match cl fms))))
+(defun block-apply-inl (cl)
+  (if (listp *block-apply-inl*)
+      (member (car cl) *block-apply-inl*)
+      t))
+
+(defun apply-inl (cl fms &aux (inl (unless (block-apply-inl cl) (inls-match cl fms))))
   (when inl
     (let* ((c1fms (mapcar (lambda (x) (cdr (nth x fms))) (second inl))))
       (unless (member-if-not (lambda (x)
@@ -798,7 +802,7 @@
 	(car inls)))
 
 (defun iterate-over-inls (nm at &optional (it 0)
-			  &aux *apply-inl-hash*
+			  &aux (*block-apply-inl* (list nm))
 			    (inls (copy-tree (get-inl-list (list nm))))
 			    (have-2 (member 2 (car inls) :key 'caddr)))
 
