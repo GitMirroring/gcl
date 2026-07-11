@@ -871,7 +871,8 @@
 (si::putprop 'random 'random-propagator 'type-propagator)
 
 (defun lgcd2-propagator (f t1 t2 t3
-			 &aux (a1 (car (atomic-tp t1)))(a2 (car (atomic-tp t2)))
+			 &aux (t1 (type-and #tinteger t1))(t2 (type-and #tinteger t2))(t3 (type-and #tinteger t3))
+			   (a1 (car (atomic-tp t1)))(a2 (car (atomic-tp t2)))
 			   (a3 (car (atomic-tp t3))))
   (cond ((and a1 a2 a3) (object-type (funcall f a1 a2 a3)))
 	((type-and #t(not (integer 0 0)) (super-range '* #t(integer 0 1) (super-range 'min t1 t2))))))

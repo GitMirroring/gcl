@@ -773,7 +773,7 @@
 (defvar *ncompiles* 0)
 
 (defun try-compile (nm s tps
-		    &aux (*sig-discovery* t)
+		    &aux (*sig-discovery* t) si::*sig-discovery-props*
 		      *compile-verbose*
 		      (syms (mapcar (lambda (x) (declare (ignore x)) (gensym)) tps)))
   (incf *ncompiles*)
@@ -836,6 +836,21 @@
 	  (car inls))
     it))
 
+(defun seed-all-inls (&aux r)
+  (declare (dynamic-extent r))
+  (do-all-symbols (s)
+    (unless (gethash s *inl-hash*)
+      (when (fboundp s)
+	(unless (or (macro-function s) (special-operator-p s))
+	  (when (get-return-type s)
+	    (unless (member s r)
+	      (pushnew s r)
+	      (let ((at (get-arg-types s)))
+	      (print s)
+	      (try-compile s 0
+			   (make-list (length (ldiff at (member '* at)))
+				      :initial-element t))))))))))
+
 (defun finalize-inls (nm &aux (*ncompiles* 0)(at (get-arg-types nm))(inls (get-inl-list (list nm))))
   (restrict-inl-1-tps nm at inls)
   (list (iterate-over-inls nm at) *ncompiles*  (show-inls nm)))
@@ -846,12 +861,14 @@
 	     (unless (zerop (car (finalize-inls x)))
 	       (setq redo t)))
 	   *inl-hash*)
-  (when redo
-    (finalize-all-inls)))
+  (when redo (finalize-all-inls)))
+
+(defun finalize-inl-hash nil
+  (seed-all-inls)
+  (finalize-all-inls))
 
 (defun dump-inl-hash (f &optional finalize &aux (si::*print-package* t))
-  (when finalize (finalize-all-inls))
-;  (when compress (maphash (lambda (x y) (declare (ignore y)) (compress-inl x)) *inl-hash*))
+  (when finalize (finalize-inl-hash))
   (with-open-file (s f :direction :output)
     (prin1 '(in-package :compiler) s)
     (terpri s)
