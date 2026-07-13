@@ -2,8 +2,18 @@
 #include "page.h"
 #include "ptable.h"
 
-
 static unsigned long gprof_on;
+static void (*real_mcount)(void);
+
+void __attribute__((no_instrument_function))
+mcount(void) {
+
+  if (__builtin_expect(!gprof_on,1))
+    return;
+
+  real_mcount();
+
+}
 
 /*all but this stub to be written in the future provided*/
 #if defined(__APPLE__)
@@ -44,6 +54,8 @@ DEFUN("MONSTARTUP",object,fSmonstartup,SI,2,2,NONE,OI,IO,OO,OO,(ufixnum start,uf
     return Cnil;
 
   writable_malloc_wrap(my_monstartup,int,start,end);
+  if (__builtin_expect(!real_mcount,0))
+    massert(real_mcount=dlsym(RTLD_NEXT,"mcount"));
   gprof_on=1;
 
   return Ct;
@@ -54,6 +66,7 @@ void
 gprof_cleanup(void) {
 
   FFN(fSmcleanup)();
+  real_mcount=NULL;
 
 }
 
