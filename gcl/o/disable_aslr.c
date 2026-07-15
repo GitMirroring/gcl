@@ -1,7 +1,5 @@
 #include "include.h"
 
-#ifdef DISABLE_ASLR
-
 #if defined(__APPLE__)
 
 #include <stdio.h>
@@ -15,10 +13,15 @@
 #endif
 
 void
-disable_aslr(int argc, char **argv, char **envp) {
+maybe_disable_aslr(int argc, char **argv, char **envp) {
 
   pid_t pid;
   posix_spawnattr_t attr;
+
+#ifndef DISABLE_ASLR
+  if (!getenv("GCL_DISABLE_ASLR"))
+    return;
+#endif
 
   if (!_dyld_get_image_vmaddr_slide(0)) {
     return;
@@ -88,10 +91,15 @@ reexec(int argc, char **argv, char **envp) {
 #include <unistd.h>
 
 void
-disable_aslr(int argc, char **argv, char **envp) {
+maybe_disable_aslr(int argc, char **argv, char **envp) {
 
   long pers;
   long flag = ADDR_NO_RANDOMIZE|(sizeof(flag)==4 ? ADDR_COMPAT_LAYOUT : 0);
+
+#ifndef DISABLE_ASLR
+  if (!getenv("GCL_DISABLE_ASLR"))
+    return;
+#endif
 
   massert((pers=personality(-1))!=-1);
 
@@ -114,10 +122,15 @@ disable_aslr(int argc, char **argv, char **envp) {
 #include <sys/procctl.h>
 
 void
-disable_aslr(int argc, char **argv, char **envp) {
+maybe_disable_aslr(int argc, char **argv, char **envp) {
 
   const int cctl=PROC_ASLR_FORCE_DISABLE;
   int stat,ctl=cctl;
+
+#ifndef DISABLE_ASLR
+  if (!getenv("GCL_DISABLE_ASLR"))
+    return;
+#endif
 
   massert(procctl(P_PID, 0, PROC_ASLR_STATUS, &stat) != -1);
 
@@ -136,11 +149,9 @@ disable_aslr(int argc, char **argv, char **envp) {
 #else  /*Unneeded on Hurd, cygwin/mingw via coff header flag*/
 
 void
-disable_aslr(int argc, char **argv, char **envp) {
+maybe_disable_aslr(int argc, char **argv, char **envp) {
   return;
 }
-
-#endif
 
 #endif
 

@@ -707,9 +707,7 @@ DEFUN("KCL-SELF",object,fSkcl_self,SI,0,0,NONE,OO,OO,OO,OO,(void),"") {
 int
 main(int argc, char **argv, char **envp) {
 
-#ifdef DISABLE_ASLR
-  disable_aslr(argc,argv,envp);
-#endif
+  maybe_disable_aslr(argc,argv,envp);
 
 #include "cstack.h"
 
