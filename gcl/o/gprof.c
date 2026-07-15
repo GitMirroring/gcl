@@ -1,3 +1,5 @@
+#include <dlfcn.h>
+
 #include "include.h"
 #include "page.h"
 #include "ptable.h"
