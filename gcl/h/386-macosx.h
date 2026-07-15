@@ -115,7 +115,6 @@ do {                                                        \
  } while (0)
 
 #ifdef _LP64
-#define C_GC_OFFSET 4
 #include <mach-o/x86_64/reloc.h>
 #define RELOC_H "mach64_i386_reloc.h"
 #else

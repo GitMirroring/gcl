@@ -114,7 +114,6 @@ do {                                                        \
   (a_) = fub;						    \
  } while (0)
 
-#define C_GC_OFFSET 4
 #include <mach-o/arm64/reloc.h>
 #define RELOC_H "mach64_aarch64_reloc.h"
 

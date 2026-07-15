@@ -21,5 +21,4 @@
 #define SPECIAL_RELOC_H "elf64_ppcle_reloc_special.h"
 #endif
 #define OUTPUT_MACH bfd_mach_ppc64
-#define C_GC_OFFSET 4
 #endif
