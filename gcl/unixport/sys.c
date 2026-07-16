@@ -23,8 +23,6 @@
 static void
 ar_init_fn(void (fn)(void),const char *s) {
 
-  struct stat ss;
-  
   if (stat(s,&ss)) {
 
     char *sysd=getenv("GCL_SYSDIR");

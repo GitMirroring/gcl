@@ -257,7 +257,6 @@ open_stream(object fn,enum smmode smm, object if_exists, object if_does_not_exis
 
     if (!(fp=*FN1=='|' ? popen(FN1+1,"r") : fopen_not_dir(FN1,"r")) && sSAallow_gzipped_fileA->s.s_dbind!=Cnil) {
 
-      struct stat ss;
       massert(snprintf(FN2,sizeof(FN2),"%s.gz",FN1)>0);
 
       if (!stat(FN2,&ss)) {

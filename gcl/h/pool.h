@@ -63,7 +63,6 @@ open_pool(void) {
 
   if (pool==-1) {
 
-    struct stat ss;
     massert(!lstat(multiprocess_memory_pool,&ss));
     massert(S_ISDIR(ss.st_mode));
 

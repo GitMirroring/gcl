@@ -39,6 +39,7 @@ LFD(siLsave)(void) {
   set_global_env_defaults();
   shared_lib_start=NULL;
   memset(&fcall,0,sizeof(fcall));
+  memset(&ss,0,sizeof(ss));
   memset(gmp_jmp,0,sizeof(gmp_jmp));
   memset(stdin_buf,0,sizeof(stdin_buf));
   memset(stdout_buf,0,sizeof(stdout_buf));

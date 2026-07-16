@@ -173,8 +173,6 @@ fShome_namestring(object x) {
 FILE *
 fopen_not_dir(char *filename,char *option) {
 
-  struct stat ss;
-
   return DIR_EXISTS_P(filename,ss) ? NULL : fopen(filename,option);
 
 }
@@ -182,16 +180,12 @@ fopen_not_dir(char *filename,char *option) {
 int
 file_len(FILE *fp) {/*FIXME dir*/
 
-  struct stat filestatus;
-
-  return fstat(fileno(fp), &filestatus) ? 0 : filestatus.st_size;
+  return fstat(fileno(fp), &ss) ? 0 : ss.st_size;
 
 }
 
 bool
 file_exists(object x) {
-
-  struct stat ss;
 
   coerce_to_filename(x,FN1);
 
@@ -232,8 +226,6 @@ stat_mode_key(struct stat *ssp) {
 
 DEFUN("STAT1",object,fSstat1,SI,1,1,NONE,OO,OO,OO,OO,(object x),"") {
 
-  struct stat ss;
-
   RETURN1(stat_internal(x,&ss) ? stat_mode_key(&ss) : Cnil);
 
 }
@@ -243,7 +235,6 @@ DEFUNM("STAT",object,fSstat,SI,1,1,NONE,OO,OO,OO,OO,(object x),"") {
 
   object *vals=(object *)fcall.valp;
   object *base=vs_top;
-  struct stat ss;
 
   if (stat_internal(x,&ss))
     RETURN4(stat_mode_key(&ss),
@@ -372,8 +363,7 @@ DEFUN("READDIR",object,fSreaddir,SI,3,3,NONE,OI,IO,OO,OO,(fixnum x,fixnum y,obje
 #define get_d_type(e,s) e->d_type
 #else
 #define get_d_type(e,s) \
-  ({struct stat ss;\
-    massert(snprintf(FN1,sizeof(FN1),"%-*.*s%s",s->st.st_fillp,s->st.st_fillp,s->st.st_self,e->d_name)>=0);\
+  ({massert(snprintf(FN1,sizeof(FN1),"%-*.*s%s",s->st.st_fillp,s->st.st_fillp,s->st.st_self,e->d_name)>=0);\
     lstat(FN1,&ss);S_ISDIR(ss.st_mode) ? DT_DIR : DT_REG;})
 #endif
 
@@ -517,7 +507,6 @@ get_mmap_flags(FILE *fp,void **ve,int flags) {
 
   int n;
   void *v1;
-  struct stat ss;
 
   massert((n=fileno(fp))>2);
   massert(!fstat(n,&ss));

@@ -659,7 +659,6 @@ find_init_name1(char *s,unsigned len) {
   return find_init_string(tmp);
 
 #else    
-  struct stat ss;
   char *tmp,*q;
   FILE *f;
 

@@ -171,6 +171,7 @@ EXTER char **ARGV;
 #ifdef UNIX
 EXTER char **ENVP;
 #endif
+EXTER struct stat ss;
 
 EXTER object sSAsystem_directoryA;
 #ifdef UNIX
