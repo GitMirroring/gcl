@@ -76,10 +76,9 @@
       }
       break;
     case R_LARCH_CALL36:
-      s+=a-p;
-      massert(s>=-(1L<<37) && s<(1L<<37));
-      store_val(where,MASK(20)<<5,((((s+0x20000)>>18))&MASK(20))<<5);
-      store_val((ul*)((ul)where+4),MASK(16)<<10,((s&0x3ffff)>>2)<<10);
+      massert((s+a-p+(1ULL<<35))<(1ULL<<36));
+      store_val(where,MASK(20)<<5,((bdest+0x8000)>>16)<<5);
+      store_val((ul *)((ul)where+4),MASK(16)<<10,bdest<<10);
       break;
     case R_LARCH_PCALA_HI20:
       store_val(where,MASK(20)<<5,get_page_delta(s+a,p)>>12<<5);
