@@ -395,8 +395,15 @@ AC_ARG_ENABLE([gprof],[  --enable-gprof builds gcl with -pg in CFLAGS to enable 
 		   else
 		       AC_MSG_RESULT([ok])
 		       OLD_CFLAGS=$CFLAGS  # Do not run configure tests with -pg
-                       assert_arg_to_cflags -pg
-                       GP_FLAG="-pg"
+		       case $use in
+		       	    386*)
+				assert_arg_to_cflags -fno-shrink-wrap
+				assert_arg_to_cflags -pg
+  	                        GP_FLAG="-fno-shrink-wrap -pg";;
+                            *)
+				assert_arg_to_cflags -pg
+  	                        GP_FLAG="-pg";;
+		       esac
                        CFLAGS=$OLD_CFLAGS
        		       TFPFLAG=""
 		       AC_DEFINE(GCL_GPROF,1,[use gprof profiling])
