@@ -1,3 +1,17 @@
+gcl (2.6.14-22) unstable; urgency=medium
+
+  * Version_2_6_15pre21
+  * Bug fix: "FTBFS with glibc 2.43 due to ISO C23 const return types",
+    thanks to Aurelien Jarno (Closes: #1128545).
+  * Bug fix: "[INTL:sv] updated Swedish debconf translation", thanks to
+    Anders Jonsson (Closes: #1105018).
+  * Bug fix: "[INTL:de] updated German debconf translation", thanks to
+    Helge Kreutzmann (Closes: #1104922).
+  * Bug fix: "Update/add debconf template translation [INTL:ca]", thanks
+    to Carles Pina i Estany (Closes: #1118558).
+
+ -- Camm Maguire <camm@debian.org>  Tue, 29 Sep 2026 13:24:25 -0400
+
 gcl (2.6.14-21) unstable; urgency=medium
 
   * Version_2_6_15pre20
