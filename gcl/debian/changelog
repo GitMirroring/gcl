@@ -1,3 +1,9 @@
+gcl (2.6.14-24) unstable; urgency=high
+
+  * Version_2_6_15pre23
+
+ -- Camm Maguire <camm@debian.org>  Tue, 29 Sep 2026 20:20:53 -0400
+
 gcl (2.6.14-23) unstable; urgency=high
 
   * Version_2_6_15pre22
