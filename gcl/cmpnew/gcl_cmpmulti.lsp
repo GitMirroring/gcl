@@ -272,9 +272,11 @@
 	 (tp (if (eq tp '*) (make-list (length vars) :initial-element t) (cdr tp))))
     (do ((v vars (cdr v)) (t1 tp (cdr t1)))
 	((not v))
-	(set-var-init-type (car v) (if t1 (car t1) #tnull))))
-
-  (dolist (v vars) (push-var v init-form))
+      (let* ((ntp (if t1 (car t1) #tnull))
+	     (ni (copy-info (cadr init-form))))
+	(setf (info-type ni) ntp)
+	(set-var-init-type (car v) ntp)
+	(push-var (car v) (list* (car init-form) ni (cddr init-form))))))
 
   (check-vdecl vnames ts is)
 
