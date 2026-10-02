@@ -11,7 +11,7 @@ if [ "$S" = "e" ] ; then
 #    mkdir $TMPDIR/shuf-$D
 #    disorderfs --reverse-dirents=yes "$TMPDIR/$D" "$TMPDIR/shuf-$D"
     sbuild --chroot-mode=unshare \
-   -d unstable \
+   -d unstable --no-clean-source \
    --build-path=/build/gcl-$D/ \
    --jobs=$3 \
    --post-build-commands="%SBUILD_CHROOT_EXEC tar -c -C /build/gcl-$D/ . | tar -x -C $TMPDIR/$D/" \
@@ -23,7 +23,7 @@ if [ "$S" = "e" ] ; then
    $1
 else   
     sbuild --chroot-mode=unshare \
-   -d unstable \
+   -d unstable  --no-clean-source \
    --build-path=/build/gcl-$D/ \
    --jobs=$3 \
    --post-build-commands="%SBUILD_CHROOT_EXEC tar -c -C /build/gcl-$D/ . | tar -x -C $TMPDIR/$D/" \
