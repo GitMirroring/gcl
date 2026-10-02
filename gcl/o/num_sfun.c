@@ -675,8 +675,8 @@ LFD(Lexp)(void)
 
 DEFUN("EXPT",object,fLexpt,LISP,2,2,NONE,OO,OO,OO,OO,(object x,object y),"") {
 
-  check_type_number(&vs_base[0]);
-  check_type_number(&vs_base[1]);
+  check_type_number(&x);
+  check_type_number(&y);
   RETURN1(number_expt(x,y));
 
 }
