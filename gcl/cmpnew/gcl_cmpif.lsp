@@ -79,11 +79,32 @@
 
 (defun real-bnds (t1) (num-type-bounds t1))
 
-(defun two-tp-inf (fn t2 &aux (t2 (real-bnds (type-and #treal t2))))
+(defun =-bnds (tp &aux (ctpn (si::tp-type (tp-and tp #t(complex* real (not (real 0 0)))))))
+  (list (real-bnds (real-imag-tp ctpn t)) (real-bnds (real-imag-tp ctpn nil))
+	(real-bnds (tp-or (tp-and tp #treal)
+			  (real-imag-tp (si::tp-type (tp-and tp #t(complex* real (real 0 0)))) t)))))
+
+(defun =-tp (tp &aux (l (=-bnds tp)))
+  (flet ((f (x) (when x (cons 'real x))))
+    (tp-or (cmp-norm-tp `(complex* ,(f (car l)) ,(f (cadr l))))
+	   (tp-or (cmp-norm-tp (f (caddr l)))
+		  (cmp-norm-tp `(complex* ,(f (caddr l)) (real 0 0)))))))
+
+(defun atomic=-tp (tp &aux (l (=-bnds tp)))
+  (flet ((f (x) (when (and (numberp (car x)) (numberp (cadr x)) (= (car x) (cadr x))) (car x))))
+    (cond ((caddr l)
+	   (unless (or (car l) (cadr l))
+	     (let ((r (f (caddr l))))
+	       (when r
+		 (cmp-norm-tp `(or (real ,r ,r) (complex* (real ,r ,r) (real 0 0))))))))
+	  ((let ((cr (f (car l)))(ci (f (cadr l))))
+	     (when (and cr ci)
+	       (cmp-norm-tp `(complex* (real ,cr ,cr) (real ,ci ,ci)))))))))
+
+(defun two-tp-inf (fn t2o &aux (t2 (real-bnds (type-and #treal t2o))))
   (case fn
-	(= (cmp-norm-tp `(real ,(or (car t2) '*) ,(or (cadr t2) '*))))
-	(/= (if (when (numberp (car t2)) (eql (car t2) (cadr t2)))
-		(cmp-norm-tp `(and number (not (real ,@t2)))) #treal))
+	(= (=-tp t2o))
+	(/= (tp-and #tnumber (tp-not (atomic=-tp t2o))))
 	(>  (cmp-norm-tp `(real ,(cond ((numberp (car t2)) (list (car t2))) ((car t2)) ('*)))))
 	(>= (cmp-norm-tp `(real ,(or (car t2) '*))))
 	(<  (cmp-norm-tp `(real * ,(cond ((numberp (cadr t2)) (list (cadr t2))) ((cadr t2)) ('*)))))
