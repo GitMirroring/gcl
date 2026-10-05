@@ -42,7 +42,6 @@ number_compare(object x, object y) {
 
   double dx;
   static double dy;
-  object q;
   enum type tx,ty;
 
   tx=type_of(x);
@@ -70,6 +69,7 @@ number_compare(object x, object y) {
       return(number_compare(x, y));
 
     case t_shortfloat:
+      if (FIXSFSP(fix(x))) return number_compare(x,double_to_rational(sf(y)));/*(fix(x)&0x7FFFFFFFFF000000)*/
       {
 	volatile float fx=fix(x);
 	dx = fx;
@@ -78,6 +78,7 @@ number_compare(object x, object y) {
       goto LONGFLOAT;
 
     case t_longfloat:
+      if (FIXLFSP(fix(x))) return number_compare(x,double_to_rational(lf(y)));
       dx = fix(x);
       dy = lf(y);
       goto LONGFLOAT;
@@ -106,21 +107,10 @@ number_compare(object x, object y) {
       return(number_compare(x, y));
 
     case t_shortfloat:
-
-      if ((float)number_to_double((q=double_to_integer((double)sf(y))))==sf(y))
-	return(number_compare(x,q));
-
-      dx=number_to_double(x);
-      dy=sf(y);
-      goto LONGFLOAT;
+      return number_compare(x,double_to_rational(sf(y)));
 
     case t_longfloat:
-      if (number_to_double((q=double_to_integer(lf(y))))==lf(y))
-	return(number_compare(x,q));
-
-      dx=number_to_double(x);
-      dy=lf(y);
-      goto LONGFLOAT;
+      return number_compare(x,double_to_rational(lf(y)));
 
     case t_complex:
       goto Y_COMPLEX;
@@ -176,6 +166,9 @@ number_compare(object x, object y) {
 
     case t_fixnum:
 
+      if (tx==t_shortfloat ? FIXSFSP(fix(y)) : FIXLFSP(fix(y)))
+	return number_compare(double_to_rational(dx),y);
+
       if (tx==t_shortfloat) {
 	volatile float fy=fix(y);
 	dy=fy;
@@ -184,11 +177,7 @@ number_compare(object x, object y) {
       goto LONGFLOAT;
 
     case t_bignum:
-
-      if (number_to_double((q=double_to_integer(dx)))==dx)
-	return(number_compare(q,y));
-      dy=number_to_double(y);
-      goto LONGFLOAT;
+      return number_compare(double_to_rational(dx),y);
 
     case t_ratio:
       return(number_compare(double_to_rational(dx),y));
@@ -331,6 +320,9 @@ DEFUN("/=2",object,fSne2,SI
   RETURN1(gcl_isnan(x) || gcl_isnan(y) || number_compare(x,y)!=0 ? Ct : Cnil);
 
 }
+
+DEFCONST("+SFBITS+",sSPsfbitsP,SI,small_fixnum(SFBITS),"Mantissa bits in short-float");
+DEFCONST("+LFBITS+",sSPsfbitsP,SI,small_fixnum(LFBITS),"Mantissa bits in short-float");
 
 
 DEFUN("MAX2",object,fSx2,SI

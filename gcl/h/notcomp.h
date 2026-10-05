@@ -362,3 +362,15 @@ EXTER gmp_randfnptr_t Mersenne_Twister_Generator_Noseed;
   type_of(strm_)==t_stream ? read_object_non_recursive(strm_) : fSread_fasd_top(strm_)
 
 #define NO_TRUENAME (raw_image || no_truename)
+
+
+#define UFIX(x) ({fixnum _x=(x);_x^(_x>>(sizeof(fixnum)*8-1));})
+
+#define SFBITS 24
+#define LFBITS 53
+
+#define FMSK(a_) ((~(0ULL))&(~((1ULL<<(a_))-1)))
+
+#define FIXSFSP(x) (UFIX(x)&FMSK(SFBITS))
+#define FIXLFSP(x) (UFIX(x)&FMSK(LFBITS))
+

@@ -296,33 +296,42 @@
 (push '((t t) t #.(flags ans) "number_divide(#0,#1)") (get 'si::number-divide 'inline-always))
 (push '((cnum cnum) cnum #.(flags) "(#0)/(#1)") (get 'si::number-divide 'inline-always))
 
-;;/=
- (push '((t t) boolean #.(flags rfa)"immnum_ne(#0,#1)")
-   (get '/= 'inline-always))
-(push '((cnum cnum) boolean #.(flags rfa)"(#0)!=(#1)") (get '/= 'inline-always))
+(deftype creals nil `(or float (signed-byte #.(1+ +sfbits+))))
+(deftype creall nil `(or long-float (signed-byte #.(1+ +lfbits+))))
+(deftype cnums nil `(or float fcomplex dcomplex (signed-byte #.(1+ +sfbits+))))
+(deftype cnuml nil `(or long-float dcomplex (signed-byte #.(1+ +lfbits+))))
 
-;;<
- (push '((t t) boolean #.(flags rfa)"immnum_lt(#0,#1)") (get '< 'inline-always))
-(push '((creal creal) boolean #.(flags rfa)"(#0)<(#1)") (get '< 'inline-always))
+(labels ((cop (op) (or (cdr (assoc op '((= . ==)(/= . !=)))) op))
+	 (minl (args s) `(,args boolean #.(flags rfa) ,s))
+	 (str (s) (string-downcase (remove #\- (string s))))
+	 (minla (op) (ms "((#0)" (cop op) "(#1))"))
+	 (minlb (op args &aux (p (position 'fixnum args))(s (nth (- 1 p) args)))
+	   (ms "(FIX" (if (member s '(short-float fcomplex)) "S" "L") "FSP(#" p ") ? "
+	       "number_compare(make_" (if (zerop p) "fixnum" (str s)) "(#0),make_"
+	       (if (zerop p) (str s) "fixnum") "(#1))" (cop op) "0 : " (minla op) ")"))
+	 (minls (op args) (minl args (minlb op args)))
+	 (minlf (op args) (minl args (minla op)))
+	 (minlt (s iap)
+	   (mapc (lambda (x) (when x (push x (get s 'inline-always))))
+		 (list
+		  (minl '(t t) (ms "immnum_" iap "(#0,#1)"))
+		  (unless (eq (cop s) s) (minls s '(fixnum fcomplex)))
+		  (minls s '(fixnum short-float))
+		  (unless (eq (cop s) s) (minls s '(fcomplex fixnum)))
+		  (minls s '(short-float fixnum))
+		  (unless (eq (cop s) s) (minls s '(fixnum dcomplex)))
+		  (minls s '(fixnum long-float))
+		  (unless (eq (cop s) s)  (minls s '(dcomplex fixnum)))
+		  (minls s '(long-float fixnum))
+		  (minlf s '(fixnum fixnum))
+		  (minlf s (if (eq (cop s) s) '(creall creall) '(cnuml cnuml)))
+		  (minlf s (if (eq (cop s) s) '(creals creals) '(cnums cnums)))))))
+
+  (mapc (lambda (x) (apply #'minlt x)) '((< "lt")(<= "le")(> "gt")(>= "ge")(= "eq")(/= "ne"))))
+
 
 ;;compiler::objlt
  (push '((t t) boolean #.(flags rfa)"((object)(#0))<((object)(#1))") (get 'si::objlt 'inline-always))
-
-;;<=
- (push '((t t) boolean #.(flags rfa)"immnum_le(#0,#1)") (get '<= 'inline-always))
-(push '((creal creal) boolean #.(flags rfa)"(#0)<=(#1)") (get '<= 'inline-always))
-
-;;=
- (push '((t t) boolean #.(flags rfa)"immnum_eq(#0,#1)") (get '= 'inline-always))
-(push '((cnum cnum) boolean #.(flags rfa)"(#0)==(#1)") (get '= 'inline-always))
-
-;;>
- (push '((t t) boolean #.(flags rfa)"immnum_gt(#0,#1)") (get '> 'inline-always))
-(push '((creal creal) boolean #.(flags rfa)"(#0)>(#1)") (get '> 'inline-always))
-
-;;>=
- (push '((t t) boolean #.(flags rfa)"immnum_ge(#0,#1)") (get '>= 'inline-always))
-(push '((creal creal) boolean #.(flags rfa)"(#0)>=(#1)") (get '>= 'inline-always))
 
 ;;APPEND
 ;;  (push '((t t) t #.(flags ans)"append(#0,#1)")
