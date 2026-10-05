@@ -279,7 +279,7 @@
     (ratio
      (let ((z (rational nx)))
        (if (eql z nx) (if (integerp x) (list x) x)
-	   (if a z (list z)))))
+	   (if (unless (integerp z) a) z (list z)))))
     (short-float (f 0.0s0))
     (long-float (f 0.0)))))
 
