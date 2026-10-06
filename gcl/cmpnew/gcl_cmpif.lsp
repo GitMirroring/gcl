@@ -101,7 +101,7 @@
 	     (when (and cr ci)
 	       (cmp-norm-tp `(complex* (real ,cr ,cr) (real ,ci ,ci)))))))))
 
-(defun two-tp-inf (fn t2o &aux (t2 (real-bnds (type-and #treal t2o))))
+(defun two-tp-inf (fn t2o &aux (t2o (type-and t2o #tnumber))(t2 (real-bnds (tp-and #treal t2o))))
   (case fn
 	(= (=-tp t2o))
 	(/= (tp-and #tnumber (tp-not (atomic=-tp t2o))))
