@@ -296,10 +296,10 @@
 (push '((t t) t #.(flags ans) "number_divide(#0,#1)") (get 'si::number-divide 'inline-always))
 (push '((cnum cnum) cnum #.(flags) "(#0)/(#1)") (get 'si::number-divide 'inline-always))
 
-(deftype creals nil `(or float (signed-byte #.(1+ +sfbits+))))
-(deftype creall nil `(or long-float (signed-byte #.(1+ +lfbits+))))
-(deftype cnums nil `(or float fcomplex dcomplex (signed-byte #.(1+ +sfbits+))))
-(deftype cnuml nil `(or long-float dcomplex (signed-byte #.(1+ +lfbits+))))
+(deftype creals nil `(or float (and fixnum (signed-byte #.(1+ +sfbits+)))))
+(deftype creall nil `(or long-float (and fixnum (signed-byte #.(1+ +lfbits+)))))
+(deftype cnums nil `(or creals fcomplex dcomplex))
+(deftype cnuml nil `(or creall dcomplex))
 
 (labels ((cop (op) (or (cdr (assoc op '((= . ==)(/= . !=)))) op))
 	 (minl (args s) `(,args boolean #.(flags rfa) ,s))
