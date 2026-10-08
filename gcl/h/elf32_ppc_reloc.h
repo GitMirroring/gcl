@@ -2,7 +2,7 @@
       s+=a;
       if (ovchks(s,~MASK(26)))
         store_val(where,MASK(26),s|0x3);
-      else  if (ovchks(s-p,~MASK(26)))
+      else if (ovchks(s-p,~MASK(26)))
         store_val(where,MASK(26),(s-p)|0x1); 
       else massert(!"REL24 overflow");
         break;
