@@ -19,17 +19,20 @@ export SOURCE_DATE_EPOCH_TEX_PRIMITIVES=1
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
 
+# This is the debhelper compatability version to use.
+ARCHT:=$(shell dpkg-architecture -qDEB_HOST_ARCH)
+
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 NUMJOBS=$(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+endif
+ifeq ($(ARCHT),powerpc)
+NUMJOBS:=$(shell echo $$(( $(NUMJOBS) > 4 ? 4 : $(NUMJOBS)))) # Apparent file locking bug
 endif
 ifneq (,$(NUMJOBS))
 MAKEFLAGS+=-j $(NUMJOBS) -O
 GCL_MULTIPROCESS_MEMORY_POOL?=$(shell pwd)
 export GCL_MULTIPROCESS_MEMORY_POOL
 endif
-
-# This is the debhelper compatability version to use.
-ARCHT:=$(shell dpkg-architecture -qDEB_HOST_ARCH)
 
 MCC?=gcc
 # ifeq ($(ARCHT),alpha)
