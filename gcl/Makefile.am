@@ -467,7 +467,7 @@ ansi_gcl/%.o: ansi_gcl0/%.o | unixport/ansi_gcl
 	cp $(patsubst %.o,%.*,$<) $(@D)
 
 
-%.go: %.o mod_gcl/recompile #FIXME parallel
+%.go: %.o unixport/saved_ansi_gcl #FIXME parallel
 	$(CC) $(AM_CPPFLAGS) -I $(<D) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) \
 	      -fno-omit-frame-pointer -pg -c $*.c -o $@
 	cat $*.data >>$@
