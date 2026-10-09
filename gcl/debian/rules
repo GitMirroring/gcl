@@ -25,6 +25,9 @@ ARCHT:=$(shell dpkg-architecture -qDEB_HOST_ARCH)
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 NUMJOBS=$(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 endif
+ifeq ($(ARCHT),armhf)
+NUMJOBS:=$(shell echo $$(( $(NUMJOBS) > 4 ? 4 : $(NUMJOBS)))) # Apparent file locking bug
+endif
 ifeq ($(ARCHT),powerpc)
 NUMJOBS:=$(shell echo $$(( $(NUMJOBS) > 4 ? 4 : $(NUMJOBS)))) # Apparent file locking bug
 endif
