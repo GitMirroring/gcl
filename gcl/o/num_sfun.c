@@ -217,21 +217,6 @@ number_log_expt(object x,object y) {
 }
 
 static inline object
-number_invert(object x,object y,object z) {
-
-  switch (type_of(z)) {
-  case t_shortfloat:
-    if (!ISNORMAL(sf(z))) return number_log_expt(x,y);
-    break;
-  case t_longfloat:
-    if (!ISNORMAL(lf(z))) return number_log_expt(x,y);
-    break;
-  }
-  return number_divide(small_fixnum(1),z);
-}
-    
-
-static inline object
 number_si_expt(object x,object y) {
   switch (type_of(y)) {
   case t_fixnum:
@@ -239,12 +224,17 @@ number_si_expt(object x,object y) {
       fixnum fy=fix(y);
       if (fy>=0)
 	return number_ui_expt(x,fy);
+      x=number_divide(small_fixnum(1),x);
       if (fy==MOST_NEGATIVE_FIX)
-	return number_invert(x,y,number_ump_expt(x,number_negate(y)));
-      return number_invert(x,y,number_ui_expt(x,-fy));
+	return number_ump_expt(x,number_negate(y));
+      return number_ui_expt(x,-fy);
     }
   case t_bignum:
-    return big_sign(y)<0 ? number_invert(x,y,number_ump_expt(x,number_negate(y))) : number_ump_expt(x,y);
+    if (big_sign(y)<0) {
+      x=number_divide(small_fixnum(1),x);
+      y=number_negate(y);
+    }
+    return number_ump_expt(x,y);
   case t_ratio:
   case t_shortfloat:
   case t_longfloat:
