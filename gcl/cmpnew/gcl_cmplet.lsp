@@ -46,9 +46,11 @@
 		   "Setting init type of ~s to ~s" (var-name v) (cmp-unnorm-tp (var-type v)))))
 
 (defun new-c1progn (f body)
-  (let ((info (copy-info (cadr body))))
-    (add-info info (cadr f))
-    (list 'progn info (if (eq (car body) 'progn) (cons f (caddr body)) (list f body)))))
+  (if (info-type (cadr f))
+      (let ((info (copy-info (cadr body))))
+	(add-info info (cadr f))
+	(list 'progn info (if (eq (car body) 'progn) (cons f (caddr body)) (list f body))))
+      f))
 	
 ;; (defun side-effects-p (f &optional bl)
 ;;   (cond ((atom f) nil)
