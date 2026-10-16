@@ -223,6 +223,34 @@
   (<= (realpart (expt -8 1/3)) 0.0)
   nil)
 
+(deftest expt.29
+  (< (- 10000000000000000 1) 1e16)
+  t)
+
+(deftest expt.30
+  (> (+ 10000000000000000 1) 1e16)
+  t)
+
+(deftest expt.31
+  (eql 1.0e19 (expt 10.0 19))
+  t)
+
+(deftest expt.32
+  (eql 1.0e-19 (expt 10.0 -19))
+  t)
+
+(deftest expt.33
+  (eql 1.0s19 (expt 10.0s0 19))
+  t)
+
+(deftest expt.34
+  (eql 1.0s-19 (expt 10.0s0 -19))
+  t)
+
+(deftest expt.35
+  (typep (EXPT -0.47942553860420301 2) 'long-float)
+  t)
+
 #|
 ;;; FIXME
 ;;; I need to think more about how to do approximate float
