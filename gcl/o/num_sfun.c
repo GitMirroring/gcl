@@ -109,156 +109,6 @@ number_exp(object x)
 	}
 }
 
-static inline object
-number_fix_iexpt(object x,fixnum y,fixnum ly,fixnum j) {
-  object z;
-  
-  if (j+1==ly) return x;
-  z=number_fix_iexpt(number_times(x,x),y,ly,j+1);
-  return fixnum_bitp(j,y) ? number_times(x,z) : z;
-}
-
-static inline object
-number_big_iexpt(object x,object y,fixnum ly,fixnum j) {
-  object z;
-  
-  if (j+1==ly) return x;
-  z=number_big_iexpt(number_times(x,x),y,ly,j+1);
-  return mpz_tstbit(MP(y),j) ? number_times(x,z) : z;
-
-}
-
-static inline fixnum
-number_contagion_index(object x) {
-
-  switch(type_of(x)) {
-  case t_fixnum:
-  case t_bignum:
-  case t_ratio:
-    return 0;
-  case t_shortfloat:
-    return 1;
-  case t_longfloat:
-    return 2;
-  case t_complex:
-    return 3+number_contagion_index(x->cmp.cmp_real);
-  }
-  return 0;
-}
-
-static inline object
-number_zero_expt(object x,fixnum cy) {
-
-  enum type cx=number_contagion_index(x);
-
-  if (gcl_is_not_finite(x))/*FIXME, better place?*/
-    return number_exp(number_times(number_nlog(x),small_fixnum(0)));
-
-  switch (cx<cy ? cy : cx) {
-  case 3:case 0:
-    return make_fixnum(1);
-  case 1:
-    return make_shortfloat(1.0);
-  case 2:
-    return make_longfloat(1.0);
-  case 4:
-    return make_complex(make_shortfloat(1.0),make_fixnum(0));
-  case 5:
-    return make_complex(make_longfloat(1.0),make_fixnum(0));
-  default:
-    FEwrong_type_argument(sLnumber,x);
-    return Cnil;
-  }
-
-}
-
-
-static inline object
-number_ui_expt(object x,fixnum fy) {
-
-  switch (type_of(x)) {
-  case t_fixnum:
-    { 
-      fixnum fx=fix(x);
-      object z;
-      MPOP(z=,mpz_ui_pow_ui,labs(fx),fy);
-      if (fx<0&&(fy&0x1)) return number_negate(z); else return z;
-    }
-  case t_bignum:
-    MPOP(return,mpz_pow_ui,MP(x),fy);
-  case t_ratio:
-    return make_ratio(number_ui_expt(x->rat.rat_num,fy),number_ui_expt(x->rat.rat_den,fy),1);
-
-  case t_shortfloat:
-  case t_longfloat:
-  case t_complex:
-    {
-      fixnum ly=fixnum_length(fy);
-
-      return ly ? number_fix_iexpt(x,fy,ly,0) : number_zero_expt(x,0);
-
-    }
-	
-  default:
-    FEwrong_type_argument(sLnumber,x);
-    return Cnil;
-  }
-    
-}
-
-static inline object
-number_ump_expt(object x,object y) {
-  return number_big_iexpt(x,y,fix(integer_length(y)),0);
-}
-
-static inline object
-number_log_expt(object x,object y) {
-  return number_zerop(y) ? number_zero_expt(x,number_contagion_index(y)) : number_exp(number_times(number_nlog(x),y));
-}
-
-static inline object
-number_si_expt(object x,object y) {
-  switch (type_of(y)) {
-  case t_fixnum:
-    { 
-      fixnum fy=fix(y);
-      if (fy>=0)
-	return number_ui_expt(x,fy);
-      x=number_divide(small_fixnum(1),x);
-      if (fy==MOST_NEGATIVE_FIX)
-	return number_ump_expt(x,number_negate(y));
-      return number_ui_expt(x,-fy);
-    }
-  case t_bignum:
-    if (big_sign(y)<0) {
-      x=number_divide(small_fixnum(1),x);
-      y=number_negate(y);
-    }
-    return number_ump_expt(x,y);
-  case t_ratio:
-  case t_shortfloat:
-  case t_longfloat:
-  case t_complex:
-    return number_log_expt(x,y);
-  default:
-    FEwrong_type_argument(sLnumber,y);
-    return Cnil;
-  }
-}
-
-object
-number_expt(object x, object y) {
-
-  if (number_zerop(x)&&y!=small_fixnum(0)) {
-    if (!number_plusp(type_of(y)==t_complex?y->cmp.cmp_real:y))
-      FEerror("Cannot raise zero to the power ~S.", 1, y);
-    return(number_times(x, y));
-  }
-
-  return number_si_expt(x,y);
-
-}
-
 static object
 number_nlog(object x)
 {
@@ -359,8 +209,10 @@ number_sqrt(object x)
 	}
 
 COMPLEX:
-	{extern object plus_half;
-	z = number_expt(x, plus_half);}
+	{
+	  extern object plus_half;
+	  z = number_exp(number_times(plus_half,number_nlog(x)));
+	}
 	vs_reset;
 	return(z);
 }
@@ -661,14 +513,6 @@ LFD(Lexp)(void)
 	check_arg(1);
 	check_type_number(&vs_base[0]);
 	vs_base[0] = number_exp(vs_base[0]);
-}
-
-DEFUN("EXPT",object,fLexpt,LISP,2,2,NONE,OO,OO,OO,OO,(object x,object y),"") {
-
-  check_type_number(&x);
-  check_type_number(&y);
-  RETURN1(number_expt(x,y));
-
 }
 
 LFD(Llog)(void)

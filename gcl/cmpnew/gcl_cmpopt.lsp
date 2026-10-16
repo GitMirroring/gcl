@@ -519,8 +519,6 @@
       (get 'equalp 'inline-always))
 
 ;;EXPT
- (push '((t t) t #.(flags ans)"number_expt(#0,#1)")
-   (get 'expt 'inline-always))
 (push `((fixnum fixnum) fixnum #.(flags) "fixnum_expt((#0),(#1))")
       (get 'expt 'inline-always))
 (push `(((integer 2 2) fixnum) fixnum #.(flags) "(1L<<(#1))")

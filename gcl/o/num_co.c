@@ -196,9 +196,15 @@ double_to_rational(double d) {
   int h,l,e,s;
 
   integer_decode_double(d,&h,&l,&e,&s);
+
+  mpz_set_si(MP(big_fixnum5),1);
+  mpz_mul_2exp(MP(big_fixnum5),MP(big_fixnum5),labs(e));
+
   x=number_times((h!=0 || l<0) ? bignum2(h,l) : make_fixnum(l),
-		 number_expt(make_fixnum(2),make_fixnum(e)));
+		 e<0 ? number_divide(small_fixnum(1),big_fixnum5) : big_fixnum5);
+
   if (s<0) x=number_negate(x);
+
   return x;
 
 }
@@ -542,31 +548,6 @@ DEFUNM("DECODE-FLOAT",object,fLdecode_float,LISP,1,1,NONE,OO,OO,OO,OO,(object x)
   RETURN3(type_of(x) == t_shortfloat ? make_shortfloat((shortfloat)d) : make_longfloat(d),
 	  make_fixnum(e),
 	  type_of(x) == t_shortfloat ? make_shortfloat((shortfloat)s) : make_longfloat((double)s));
-
-}
-
-DEFUN("SCALE-FLOAT",object,fLscale_float,LISP,2,2,NONE,OO,IO,OO,OO,(object x,fixnum k),"") {
-
-  double d;
-  int e;
-
-  if (type_of(x) == t_shortfloat)
-    d = sf(x);
-  else
-    d = lf(x);
-
-  e = double_exponent(d) + k;
-
-  /* Upper bound not needed, handled by floating point overflow */
-  /* this checks if we're in the denormalized range */
-  if (!ISNORMAL(d) || (type_of(x) == t_shortfloat && e <= -126/*  || e >= 130 */) ||
-      (type_of(x) == t_longfloat && (e <= -1022 /* || e >= 1026 */))) {
-    for (;k>0;d*=2.0,k--);
-    for (;k<0;d*=0.5,k++);
-  } else
-    d = set_exponent(d, e);
-
-  RETURN1(type_of(x) == t_shortfloat ? make_shortfloat((shortfloat)d) : make_longfloat(d));
 
 }
 

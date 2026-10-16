@@ -58,12 +58,17 @@
 
 (defrlibmfun1 "erf")
 (defrlibmfun1 "erfc")
+(defrlibmfun1 "trunc")
+(defrlibmfun1 "ceil")
 
 (defrlibmfun1 "lgamma")
 (defrlibmfun1 "tgamma")
 
 (defdlfun (:float    "cargf"     ) :fcomplex)
 (defdlfun (:double    "carg"     ) :dcomplex)
+
+(defdlfun (:float "ldexpf") :float :int)
+(defdlfun (:double "ldexp") :double :int)
 
 (defun bsqrt (x);this is an instruction, or a jump to main body
   (check-type x long-float)
@@ -289,6 +294,84 @@
    (short-float (lit :boolean "__builtin_isnormal(" (:float x) ")"))
    (long-float (lit :boolean "__builtin_isnormal(" (:double x) ")"))))
 (setf (get 'isnormal 'compiler::cmp-inline) t)
+
+;FIXME type-propagator
+#.`(defun scale-float (x y)
+     (declare (optimize (safety 1)))
+     (check-type x float)
+     (check-type y integer)
+     (let ((y (max -4096 (min 4096 y))))
+       (typecase x
+	 (short-float (,(mdlsym "ldexpf") x y))
+	 (float (,(mdlsym "ldexp") x y)))))
+
+
+(defun l2imul (x y &optional (ly (integer-length y)) (j 0))
+  (declare (number x y))
+  (if (eql (1+ j) ly)
+      x
+      (let ((z (l2imul (* x x) y ly (1+ j))))
+	(if (logbitp j y) (* x z) z))))
+
+(declaim (inline float-integer-p))
+#.`(defun float-integer-p (x)
+     (typecase x
+       (short-float (eql (,(mdlsym "truncf") x) x))
+       (long-float (eql (,(mdlsym "trunc") x) x))))
+
+;FIXME type-propagator
+#.`(defun expt (b e)
+     (declare (optimize (safety 1)))
+     (check-type b number)
+     (check-type e number)
+
+     (typecase b
+       (integer
+	(typecase e
+	  ((and fixnum (integer 0)) (mpz_pow_ui b e))
+	  (fixnum (/ 1 (expt b (- e))))
+	  (integer
+	   (case b
+	     ((0 1) (if (minusp e) (/ 1 b) b))
+	     (-1 (if (oddp e) -1 1))
+	     (otherwise (error 'storage-exhausted))))
+	  (rational (expt (float b 0.0) (float e 0.0)))
+	  (float (expt (float b e) e))
+	  (fcomplex (expt (coerce b '(complex short-float)) e))
+	  (t (expt (coerce b '(complex long-float)) e))))
+       (ratio (/ (expt (numerator b) e) (expt (denominator b) e)))
+       (short-float
+	(typecase e
+	  ((or rational short-float)
+	   (if (unless (float-integer-p e) (minusp b))
+	       (expt (complex b 0.0s0) e)
+	       (,(mdlsym "powf") b (float e b))))
+	  (long-float
+	   (if (unless (float-integer-p e) (minusp b))
+	       (expt (complex b 0.0) e)
+	       (,(mdlsym "pow") (float b e) e)))
+	  (fcomplex (expt (complex b 0.0s0) e))
+	  (t (expt (complex b 0.0) e))))
+       (long-float
+	(typecase e
+	  ((or rational float)
+	   (if (unless (float-integer-p e) (minusp b))
+	       (expt (complex b 0.0) e)
+	       (,(mdlsym "pow") b (float e b))))
+	  (t (expt (complex b 0.0) e))))
+       ((complex rational)
+	(typecase e
+	  (integer (if (zerop e) 1 (l2imul (if (minusp e) (/ 1 b) b) (abs e))))
+	  ((or rational short-float fcomplex (complex rational))
+	   (expt (coerce b '(complex short-float)) e))
+	  (t (expt (coerce b '(complex long-float)) e))))
+       (fcomplex
+	(typecase e
+	  ((or rational short-float fcomplex (complex rational))
+	   (,(mdlsym "cpowf") b (coerce e '(complex short-float))))
+	  (t (expt (coerce b '(complex long-float)) e))))
+       (t (,(mdlsym "cpow") b (coerce e '(complex long-float))))))
+
 
 )
 
