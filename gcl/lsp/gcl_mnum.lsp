@@ -317,7 +317,8 @@
 #.`(defun float-integer-p (x)
      (typecase x
        (short-float (eql (,(mdlsym "truncf") x) x))
-       (long-float (eql (,(mdlsym "trunc") x) x))))
+       (long-float (eql (,(mdlsym "trunc") x) x))
+       (integer t)))
 
 ;FIXME type-propagator
 #.`(defun expt (b e)
@@ -350,7 +351,7 @@
 	   (if (unless (float-integer-p e) (minusp b))
 	       (expt (complex b 0.0) e)
 	       (,(mdlsym "pow") (float b e) e)))
-	  (fcomplex (expt (complex b 0.0s0) e))
+	  ((complex short-float) (expt (complex b 0.0s0) e))
 	  (t (expt (complex b 0.0) e))))
        (long-float
 	(typecase e
@@ -362,12 +363,12 @@
        ((complex rational)
 	(typecase e
 	  (integer (if (zerop e) 1 (l2imul (if (minusp e) (/ 1 b) b) (abs e))))
-	  ((or rational short-float fcomplex (complex rational))
+	  ((or rational short-float (complex (or rational short-float)))
 	   (expt (coerce b '(complex short-float)) e))
 	  (t (expt (coerce b '(complex long-float)) e))))
-       (fcomplex
+       ((complex short-float)
 	(typecase e
-	  ((or rational short-float fcomplex (complex rational))
+	  ((or rational short-float (complex (or rational short-float)))
 	   (,(mdlsym "cpowf") b (coerce e '(complex short-float))))
 	  (t (expt (coerce b '(complex long-float)) e))))
        (t (,(mdlsym "cpow") b (coerce e '(complex long-float))))))
