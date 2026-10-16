@@ -31,6 +31,7 @@ endif
 ifeq ($(ARCHT),powerpc)
 NUMJOBS:=$(shell echo $$(( $(NUMJOBS) > 4 ? 4 : $(NUMJOBS)))) # Apparent file locking bug
 endif
+NUMJOBS:=
 ifneq (,$(NUMJOBS))
 MAKEFLAGS+=-j $(NUMJOBS) -O
 GCL_MULTIPROCESS_MEMORY_POOL?=$(shell pwd)
