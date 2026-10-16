@@ -1111,6 +1111,11 @@
 ;DEPOSIT-FIELD
 (push '((fixnum (cons fixnum fixnum) fixnum) t #.(compiler::flags) "fixnum_dpf(fix(#1->c.c_car),fix(#1->c.c_cdr),#0,#2)") (get 'deposit-field 'compiler::inline-always))
 
+;si::MAKE-COMPLEX
+(push '(((integer 5 5) cnum cnum) dcomplex #.(flags rfa)"(#1)+I*(#2)")
+   (get 'si::make-complex 'inline-always))
+(push '(((integer 4 4) cnum cnum) fcomplex #.(flags rfa)"(#1)+I*(#2)")
+   (get 'si::make-complex 'inline-always))
 
 ;;MINUSP
 (push '((t) boolean #.(flags) "immnum_minusp(#0)") (get 'minusp 'inline-always));"number_compare(small_fixnum(0),#0)>0"
