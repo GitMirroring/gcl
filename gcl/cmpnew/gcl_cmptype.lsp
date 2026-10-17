@@ -492,7 +492,10 @@
 
 (defun complex-contagion (z &aux (z (if (listp z) (car z) z)))
   (cadar (member z
-		 '#.(mapcar (lambda (x &aux (x `(complex ,x))) (list x (cmp-norm-tp x)))
+		 '#.(mapcar (lambda (x &aux (x (case x
+						 ((integer rational) `(or ,x (complex ,x)))
+						 (otherwise `(complex ,x)))))
+			      (list x (cmp-norm-tp x)))
 			   '(integer rational short-float long-float real))
 		 :test 'typep :key 'car)))
 
@@ -951,6 +954,11 @@
        (/-propagator '/ (super-range 'pexpt t1 (super-range '- (type-and #tnegative-real t2))))))))
 (si::putprop 'expt 'expt-propagator 'type-propagator)
 
+(defun scale-float-propagator (f t1 t2)
+  (super-range '* t1 (expt-propagator 'expt #t(integer 2 2) t2)))
+(si::putprop 'scale-float 'scale-float-propagator 'type-propagator)
+
+
 ;; (defun exp-propagator (f t1)
 ;;   (declare (ignore f))
 ;;   (expt-propagator 'expt (if (type>= #tshort-float t1) (object-type (float +e+ 0.0s0)) (object-type +e+)) t1))
@@ -1237,7 +1245,7 @@
   (when a
     (when (constant-type-p b)
       (object-type (funcall f b)))))
-(dolist (l 'si::(expand-array-element-type
+(dolist (l 'si::(expand-array-element-type float-integer-p
 		 cmp-norm-tp sequence-tp-nonsimple-p sequence-tp-lengths make-sequence-element-type
 		 expand-deftype sdata-includes
 		 lookup-simple-typep-fn lookup-typep-fn))

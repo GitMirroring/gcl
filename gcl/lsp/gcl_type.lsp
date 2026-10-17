@@ -724,8 +724,11 @@
 				  non-negative-real non-positive-real
 				  real
 				  fcomplex dcomplex
-				  complex-integer complex-ratio
-				  complex-ratio-integer complex-integer-ratio
+				  complex-integer
+				  (or integer complex-integer)
+				  complex-ratio complex-ratio-integer complex-integer-ratio
+				  (complex rational)
+				  (or rational (complex rational))
 				  complex
 				  number
 				  character structure package hash-table function
