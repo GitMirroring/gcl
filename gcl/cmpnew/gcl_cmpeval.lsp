@@ -708,7 +708,7 @@
   (mapc (lambda (x) (merge-inl cl x pl)) inls))
 
 (defun ?add-inl (cl fms fm)
-  (let* ((tps (mapcar (lambda (x) (bump-unreadable-individuals (ensure-known-type (info-type (caddr x))))) fms))
+  (let* ((tps (mapcar (lambda (x) (ensure-known-type (info-type (caddr x)))) fms))
 	 (tr (mapcar (lambda (x &aux (v (car (last x))))
 		       (when (and (consp v) (eq (car v) 'var))
 			 (position (cddr v) fms :key 'cdddr :test 'equalp)));FIXME
@@ -810,7 +810,7 @@
 			    (have-2 (member 2 (car inls) :key 'caddr)))
 
   (flet ((try (s tps chg) ;(print (list 'trying nm s (mapcar 'cmp-unnorm-tp tps)))
-	   (try-compile nm s tps)
+	   (try-compile nm s (mapcar 'bump-unreadable-individuals tps))
 	   (unless (equal inls (get-inl-list (list nm)))
 	     (print (list nm s (mapcar 'cmp-unnorm-tp tps) chg))
 	     (return-from iterate-over-inls (iterate-over-inls nm at (1+ it))))))
