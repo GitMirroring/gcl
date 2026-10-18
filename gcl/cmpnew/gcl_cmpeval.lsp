@@ -708,7 +708,7 @@
   (mapc (lambda (x) (merge-inl cl x pl)) inls))
 
 (defun ?add-inl (cl fms fm)
-  (let* ((tps (mapcar (lambda (x) (ensure-known-type (info-type (caddr x)))) fms))
+  (let* ((tps (mapcar (lambda (x) (bump-unreadable-individuals (ensure-known-type (info-type (caddr x))))) fms))
 	 (tr (mapcar (lambda (x &aux (v (car (last x))))
 		       (when (and (consp v) (eq (car v) 'var))
 			 (position (cddr v) fms :key 'cdddr :test 'equalp)));FIXME
