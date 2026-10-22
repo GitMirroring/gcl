@@ -75,7 +75,7 @@ msbrk(intptr_t inc) {
     if (m+mps!=new_map(m+mps,p2-mps))
       return (void *)-1;
 #ifdef HAVE_MADVISE_HUGEPAGE
-    massert(!madvise(m,p2,MADV_HUGEPAGE));
+    madvise(m,p2,MADV_HUGEPAGE);
 #endif
     mps=p2;
   }
