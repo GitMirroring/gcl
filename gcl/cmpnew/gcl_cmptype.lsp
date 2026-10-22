@@ -848,8 +848,10 @@
 (si::putprop 'car 'car-propagator 'type-propagator)
 
 (defun contagion (t1 t2)
-  (car (member (type-or1 t1 t2) `(,#tlong-float ,#tshort-float #tratio #tinteger)
-	       :test 'type-and)))
+  (let ((x (car (member (type-or1 t1 t2) `(,#tlong-float ,#tshort-float #tratio #tinteger)
+			:test 'type-and))))
+    (if (tp<= x #tratio) #trational x)))
+
 (defun mod-propagator (f t1 t2 &aux (t1 (type-and #treal t1))(t2 (type-and #treal t2))
 				 (r1 (range-decomp t1))(r2 (range-decomp t2)))
   (declare (ignore f))
