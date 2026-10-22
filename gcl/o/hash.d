@@ -297,7 +297,7 @@ BEGIN:
 			
     case t_array:
       h^=ufixhash(j=x->a.a_rank);
-      for (i=0;i<j-1;i++)
+      for (i=0;i+1<j;i++)
 	h^=ufixhash(x->a.a_dims[i]);
       j=x->a.a_dim;
       j=j>10 ? 10 : j;
