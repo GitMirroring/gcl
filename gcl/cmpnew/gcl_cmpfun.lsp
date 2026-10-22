@@ -180,29 +180,33 @@
 	    (keep-vars) (mapc 'eliminate-src (ldiff *prov-src* ops)) res)))
     (progn ,@body)))
 
+(define-compiler-macro apply (&whole form &rest args &aux (sym (sgen "ACM")))
+  (if (symbolp (car args)) form
+      `(let ((,sym ,(car args)))
+	 (,(car form) ,sym ,@(cdr args)))))
+
 (defun c1apply (args)
   (when (or (endp args) (endp (cdr args)))
     (too-few-args 'apply 2 (length args)))
   (try-provisional-functions
    (let* ((ff (c1arg (car args)))(args (cdr args))(fid (coerce-ff ff)))
-     (c1progn
-      '(nil nil)
-      (list ff
-	    (if (eq fid 'funcall)
-		(c1apply args)
-		(mi1 fid (butlast args) (car (last args)) ff)))))))
+      (if (eq fid 'funcall)
+	  (c1apply args)
+	  (mi1 fid (butlast args) (car (last args)) ff)))))
+
+(define-compiler-macro funcall (&whole form &rest args &aux (sym (sgen "FCM")))
+  (if (symbolp (car args)) form
+      `(let ((,sym ,(car args)))
+	 (,(car form) ,sym ,@(cdr args)))))
 
 (defun c1funcall (args)
   (when (endp args) (too-few-args 'funcall 1 0))
   (try-provisional-functions
    (let* ((ff (c1arg (car args)))(args (cdr args))(fid (coerce-ff ff)))
-     (c1progn
-      '(nil nil)
-      (list ff
-	    (case fid
-	      (funcall (c1funcall args))
-	      (apply (c1apply args))
-	      (otherwise (mi1 fid args nil ff))))))))
+     (case fid
+       (funcall (c1funcall args))
+       (apply (c1apply args))
+       (otherwise (mi1 fid args nil ff))))))
 
 
 ;; (defun c1funcall-apply (args &optional last)
