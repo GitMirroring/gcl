@@ -682,7 +682,7 @@
 	   (z (member-if
 	       (lambda (w)
 		 (when (eql lx (length w))
-		   (setq r (reduce (lambda (y x)
+		   (setq r (lreduce (lambda (y x)
 				     (cond ((eq (car x) (cdr x)) y)
 					   ((not (eq (car x) (cdr (assoc (cdr x) a)))) nil)
 					   ((eq y t) (car x))))
