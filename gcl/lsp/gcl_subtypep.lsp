@@ -585,6 +585,173 @@
 	   (lreduce (lambda (ll l) (?cns (k-op 'not l nil d) ll)) l :initial-value nil)
 	   d u x)))
 
+;; UNKNOWN type simplification
+
+(defun bspf (f)
+  (typecase f
+    ((eql satisfies) nil)
+    (cons (and (bspf (car f)) (bspf (cdr f))))
+    (t t)))
+
+(defun bcol (f &aux l)
+  (labels ((u (f)
+	     (if (when (consp f) (eq (car f) 'not))
+		 `(not ,(u (cadr f)))
+		 (car (or (member f l :test 'equal)
+			  (push f l)))))
+	   (w (f)
+	     (typecase f
+	       ((cons (eql satisfies) t) (list (u f) t))
+	       ((cons (member and or) t)
+		(let ((x (mapcar #'w (cdr f))))
+		  (if (member t x :key 'cadr)
+		      (list (cons (car f) (mapcar (lambda (x) (if (cadr x) (car x) (u (car x)))) x)) t)
+		      (list f nil))))
+	       ((cons (eql not) t)
+		(let ((x (w (cadr f))))
+		  (list* `(not ,(car x)) (cdr x))))
+	       (t (list f nil)))))
+    (let ((x (w f)))
+      (list (car x) (or l (list (car x)))))))
+
+(defun bval (l)
+  (labels ((bw (f)
+	     (if f
+		 (let ((y (bw (cdr f))))
+		   (nconc (mapcar (lambda (x) (cons (caar  f) x)) y)
+			  (mapcar (lambda (x) (cons (cadar f) x)) y)))
+		 (list nil))))
+    (bw (mapcar (lambda (x) (list x `(not ,x))) l))))
+
+(defun bmbv (ll i)
+  (let ((x (make-array ll :element-type 'bit)))
+    (setf (sbit x i) 1)
+    x))
+
+(defun bmval (l &aux (i -1) (ll (length l)))
+  (mapcar (lambda (x) (cons x (bmbv ll (incf i)))) l))
+
+(defun bmv (l ll)
+  (labels ((bit-iort (x y) (bit-ior x y t)))
+    (let ((x (mapcar 'cdr (remove l ll :test-not 'member :key 'car))))
+      (lreduce #'bit-iort (cdr x)
+	       :initial-value
+	       (or (copy-seq (car x))
+		   (make-array (length ll) :element-type 'bit))))))
+
+(defun bsimp (f l
+	      &aux (a (mapcar (lambda (x) (cons x (bmv x l))) (caar l)))
+		(ll (length l))(vn (make-array ll :element-type 'bit))(vt (bit-not vn)))
+  (labels ((bit-andt (x y) (bit-and x y t))
+	   (bit-iort (x y) (bit-ior x y t))
+	   (sw (f)
+	     (or (cdr (assoc f a))
+		 (etypecase f
+		   ((cons (eql and) t)
+		    (let ((x (mapcar #'sw (cdr f))))
+		      (lreduce #'bit-andt (cdr x) :initial-value (copy-seq (or (car x) vt)))))
+		   ((cons (eql or) t)
+		    (let ((x (mapcar #'sw (cdr f))))
+		      (lreduce #'bit-iort (cdr x) :initial-value (copy-seq (or (car x) vn)))))
+		   ((cons (eql not) t)
+		    (bit-not (sw (cadr f))))))))
+    (sw f)))
+
+(defun br1 (l a)
+  (when l
+    (let* ((x (pop l))(lx (length x))
+	   (y (br1 l a)) r
+	   (z (member-if
+	       (lambda (w)
+		 (when (eql lx (length w))
+		   (setq r (reduce (lambda (y x)
+				     (cond ((eq (car x) (cdr x)) y)
+					   ((not (eq (car x) (cdr (assoc (cdr x) a)))) nil)
+					   ((eq y t) (car x))))
+				   (mapcar 'cons x w) :initial-value t))))
+	       y)))
+      (if z (br1 (cons (remove r x) (remove (car z) y)) a) (cons x y)))))
+
+(defun brst (l) (stable-sort l '< :key 'length))
+
+(defun br2 (l a)
+  (when l
+    (if (cdar l) l
+      (let* ((c (car l)))
+	(cons c (br2 (brst (mapcar (lambda (x) (remove (cdr (assoc (car c) a)) x)) (cdr l))) a))))))
+
+(defun br3 (l)
+  (when l
+    (let* ((x (pop l)))
+      (cons x (remove x (br3 l) :test 'subsetp)))))
+
+(defun br4u (x y a p)
+  (labels ((mm (x l) (or (member (car x) l) (member (cdr x) l))))
+    (car
+     (member
+      (mapcan (lambda (z &aux (q (mm z x))(w (mm z y)))
+	      (cond ((and q w) (if (eq (car q) (car w)) (list (car q)) (return-from br4u nil)))
+		    (q (list (car q)))
+		    (w (list (car w)))))
+	      (ldiff a (nthcdr (ash (length a) -1) a)))
+      p :test 'equal))))
+
+(defun br4 (p a)
+  (labels ((mtrp (l)
+	     (when l
+	       (let ((x (pop l)))
+		 (nconc
+		  (mapcan (lambda (cx &aux (ncx (cdr (assoc cx a))))
+			   (mapcan (lambda (y)
+				     (when (member ncx y)
+				       (let ((z (br4u (remove cx x) (remove ncx y) a p)))
+					 (when z
+					   (list (list x y z))))))
+				   l))
+			  x)
+		  (mtrp l)))))
+	   (tcmp (x y) (or (equal (caddr x) (car y)) (equal (caddr x) (cadr y))))
+	   (tred (l) (when l (let* ((x (pop l))(y (tred l))) (if (member x y :test #'tcmp) y (cons x y))))))
+    (set-difference p (mapcar 'caddr (tred (mtrp p))))))
+
+(defun brr (bv ll)
+  (labels ((ma (x y) (nconc (mapcar 'cons x y) (mapcar 'cons y x)))
+	   (mr (bv &aux (i -1)) (mapcan (lambda (x) (unless (zerop (sbit bv (incf i))) (list (car x)))) ll)))
+    (let* ((a (ma (caar ll) (caar (last ll))))
+	   (x (br4 (br3 (br2 (brst (br1 (mr bv) a)) a)) a))
+	   (x (mapcar (lambda (x) (if x (if (cdr x) (cons 'and x) (car x)) (return-from brr t))) x)))
+      (if (and x (cdr x)) (cons 'or x) (car x)))))
+
+(defun saoutps (op t1 t2)
+  (let* ((l `(,op ,t1 ,t2))
+	 (c (bcol l))
+	 (ll (bmval (bval (cadr c))))
+	 (r (brr (bsimp (car c) ll) ll)))
+    (unless (bspf r)
+      r)))
+
+(defun ntp-and-unknown (ox lx ux oy ly uy d)
+  (let* ((xx (if ux (pop lx) ox))(xy (if uy (pop ly) oy))(x (ntp-and xx xy))
+	 (mx (if ux (pop lx) ox))(my (if uy (pop ly) oy))(m (ntp-and mx my)))
+    (cond ((ntp-subtp x m) x)
+	  ((unless ux (ntp-subtp xy xx)) oy)
+	  ((unless uy (ntp-subtp xx xy)) ox)
+	  ((let ((z (saoutps 'and
+			     (if ux (car lx) (car (nreconstruct-type ox)))
+			     (if uy (car ly) (car (nreconstruct-type oy))))))
+	     (if z (list (list x m z) d t) m))))))
+
+(defun ntp-or-unknown (ox lx ux oy ly uy d)
+  (let* ((xx (if ux (pop lx) ox))(xy (if uy (pop ly) oy))(x (ntp-or xx xy))
+	 (mx (if ux (pop lx) ox))(my (if uy (pop ly) oy))(m (ntp-or mx my)))
+    (cond ((ntp-subtp x m) x)
+	  ((unless ux (ntp-subtp mx my)) oy)
+	  ((unless uy (ntp-subtp my mx)) ox)
+	  ((let ((z (saoutps 'or
+			     (if ux (car lx) (car (nreconstruct-type ox)))
+			     (if uy (car ly) (car (nreconstruct-type oy))))))
+	     (if z (list (list x m z) d t) x))))))
+
 (defun ntp-list (op lx ly d dx dy)
   (lreduce (lambda (ll l &aux (ny (assoc (car l) ly)))
 	     (?cns (cond (ny (k-op op l ny d)) (dy l)) ll))
@@ -594,30 +761,6 @@
 		      ly :initial-value nil))))
 
 (defun ntp-subtp (x y) (ntp-and?c2-nil-p x y t))
-
-(defun ntp-and-unknown (ox lx ux oy ly uy d)
-  (let* ((xx (if ux (pop lx) ox))(xy (if uy (pop ly) oy))(x (ntp-and xx xy))
-	 (mx (if ux (pop lx) ox))(my (if uy (pop ly) oy))(m (ntp-and mx my)))
-    (cond ((ntp-subtp x m) x)
-	  ((unless ux (ntp-subtp xy xx)) oy)
-	  ((unless uy (ntp-subtp xx xy)) ox)
-	  ((list (list x m
-		       (let ((x (if ux (car lx) (car (nreconstruct-type ox))))
-			     (y (if uy (car ly) (car (nreconstruct-type oy)))))
-			 (if (equal x y) x `(and ,x ,y))))
-		 d t)))))
-
-(defun ntp-or-unknown (ox lx ux oy ly uy d)
-  (let* ((xx (if ux (pop lx) ox))(xy (if uy (pop ly) oy))(x (ntp-or xx xy))
-	 (mx (if ux (pop lx) ox))(my (if uy (pop ly) oy))(m (ntp-or mx my)))
-    (cond ((ntp-subtp x m) x)
-	  ((unless ux (ntp-subtp mx my)) oy)
-	  ((unless uy (ntp-subtp my mx)) ox)
-	  ((list (list x m
-		       (let ((x (if ux (car lx) (car (nreconstruct-type ox))))
-			     (y (if uy (car ly) (car (nreconstruct-type oy)))))
-			 (if (equal x y) x `(or ,x ,y))))
-		 d t)))))
 
 (defun ntp-and?c2-nil-p (x y ?c2)
   (let* ((x (if (caddr x) (caar x) x))(y (if (caddr y) (if ?c2 (cadar y) (caar y)) y))
@@ -715,6 +858,12 @@
 (defun resolve-type (type)
   (nreconstruct-type (nprocess-type (normalize-type type))))
 
+(defun ntp-unknown-p (ntp)
+  (labels ((cup (x) (when (consp x) (or (ntp-unknown-p (car x)) (ntp-unknown-p (cadr x))))))
+  (or (caddr ntp)
+      (member-if #'cup (cdr (assoc 'proper-cons (car ntp))))
+      (member-if #'cup (cdr (assoc 'improper-cons (car ntp)))))))
+
 (defun subtypep (t1 t2 &optional env)
   (declare (ignore env) (optimize (safety 1)))
   (check-type t1 full-type-spec)
@@ -722,8 +871,9 @@
   (if (or (not t1) (eq t2 t))
       (values t t)
       (let* ((n1 (nprocess-type (normalize-type t1)))
-	     (n2 (nprocess-type (normalize-type t2))))
-	(values (ntp-subtp n1 n2) (not (or (caddr n1) (caddr n2)))))))
+	     (n2 (nprocess-type (normalize-type t2)))
+	     (r (ntp-subtp n1 n2)))
+	(values r (or r (and (not (ntp-unknown-p n1)) (not (ntp-unknown-p n2))))))))
 
 
 
