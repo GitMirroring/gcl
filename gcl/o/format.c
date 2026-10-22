@@ -714,6 +714,7 @@ fmt_ascii(bool colon, bool atsign)
 	fmt_set_param(0, &mincol, fmt_int, 0);
 	mincol=BOUND_MINCOL(mincol);
 	fmt_set_param(1, &colinc, fmt_int, 1);
+	if (colinc<=0) fmt_error("Illegal column increment");
 	fmt_set_param(2, &minpad, fmt_int, 0);
 	fmt_set_param(3, &padchar, fmt_char, ' ');
 
@@ -775,6 +776,7 @@ fmt_S_expression(bool colon, bool atsign)
 	fmt_set_param(0, &mincol, fmt_int, 0);
 	mincol=BOUND_MINCOL(mincol);
 	fmt_set_param(1, &colinc, fmt_int, 1);
+	if (colinc<=0) fmt_error("Illegal column increment");
 	fmt_set_param(2, &minpad, fmt_int, 0);
 	fmt_set_param(3, &padchar, fmt_char, ' ');
 
@@ -2536,6 +2538,7 @@ fmt_justification(volatile bool colon, bool atsign)
 	fmt_set_param(0, &mincol, fmt_int, 0);
 	mincol=BOUND_MINCOL(mincol);
 	fmt_set_param(1, &colinc, fmt_int, 1);
+	if (colinc<=0) fmt_error("Illegal column increment");
 	fmt_set_param(2, &minpad, fmt_int, 0);
 	fmt_set_param(3, &padchar, fmt_char, ' ');
 
