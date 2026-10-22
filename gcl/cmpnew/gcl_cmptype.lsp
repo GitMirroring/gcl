@@ -854,7 +854,7 @@
 
 (defun mod-propagator (f t1 t2 &aux (t1 (type-and #treal t1))(t2 (type-and #treal t2))
 				 (r1 (range-decomp t1))(r2 (range-decomp t2)))
-  (declare (ignore f))
+  (declare (ignorable f))
   (cond
    ((cdr r1) (reduce 'type-or1 (mapcar (lambda (x) (mod-propagator f (cdr x) t2)) r1) :initial-value nil))
    ((cdr r2) (reduce 'type-or1 (mapcar (lambda (x) (mod-propagator f t1 (cdr x))) r2) :initial-value nil))
@@ -957,6 +957,7 @@
 (si::putprop 'expt 'expt-propagator 'type-propagator)
 
 (defun scale-float-propagator (f t1 t2)
+  (declare (ignore f))
   (super-range '* t1 (expt-propagator 'expt #t(integer 2 2) t2)))
 (si::putprop 'scale-float 'scale-float-propagator 'type-propagator)
 
