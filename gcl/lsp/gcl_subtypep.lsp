@@ -588,10 +588,9 @@
 ;; UNKNOWN type simplification
 
 (defun bspf (f)
-  (typecase f
-    ((eql satisfies) nil)
-    (cons (and (bspf (car f)) (bspf (cdr f))))
-    (t t)))
+  (if (atom f)
+      (not (eq f 'satisfies))
+      (and (bspf (car f)) (bspf (cdr f)))))
 
 (defun bcol (f &aux l)
   (labels ((u (f)
@@ -600,17 +599,18 @@
 		 (car (or (member f l :test 'equal)
 			  (push f l)))))
 	   (w (f)
-	     (typecase f
-	       ((cons (eql satisfies) t) (list (u f) t))
-	       ((cons (member and or) t)
-		(let ((x (mapcar #'w (cdr f))))
-		  (if (member t x :key 'cadr)
-		      (list (cons (car f) (mapcar (lambda (x) (if (cadr x) (car x) (u (car x)))) x)) t)
-		      (list f nil))))
-	       ((cons (eql not) t)
-		(let ((x (w (cadr f))))
-		  (list* `(not ,(car x)) (cdr x))))
-	       (t (list f nil)))))
+	     (if (atom f) (list f nil)
+		 (case (car f)
+		   (satisfies (list (u f) t))
+		   ((and or)
+		    (let ((x (mapcar #'w (cdr f))))
+		      (if (member t x :key 'cadr)
+			  (list (cons (car f) (mapcar (lambda (x) (if (cadr x) (car x) (u (car x)))) x)) t)
+			  (list f nil))))
+		   (not
+		    (let ((x (w (cadr f))))
+		      (list* `(not ,(car x)) (cdr x))))
+		   (otherwise (list f nil))))))
     (let ((x (w f)))
       (list (car x) (or l (list (car x)))))))
 
@@ -623,38 +623,56 @@
 		 (list nil))))
     (bw (mapcar (lambda (x) (list x `(not ,x))) l))))
 
-(defun bmbv (ll i)
-  (let ((x (make-array ll :element-type 'bit)))
-    (setf (sbit x i) 1)
-    x))
+(defun bmabv (ll &optional (i (1+ ll))(j ll))
+  (when (plusp j)
+      (cons (eql (- ll j) i) (bmabv ll i (1- j)))))
+
+(defun bmabit-and (x y &optional z)
+  (if z
+      (mapl (lambda (x y) (setf (car x) (and (car x) (car y)))) x y)
+      (mapcar 'and x y)))
+
+(defun bmabit-ior (x y &optional z)
+  (if z
+      (mapl (lambda (x y) (setf (car x) (or (car x) (car y)))) x y)
+      (mapcar 'or x y)))
+
+(defun bmabit-not (x &optional z)
+  (if z
+      (mapl (lambda (x) (setf (car x) (not (car x)))) x)
+      (mapcar 'not x)))
+
+(defun bmabit-p (x i)
+  (nth i x))
 
 (defun bmval (l &aux (i -1) (ll (length l)))
-  (mapcar (lambda (x) (cons x (bmbv ll (incf i)))) l))
+  (mapcar (lambda (x) (cons x (bmabv ll (incf i)))) l))
 
 (defun bmv (l ll)
-  (labels ((bit-iort (x y) (bit-ior x y t)))
-    (let ((x (mapcar 'cdr (remove l ll :test-not 'member :key 'car))))
-      (lreduce #'bit-iort (cdr x)
+  (labels ((bmabit-iort (x y) (bmabit-ior x y t)))
+    (let ((x (mapcar 'cdr (lremove l ll :test (lambda (x y) (not (member x y))) :key 'car))))
+      (lreduce #'bmabit-iort (cdr x)
 	       :initial-value
 	       (or (copy-seq (car x))
-		   (make-array (length ll) :element-type 'bit))))))
+		   (bmabv (length ll)))))))
 
 (defun bsimp (f l
 	      &aux (a (mapcar (lambda (x) (cons x (bmv x l))) (caar l)))
-		(ll (length l))(vn (make-array ll :element-type 'bit))(vt (bit-not vn)))
-  (labels ((bit-andt (x y) (bit-and x y t))
-	   (bit-iort (x y) (bit-ior x y t))
+		(ll (length l))(vn (bmabv ll))(vt (bmabit-not vn)))
+  (labels ((bmabit-andt (x y) (bmabit-and x y t))
+	   (bmabit-iort (x y) (bmabit-ior x y t))
 	   (sw (f)
 	     (or (cdr (assoc f a))
-		 (etypecase f
-		   ((cons (eql and) t)
-		    (let ((x (mapcar #'sw (cdr f))))
-		      (lreduce #'bit-andt (cdr x) :initial-value (copy-seq (or (car x) vt)))))
-		   ((cons (eql or) t)
-		    (let ((x (mapcar #'sw (cdr f))))
-		      (lreduce #'bit-iort (cdr x) :initial-value (copy-seq (or (car x) vn)))))
-		   ((cons (eql not) t)
-		    (bit-not (sw (cadr f))))))))
+		 (if (atom f) (error "Bad form in bsimp")
+		     (ecase (car f)
+		       (and
+			(let ((x (mapcar #'sw (cdr f))))
+			  (lreduce #'bmabit-andt (cdr x) :initial-value (copy-seq (or (car x) vt)))))
+		       (or
+			(let ((x (mapcar #'sw (cdr f))))
+			  (lreduce #'bmabit-iort (cdr x) :initial-value (copy-seq (or (car x) vn)))))
+		       (not
+			(bmabit-not (sw (cadr f)))))))))
     (sw f)))
 
 (defun br1 (l a)
@@ -670,20 +688,25 @@
 					   ((eq y t) (car x))))
 				   (mapcar 'cons x w) :initial-value t))))
 	       y)))
-      (if z (br1 (cons (remove r x) (remove (car z) y)) a) (cons x y)))))
+      (if z (br1 (cons (lremove r x) (lremove (car z) y)) a) (cons x y)))))
 
-(defun brst (l) (stable-sort l '< :key 'length))
+(defun brst (l &aux (m (lreduce 'max l :key 'length :initial-value 0)))
+  (labels ((brst1 (i)
+	     (when (<= i m)
+	       (append (lremove i l :test (lambda (x y) (not (eql x (length y)))))
+		       (brst1 (1+ i))))))
+    (brst1 0)))
 
 (defun br2 (l a)
   (when l
     (if (cdar l) l
       (let* ((c (car l)))
-	(cons c (br2 (brst (mapcar (lambda (x) (remove (cdr (assoc (car c) a)) x)) (cdr l))) a))))))
+	(cons c (br2 (brst (mapcar (lambda (x) (lremove (cdr (assoc (car c) a)) x)) (cdr l))) a))))))
 
 (defun br3 (l)
   (when l
     (let* ((x (pop l)))
-      (cons x (remove x (br3 l) :test 'subsetp)))))
+      (cons x (lremove x (br3 l) :test 'subsetp)))))
 
 (defun br4u (x y a p)
   (labels ((mm (x l) (or (member (car x) l) (member (cdr x) l))))
@@ -704,7 +727,7 @@
 		  (mapcan (lambda (cx &aux (ncx (cdr (assoc cx a))))
 			   (mapcan (lambda (y)
 				     (when (member ncx y)
-				       (let ((z (br4u (remove cx x) (remove ncx y) a p)))
+				       (let ((z (br4u (lremove cx x) (lremove ncx y) a p)))
 					 (when z
 					   (list (list x y z))))))
 				   l))
@@ -716,7 +739,7 @@
 
 (defun brr (bv ll)
   (labels ((ma (x y) (nconc (mapcar 'cons x y) (mapcar 'cons y x)))
-	   (mr (bv &aux (i -1)) (mapcan (lambda (x) (unless (zerop (sbit bv (incf i))) (list (car x)))) ll)))
+	   (mr (bv &aux (i -1)) (mapcan (lambda (x) (when (bmabit-p bv (incf i)) (list (car x)))) ll)))
     (let* ((a (ma (caar ll) (caar (last ll))))
 	   (x (br4 (br3 (br2 (brst (br1 (mr bv) a)) a)) a))
 	   (x (mapcar (lambda (x) (if x (if (cdr x) (cons 'and x) (car x)) (return-from brr t))) x)))
