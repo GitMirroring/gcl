@@ -428,3 +428,21 @@
      'si::proper-list
      '(cons t (cons t (not si::proper-list))))
   nil)
+
+(defun subtypep.cons.53.foo (x) (declare (ignore x)) (= 1 (random 2)))
+(defun subtypep.cons.53.bar (x) (declare (ignore x)) (= 1 (random 2)))
+(defun subtypep.cons.53.baz (x) (declare (ignore x)) (= 1 (random 2)))
+(defun subtypep.cons.53.qux (x) (declare (ignore x)) (= 1 (random 2)))
+
+(deftest subtypep.cons.53
+    (let* ((t1 `(cons (not float)))
+           (t2 `(or (cons (satisfies subtypep.cons.53.foo)
+                          (satisfies subtypep.cons.53.bar))
+                    (cons (satisfies subtypep.cons.53.baz)
+                          (satisfies subtypep.cons.53.qux)))))
+      (multiple-value-bind (sub1 good1)
+          (subtypep* t1 t2)
+        (multiple-value-bind (sub2 good2)
+            (subtypep* `(not ,t2) `(not ,t1))
+          (and (not sub1) (not sub2) (not good1) (not good2)))))
+  t)
