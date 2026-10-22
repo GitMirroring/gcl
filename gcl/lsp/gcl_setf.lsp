@@ -359,31 +359,25 @@
 
 ;;; The expansion function for SETF.
 (defun setf-expand-1 (place newvalue env &aux g)
-  (when (and (consp place) (eq (car place) 'the))
-        (return-from setf-expand-1
-          (setf-expand-1 (caddr place) `(the ,(cadr place) ,newvalue) env)))
-  (when (and (consp place) (eq (car place) 'values))
-    (return-from setf-expand-1 (setf-expand-values (cdr place) newvalue env)))
-  (when (symbolp place)
-        (return-from setf-expand-1 `(setq ,place ,newvalue)))
-  (when (and (consp place)
-	       (not (or (get (car place) 'setf-lambda)
-			(get (car place) 'setf-update-fn))))
-	  (multiple-value-setq (place g) (macroexpand place env))
-	  (if g (return-from setf-expand-1 (setf-expand-1 place newvalue env))))
-  (when (and (symbolp (car place)) (setq g (get (car place) 'setf-update-fn)))
-    (return-from setf-expand-1 `(,g ,@(cdr place) ,newvalue)))
-  (cond ((and (symbolp (car place))
-	      (setq g (get (car place) 'structure-access)))
-	 (return-from setf-expand-1
-	   (setf-structure-access (cadr place) (car g) (cdr g) newvalue))))
-	     
-  (multiple-value-bind (vars vals stores store-form access-form)
-      (get-setf-expansion place env)
-    (declare (ignore access-form))
-    `(let* ,(mapcar 'list (append vars stores) (append vals (list newvalue)))
-       (declare (ignorable ,@vars))
-       ,store-form)))
+  (etypecase place
+    (symbol `(setq ,place ,newvalue))
+    ((cons symbol t)
+     (let ((sym (car place)))
+       (cond ((eq sym 'the) (setf-expand-1 (caddr place) `(the ,(cadr place) ,newvalue) env))
+	     ((eq sym 'values) (setf-expand-values (cdr place) newvalue env))
+	     ((setq g (get sym 'setf-update-fn)) `(,g ,@(cdr place) ,newvalue))
+	     ((unless (get sym 'setf-lambda)
+		(multiple-value-bind (place g) (macroexpand place env)
+		  (when g
+		    (setf-expand-1 place newvalue env)))))
+	     ((setq g (get sym 'structure-access))
+	      (setf-structure-access (cadr place) (car g) (cdr g) newvalue))
+	     ((multiple-value-bind (vars vals stores store-form access-form)
+		  (get-setf-expansion place env)
+		(declare (ignore access-form))
+		`(let* ,(mapcar 'list (append vars stores) (append vals (list newvalue)))
+		   (declare (ignorable ,@vars))
+		   ,store-form))))))))
 
 (defun setf-structure-access (struct type index newvalue)
   (case type
