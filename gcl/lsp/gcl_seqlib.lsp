@@ -350,7 +350,7 @@
 	 (a (when list (make-array ll))))
     (when list
       (do ((fi 0 (1+ fi)) (l seq (cdr l))) ((>= fi ll)) (setf (aref a fi) l)))
-    (do ((ii (list ll 0))) ((not ii) seq)
+    (do ((ii (list ll 0))) ((not ii) (if a (aref a 0) seq)); or could "spoil" (car l) above
 	(declare (dynamic-extent ii))
 	(let* ((ls (pop ii)) (fi (pop ii)))
 	  (declare (seqind ls fi))
