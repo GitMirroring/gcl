@@ -65,12 +65,11 @@
        (apply 'assert-places ',places (list ,@places)
 	      ,@(if string `(,string (list ,@args)) `("The assertion ~:@(~S~) failed." ',test-form nil))))))
 
-(defmacro ctypecase (keyform &rest clauses &aux (key (sgen "CTYPECASE")))
-  (declare (optimize (safety 2)))
-;  (check-type clauses (list-of proper-list))
-  `(do nil (nil)
-    (typecase ,keyform
-      ,@(mapcar (lambda (l)
-		  `(,(car l) (return (progn ,@(subst key keyform (cdr l))))))
-		clauses))
-    (check-type ,keyform (or ,@(mapcar 'car clauses)))))
+(defmacro ctypecase (keyform &rest clauses &aux (ctf (sgen "CTYPECASE")))
+  `(labels ((ctf nil
+	      (typecase
+		  ,keyform ,@clauses
+		  (otherwise
+		   (check-type ,keyform (or ,@(mapcar 'car clauses)))
+		   (ctf)))))
+     (ctf)))
