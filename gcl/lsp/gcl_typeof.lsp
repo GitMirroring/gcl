@@ -47,7 +47,9 @@
 		   (two-way-stream (allocate-basic-stream 8))
 		   (echo-stream (allocate-basic-stream 9))
 		   (string-input-stream (allocate-basic-stream 10))
-		   (string-output-stream (allocate-basic-stream 11));FIXME user defined, socket
+		   (string-output-stream (allocate-basic-stream 11))
+		   (user-defined-stream (allocate-basic-stream 12))
+		   (socket-stream (allocate-basic-stream 13))
 		   (random-state (make-random-state)) 
 		   (readtable (standard-readtable)) 
 		   (non-standard-object-compiled-function (function eq))

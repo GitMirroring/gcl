@@ -526,7 +526,8 @@
      (stream-element-type (symbol-value (c-stream-object0 s))))
     (file-stream;define socket
      (c-stream-object0 s))
-    (t 'character)))
+    (string-stream 'character)
+    (t '(unsigned-byte 8))))
 
 (deftype binary-stream-element-type nil 'list)
 (defconstant +char-shft+ (1- (integer-length char-length)))

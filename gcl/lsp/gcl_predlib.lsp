@@ -276,7 +276,8 @@
 				      file-input-stream file-output-stream
 				      file-io-stream file-probe-stream
 				      string-input-stream string-output-stream
-				      file-synonym-stream non-file-synonym-stream two-way-stream 
+				      file-synonym-stream non-file-synonym-stream two-way-stream
+				      user-defined-stream socket-stream
 				      non-logical-pathname logical-pathname
 				      readtable 
 				      hash-table-eq hash-table-eql hash-table-equal hash-table-equalp

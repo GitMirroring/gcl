@@ -213,7 +213,8 @@
 
 (deftype stream nil
   `(or broadcast-stream concatenated-stream echo-stream
-       file-stream string-stream synonym-stream two-way-stream))
+       file-stream string-stream synonym-stream two-way-stream
+       user-defined-stream socket-stream))
 (deftype file-stream nil
   `(or file-input-stream file-output-stream file-io-stream file-probe-stream))
 (deftype path-stream nil

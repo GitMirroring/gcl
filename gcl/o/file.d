@@ -95,6 +95,19 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 #include <errno.h>
 
+
+#ifdef USER_DEFINED_STREAMS
+#define STM_DATA_STRUCT 0
+#define STM_READ_CHAR 1
+#define STM_WRITE_CHAR 2
+#define STM_LISTEN 3
+#define STM_FORCE_OUTPUT 4
+#define STM_CLOSE 5
+#define STM_TYPE 6
+#define STM_UNREAD_CHAR 7
+#define STM_NAME 8
+#endif
+
 extern void tcpCloseSocket (int fd);
 
 object terminal_io;
@@ -517,6 +530,7 @@ tty_stream_p(object strm) {
   case smm_probe:
   case smm_string_input:
   case smm_string_output:
+  case smm_user_defined:
     return(FALSE);
 
   case smm_broadcast:
@@ -568,6 +582,23 @@ cannot_read(object);
 
 static void
 closed_stream(object);
+
+static object
+user_defined_call(object strm,uint8_t i,int c) {
+
+  object val;
+  object *old_vs_base = vs_base;
+  object *old_vs_top = vs_top;
+  vs_base = vs_top;
+  if (i==STM_WRITE_CHAR||i==STM_UNREAD_CHAR) vs_push(code_char(c));
+  vs_push(strm);
+  super_funcall(strm->sm.sm_object1->str.str_self[i]);
+  val = vs_base[0];
+  vs_base = old_vs_base;
+  vs_top = old_vs_top;
+  return val;
+
+}
 
 int
 readc_stream(object strm) {
@@ -637,25 +668,8 @@ readc_stream(object strm) {
     cannot_read(strm);
 #ifdef USER_DEFINED_STREAMS
   case smm_user_defined:
-#define STM_DATA_STRUCT 0
-#define STM_READ_CHAR 1
-#define STM_WRITE_CHAR 2
-#define STM_UNREAD_CHAR 7
-#define STM_FORCE_OUTPUT 4
-#define STM_PEEK_CHAR 3
-#define STM_CLOSE 5
-#define STM_TYPE 6
-#define STM_NAME 8
     {
-      object val;
-      object *old_vs_base = vs_base;
-      object *old_vs_top = vs_top;
-      vs_base = vs_top;
-      vs_push(strm);
-      super_funcall(strm->sm.sm_object1->str.str_self[STM_READ_CHAR]);
-      val = vs_base[0];
-      vs_base = old_vs_base;
-      vs_top = old_vs_top;
+      object val=user_defined_call(strm,STM_READ_CHAR,0);
       if (type_of(val) == t_fixnum)
 	return (fix(val));
       if (type_of(val) == t_character)
@@ -727,21 +741,7 @@ unreadc_stream(int c, object strm) {
 
 #ifdef USER_DEFINED_STREAMS
   case smm_user_defined:
-    {
-      object *old_vs_base = vs_base;
-      object *old_vs_top = vs_top;
-      vs_base = vs_top;
-      vs_push(strm);
-      /* if there is a file pointer and no define unget function,
-       * then call ungetc */
-      if ((strm->sm.sm_fp != NULL ) &&
-	  strm->sm.sm_object1->str.str_self[STM_UNREAD_CHAR] == Cnil)
-	kclungetc(c, strm->sm.sm_fp);
-      else
-	super_funcall(strm->sm.sm_object1->str.str_self[STM_UNREAD_CHAR]);
-      vs_top = old_vs_top;
-      vs_base = old_vs_base;
-    }
+    user_defined_call(strm,STM_UNREAD_CHAR,c);
     break;
 #endif
   default:
@@ -937,17 +937,8 @@ BEGIN:
 
 #ifdef USER_DEFINED_STREAMS
   case smm_user_defined:
-    {
-      object *old_vs_base = vs_base;
-      object *old_vs_top = vs_top;
-      vs_base = vs_top;
-      vs_push(strm);
-      vs_push(code_char(c));
-      super_funcall(strm->sm.sm_object1->str.str_self[2]);
-      vs_base = old_vs_base;
-      vs_top = old_vs_top;
-      break;
-    }
+    user_defined_call(strm,STM_WRITE_CHAR,c);
+    break;
 
 #endif
   default:
@@ -1004,16 +995,8 @@ flush_stream(object strm) {
     FEerror("Cannot flush the stream ~S.", 1, strm);
 #ifdef USER_DEFINED_STREAMS
   case smm_user_defined:
-    {
-      object *old_vs_base = vs_base;
-      object *old_vs_top = vs_top;
-      vs_base = vs_top;
-      vs_push(strm);
-      super_funcall(strm->sm.sm_object1->str.str_self[4]);
-      vs_base = old_vs_base;
-      vs_top = old_vs_top;
-      break;
-    }
+    user_defined_call(strm,STM_FORCE_OUTPUT,0);
+    break;
 
 #endif
 
@@ -1225,6 +1208,15 @@ BEGIN:
 	case smm_string_output:
 		FEerror("Can't listen to ~S.", 1, strm);
 		return(FALSE);
+
+#ifdef USER_DEFINED_STREAMS
+  case smm_user_defined:
+    {
+      object val=user_defined_call(strm,STM_LISTEN,0);
+      return(val);
+    }
+
+#endif
 	default:
 		FEerror("Illegal stream mode for ~S.",1,strm);
 		return(FALSE);
@@ -1613,7 +1605,7 @@ FFN(siLuser_stream_state)() {
   check_arg(1);
 
   if(vs_base[0]->sm.sm_object1)
-    vs_base[0] = vs_base[0]->sm.sm_object1->str.str_self[0];
+    vs_base[0] = vs_base[0]->sm.sm_object1->str.str_self[STM_DATA_STRUCT];
   else
     FEerror("sLtream data NULL ~S", 1, vs_base[0]);
 }
