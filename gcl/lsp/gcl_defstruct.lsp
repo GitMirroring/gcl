@@ -431,7 +431,7 @@
 	   (or tem (setf (get name 's-data) def)))
 	  (tem 
 	   (check-s-data tem def name))
-	  (t (setf (get name 's-data) def) (update-sdata-included name)))
+	  (t (setf (get name 's-data) def) (update-sdata-included name)));FIXME get-slot-pos here for recursive slot types
     (when documentation
 	  (setf (get name 'structure-documentation) documentation))
     (when (and (null type) predicate)
@@ -537,9 +537,9 @@
     (when (and print-function print-object)
       (error "Cannot specify both :print-function and :print-object."))
     (when print-object
-      (setq print-function (lambda (x y z) 
+      (setq print-function `(lambda (x y z)
 			     (declare (optimize (safety 2)))
-			     (declare (ignore z)) (funcall print-object x y))))
+			     (declare (ignore z)) (funcall ,print-object x y))))
 
     (and include (not print-function)
 	 (setq print-function (s-data-print-function (get (car include)  's-data))))
