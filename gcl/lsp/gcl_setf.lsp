@@ -45,14 +45,15 @@
 (eval-when (eval compile) (setq si:*inhibit-macro-special* nil))
 
 (defvar *setf-syms* nil)
-(defvar *setf-set* nil)
 (defconstant +setf-prefix+ "SETF")
 (defconstant +setf-syms+ (let ((*gensym-counter* 0))
 			   (mapl (lambda (x) (rplaca x (gensym +setf-prefix+)))
 				   (make-list 19))))
-;(defun setf-set nil (setq *setf-syms* nil *gensym-counter* 0))
-;(defun setf-set nil (or *setf-set* (setq *setf-syms* +setf-syms+)));FIXME, this does not seem possible
-(defun setf-gensym nil (if *setf-syms* (prog1 (car *setf-syms*) (setq *setf-syms* (cdr *setf-syms*))) (gensym +setf-prefix+)))
+
+(defun setf-gensym nil
+  (if *setf-syms*
+      (prog1 (car *setf-syms*) (setq *setf-syms* (cdr *setf-syms*)))
+      (gensym +setf-prefix+)))
 
 ;;; DEFSETF macro.
 (defmacro defsetf (access-fn &rest rest)
@@ -99,15 +100,18 @@
    (cond (env (setq args (cons env args)))
 	 ((setq args (cons (sgen "DEFINE-SETF-METHOD") args))
 	  (push `(declare (ignore ,(car args))) body)))
+   (multiple-value-bind
+    (doc decls ctps body) (parse-body-header body)
+    (declare (ignore doc))
    `(eval-when (compile eval load)
 	       (si:putprop ',access-fn
-			   #'(lambda ,args (block ,access-fn ,@body)) 'setf-method);(*setf-set* (setf-set))
+			   #'(lambda ,args ,@decls ,@ctps (block ,access-fn ,@body)) 'setf-method)
 	       (remprop ',access-fn 'setf-lambda)
 	       (remprop ',access-fn 'setf-update-fn)
 	       (si:putprop ',access-fn
 			   ,(find-documentation (cdr rest))
 			   'setf-documentation)
-	       ',access-fn)))
+	       ',access-fn))))
 
 (defmacro define-setf-expander (access-fn &rest rest)
   (declare (optimize (safety 2)))
@@ -132,7 +136,7 @@
 ;; FIXME  when all is well, remove this and the setf tests in the pcl directory
 (push :setf *features*)
 
-(defun get-setf-method-multiple-value (form &optional env &aux tem); (*setf-set* (setf-set))
+(defun get-setf-method-multiple-value (form &optional env &aux tem)
   (flet ((mvars (form) (mapcar (lambda (x) (declare (ignore x)) (setf-gensym)) (cdr form))))
     (cond ((symbolp form)
 	   (let ((store (setf-gensym)))
