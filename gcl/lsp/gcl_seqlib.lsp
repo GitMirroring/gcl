@@ -347,7 +347,7 @@
   (check-type seq proper-sequence)
   (let* ((ll (length seq))
 	 (list (listp seq))
-	 (a (when list (make-array ll))))
+	 (a (when (and list seq) (make-array ll))))
     (when list
       (do ((fi 0 (1+ fi)) (l seq (cdr l))) ((>= fi ll)) (setf (aref a fi) l)))
     (do ((ii (list ll 0))) ((not ii) (if a (aref a 0) seq)); or could "spoil" (car l) above
