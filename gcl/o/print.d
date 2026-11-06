@@ -701,9 +701,11 @@ char_inc(char *b,char *p) {
 
 }
 
+#define DCOMP(a_,b_,c_) ({double _a=strtod(a_,b_),_b=(c_);*(volatile double *)&_a== fabs(*(volatile double *)&_b);})
+#define FCOMP(a_,b_,c_) ({float  _a=strtof(a_,b_),_b=(c_);*(volatile float  *)&_a==fabsf(*(volatile float  *)&_b);})
 #define COMP(a_,b_,c_,d_)						\
   ({fixnum _r;								\
-    BLOCK_EXCEPTIONS(_r=((d_) ? strtod((a_),(b_))==(c_) : strtof((a_),(b_))==(float)(c_))); \
+    BLOCK_EXCEPTIONS(_r=((d_) ? DCOMP(a_,b_,c_) : FCOMP(a_,b_,c_)));	\
     _r;})
 
 static int
@@ -725,7 +727,7 @@ truncate_double(char *b,double d,int dp) {
 
   strcpy(c,n);
   for (p=c;*p && *p!='e';p++);
-  if (p>c && p[-1]!='.' && char_inc(c,p-1) && COMP(c,&pp,d,dp)) {
+  if (p>c && p[-1]!='.' && char_inc(c,p-1) && COMP(c,&p,d,dp)) {
     j=truncate_double(c,d,dp);
     if (j<k) {
       k=j;
