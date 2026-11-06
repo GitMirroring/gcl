@@ -2049,7 +2049,7 @@
      (when (or tp (eq otp tp))
        (mi2 fun args last fms (ff-env (or ff fun))))
      (when (member-if-not 'identity fms :key (lambda (x) (info-type (cadr x))))
-       (c1progn args fms))
+       (c1progn (if last (append args (list last)) args) fms))
      (mi5 (or (when (symbolp fun) fun) ff) info fms last))))
 
 
