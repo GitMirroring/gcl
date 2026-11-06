@@ -565,6 +565,8 @@ DEFUN("MAKE-HASH-TABLE-INT",object,fSmake_hash_table_int,SI,5,5,NONE,OO,OO,OO,OO
 
   if (type_of(size)!=t_fixnum || fix(size)<0)
      FEerror("~S is an illegal hash-table size.", 1, size);
+  if (!fix(size))
+    size=small_fixnum(1);
 
   err=0;
   switch(type_of(rehash_size)) {
