@@ -453,7 +453,6 @@ DEFUNM("ROUND",object,fLround,LISP,1,2,NONE,OO,OO,OO,OO,(object x,...),"") {
   object f=OBJNULL,l=Cnil,y,q,q1,r;
   fixnum vals=(fixnum)fcall.valp;
   object *base=vs_top;
-  double d;
   int c;
   enum type tp;
   va_list ap;
@@ -485,19 +484,11 @@ DEFUNM("ROUND",object,fLround,LISP,1,2,NONE,OO,OO,OO,OO,(object x,...),"") {
     RETURN2(q1,num_remainder(x, y, q1));
 
   case t_shortfloat:
+    q1=double_to_integer(nearbyintf(sf(q)));
+    RETURN2(q1,num_remainder(x,y,q1));
   case t_longfloat:
-    d = number_to_double(q);
-    q1 = double_to_integer(d + (d >= 0.0 ? 0.5 : -0.5));
-    d -= number_to_double(q1);
-    if (d == 0.5 && number_oddp(q1)) {
-      q1 = one_plus(q1);
-      d=-0.5;
-    }
-    if (d == -0.5 && number_oddp(q1)) {
-      q1 = one_minus(q1);
-      d=+0.5;
-    }
-    RETURN2(q1,tp==t_shortfloat ? make_shortfloat((shortfloat)d) : make_longfloat(d));
+    q1=double_to_integer(nearbyint(lf(q)));
+    RETURN2(q1,num_remainder(x,y,q1));
   default:
     TYPE_ERROR(q,sLreal);
   }
