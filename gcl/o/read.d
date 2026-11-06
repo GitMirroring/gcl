@@ -2044,13 +2044,12 @@ DEFUN("READ-CHAR-NO-HANG",object,fLread_char_no_hang,LISP,0,4,NONE,OO,OO,OO,OO,(
   else if (strm == Ct)
     strm = symbol_value(sLAterminal_ioA);
   check_type_stream(&strm);
-  if (stream_at_end(strm)) {
-    if (eof_errorp == Cnil)
-      RETURN1(eof_value);
-    else
-      end_of_stream(strm);
-  }
-  RETURN1(listen_stream(strm) ? read_char(strm) : Cnil);
+  RETURN1(listen_stream(strm) ?
+	  (stream_at_end(strm) ?
+	   (eof_errorp == Cnil ?
+	    eof_value : (end_of_stream(strm),Cnil)) :
+	   read_char(strm)) :
+	  Cnil);
 }
 
 @(defun clear_input (&optional (strm `symbol_value(sLAstandard_inputA)`))
