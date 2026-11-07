@@ -4628,7 +4628,7 @@ unixport/gcl_cmpnopt_pre_gcl.lsp: # FIXME necessary?
 	touch $@
 unixport/gcl_cmpnopt_%.lsp: unixport/lib%.a | unixport/%
 	echo "(clrhash compiler::*inl-hash*)" \
-             "(mapc (quote load) (directory \"$*/*.hsh\"))" \
+             "(mapc (quote load) (sort (directory \"$*/*.hsh\") (quote string<) :key (quote namestring)))" \
 	     "(compiler::dump-inl-hash \"$@\")" | $|
 
 $(addprefix unixport/lib,$(addsuffix .a,pre_gcl $(MY_DIRS))): \
@@ -4715,7 +4715,7 @@ $(addprefix gcl0/,$(LL_OBJS)): gcl0/%.o : lsp/%.lsp
 $(addprefix gcl0/,$(LC_OBJS)): gcl0/%.o : cmpnew/%.lsp
 gcl0/%.o: | unixport/gcl0
 	rm -f $(@D)/$*.done
-	$(word 1,$|) -eval "(mapc 'load (directory \"$(@D)/*.done\"))" -compile $< -o $@
+	$(word 1,$|) -eval "(mapc 'load (sort (directory \"$(@D)/*.done\") (quote string<) :key (quote namestring))" -compile $< -o $@
 	[ "$*" = "gcl_seqlib" ] || [ "$*" = "gcl_evalmacros" ] || [ "$*" = "gcl_top" ] || \
 	[ "$*" = "gcl_c" ] || [ "$*" = "gcl_listlib" ] || \
 		ln -f $@ $$(echo $@ |sed 's,\.o,\.done,g') #FIXME directory link, clang variadic pointer bug
@@ -4724,7 +4724,7 @@ $(addprefix gcl1/,$(LL_OBJS)): gcl1/%.o : lsp/%.lsp
 $(addprefix gcl1/,$(LC_OBJS)): gcl1/%.o : cmpnew/%.lsp
 gcl1/%.o: | unixport/gcl1
 	rm -f $(@D)/$*.done
-	$| -eval "(mapc 'load (directory \"$(@D)/*.done\"))" \
+	$| -eval "(mapc 'load (sort (directory \"$(@D)/*.done\") (quote string<) :key (quote namestring)))" \
 	   -eval "(setq compiler::*dump-inl-hash* t)" \
 	   -compile $< -o $@
 	[ "$*" = "gcl_sym" ] || ln -f $@ $$(echo $@ |sed 's,\.o,\.done,g') # FIXME listlib must come before sym
@@ -4765,12 +4765,14 @@ mod_gcl/%.o: mod_gcl0/%.o | unixport/mod_gcl
 	     "(si::do-recomp2 \
 		\"$@\" \
 		(mapcar (quote namestring) \
-		  (directory \
+		  (sort \
+		    (directory \
 		     (merge-pathnames \
 			\"*.*p\" \
 			(make-pathname \
 			  :directory (pathname-directory \
-				        (si::file (quote pcl::renew-sys-files))))))))" | $|
+				        (si::file (quote pcl::renew-sys-files)))))) \
+                    (quote string<) :key (quote namestring))))" | $|
 %/p1.lisp: | unixport/%
 	echo "(in-package :si)" \
 	     "(export (quote %structure-name))" \
