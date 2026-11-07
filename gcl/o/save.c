@@ -59,10 +59,6 @@ LFD(siLsave)(void) {
 #if !defined(__APPLE__)
     __environ=NULL;
 #endif
-    rl_instream=NULL;
-    rl_readline_name=NULL;
-    rl_line_buffer=NULL;
-    rl_completion_entry_function=NULL;
     stdin=NULL;
     stdout=NULL;
     stderr=NULL;
@@ -80,8 +76,14 @@ LFD(siLsave)(void) {
     my_stdin=NULL;
     my_stdout=NULL;
     my_stderr=NULL;
+#ifdef USE_READLINE
+    rl_instream=NULL;
+    rl_readline_name=NULL;
+    rl_line_buffer=NULL;
+    rl_completion_entry_function=NULL;
     my_rl_readline_name_ptr=NULL;
     my_rl_completion_entry_function_ptr=NULL;
+#endif
 
   }
 
