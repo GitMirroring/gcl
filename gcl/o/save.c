@@ -52,8 +52,10 @@ LFD(siLsave)(void) {
 #if !defined(__APPLE__)
     extern char **__environ;
 #endif
+#ifdef USE_READLINE
     extern FILE *rl_instream;
     extern char *rl_line_buffer;
+#endif
     extern void clear_eval_vec(void);
 
 #if !defined(__APPLE__)
