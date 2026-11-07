@@ -4715,7 +4715,7 @@ $(addprefix gcl0/,$(LL_OBJS)): gcl0/%.o : lsp/%.lsp
 $(addprefix gcl0/,$(LC_OBJS)): gcl0/%.o : cmpnew/%.lsp
 gcl0/%.o: | unixport/gcl0
 	rm -f $(@D)/$*.done
-	$(word 1,$|) -eval "(mapc 'load (sort (directory \"$(@D)/*.done\") (quote string<) :key (quote namestring))" -compile $< -o $@
+	$(word 1,$|) -eval "(mapc 'load (sort (directory \"$(@D)/*.done\") (quote string<) :key (quote namestring)))" -compile $< -o $@
 	[ "$*" = "gcl_seqlib" ] || [ "$*" = "gcl_evalmacros" ] || [ "$*" = "gcl_top" ] || \
 	[ "$*" = "gcl_c" ] || [ "$*" = "gcl_listlib" ] || \
 		ln -f $@ $$(echo $@ |sed 's,\.o,\.done,g') #FIXME directory link, clang variadic pointer bug
