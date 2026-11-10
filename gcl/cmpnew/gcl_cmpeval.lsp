@@ -1692,10 +1692,10 @@
 
 
 (defun mod-env (e l)
-  (setq *lexical-env-mask* (nconc (remove-if (lambda (x) (or (symbolp x) (is-fun-var x))) (ldiff l e)) *lexical-env-mask*));FIXME
-  l)
-
-
+  (labels ((ft (e) (if (tailp e l) e (ft (cdr e)))))
+    (let ((te (ft e)))
+      (setq *lexical-env-mask* (nconc (remove-if (lambda (x) (or (symbolp x) (is-fun-var x))) (ldiff l te)) *lexical-env-mask*));FIXME
+      (nconc (ldiff e te) l))))
 
 (defvar *lexical-env-mask* nil)
 
