@@ -55,7 +55,7 @@
        (lsp (append x (list "lsp")))
        (cmpnew (append x (list "cmpnew")))
        (h (append x (list "h")))
-       (u (append x (list "unixport")))
+       (u (append (pathname-directory *lib-directory*) (list :back "unixport")))
        (xgcl-2 (append x (list "xgcl-2")))
        (pcl (append x (list "pcl")))
        (clcs (append x (list "clcs")))
