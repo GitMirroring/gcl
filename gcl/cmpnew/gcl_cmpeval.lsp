@@ -880,16 +880,17 @@
 		`(merge-inls
 		  ',x
 		  (list
-		   ,@(mapcar (lambda (z)
-			       `(list (mapcar 'uniq-tp ',(mapcar 'export-type (pop z)))
-				      ',(pop z) ',(pop z) ',(pop z)
-				      (cons ',(caar z) (uniq-tp ',(cdar z)))
-				      (list ,@(mapcan
-					       (lambda (x)
-						 `((list ',(pop x) ',(pop x) ',(mapcar 'export-type (car x)))))
-					       (sort (cadr z) '< :key (lambda (x) (hash-equal x -5)))))
-				      ,(caddr z)))
-			     (sort (car y) '< :key (lambda (x) (hash-equal x -5))))))
+		   ,@(flet ((srt (x) (sort (copy-list x) '< :key (lambda (x) (hash-equal x -5)))))
+		       (mapcar (lambda (z)
+				 `(list (mapcar 'uniq-tp ',(mapcar 'export-type (pop z)))
+					',(pop z) ',(pop z) ',(pop z)
+					(cons ',(caar z) (uniq-tp ',(export-type (cdar z))))
+					(list ,@(mapcan
+						 (lambda (x)
+						   `((list ',(pop x) ',(pop x) ',(mapcar 'export-type (car x)))))
+						 (srt (cadr z))))
+					,(caddr z)))
+			       (srt (car y))))))
 		s)
 	       (terpri s))
 	  (let (r)
