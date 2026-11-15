@@ -327,7 +327,12 @@ unixport/lib%.a: | xbin/ar_merge
 
 %/recompile: | unixport/%
 	$| -batch \
-	   -eval "(let ((si::*do-recomp-output-dir* \"$(@D)\")) (si::do-recomp t))" \
+	   -eval "(si::do-recomp \
+			(lambda (x) \
+                           (list :system-p t :c-file t :h-file t :data-file t \
+				 :output-file (merge-pathnames \
+					        (make-pathname :type \"o\" :name (pathname-name x)) \
+						\"$(@D)/\"))))" \
 	   -eval "(mapc (quote delete-file) (directory \"$(@D)/*.hsh\"))" \
 	   -eval "(compiler::dump-inl-hash \"$(@D)/all.hsh\" t)"
 	touch $@
