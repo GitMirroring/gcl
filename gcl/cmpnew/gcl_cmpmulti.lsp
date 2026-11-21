@@ -259,7 +259,7 @@
 
   (unless (let ((x (info-type (cadr init-form))))
 	    (if (cmpt x) (not (member nil x)) x))
-    (eliminate-src body)
+    (eliminate-src (cons 'progn body))
     (return-from c1multiple-value-bind init-form))
 
   (when (single-type-p (info-type (cadr init-form)))

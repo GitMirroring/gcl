@@ -148,7 +148,7 @@
     (unless star (mapc (lambda (x) (push-var (car x) (cdr x))) vs))
 
     (when (member-if-not 'identity forms :key (lambda (x) (info-type (cadr x))))
-      (eliminate-src body)
+      (eliminate-src (cons 'progn body))
       (setq body nil))
 
     (c1add-globals (set-difference ss vnames))
