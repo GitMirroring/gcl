@@ -32,7 +32,7 @@ object siSuniversal_error_handler;
 
 object sSterminal_interrupt;
 
-#if defined(__APPLE__)
+#if defined(__APPLE__) || (defined(__GLIBC__) && ((__GLIBC__ < 2) || (__GLIBC__ == 2 && __GLIBC_MINOR__ < 32)))
 const char *
 strerrordesc_np(int errnum) {
   return (errnum >= 0 && errnum < sys_nerr) ? sys_errlist[errnum] : "Unknown error";
