@@ -15,31 +15,108 @@
 ;;        using this prompt and this beginning.   Useful in shell, in lisp, in gdb,...
 
 
-(setq lisp-mode-hook  'remote-lisp)
+(require 'shell)
+(require 'gud)
+(require 'gdb-mi)
+(require 'cl-lib)
+(require 'inf-lisp)
 
-(autoload 'lisp-complete "lisp-complete" nil t)
-(autoload 'smart-complete "smart-complete" nil t)
+(defgroup gcl nil
+  "Customization group for GNU Common Lisp (GCL) development environment."
+  :group 'lisp
+  :prefix "gcl-")
 
-;(global-set-key "p" 'lisp-complete)
-(global-set-key "p" 'smart-complete)
+(defcustom gcl-dirs nil
+  "List of directories searched to locate the GCL executable files.
+Each directory string should include the trailing slash."
+  :type '(repeat directory)
+  :group 'gcl)
 
-(defun remote-lisp (&rest l)
-  (and (boundp 'lisp-mode-map)
-       lisp-mode-map
-       (progn
-  (define-key lisp-mode-map "\e\C-d" 'lisp-send-disassemble)
-  (define-key lisp-mode-map "\e\C-x" 'lisp-send-defun-compile)
-  (make-local-variable 'lisp-package)
-  (setq lisp-package nil)
-  (and (boundp 'remote-lisp-hook) (funcall remote-lisp-hook))
-  )))
+;;;###autoload
+(define-derived-mode gcl-mode lisp-mode "GCL Source"
+  "Major mode for editing GNU Common Lisp source files."
+  (setq-local lisp-package nil)
+  (setq-local lisp-mode-hook nil)
 
+  (local-set-key (kbd "C-M-x")   'gcl-eval-defun)
+  (local-set-key (kbd "C-c C-r") 'gcl-eval-region)
+  (local-set-key (kbd "C-c C-l") 'gcl-load-file)
+  (local-set-key (kbd "C-c C-b") 'gcl-break))
 
-(defvar search-back-for-lisp-package-p nil)
+(defun gcl-make-overlay-mode-map nil
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "SPC") 'gcl-step)  ; Space bar steps into forms
+    (define-key map (kbd "n")   'gcl-next)  ; 'n' skips functions
+    (define-key map (kbd "e")   'lisp-eval-last-sexp)
+    (define-key map (kbd "v")   'gcl-env)
+    (define-key map (kbd "m")   'gcl-form)
+    (define-key map (kbd "f")   'gcl-finish)
+    (define-key map (kbd "c")   'gcl-r)
+    (define-key map (kbd "t")   'gcl-bt)
+    (define-key map (kbd "l")   'gcl-bl)
+    (define-key map (kbd "u")   'gcl-up)
+    (define-key map (kbd "d")   'gcl-down)
+    (define-key map (kbd "r")   'gcl-refresh-layout)
+    (define-key map (kbd "q")   'gcl-source-overlay-mode-quit) ; Turn off overlays
+    map))
 
-;; look at the beginning of buffer to try to find an in package statement
-(defun get-buffer-package ()
+(defvar gcl-source-overlay-mode-map
+  (gcl-make-overlay-mode-map)
+  "Keymap active when the GCL debugger has focus inside a source buffer file.")
 
+(define-minor-mode gcl-source-overlay-mode
+  "Minor mode overlaying single-stroke GCL debugging keys in source buffers."
+  :init-value nil
+  :lighter " GCL-Debug"
+  :keymap gcl-source-overlay-mode-map
+  (read-only-mode (if gcl-source-overlay-mode 1 -1)))
+
+;; Local functions
+
+(defun gcl-substitute-% (command n)
+  (let* (result	(file-line (gcl-find-line)))
+    (while (and command (string-match "\\([^%]*\\)%\\([adeflp]\\)" command))
+      (setq result (concat result
+			   (substring command (match-beginning 1) (match-end 1))
+			   (cl-case (string-to-char (substring command (match-beginning 2)))
+				 (?p (if n (int-to-string n) ""))
+				 (?f (or (car file-line) "unknown-file"))
+				 (?l (if (cadr file-line) (int-to-string (cadr file-line)) "unknown-line")))))
+      (setq command (substring command (match-end 2))))
+    (concat result command)))
+
+(defun gcl-call (command &optional numeric)
+  "Invoke gcl COMMAND displaying source in inferior-lisp-buffer."
+  (interactive)
+  (save-excursion
+    (goto-char (point-max))
+    (process-send-string (get-buffer-process inferior-lisp-buffer)
+			 (concat (gcl-substitute-% command numeric) "\n"))))
+
+(defmacro def-gcl (name &optional doc def)
+  (let ((fun (intern (format "gcl-%s" (cadr (split-string (car (split-string name " ")) ":")))))
+	(argp (string-match-p "%" name)))
+    `(defun ,fun (,@(when argp `(&optional arg)))
+       ,(or doc "")
+       (interactive ,@(when argp `("P")))
+       (apply 'gcl-call ,name
+	      ,(when argp
+		  `(when (or arg ,def)
+		      (list (if arg (prefix-numeric-value arg) ,def))))))))
+
+(def-gcl ":finish %p" "Finish current function")
+(def-gcl ":next %p"   "Step one source line (skip functions)")
+(def-gcl ":step %p"   "Step one source line with display")
+(def-gcl ":up %p"     "Step one source line with display")
+(def-gcl ":down %p"   "Step one source line with display")
+(def-gcl ":bt %p"     "Stack trace")
+(def-gcl ":bl"        "Locals")
+(def-gcl ":r"         "Continue")
+(def-gcl ":env"       "Environment")
+(def-gcl ":form %p"   "Invoking form for frame")
+(def-gcl ":q"         "Quit")
+
+(defun gcl-get-buffer-package ()
   "Returns what it thinks is the lisp package for the current buffer.
 It caches this information in the local variable `lisp-package'.  It
 obtains the information from searching for the first in-package from
@@ -51,133 +128,14 @@ in the tmp-lisp-file, used for sending forms to the current
 lisp-process."
 
   (cond ((eq lisp-package t) nil)
-	(search-back-for-lisp-package-p
-	 (save-excursion
+	((save-excursion
 	   (cond ((re-search-backward "^[ \t]*(in-package "  nil t)
 		  (goto-char (match-end 0))
-		  (read (current-buffer))))))
-	(lisp-package lisp-package)
-	(t
-	 (setq
-	  lisp-package
-	  (let (found success)
-	    (save-excursion
-	      (goto-char (point-min))
-	      (while (not found)
-		(if (and (setq success (search-forward "(in-package " 1000 t))
-			 (not (save-excursion
-				(beginning-of-line)
-				(looking-at "[ \t]*;"))))
-		    (setq found  (read (current-buffer))))
-		(if (>= (point) 980) (setq found t))
-		(or success (setq found t))
-		))
-	    found)))))
+		  (setq lisp-package (read (current-buffer)))))))
+	(lisp-package lisp-package)))
 
 
-(defun run (arg)
-  "Run an inferior Lisp process, input and output via buffer *lisp*."
-  (interactive "sEnter name of file to run: ")
-  (require 'sshell)
-  ;; in emacs 19 uncomment:
-  ;;(require 'inf-lisp)
-  (setq lisp-mode-hook 'remote-lisp)
-  (switch-to-buffer  (make-sshell (concat arg "-lisp") arg nil "-i"))
-  (make-local-variable 'shell-prompt-pattern)
-    (setq sshell-prompt-pattern "^[^#%)>]*[#%)>]+ *")
-    (cond ((or (string-match "maxima" arg) (string-match "affine" arg)
-	   (save-excursion     (sleep-for 2)
-			       (re-search-backward "maxima"
-						   (max 1 (- (point) 300))
-						   t)))
-	   (require 'maxima-mode)
-	   (inferior-maxima-mode)
-	   (goto-char (point-max))
-	   )
-	  (t
-	   (if (boundp 'inferior-lisp-mode)
-	       (inferior-lisp-mode)
-	     (funcall lisp-mode-hook))
-	      )))
-
-(defun lisp-send-disassemble (arg)
-  (interactive "P")
-   (if  arg 
-       ( lisp-send-defun-compile "disassemble-h")
-            ( lisp-send-defun-compile "disassemble"))
-     )
-
-(defvar time-to-throw-away nil)
-(defvar telnet-new-line "")
-
-(defun lisp-send-defun-compile (arg)
-
-  "Send the current defun (or other form) to the lisp-process.  If there
-is a numeric arg, the form (compile function-name) is also sent.  The
-value of lisp-process will be the process of the other exposed window (if
-there is one) or else the global value of lisp-process.  If the
-...received message is not received, probably either the reading of
-the form caused an error.   If the process does not have telnet in
-its name, then we write a tmp file and load it.
-If :sdebug is in *features*, then si::nload is used instead of
-ordinary load, in order to record line information for debugging.
-
-The value of `lisp-package' if non nil, will be used in putting an
-in-package statement at the front of the tmp file to be loaded.
-`lisp-package' is determined automatically on a per file basis,
-by get-buffer-package.
-"
-
-  (interactive "P")
-  (other-window 1)
-  (let* ((proc (or (get-buffer-process (current-buffer)) lisp-process))
-	 def beg
-	 (this-lisp-process proc)
-	 (lisp-buffer (process-buffer this-lisp-process))
-	 fun)
-    (other-window 1)
-    (save-excursion
-      (end-of-defun)
-      (let ((end (dot)) (buffer (current-buffer))
-	    (proc (get-process this-lisp-process)))
-	(setq lisp-process proc)
-	(beginning-of-defun)
-	(save-excursion
-	  (cond ((and arg (looking-at "(def")) (setq def t))
-		(t (setq arg nil)))
-	  (cond (def (forward-char 2)(forward-sexp 1)
-		     (setq fun (read buffer))
-		     (setq fun (prin1-to-string fun))
-		     (message (format
-			       "For the lisp-process %s: %s"
-			       (prin1-to-string this-lisp-process) fun)))))
-	(cond ((equal (char-after (1- end)) ?\n)
-	       (setq end (1- end)) ))
-	(setq beg (dot))
-	(my-send-region this-lisp-process beg end)
-	))
-    
-
-    (send-string this-lisp-process
-		 (concat ";;end of form" "\n" telnet-new-line))
-    (cond (arg
-	   (if (numberp arg) (setq arg "compile"))
-	   (send-string this-lisp-process (concat "(" arg "'" fun ")"
-						  telnet-new-line))))
-    (and time-to-throw-away
-	 (string-match "telnet"(buffer-name (process-buffer proc)))
-	 (dump-output proc time-to-throw-away))
-    (cond (nil  ;(get-buffer-window lisp-buffer)
-		  (select-window (get-buffer-window lisp-buffer))
-		  (goto-char (point-max)))
-	  (t nil))))
-
-(fset 'lisp-eval-defun (symbol-function 'lisp-send-defun-compile))
-
-(defvar telnet-new-line "")
-(defvar tmp-lisp-file (concat "/tmp/" (user-login-name) ".lsp"))
-
-(defun get-buffer-clear (name)
+(defun gcl-get-buffer-clear (name)
   (let ((cb (current-buffer))
 	(buf (get-buffer-create name)))
     (set-buffer buf)
@@ -185,191 +143,309 @@ by get-buffer-package.
     (set-buffer cb)
     buf))
 
-(defmacro my-with-output-to-temp-buffer  (name &rest body)
-  (append (list
-	   'let
-	   (list (list 'standard-output (list 'get-buffer-clear name))))
-	   body))
-	      
+(defun gcl-my-send-region (proc beg end &optional arg)
+  (if (string-match "telnet" (process-name proc))
+      (send-region proc beg end)
+    (let* ((package (gcl-get-buffer-package))
+	   (src-buf (current-buffer))
+	   (src-name (let ((na (buffer-file-name src-buf)))
+                       (if na (expand-file-name na) (buffer-name src-buf))))
+	   (src-line (- (count-lines (point-min) (+ beg 5)) 1))
+	   (tmp-file (make-temp-file "gcl-" nil ".lsp")))
+      (with-current-buffer (gcl-get-buffer-clear "*tmp-gcl*")
+	(when package
+	  (unless (eq package t)
+	    (prin1 (list 'in-package package) (current-buffer))))
+	(insert (format ";!(:line %S %d)\n" src-name src-line))
+	(insert-buffer-substring src-buf beg end)
+	(insert "\n")
+	(write-region (point-min) (point-max) tmp-file nil 'nomsg))
+      (message "sending ..")
+      (let ((str (concat "(lisp::let ((*load-verbose* nil)) ("
+			 (if arg "#+sdebug si::nload #-sdebug " "")
+			 "load \""
+			 tmp-file
+			 "\")(values))\n  ")))
+	(process-send-string proc str))
+      (message (format "PACKAGE: %s ..done" (if (unless (eq package t) package) package "none"))))))
 
-(defun my-send-region (proc beg end)
-  (cond ((or (string-match "telnet" (process-name proc)))
-	 (send-region proc beg end))
-	(t
-	 (let ((package (get-buffer-package)))
-	   (save-excursion
-	       (my-with-output-to-temp-buffer  "*tmp-gcl*"
-		 (if (and package (not (eq package t)))
-		     (prin1 (list 'in-package  package)))
-		 (princ ";!(:line ")
-		 (prin1
-		   (let ((na (buffer-file-name (current-buffer))))
-		     (if na (expand-file-name na)
-		       (buffer-name (current-buffer))))
-		   )
-		 (princ (- (count-lines (point-min) (+ beg 5)) 1))
-		 (princ ")\n")
-		 (set-buffer "*tmp-gcl*")
-		 (write-region (point-min) (point-max) tmp-lisp-file nil nil)))
-	   (write-region beg end tmp-lisp-file t nil)
-	   (message "sending ..")
-	   (send-string
-	    proc
-	    (concat "(lisp::let ((*load-verbose* nil)) (#+sdebug si::nload #-sdebug load \""
-		    tmp-lisp-file
-		    "\")#+gcl(setq si::*no-prompt* t)(values))\n  ")
-			)
-	   (message (format "PACKAGE: %s ..done"
-			    (if (or (not package) (eq package t))
-				"none"
-			      package)))
+(defun gcl-eval-defun (&optional arg &aux proc)
+  "Evaluate the current top-level form.
+Plain execution evaluates the form natively.
+Passing a universal prefix argument (C-u) routes execution through
+`si::nload' to arm the line-tracking debugger."
+  (interactive "P")
+  (if (when (and (boundp 'inferior-lisp-buffer) inferior-lisp-buffer)
+	  (setq proc (get-buffer-process inferior-lisp-buffer))
+	  (and proc (eq (process-status proc) 'run)))
+      (let ((beg (save-excursion (beginning-of-defun) (point)))
+            (end (save-excursion (end-of-defun) (point))))
+        (gcl-my-send-region proc beg end arg))
+    (message "No active GCL process available for evaluation.")))
 
+(defun gcl-eval-region (start end &optional arg &aux proc)
+  "Evaluate the current region.
+Plain execution evaluates the form natively.
+Passing a universal prefix argument (C-u) routes execution through
+`si::nload' to arm the line-tracking debugger."
+ (interactive "r\nP")
+  (if (when (and (boundp 'inferior-lisp-buffer) inferior-lisp-buffer)
+	  (setq proc (get-buffer-process inferior-lisp-buffer))
+	  (and proc (eq (process-status proc) 'run)))
+      (gcl-my-send-region proc start end arg)
+    (message "No active GCL process available for evaluation.")))
 
-	   ))))
+(defun gcl-load-file (file &optional instrument)
+  "Load Lisp FILE into the active inferior Lisp process.
+Plain execution (C-c C-l) loads the file normally.
+Passing a universal prefix argument (C-u C-c C-l) overrides the load string
+dynamically to channel the entire file through `si::nload' for line-tracking."
+  (interactive
+   (list (let ((def (buffer-file-name)))
+	   (read-file-name (format "Load Lisp file (%s): " def) nil def t))
+         current-prefix-arg))
 
-(defun dump-output (proc seconds)
-  "dump output for PROCESS for SECONDS or to \";;end of form\""
- (let ((prev-filter (process-filter proc)) (already-waited 0))
-       (unwind-protect (progn (set-process-filter proc 'dump-filter)
-			      (while (< already-waited seconds)
-			      (sleep-for 1)(setq already-waited
-						 (1+ already-waited))))
-	 (set-process-filter proc prev-filter))))
+  (let ((inferior-lisp-load-command
+         (if instrument
+             "(let ((*load-verbose* nil)) (#+sdebug si::nload #-sdebug load \"%s\")(values))\n"
+           "(load \"%s\")\n")))
 
+    (message (if instrument
+                 "GCL: Loading file with line-tracking enabled..."
+               "GCL: Loading file normally..."))
+    (save-window-excursion
+      (lisp-load-file file))))
 
+(defun gcl-refresh-layout ()
+  "Restore the modern GDB multi-window layout frame layout if distorted."
+  (interactive)
+  (let ((buffer (current-buffer)))
+    (with-current-buffer inferior-lisp-buffer
+      (when gcl-gdb-p
+	  (gdb-restore-windows)
+	  (let ((sw (cl-find-if (lambda (x)
+				  (string-match-p "main\\.c" (buffer-name (window-buffer x))))
+				(window-list))))
+	    (when sw
+	      (with-selected-window sw
+		(switch-to-buffer (buffer-name buffer) nil t))))
+	  (setq gcl-last-frame-displayed-p nil))
+      (gcl-display-frame))))
 
-(defun dump-filter (proc string)
-;  (setq she (cons string she))
-  (let ((ind (string-match ";;end of form" string)))
-    (cond (ind (setq string (substring
-			     string
-			     (+ ind (length
-				     ";;end of form"))))
-
-	       (message "... received.")
-	       (setq already-waited 1000)
-	       (set-process-filter proc prev-filter)
-	       (cond (prev-filter (funcall prev-filter proc string))
-		     (t string)))
-	  (t ""))))
-
-
-;;(process-filter (get-process "lisp"))
-(defun macroexpand-next ()
-  "macroexpand current form"
+(defun gcl-break nil
+  "Set GCL breakpoint at this source line."
   (interactive)
   (save-excursion
-    (let ((beg (point)))
-      (forward-sexp )
-      (message "sending macro")
+    (end-of-line)
+    (let (name at (where (point)))
+      (beginning-of-defun)
+      (search-forward "(def")
+      (forward-sexp 2)
+      (setq at (point))
+      (forward-sexp -1)
+      (setq name (buffer-substring (point) at))
+      (beginning-of-line)
+      (let ((name (format "(si::break-function '%s %s t)"  name (count-lines 1 where))))
+	(message "%s" name)
+	(process-send-string (get-buffer-process inferior-lisp-buffer) (concat name "\n"))))))
 
-      (let* ((current-lisp-process
-	      (or (get-buffer-process (current-buffer))
-		       (prog2 (other-window 1)
-			      (get-buffer-process (current-buffer))
-			      (other-window 1)))))
-	(send-string current-lisp-process "(macroexpand '")
-	(send-region current-lisp-process  beg (point) )
-	(send-string current-lisp-process ")\n")))))
-
-(defun delete-comment-char (arg) 
-  (while (and (> arg 0) (looking-at comment-start)) (delete-char 1) 
-	 (setq arg (1- arg))))
-
-(defun mark-long-comment ()
+(defun gcl-source-overlay-mode-quit ()
+  "Safely drop out of the read-only debugger map back to active editing."
   (interactive)
-  (let ((at (point)))
-    (beginning-of-line)
-    (while(and (not (eobp))
-	       (or  (looking-at comment-start)
-		    ;(looking-at "[ 	]*\n")
-		    ))
-      (forward-line 1))
-    (set-mark (point))
-    (goto-char at)
-    (while(and (not (bobp))
-	       (or  (looking-at comment-start)
-		    ;(looking-at "[ 	]*\n")
-		    ))
-      (forward-line -1))
-    (or (bobp )(forward-line 1))))
-    
+  (gcl-source-overlay-mode -1)
+  (when (markerp overlay-arrow-position)
+    (set-marker overlay-arrow-position nil))
+  (gcl-q)
+  (message "Debugger keys detached. Editing restored."))
 
-(defun fill-long-comment ()
-  (interactive)
-  (mark-long-comment)
-  (let ((beg (min (dot) (mark)))
-	(end (max (dot) (mark))) (n 0)m)
-    (narrow-to-region beg end)
-    (goto-char (point-min))    
-    (while (looking-at ";")
-      (forward-char 1))
-    (setq n (- (point) beg))
-    (goto-char (point-min))    
-    (while (not (eobp))
-      (setq m n)
-      (while (> m  0)
-	(cond ((looking-at ";")
-	       (delete-char 1)
-	       (cond ((looking-at " ")(delete-char 1)(setq m 0)))
-	       (setq m (- m 1)))
-	      (t (setq m 0))))
-      (forward-line 1))
-    (fill-region (dot-min) (dot-max))
-    (goto-char (point-min))
-    (while (not (eobp))
-      (cond ((looking-at "\n")
-	     nil)
-	    (t(insert ";; ")))
-      (forward-line 1))
-   (goto-char (point-min))
-   (set-mark (point-max))
-   (widen)))
+;; Inferior lisp buffer
 
-(defun comment-region (arg) 
-  "Comments the region, with a numeric arg deletes up to arg comment 
-characters from the beginning of each line in the region.  The region stays, 
-so a second comment-region adds another comment character" 
- (interactive "P") 
- (save-excursion 
-   (let ((beg (dot)) 
-	 (ok t)(end (mark)))
-          (comment-region1 beg end arg))))
-
-(defun comment-region1 (beg end arg)
-  (let ((ok t))
-    (cond((> beg end) 
-	  (let ((oth end)) 
-	    (setq end beg beg oth)))) 
-    (narrow-to-region beg end) 
-    (goto-char beg) 
-       (unwind-protect 
-	   (while ok 
-	     (cond (arg 
-		    (delete-comment-char arg)) 
-		   (t   (insert-string comment-start)))
-	     (if (< end (dot)) (setq ok nil)
-	       (if  (search-forward "\n" end t) nil (setq ok nil))) )
-	 (widen))))
-
-(defun trace-expression ()
+(defun gcl-find-line ()
+  "If the current buffer has a process, then look first for a file-line
+property, and if none, then search for a regexp.
+If a non process buffer, just return current file and line number.
+"
   (interactive)
   (save-excursion
-     (forward-sexp )
-    (let ((end (point)))
-           (forward-sexp -1)
-      (other-window 1)
-      (let* ((proc (get-buffer-process (current-buffer)))
-	     (current-lisp-process (or  proc lisp-process)))
-	(other-window 1)
-	(message "Tracing: %s" (buffer-substring (point) end))
-	(send-string current-lisp-process "(trace ")
-	(send-region current-lisp-process (point) end)
-	(send-string current-lisp-process ")\n")))))
+    (end-of-line)
+    (cond ((get-buffer-process (current-buffer))
+	   (cond
+	    ((progn
+	       (beginning-of-line)
+	       (get-text-property (point) 'file-line)))
+	    ((progn (end-of-line) (re-search-backward "\(\\([^ ]+\\) +line +\\([0-9]+\\)\)" 300 nil))
+	     (let* ((file (buffer-substring (match-beginning 1) (match-end 1)))
+		    (line (buffer-substring (match-beginning 2) (match-end 2)))
+		    (line (read line)))
+	     (and (integerp line) file (list file line))))))
+	  (t (list (buffer-file-name)
+		   (+ 1 (if (featurep 'xemacs) (line-number) (line-number-at-pos))))))))
 
-(defun gcl-mode ()
+(defun gcl-find-and-display-line nil
   (interactive)
-  (lisp-mode)
-  )
+  (let ((res (gcl-find-line)))
+    (when res
+      (apply 'gcl-display-line res))))
+
+(defun gcl-find-file (file)
+  (cond ((file-exists-p file)
+	 (find-file-noselect file))
+	((get-buffer file))
+	(t (find-file-noselect file))))
+
+(defvar gcl-last-frame nil)
+(defvar gcl-last-frame-displayed-p t)
+(defvar gcl-iob-init nil)
+(defvar gcl-gdb-p nil)
+
+(defun gcl-setup-iob nil
+
+  (let* ((buf (current-buffer))
+	 (gdb-com (when (boundp 'gud-comint-buffer) gud-comint-buffer))
+	 (gdb-io (when gdb-com (gdb-get-buffer 'gdb-inferior-io)))
+	 (buf (if (eq buf gdb-com) gdb-io buf))
+	 (gdb-p (eq buf gdb-io)))
+    (with-current-buffer buf
+
+      (setq inferior-lisp-buffer (current-buffer))
+      (setq-local gcl-last-frame nil)
+      (setq-local gcl-last-frame-displayed-p t)
+      (setq-local gcl-iob-init t)
+      (setq-local gcl-gdb-p gdb-p)
+
+      (local-set-key (kbd "C-c l") 'gcl-find-and-display-line)
+      (message "GCL environment bound cleanly to %s" (buffer-name)))))
+
+;; Filter
+
+(defun gcl-display-line (true-file line)
+  (let* ((buffer (gcl-find-file true-file))
+	 (window (progn
+		   (pop-to-buffer buffer '(display-buffer-reuse-window display-buffer-pop-up-window))
+		   (get-buffer-window buffer)))
+ 	 pos)
+    (save-excursion
+      (set-buffer buffer)
+      (save-restriction
+	(widen)
+	(goto-line line)
+	(setq pos (point))
+	(setq overlay-arrow-string "=>")
+	(unless overlay-arrow-position
+	  (setq overlay-arrow-position (make-marker)))
+	(set-marker overlay-arrow-position (point) (current-buffer)))
+      (unless (<= (point-min) pos (point-max))
+	(widen)
+	(goto-char pos))
+      (gcl-source-overlay-mode 1))
+    (set-window-point window overlay-arrow-position)))
+
+(defun gcl-display-frame (&optional nodisplay noauto)
+  "Find, obey and delete the last filename-and-line marker from GCL.
+The marker looks like \\032\\032FILENAME:LINE:CHARPOS\\n.
+Obeying it means displaying in another window the specified file and line."
+  (interactive)
+  (with-current-buffer inferior-lisp-buffer
+    (when gcl-last-frame
+      (unless nodisplay
+	(unless (and gcl-last-frame-displayed-p noauto)
+	  (gcl-display-line (car gcl-last-frame) (cdr gcl-last-frame))
+	  (setq gcl-last-frame-displayed-p t))))))
+
+(defun gcl-filter (string)
+  (let ((filtered-string string))
+    (unless gcl-iob-init
+      (when (string-match-p "^GCL (GNU Common Lisp)" string)
+	(gcl-setup-iob)))
+    (when gcl-iob-init
+      (when (string-match "^[^:]*:?\032\032\\([A-Za-z]?:?[^:]*\\):\\([0-9]*\\):[^\n]+\n" string)
+	(let ((file (match-string 1 string))
+              (line (string-to-number (match-string 2 string))))
+	  (setq filtered-string (replace-match "" t t string))
+          (unless (equal line 0)
+            (setq gcl-last-frame (cons file line))
+            (setq gcl-last-frame-displayed-p nil)
+            (gcl-display-frame)))))
+    filtered-string))
+
+
+;; COMINT mode
+
+(defun gcl-comint-filter (proc string)
+  (let ((inhibit-quit t))
+    (with-current-buffer (process-buffer proc)
+      (comint-output-filter proc (gcl-filter string)))))
+
+(defun gcl-process-sentinel (proc msg)
+  "Manage process state changes for GCL/GDB, cleaning up debugging hooks on exit."
+  (let* ((p-buf (process-buffer proc))
+	 (killed (or (null p-buf) (null (buffer-name p-buf)))))
+
+    (when (or killed (memq (process-status proc) '(signal exit)))
+
+      (message "GCL: Process stream terminated (%s). Cleaning up environment..." (string-trim msg))
+
+      (when (markerp overlay-arrow-position)
+        (set-marker overlay-arrow-position nil))
+
+      (dolist (buf (buffer-list))
+        (with-current-buffer buf
+          (when (bound-and-true-p gcl-source-overlay-mode)
+            (gcl-source-overlay-mode -1)
+            (message "Restored editing configuration to %s" (buffer-name buf)))))
+
+      (unless killed
+	(let ((obuf (current-buffer)))
+          (unwind-protect
+              (with-current-buffer p-buf
+		(setq mode-line-process (format ": %s" (symbol-name (process-status proc))))
+		(set-buffer-modified-p (buffer-modified-p))
+		(save-excursion
+                  (goto-char (point-max))
+                  (insert (format "\nProcess %s %s" (process-name proc) msg)))
+		(unless gcl-gdb-p
+		  (delete-process proc)))
+            (when (buffer-live-p obuf)
+              (set-buffer obuf))))))))
+
+;;GDB mode
+
+(defun gcl-gdb-inferior-io-filter-advice (orig-filter proc string)
+  "Intercept GCL source-tracking traces in the GDB I/O channel before rendering."
+  (with-current-buffer (process-buffer proc)
+    (funcall orig-filter proc (gcl-filter string))))
+(advice-add 'gdb-inferior-filter :around 'gcl-gdb-inferior-io-filter-advice)
+
+(defun gcl-gdb-cleanup-advice (&rest _args)
+  "Hook into gdb-mi's native reset routine to tear down custom Lisp overlays safely."
+
+  (message "GCL: GDB session ended. Cleaning up environment overlays...")
+
+  (when (markerp overlay-arrow-position)
+    (set-marker overlay-arrow-position nil))
+
+  (dolist (buf (buffer-list))
+    (with-current-buffer buf
+      (when (bound-and-true-p gcl-source-overlay-mode)
+        (gcl-source-overlay-mode -1)
+        (message "Restored editing configuration to %s" (buffer-name buf))))))
+(advice-add 'gdb-reset :after 'gcl-gdb-cleanup-advice)
+
+;;;###autoload
+(defun gcl (&optional debug)
+  (interactive "P")
+  (let* ((fn (or (locate-file "saved_ansi_gcl" gcl-dirs nil 'executable)
+		 (shell-command-to-string "gcl27 -batch -eval '(print (si::kcl-self))'")))
+	 (dir (file-name-directory
+	       (directory-file-name
+		(file-name-directory fn)))))
+    (cond
+     (debug
+      (setq gdb-many-windows t)
+      (gdb (format "gdb -i=mi -cd=%s -d=%s --args %s -nocinit" dir dir fn)))
+     (t (let ((buf (make-comint "gcl" fn nil "-nocinit")))
+	  (set-process-filter (get-buffer-process buf) 'gcl-comint-filter)
+	  (set-process-sentinel (get-buffer-process buf) 'gcl-process-sentinel)
+	  (pop-to-buffer buf '(display-buffer-pop-up-window)))))))
 
 (provide 'gcl)
