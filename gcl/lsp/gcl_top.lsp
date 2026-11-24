@@ -444,39 +444,46 @@
 (defun ihs-visible (i &aux (tem (ihs-fname i)))
   (and tem (not (member tem *break-hidden-packages*))))
 
+(defun ihs-not-interpreted-env (i)
+  (typecase (ihs-fun i) (function t)))
 
-(defun ihs-fname (ihs-index)
-  (let ((fun (ihs-fun ihs-index)))
-    (cond ((symbolp fun) fun)
-	  ((functionp fun) (fun-name fun));(name fun)
-          ((consp fun)
-           (case (car fun)
-             (lambda 'lambda)
-             ((lambda-block lambda-block-expanded) (cadr fun))
-             (lambda-block-closure (cadr (cdddr fun)))
-             (lambda-closure 'lambda-closure)
-             (t (if (and (symbolp (car fun))
-			 (or (special-operator-p (car fun))
-			     (fboundp (car fun))))
-		    (car fun) :zombi)
-		    )))
-          (:zombi))))
+(defun vnms (ll &optional (k '(&whole &optional &rest &key &allow-other-keys &aux &environment) kp) &aux x)
+  (flet ((addp (x y &aux (p (when (consp x) (caddr x)))) (if p (cons p y) y))
+	 (nm (x &optional k) (if (consp x) (if k (funcall k (car x)) (car x)) x)))
+    (when ll
+      (cond
+	((setq x (member (car ll) k)) (vnms (cdr ll) x))
+	((not kp) (cons (car ll) (vnms (cdr ll))))
+	((case (car k)
+	   (&optional (cons (nm (car ll)) (addp (car ll) (vnms (cdr ll) k))))
+	   (&rest (cons (car ll) (vnms (cdr ll) k)))
+	   (&key (cons (nm (car ll) (lambda (x) (if (consp x) (cadr x) x)))
+		       (addp (car ll) (vnms (cdr ll) k))))
+	   (&aux (cons (nm (car ll) (vnms (cdr ll) k))))))))))
 
-(defun ihs-not-interpreted-env (ihs-index)
-  (let ((fun (ihs-fun ihs-index)))
-    (cond ((and (consp fun)
-		(> ihs-index 3)
-		;(<= (ihs-vs ihs-index) (ihs-vs (- ihs-index 1)))
-		)
-	   nil)
-	  (t t))))
+(defun compiled-fn-env (ihs)
+  (multiple-value-bind (src clo) (function-lambda-expression (ihs-fun ihs))
+    (when src
+      (let* ((ll (cadr src))
+	     (clo (or clo '(nil nil nil))))
+	(cons
+	 (nconc
+	  (eval ;FIXME ignore-errors CLtL1
+	   (blla ll nil
+		 (cons 'list (mapcar (lambda (x) `',x) (ihs-args ihs)))
+		 `((list ,@(mapcar (lambda (x) `(list ',x ,x)) (nreverse (vnms ll)))))))
+	  (pop clo))
+	 clo)))))
 
-(defun set-env ()
-  (setq *break-env*
-        (if (ihs-not-interpreted-env *current-ihs*)
-            nil
-            (let ((i (ihs-vs *current-ihs*)))
-              (list (vs i) (vs (1+ i)) (vs (+ i 2)))))))
+(defun ihs-env (ihs)
+  (if (ihs-not-interpreted-env ihs)
+      (compiled-fn-env ihs)
+      (let ((i (ihs-vs ihs)))
+        (list (vs i) (vs (1+ i)) (vs (+ i 2))))))
+
+(defun current-env nil (ihs-env *current-ihs*))
+
+(defun set-env nil (setq *break-env* (current-env)))
 
 (defun list-delq (x l)
   (cond ((null l) nil)
