@@ -108,7 +108,7 @@
 		      (if (eq ctp 'proper-cons)
 			  (or (tp>= #tproper-list (cmp-norm-tp (cadr tp))) `(not (improper-consp ,o)))
 			(or (tp>= #t(not proper-list) (cmp-norm-tp (cadr tp))) `(improper-consp ,o))))))
-	   (progn (break) (simple-type-case o otp))))));;undecidable aggregation support
+	   (simple-type-case o otp)))));;FIXME (progn (break) (simple-type-case o otp)) undecidable aggregation support
 
 
 (defun branch (tpsff x f y &aux (q (cdr x))(x (car x))(z (cddr (assoc x tpsff))))
