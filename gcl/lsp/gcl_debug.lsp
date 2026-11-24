@@ -46,11 +46,9 @@
    (break-previous)
    ))
 
-(defun show-environment (ihs)
-  (let ((lis  (vs (ihs-vs ihs))))
-    (if (listp lis)
-	(dolist (v (reverse (vs (ihs-vs ihs))))
-	  (format *debug-io* "~%~9a: ~s" (car v) (second v))))))
+(defun show-environment nil
+  (dolist (v (reverse (car (current-env))))
+    (format *debug-io* "~%~9a: ~s" (car v) (second v))))
 
 (putprop :a 'show-break-variables 'break-command)
 
@@ -61,15 +59,10 @@
   (setq string (cond((symbolp sym)(symbol-name sym))
 		    (t sym)))
   (sloop
-     for ihs downfrom (ihs-top) above 2
+     for ihs downfrom (ihs-top) above 1
      for fun = (ihs-fun ihs) with name
-     do 
-     (cond ((functionp fun) (setq name (fun-name fun)))
-	   ((symbolp fun ) (setq name fun))
-	   ((and (listp fun)
-		 (member (car fun) '(lambda lambda-block)))
-	    (setq name (second fun)))
-	   (t (setq name '||)))
+     do
+     (setq name (ihs-fname ihs))
      when (search string (symbol-name name) :test 'equal)
      do (return (progn (break-go ihs)(terpri) (break-locals)))
      finally (format *debug-io* "~%Search for ~a failed" string)
@@ -79,41 +72,17 @@
 
 (defun break-locals (&optional (n 1) ;FIXME
 			       &aux (ihs *current-ihs*)
-			       (base  (ihs-vs ihs))
 			       (*print-level* *debug-print-level*)
 			       (*print-circle* t)
 			       (*print-length* *debug-print-level*)
-			       (current-ihs *current-ihs*)
-			       (fun (ihs-fun ihs)) name args)
+			       (current-ihs *current-ihs*))
   (cond ((fb > n 1)
 	 (sloop for i below n
 	    for ihs downfrom current-ihs above 2
-	    do (let ((*current-ihs* ihs))
-		 (break-locals) (terpri)(terpri)
-		 )))
-	(t
-	 (cond ((functionp fun) (setq name (fun-name fun)))
-	       (t (setq name fun)))
-         (if (symbolp name)(setq args (get name 'debugger)))
-	 (let ((next (ihs-vs (f + 1 *current-ihs*))))
-	   (cond (next
-		  (format *debug-io* ">> ~a():" name)
-		  (cond ((symbolp name)     
-			 (sloop for i from base below next for j from 0
-			    for u = nil
-			    do 
-			    (cond ((member 0 args);;old debug info.
-				   (setf u (getf  args j)))
-				  (t (setf u (nth j args))))
-			    (cond (u
-				   (format t
-					   "~%Local~a(~a): ~a" j u  (vs i)))
-				  (t
-				   (format *debug-io* "~%Local(~d): ~a"
-					   j (vs i))))))
-			((listp name)
-			 (show-environment  ihs))
-			(t (format *debug-io* "~%Which case is this??")))))))))
+	    do (let ((*current-ihs* ihs)) (break-locals) (terpri)(terpri))))
+	((ihs-vs (f + 1 *current-ihs*))
+	 (format *debug-io* ">> ~a():" (ihs-fname ihs))
+	 (show-environment))))
 
 (defun loc (&optional (n 0))
   (let ((base (ihs-vs *current-ihs*)))
@@ -247,18 +216,44 @@
   
   )
 
-(defun nload (file &rest args )
+;;FIXME bring back clear-props in fSet
+(defun record-line-info (sym fun &aux (body (fle fun))(ar *fun-array*)(old-info (get sym 'line-info)))
+  (remprop sym 'line-info)
+  (when (when (eq *readtable* *line-info-readtable*) (consp body))
+    (setf (fill-pointer ar) 0)
+    (walk-through body)
+    (if (zerop (length ar))
+	(iterate-over-bkpts (get sym 'break-points) :delete)
+	(let* ((min (reduce 'min ar :key 'cdar :initial-value most-positive-fixnum))
+	       (max (reduce 'max ar :key 'cdar :initial-value 0))
+	       (new (make-array (- max min -2) :initial-element :blank-line)))
+	  (setf (aref new 0) (cons (caar (aref ar 0)) min))
+	  (decf min)
+	  (map nil (lambda (x) (setf (aref new (- (cdar x) min)) (cdr x))) ar)
+	  (setf (get sym 'line-info) new)
+	  (when old-info
+	    (let* ((old-begin (cdr (aref old-info 0))))
+	      (mapc (lambda (x &aux (bpt (aref *break-points* x)))
+		      (setf (aref *break-points* x)
+			    (make-break-point (fourth bpt) new (- (third bpt) old-begin))))
+		    (get sym 'break-points))))))))
+
+(defun nload (file &rest args)
   (clrhash *record-line-info*)
   (cleanup)
   (setq file (truename file))
   (setup-lineinfo)
-  (let ((*readtable* *line-info-readtable*))
-    (apply 'load file args)))
+  (let ((*readtable* *line-info-readtable*)
+	(ofsf (symbol-function 'fset)))
+    (unwind-protect
+	 (progn
+	   (setf (symbol-function 'fset) (lambda (x y) (record-line-info x y) (funcall ofsf x y)))
+	   (apply 'load file args))
+      (setf (symbol-function 'fset) ofsf))))
 
 (eval-when (compile eval)
 
-(defmacro break-data (name line) `(cons ,name ,line))
-  )
+(defmacro break-data (name line) `(cons ,name ,line)))
 
 (defun left-parenthesis-reader (str ch &aux line(flag *at-newline*))
   (if (eq *at-newline* t) (setq *at-newline* nil))
@@ -275,23 +270,33 @@
 
 (defvar *fun-array* (make-array 50 :fill-pointer 0 :adjustable t))
 
-(defun walk-through (body &aux tem)
-  (tagbody
-   top
-   (cond ((consp body)
-	  (when (setq tem (gethash body *record-line-info*))
-	    ;; lines beginning with ((< u v)..)
-	    ;; aren't eval'd but are part of a special form
-	    (cond ((and (consp (car body))
-			(not (eq (caar body) 'lambda)))
-		   (remhash body *record-line-info*)
-		   (setf (gethash (car body) *record-line-info*)
-			 tem))
-		  (t (vector-push-extend (cons tem body) *fun-array*))))
-	  (walk-through (car body))
-	  (setq body (cdr body))
-	  (go top))
-	 (t nil))))
+(defun walk-through (body &aux (tem (gethash body *record-line-info*)))
+  (when (consp body)
+    (when tem
+      (vector-push-extend (cons tem body) *fun-array*))
+    (flet ((repl (body key &aux (tem (gethash body *record-line-info*)))
+	     (when (consp body)
+	       (when tem
+		 (remhash body *record-line-info*)
+		 (setf (gethash (funcall key body) *record-line-info*) tem))))
+	   (l (x) (when (listp x) x)))
+      (case (car body)
+	(cond (mapc (lambda (x) (when (consp x) (repl x 'car))) (cdr body)))
+	((do do*)
+	 (mapc (lambda (x) (when (consp x) (repl x 'car))) (l (cadr body)))
+	 (mapc (lambda (x) (when (consp x) (repl x 'car))) (l (caddr body))))
+	((case ecase ccase typecase etypecase ctypecase)
+	 (mapc (lambda (x) (when (consp x) (repl x 'cadr))) (cdr body)))
+	((let let*)
+	 (repl (cadr body) 'car)
+	 (mapc (lambda (x) (when (consp x) (repl x 'cadr))) (l (cadr body))))
+	((flet labels macrolet)
+	 (repl (cadr body) 'car)
+	 (mapc (lambda (x) (when (consp x) (repl x 'caddr))) (l (cadr body))))
+	((multiple-value-bind multiple-value-setq)
+	 (repl (cadr body) (lambda (x) (declare (ignore x)) (l (caddr body)))))))
+    (walk-through (car body))
+    (walk-through (cdr body))))
 
 ;; (defun compiler::compiler-def-hook (name body &aux (ar *fun-array*)
 ;; 					 (min most-positive-fixnum)
@@ -366,7 +371,7 @@
   (do ((i (1- ihs) (f - i 1)))
       ((fb <=  i 0))
     (let ((na (ihs-fname i)))
-      (if (get na 'line-info) (return na)))))
+      (if (get na 'line-info) (return (list na i))))))
 
 (defun init-break-points ()
   (setf (fill-pointer *break-point-vector*) 0)
@@ -387,33 +392,71 @@
     (setq *break-step* 'break-step-next)
     :resume))
 
-(defun maybe-break (form line-info fun env &aux pos)
-  (cond ((setq pos (position form line-info))
-	 (setq *break-step* nil)
-	 (or (> (length *break-points*) 0)
-	     (setf *break-points* nil))
-	 (break-level (make-break-point fun line-info pos) env)
-	 t)))
+(defvar *step-finish* nil)
+
+(defun step-finish (&optional (n 1))
+  (let ((fun (current-step-fun)))
+    (setq *step-finish* (cons n fun))
+    (or *break-points* (init-break-points))
+    (setq *break-step* 'break-step-finish)
+    :resume))
+
+
+(defun maybe-break (form line-info fun env &aux (pos (position form line-info)))
+  (when pos
+    (setq *break-step* nil)
+    (unless (plusp (length *break-points*))
+      (setf *break-points* nil))
+    (break-level (make-break-point fun line-info pos) env)
+    t))
 
 ;; These following functions, when they are the value of *break-step*
 ;; are invoked by an inner hook in eval.   They may choose to stop
 ;; things.
 
+(defvar *break-instep* nil)
+
 (defun break-step-into (form env)
-  (let ((fun (current-step-fun)))
-    (let ((line-info (get fun 'line-info)))
-      (maybe-break form line-info fun env))))
+  (unless *break-instep*
+    (let* ((*break-instep* t)
+	   (fun (car (current-step-fun))))
+      (if fun
+	  (maybe-break form (get fun 'line-info) fun env)
+	  (setq *break-step* nil)))))
 
 (defun break-step-next (form env)
-  (let ((fun (current-step-fun)))
-    (cond ((eql (cdr *step-next*) fun)
-	   (let ((line-info (get fun 'line-info)))
-	     (maybe-break form line-info fun env))))))
+  (unless *break-instep*
+    (let* ((*break-instep* t)
+	   (fun (current-step-fun)))
+      (if fun
+	  (when (eql (caddr *step-next*) (cadr fun))
+	    (maybe-break form (get (car fun) 'line-info) (car fun) env))
+	  (setq *break-step* nil)))))
+
+ (defun break-step-finish (form env)
+  (unless *break-instep*
+    (let* ((*break-instep* t)
+	   (fun (current-step-fun)))
+      (if fun
+	  (when (< (cadr fun) (caddr *step-finish*))
+	    (maybe-break form (get (car fun) 'line-info) (car fun) env))
+	  (setq *break-step* nil)))))
 
 (setf (get :next 'break-command) 'step-next)
 (setf (get :step 'break-command) 'step-into)
 (setf (get :loc 'break-command) 'loc)
+(setf (get :fin 'break-command) 'step-finish)
+(setf (get :finish 'break-command) 'step-finish)
 
+(defun break-display (&rest r)
+  (setq *step-display* (append r *step-display*)))
+(setf (get :dis 'break-command) 'break-display)
+(setf (get :display 'break-command) 'break-display)
+
+(defun break-undisplay (&rest r)
+  (setq *step-display* (set-difference *step-display* r :test 'equal)))
+(setf (get :undis 'break-command) 'break-undisplay)
+(setf (get :undisplay 'break-command) 'break-undisplay)
 
 (defun *break-points* (form  env) 
   (let ((pos(position form *break-points* :key 'car)))
@@ -510,11 +553,9 @@
 
 (setf (get :info 'break-command)
       '(lambda (type)
-	 (case type
+	 (ecase type
 	   (:bkpt  (iterate-over-bkpts nil :show))
-	   (otherwise
-	    (format t "usage: :info :bkpt -- show breakpoints")
-	    ))))
+	   ((:dis :display) (format t "Displaying ~s~%" *step-display*)))))
 
 (defun complete-prop (sym package prop &optional return-list)
   (cond ((and (symbolp sym)(get sym prop)(equal (symbol-package sym)
@@ -634,8 +675,9 @@
 	   (or (fb >= n 0) (setq n 0))
 	   (dbl-up n *ihs-top*))))
 	
-(dolist (v '( break-level universal-error-handler terminal-interrupt
-			  break-level   evalhook find-line-in-fun))
+(dolist (v '(break-level universal-error-handler terminal-interrupt
+	     break-level evalhook find-line-in-fun maybe-break
+	     break-step-next break-step-into))
   (setf (get v 'dbl-invisible) t))
 
 (defun next-stack-frame (ihs &aux line-info li i k na)
@@ -666,11 +708,7 @@
 	 ((special-operator-p na) nil)
 	 ((get na 'dbl-invisible))
 	 ((fboundp na)
-	  (mv-values i na nil nil
-		     (if (ihs-not-interpreted-env i)
-			 nil
-		       (let ((i (ihs-vs i)))
-			 (list (vs i) (vs (1+ i)) (vs (f + i 2)))))))
+	  (mv-values i na nil nil (ihs-env i)))
 	 ((mv-values nil nil nil nil nil)))))))
 
 (defun nth-stack-frame (n &optional (ihs *ihs-top*)
@@ -698,29 +736,29 @@
    )
   (values))
 
-(defun display-compiled-env ( plength ihs &aux
-				      (base (ihs-vs ihs))
-				      (end (min (ihs-vs (1+ ihs)) (vs-top))))
-  (format *display-string* "")
-  (do ((i base)
-       (v (get (ihs-fname ihs) 'debugger) (cdr v)))
-      ((or (fb >= i end)(fb > (fill-pointer *display-string*) plength)(= 0 (address (vs i)))));FIXME
-    (format *display-string* "~a~@[~d~]=~s~@[,~]"
-	    (or (car v)  'loc) (if (not (car v)) (f - i base)) (vs i)
-	    (fb < (setq i (f + i 1)) end))))
+(defconstant +lsym-cdr-alist+ '((lambda . 0)(lambda-closure . 3)(lambda-block-closure . 4)(lambda-block . 1)))
 
-(defun computing-args-p (ihs)
+(deftype lambda-syms nil '(and gsym #.`(member ,@(mapcar 'car +lsym-cdr-alist+))))
+
+(defun ihs-fname (ihs-index &aux (fun (ihs-fun ihs-index)));FIXME
+  (typecase fun
+    (symbol fun)
+    (compiled-function (fun-name fun))
+    ((cons lambda-syms t)
+     (get-blocked-body-name (nthcdr (cdr (assoc (car fun) +lsym-cdr-alist+)) fun)))
+    ((cons (and symbol (or (satisfies special-operator-p) (satisfies fboundp))) t)
+     (car fun))
+    (t :zombi)))
+
   ;; When running interpreted we want a line like
   ;; (list joe jane) to get recorded in the invocation
   ;; history while joe and jane are being evaluated,
   ;; even though list has not yet been invoked.   We put
   ;; it in the history, but with the previous lexical environment.
-  (and (consp (ihs-fun ihs))
-       (> ihs 3)
-       (not (member (car (ihs-fun ihs)) '(lambda-block lambda)))
-       ;(<= (ihs-vs ihs) (ihs-vs (- ihs 1)))
-       )
-  )
+(defun computing-args-p (ihs)
+  (when (> ihs 3)
+    (typecase (ihs-fun ihs)
+      ((cons (not lambda-syms) t) t))))
 
 
 (defun print-stack-frame (i auto-display ihs fun &optional line file env)
@@ -731,13 +769,9 @@
     (format *debug-io* "~&#~d  ~@[~a~] ~a ~@[~a~] " i
 	    (and computing-args "Computing args for ")
 	    fun
-	    (if (not (ihs-not-interpreted-env ihs))
-		(apply-display-fun 'display-env  80
-				   (car (vs (ihs-vs ihs))))
-	      (apply-display-fun 'display-compiled-env 80 ihs)))
+	    (apply-display-fun 'display-env 80 (car (ihs-env ihs))))
     (if file (format *debug-io* "(~a line ~a)" file line))
-    (format *debug-io* "[ihs=~a]"  ihs)
-    ))
+    (format *debug-io* "[ihs=~a]"  ihs)))
 
 (defun make-break-point (fun ar i)
   (list					;make-bkpt	;:form
@@ -776,7 +810,32 @@
 
 (defvar *no-prompt* nil)
 
-(defun set-back (at env &aux (i *current-ihs*))
+(defun break-form (&rest l &aux ihs)
+  (mv-setq (ihs) (if l (nth-stack-frame (car l) *ihs-top*) *current-ihs*))
+  (cons (ihs-fname ihs) (ihs-args ihs)))
+(putprop :form 'break-form 'break-command)
+
+(defun ihs-args (ihs)
+  (if (ihs-not-interpreted-env ihs)
+      (labels ((aa (i)
+		 (when (< i (ihs-vstop ihs))
+		   (cons (vs i) (aa (1+ i))))))
+	(aa (ihs-vs ihs)))
+      (let* ((fun (ihs-fun ihs))
+	     (env (when (eq (car fun) 'lambda-closure) (cadr fun))))
+	(mapcar 'cadr
+		(remove-if (lambda (x) (member (car x) env :key 'car))
+			   (reverse (vs (ihs-vs ihs))))))))
+
+(defun ihs-current-step-fun nil
+  (let ((nm (car (current-step-fun))))
+    (labels ((s (i) (when (plusp i)
+		      (if (eq nm (ihs-fname i)) i
+			  (s (1- i))))))
+      (s *current-ihs*))))
+
+
+(defun set-back (at env &aux (i (ihs-current-step-fun)))
   (setq *no-prompt* nil)
   (setq *current-ihs* i)
   (cond (env   (setq *break-env* env))
