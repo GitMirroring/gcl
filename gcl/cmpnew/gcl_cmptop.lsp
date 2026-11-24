@@ -903,10 +903,11 @@
 	  (l))))
 
 
-(defun get-clv (l &aux (i (cadr l)))
-  (mapcan
-   (lambda (v) (when (var-p v) (list (list v nil))))
-   (append (info-ref-ccb i) (info-ref-clb i))))
+(defun get-clv (l &aux (i (cadr l))(obs (append (info-ref-ccb i) (info-ref-clb i))))
+  (list
+   (mapcan (lambda (v) (when (var-p v) `((,v nil)))) obs)
+   (mapcan (lambda (v) (when (fun-p v) `((,v function nil)))) obs)
+   (mapcan (lambda (v) (when (or (blk-p v) (tag-p v)) `((,v ,(if (blk-p v) 'block 'tag) nil)))) obs)))
 
 (defvar *top-tag* nil)
 

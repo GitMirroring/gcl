@@ -398,10 +398,10 @@ Cannot compile ~a.~%" (namestring (merge-pathnames input-pathname *compiler-defa
 (defun fun-env (name)
   (let ((fun (when (fboundp name) (or (macro-function name) (symbol-function name)))))
     (multiple-value-bind
-	    (src clo blk)
-	    (function-lambda-expression fun)
-	    (declare (ignore src blk))
-	    (mapcar 'cadr clo))))
+	  (src clo blk)
+	(function-lambda-expression fun)
+      (declare (ignore src blk))
+      (mapcar 'cadr (car clo)))))
 
     ;; (cond ((si::interpreted-function-p fun) 
     ;; 	   (multiple-value-bind
@@ -424,7 +424,7 @@ Cannot compile ~a.~%" (namestring (merge-pathnames input-pathname *compiler-defa
        (let ((form `(,(if mac 'defmacro 'defun) ,(if mac (cons 'macro na) na) ,(cadr lam) ,@(cddr lam))))
 	 (values
 	  (if clo
-	      `(let* ((e (fun-env ',name)) ,@(mapcar (lambda (x) `(,(car x) (pop e))) clo))
+	      `(let* ((e (fun-env ',name)) ,@(mapcar (lambda (x) `(,(car x) (pop e))) (car clo)))
 		 ,form)
 	    form)
 	  na))))))

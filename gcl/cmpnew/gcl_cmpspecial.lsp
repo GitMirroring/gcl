@@ -142,7 +142,7 @@
 	 (args  (pop l))
 	 (w   (make-string-output-stream))
 	 (out (pd fname args l))
-	 (out (if y `(lambda-closure ,y nil nil ,@(cdr out)) out)))
+	 (out (if y `(lambda-closure ,(pop y) ,(pop y) ,(pop y) ,@(cdr out)) out)))
     (if *compiler-compile* out
 	(let ((ss  (si::open-fasd w :output nil nil)))
 	  (si::find-sharing-top out (aref ss 1))
@@ -209,11 +209,19 @@
 	       (setf (info-flags info) (logior (info-flags info) (iflags provisional))))
 	     `(function ,info ,fd))))))
 
-(defun update-closure-indices (cl)
-  (mapc (lambda (x &aux (y (var-ref-ccb (car x))))
+(defun update-closure-indices (cl &aux (env (second (third cl))))
+  (mapc (lambda (x &aux (c (car x)) (y (var-ref-ccb c)))
 	  (setf (cadr x) (if (integerp y) (- y *initial-ccb-vs*) (baboon))
-		(car x) (var-name (car x))))
-	(second (third cl)))
+		(car x) (var-name c)))
+	(car env))
+  (mapc (lambda (x &aux (c (car x)) (y (fun-ref-ccb c)))
+	  (setf (caddr x) (if (integerp y) (- y *initial-ccb-vs*) (baboon))
+		(car x) (fun-name c)))
+	(cadr env))
+  (mapc (lambda (x &aux (c (car x)) (y (if (blk-p c) (blk-ref-ccb c) (tag-ref-ccb c))))
+	  (setf (caddr x) (if (integerp y) (- y *initial-ccb-vs*) (baboon))
+		(car x) (if (blk-p c) (blk-name c) (tag-name c))))
+	(caddr env))
   cl)
 
 
