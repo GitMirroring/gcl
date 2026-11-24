@@ -292,7 +292,7 @@ funcall(object fun) {
      if we pushed by vs_base being the same.
   */
   { VOL int not_pushed = 0;
-    if (vs_base != ihs_top->ihs_base){
+    if (vs_base != ihs_top->ihs_base || fun!=ihs_top->ihs_function){
       ihs_check;
       ihs_push(fun);
     }
@@ -300,6 +300,7 @@ funcall(object fun) {
       not_pushed = 1;
     
     ihs_top->ihs_base = lex_env;
+    ihs_top->ihs_top = lex_env+3;
     x = MMcar(fun);
     top = vs_top;
     lex = lex_env;
@@ -359,6 +360,7 @@ funcall(object fun) {
     vs_push(fun);
     lambda_bind(top);
     ihs_top->ihs_base = lex_env;
+    ihs_top->ihs_top = lex_env+3;
     if (b) {
       fun = temporary = alloc_frame_id();
       /*  lex_block_bind(x, temporary);  */
@@ -700,6 +702,7 @@ APPLICATION:
 		ihs_check;
 		ihs_push(form);
 		ihs_top->ihs_base = lex_env;
+		ihs_top->ihs_top = lex_env+3;
 		((void (*)(object))fun->s.s_sfdef)(MMcdr(form));
 		CHECK_AVMA;
 		ihs_pop();
@@ -736,6 +739,7 @@ EVAL_ARGS:
 	ihs_check;
 	ihs_push(form);
 	ihs_top->ihs_base = lex_env;
+	ihs_top->ihs_top = lex_env+3;
 	form = form->c.c_cdr;
 	base = vs_top;
 	top = vs_top;
@@ -752,6 +756,7 @@ EVAL_ARGS:
 	}
 	ihs_top->ihs_function = x;
 	ihs_top->ihs_base = vs_base;
+	ihs_top->ihs_top = vs_top;
 	/* if (type_of(x) == t_cfun)  */
 	/*   (*(x)->cf.cf_self)(); */
 	/* else */

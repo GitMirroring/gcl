@@ -220,6 +220,11 @@ DEFUN("IHS-VS",object,fSihs_vs,SI,1,1,NONE,OO,OO,OO,OO,(object x0),"") {
   RETURN1(x0);
 }
 
+DEFUN("IHS-VSTOP",object,fSihs_vstop,SI,1,1,NONE,OO,OO,OO,OO,(object x0),"") {
+  x0 = make_fixnum(get_ihs_ptr(x0)->ihs_top - vs_org);
+  RETURN1(x0);
+}
+
 static frame_ptr get_frame_ptr(object x) {
 
   frame_ptr p;

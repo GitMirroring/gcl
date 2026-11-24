@@ -33,6 +33,7 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 typedef struct invocation_history {
   object ihs_function;
   object *ihs_base;
+  object *ihs_top;
 } *ihs_ptr;
 
 EXTER ihs_ptr ihs_org,ihs_limit,ihs_top;
@@ -42,11 +43,8 @@ EXTER ihs_ptr ihs_org,ihs_limit,ihs_top;
 #define ihs_push(function)  do {\
         if (++ihs_top>=ihs_limit) ihs_overflow();\
 	ihs_top->ihs_function = (function);  \
-	ihs_top->ihs_base = vs_base;} while (0)
-#define ihs_push_base(function,base)  do {\
-        if (++ihs_top>=ihs_limit) ihs_overflow();\
-	ihs_top->ihs_function = (function);  \
-	ihs_top->ihs_base = base;} while (0)
+	ihs_top->ihs_base = vs_base; \
+ 	ihs_top->ihs_top = vs_top;} while (0)
 
 #define ihs_pop() ihs_top--
 
