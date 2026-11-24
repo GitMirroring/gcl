@@ -108,7 +108,9 @@
 	 (invoke-restart-interactively (nth (1- n) *debug-restarts*)))
 	((format t "~&no such restart."))))
 
-(defun fun-name (fun) (sixth (c-function-plist fun)))
+(defun fun-name (fun)
+  (typecase fun
+    (function (sixth (c-function-plist fun)))))
 
 (defun find-ihs (s i &optional (j i))
   (cond ((eq (ihs-fname i) s) i)
@@ -304,7 +306,7 @@
 	 (debug-level *debug-level*)
 	 (*quit-tags* (cons (cons *break-level* *quit-tag*) *quit-tags*))
 	 *quit-tag*
-	 (*break-level* (if p-e-p (cons t *break-level*) *break-level*))
+	 (*break-level* (cons t *break-level*))
 	 (*ihs-base* (1+ *ihs-top*))
 	 (*ihs-top* (ihs-top))
 	 (*frs-base* (or (sch-frs-base *frs-top* *ihs-base*) (1+ (frs-top))))
