@@ -165,52 +165,57 @@ FFN(Fquote)(object form)
 }
 
 static void
-FFN(Ffunction)(object form)
-{
+FFN(Ffunction)(object form) {
 
-	object fun;
-	object fd;
-	if (endp(form))
-		FEtoo_few_argumentsF(form);
-	if (!endp(MMcdr(form)))
-		FEtoo_many_argumentsF(form);
-	fun = MMcar(form);
+  object fun;
+  object fd;
+
+  if (endp(form))
+    FEtoo_few_argumentsF(form);
+  if (!endp(MMcdr(form)))
+    FEtoo_many_argumentsF(form);
+
+  fun = MMcar(form);
+
  AGAIN:
-	if (type_of(fun) == t_symbol) {
-		fd = lex_fd_sch(fun);
-		if (MMnull(fd) || MMcadr(fd) != sLfunction)
-			if (fun->s.s_gfdef == OBJNULL || fun->s.s_mflag)
-				FEundefined_function(fun);
-			else {
-				vs_base = vs_top;
-				vs_push(fun->s.s_gfdef);
-			}
-		else {
-			vs_base = vs_top;
-			vs_push(MMcaddr(fd));
-		}
-	} else if (consp(fun) && MMcar(fun) == sLlambda) {
-		vs_base = vs_top;
-		vs_push(MMcdr(fun));
-		vs_base[0] = MMcons(lex_env[2], vs_base[0]);
-		vs_base[0] = MMcons(lex_env[1], vs_base[0]);
-		vs_base[0] = MMcons(lex_env[0], vs_base[0]);
-		vs_base[0] = MMcons(sSlambda_closure, vs_base[0]);
-		{
-		  vs_base[0]=fSfset_in(Cnil,vs_base[0],Cnil);
-		}
-		/* { */
-		/*   object x=alloc_object(t_ifun); */
-		/*   x->ifn.ifn_self=vs_base[0]; */
-		/*   x->ifn.ifn_name=x->ifn.ifn_call=Cnil; */
-		/*   vs_base[0]=x; */
-		/* } */
-	} else {
-	        fun=ifuncall1(sSfunid_to_sym,fun);
-/* 		if (fun==Cnil) */
-/* 		  FEundefined_function(sff); */
-		goto AGAIN;
-	}
+
+  if (type_of(fun)==t_symbol) {
+
+    fd = lex_fd_sch(fun);
+    if (MMnull(fd) || MMcadr(fd) != sLfunction)
+      if (fun->s.s_gfdef == OBJNULL || fun->s.s_mflag)
+	FEundefined_function(fun);
+      else {
+	vs_base = vs_top;
+	vs_push(fun->s.s_gfdef);
+      }
+    else {
+      vs_base = vs_top;
+      vs_push(MMcaddr(fd));
+    }
+
+  } else if (consp(fun)&&MMcar(fun)==sLlambda) {
+
+    vs_base = vs_top;
+    if (lex_env[0]==Cnil && lex_env[1]==Cnil && lex_env[2]==Cnil)
+      vs_push(fun);
+    else {
+      vs_push(MMcdr(fun));
+      vs_base[0] = MMcons(lex_env[2], vs_base[0]);
+      vs_base[0] = MMcons(lex_env[1], vs_base[0]);
+      vs_base[0] = MMcons(lex_env[0], vs_base[0]);
+      vs_base[0] = MMcons(sSlambda_closure, vs_base[0]);
+    }
+
+    vs_base[0]=fSfset_in(Cnil,vs_base[0],Cnil);
+
+  } else {
+
+    fun=ifuncall1(sSfunid_to_sym,fun);
+    goto AGAIN;
+
+  }
+
 }
 
 DEFUN("SYMBOL-VALUE",object,fLsymbol_value,LISP,1,1,NONE,OO,OO,OO,OO,(object sym),"") {

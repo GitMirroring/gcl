@@ -142,7 +142,7 @@
 	 (args  (pop l))
 	 (w   (make-string-output-stream))
 	 (out (pd fname args l))
-	 (out (if y `(lambda-closure ,(pop y) ,(pop y) ,(pop y) ,@(cdr out)) out)))
+	 (out (if (member-if 'identity y) `(lambda-closure ,(pop y) ,(pop y) ,(pop y) ,@(cdr out)) out)))
     (if *compiler-compile* out
 	(let ((ss  (si::open-fasd w :output nil nil)))
 	  (si::find-sharing-top out (aref ss 1))
