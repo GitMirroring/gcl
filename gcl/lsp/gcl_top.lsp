@@ -461,6 +461,12 @@
 		       (addp (car ll) (vnms (cdr ll) k))))
 	   (&aux (cons (nm (car ll) (vnms (cdr ll) k))))))))))
 
+(defun eval-clean-or-nil (form)
+  (multiple-value-bind (er val)
+      (error-set `(evalhook ',form nil nil nil))
+    (unless er
+      val)))
+
 (defun compiled-fn-env (ihs)
   (multiple-value-bind (src clo) (function-lambda-expression (ihs-fun ihs))
     (when src
@@ -468,11 +474,11 @@
 	     (clo (or clo '(nil nil nil))))
 	(cons
 	 (nconc
-	  (eval ;FIXME ignore-errors CLtL1
+	  (eval-clean-or-nil
 	   (blla ll nil
 		 (cons 'list (mapcar (lambda (x) `',x) (ihs-args ihs)))
 		 `((list ,@(mapcar (lambda (x) `(list ',x ,x)) (nreverse (vnms ll)))))))
-	  (pop clo))
+	   (pop clo))
 	 clo)))))
 
 (defun ihs-env (ihs)
