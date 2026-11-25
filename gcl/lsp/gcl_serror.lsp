@@ -183,8 +183,11 @@
 
 (defvar *sig-fn-name* nil)
 
-(defun get-sig-fn-name (&aux (p (ihs-top))(p (next-stack-frame p)))
-  (when p (ihs-fname p)))
+(defun get-sig-fn-name nil
+  (labels ((l (ihs)
+	     (multiple-value-bind (n ihs) (get-next-visible-fun ihs)
+	       (if (special-operator-p n) (l ihs) n))))
+    (l (ihs-top))))
 
 (defun process-error (datum args &optional (default-type 'simple-error))
   (let ((internal (cond ((simple-condition-class-p datum)
