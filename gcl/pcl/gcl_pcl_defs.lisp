@@ -30,10 +30,11 @@
 
 (eval-when (compile load eval)
   
-(defvar *defclass-times*   '(load eval))	;Probably have to change this
-						;if you use defconstructor.
-(defvar *defmethod-times*  '(load eval))
-(defvar *defgeneric-times* '(load eval))
+  (defvar *defclass-times*   '(compile load eval)) ;FIXME with eval-when overhaul
+					;Probably have to change this
+					;if you use defconstructor.
+  (defvar *defmethod-times*  '(load eval))
+  (defvar *defgeneric-times* '(load eval))
 
 ; defvar is now actually in macros
 ;(defvar *boot-state* ())			;NIL
