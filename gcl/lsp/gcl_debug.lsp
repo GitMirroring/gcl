@@ -680,36 +680,22 @@
 	     break-step-next break-step-into))
   (setf (get v 'dbl-invisible) t))
 
-(defun next-stack-frame (ihs &aux line-info li i k na)
+(defun get-lower-line-info (n i &aux (f (get n 'line-info)))
+  (do* ((j (+ i 2) (1- j))
+	(k nil (get-line-of-form (ihs-fun j) f)))
+       ((or k (<= j i)) (when k (list f k j)))))
+
+(defun next-stack-frame (ihs &aux line-info li n i k na)
+  (mv-setq (n i) (get-next-visible-fun ihs))
   (cond
-   ((fb < ihs *ihs-base*) (mv-values nil nil nil nil nil))
-   (t (let (fun)
-	;; next lower visible ihs
-	(mv-setq (fun i) (get-next-visible-fun  ihs))
-	(setq na fun)
-	(cond
-	 ((and
-	   (setq line-info (get fun 'line-info))
-	   (do ((j (f + ihs 1) (f - j 1)))
-;		(form ))
-	       ((<= j i) nil)
-;	     (setq form (ihs-fun j))
-	     (cond ((setq li (get-line-of-form (ihs-fun j) line-info))
-		    (return-from next-stack-frame 
-				 (mv-values
-				  i fun li
-				  ;; filename
-				  (car (aref line-info 0))
-				  ;;environment
-				  (list (vs (setq k (ihs-vs j)))
-					(vs (1+ k))
-					(vs (+ k 2)))
-				  )))))))
-	 ((special-operator-p na) nil)
-	 ((get na 'dbl-invisible))
-	 ((fboundp na)
-	  (mv-values i na nil nil (ihs-env i)))
-	 ((mv-values nil nil nil nil nil)))))))
+    ((not n) (mv-values nil nil nil nil nil))
+    ((special-operator-p n))
+    (t (let* ((llf (get-lower-line-info n i))
+	      (line-info (pop llf)))
+	 (mv-values
+	  i n (pop llf)
+	  (when line-info (car (aref line-info 0)))
+	  (ihs-env (or (car llf) i)))))))
 
 (defun nth-stack-frame (n &optional (ihs *ihs-top*)
 			  &aux  name line file env next)
